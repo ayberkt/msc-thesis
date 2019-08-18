@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+%% \usepackage{placeins}
+%% \usepackage{amsmath}
+%% \usepackage{amsthm}
+%% \usepackage{unicode-math}
+%% \usepackage{fontspec}
+%% \usepackage{todonotes}
+
+%%  LocalWords: LocalWords Pagella Asana Gyre PragmataPro
+
+%% \setmainfont{TeX Gyre Pagella}
+%% \setmathfont{Asana Math}
+%% \setmonofont[Scale=0.85]{PragmataPro}
+
+\title{Master's Thesis Proposal}
+\author{Ayberk Tosun}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Construction of a semantic model for the untyped $\lambda$-calculus had eluded computer
+scientists for quite some time when the first solution was given by Dana Scott in
+1969~\cite{scott:1969}; he termed the mathematical structures which can be appropriately
+regarded as the model of $\lambda$-calculus \emph{domains} hence giving rise to what is now
+known as \emph{domain theory}. The key insight in Scott's solution was the formulation of
+an \emph{information ordering} between terms of the $\lambda$-calculus that orders them with
+respect to ``how defined'' they are and then focus on functions that are \emph{continuous}
+with respect to this ordering.
+
+Scott initially formulated this story in the language of order theory. Even though this
+approach is elegant and enables a smooth development of the required constructions (for
+purposes of semantics), it doesn't express the underlying ideas in their full generality.
+To put it in Scott's words~\cite[pg.~577]{scott:1982}:
+
+\begin{quote}
+  I feel I made a mistake in 1969 in using Lattice Theory as a mode of
+  presentation---a mistake as far as Computer Science is concerned.
+\end{quote}
+
+It is for this reason that Scott tried another presentation in 1981 (???) formulating the
+notion of \emph{neighborhood systems}, making a direct link with the underlying
+topological insights. Even though this approach turned out to simplify the presentation,
+Scott thought they left ``too much implicit'' and hence attempted a yet another
+formulation of the idea of domains, formulating this time the notion of information
+systems in 1982~\cite{scott:1982}.
+
+\bibliography{references}
+\bibliographystyle{alpha}
+
+\end{document}
