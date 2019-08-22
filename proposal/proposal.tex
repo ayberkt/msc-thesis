@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{mathpazo}
+\usepackage{url}
 %% \usepackage{placeins}
 %% \usepackage{amsmath}
 %% \usepackage{amsthm}
@@ -56,11 +57,11 @@ Although the pioneering development in this field was done by Stone~\cite{stone:
 was not until the 1970s that the study of abstract topological spaces became a discipline
 of study in its own right with an important paper by John Isbell~\cite{isbell:1973}.
 
-\emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{
-  johnstone:1982} and it was pointed out it has direct connections to computer science :
-it algebraicizes the notion of an \emph{observable property} building upon the realization
-that observable properties of programs behave like open sets in a topology. It was
-Abramsky~\cite{abramsky:1991} who first took advantage of locale theory for the
+\emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{%
+johnstone:1982} and it was pointed out that it has direct connections to computer
+science: it algebraicizes the notion of an \emph{observable property} building upon the
+realization that observable properties of programs behave like open sets in a topology. It
+was Abramsky~\cite{abramsky:1991} who first took advantage of locale theory for the
 elucidation and further transformation of domain theory.
 
 A salient feature of pointless topology that is perhaps the most relevant for purposes of
@@ -68,6 +69,41 @@ this thesis is that classical theorems of regular topology can be given construc
 proofs in the pointless setting.
 
 \section{Thesis topic}
+
+The development of Homotopy Type Theory (HoTT)~\cite{hottbook} has been a substantial
+advancement throughout the history of type theory. Even though HoTT is of great
+philosophical significance, we avoid providing a historical summary as it would likely be
+incomplete. Instead, we focus on the practical benefits from the point of view of the
+user.
+
+\begin{itemize}
+  \item \emph{Function extensionality}: It is common for Agda programmers to postulate
+    function extensionality which is not a theorem of type theory. However, it was proven
+    by Voevodsky that function extensionality is a theorem in a univalent setting.
+  \item \emph{Homotopy levels}:
+  \item \emph{Higher inductive types}:
+\end{itemize}
+
+A severe shortcoming of the HoTT has been the fact that univalence needs to postulated. In
+light of the view of type theory as a practical programming language, this means that we
+do not know how to run programs that make use of univalence. The computational meaning of
+univalence was formulated by the development of \emph{cubical type theory}~\cite{cubicaltt}.
+
+The topic I plan to investigate in this thesis is the formalization of
+
+\begin{itemize}
+  \item pointless topology and locale theory,
+  \item the reconstruction of domain theory within the framework of pointless topology,
+\end{itemize}
+
+using \emph{cubical Agda}, an extension to the Agda programming language that was
+incorporates cubical type theory hence enabling the use of univalence in a constructive
+setting.
+
+I believe there are several points where the use of univalence and homotopical features
+will be beneficial for this development.
+
+%% Explain these points.
 
 \section{List of possible applications}
 
