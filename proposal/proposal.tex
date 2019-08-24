@@ -1,7 +1,10 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{mathpazo}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{url}
+
 %% \usepackage{placeins}
 %% \usepackage{amsmath}
 %% \usepackage{amsthm}
@@ -64,17 +67,39 @@ realization that observable properties of programs behave like open sets in a to
 was Abramsky~\cite{abramsky:1991} who first took advantage of locale theory for the
 elucidation and further transformation of domain theory.
 
-A salient feature of pointless topology that is perhaps the most relevant for purposes of
-this thesis is that classical theorems of regular topology can be given constructive
-proofs in the pointless setting.
+As explained by Abramsky~\cite{abramsky:1991}, there are two interpretations of Stone
+duality
+
+\begin{enumerate}
+  \item The topological view: \emph{points vs. open sets}
+  \item The logical view: \emph{models vs. formulas}
+\end{enumerate}
+
+the third one that was put forth by Abramsky is
+
+\begin{center}
+  The computer science view: computations and their specifications.
+\end{center}
+
+It is a remarkable result that Stone duality, when interpreted in this way, provides the
+right framework for understanding the relationship between denotational semantics and
+program logic. The fundamental relation of interest in software verification is
+
+\begin{center}
+  $P \vDash \phi$ \qquad ``program $P$ satisfies property $\phi$''
+\end{center}
+
+The spatial (``pointful'') side of the duality enables us to view types as topological
+spaces consisting of points and programs as those points. The localic (``pointless'') side
+of the duality provides a ``logical interpretation of denotational semantics'', as a
+proof-theoretic system.
 
 \section{Thesis topic}
 
 The development of Homotopy Type Theory (HoTT)~\cite{hottbook} has been a substantial
-advancement throughout the history of type theory. Even though HoTT is of great
-philosophical significance, we avoid providing a historical summary as it would likely be
-incomplete. Instead, we focus on the practical benefits from the point of view of the
-user.
+advancement throughout the history of type theory, if not all of mathematical foundations.
+From the practical point of view, HoTT provides the user access to the following technical
+advantages.
 
 \begin{itemize}
   \item \emph{Function extensionality}: It is common for Agda programmers to postulate
@@ -86,22 +111,30 @@ user.
 
 A severe shortcoming of the HoTT has been the fact that univalence needs to postulated. In
 light of the view of type theory as a practical programming language, this means that we
-do not know how to run programs that make use of univalence. The computational meaning of
-univalence was formulated by the development of \emph{cubical type theory}~\cite{cubicaltt}.
+do not know how to run programs that make use of univalence.
+
+The computational meaning of univalence was formulated by the development of \emph{cubical
+type theory}~\cite{cubicaltt}. This is an amazing result in a sense since this allows a
+programmer to prove that insertion sort is (extensionally) equal to quicksort and then a
+develop a theory of their programs that use quicksort as though they used insertion sort.
+In other words, they can constructively \emph{transport along} the equivalences of these
+two algorithms.
 
 The topic I plan to investigate in this thesis is the formalization of
 
 \begin{itemize}
-  \item pointless topology and locale theory,
-  \item the reconstruction of domain theory within the framework of pointless topology,
+  \item pointless topology and locale theory, and
+  \item the reconstruction of domain-theoretic results within the framework of pointless
+    topology.
 \end{itemize}
 
-using \emph{cubical Agda}, an extension to the Agda programming language that was
+I plan to use \emph{cubical Agda}, an extension to the Agda programming language that was
 incorporates cubical type theory hence enabling the use of univalence in a constructive
 setting.
 
-I believe there are several points where the use of univalence and homotopical features
-will be beneficial for this development.
+One of the main goals of my thesis will be illustrating how such a development can benefit
+from univalent type theory. I believe there are several points where the use of univalence
+and homotopical features will be beneficial for this development.
 
 %% Explain these points.
 
