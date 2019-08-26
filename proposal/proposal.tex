@@ -9,8 +9,6 @@
 
 \usepackage{graphicx}
 
-%% \usepackage[colorinlistoftodos]{todonotes}
-
 \usepackage{parskip}
 \setlength{\parskip}{10pt} 
 
@@ -43,6 +41,8 @@
   
 {\large Relevant completed courses:\par}
   
+{\itshape (Exempted from) Logic in Computer Science\\}
+{\itshape (Exempted from) Programming Language Technology\\}
 {\itshape Types for Proofs and Programs\\}
 {\itshape Models of Computation\\}
 {\itshape Formal Methods in Software Engineering\\}
@@ -60,32 +60,32 @@
 How does one mathematically model the semantics of a programming language? Historically,
 there have been three major approaches: (1) operational semantics, in which one formally
 describes the evaluation/execution relation; (2) axiomatic semantics, in which one
-specifies the effect of executing certain commands on some state; and (3)
-\emph{denotational semantics} in which one assigns to terms of a programming language
-mathematical structures which are seen as their values.
+describes the effect of executing a command on the program state; and (3)
+\emph{denotational semantics} in which one assigns mathematical structures to terms of a
+programming language as their denotations.
 
 The dominating approach in the current state of programming language theory is operational
 semantics. Given the success of the operational approach, one might wonder what the
-motivation for the denotational approach is. We would argue that, despite their
-practicality, operational models are not \emph{insightful} of the programming language
-being studied. If one of the defining traits of science is \emph{making the familiar
-strange}, we can reasonably expect from the scientific study of programming languages to
-give rise to novel ways of thinking about the languages being studied.
+motivation for the denotational approach is and I would argue that, despite their
+practicality, operational models are usually not \emph{insightful} of the programming
+language being studied. If one of the defining traits of science is \emph{making the
+  familiar strange}, we can reasonably expect from the scientific study of programming
+languages to give rise to novel ways of thinking about programming languages.
 
 I would like to focus on a specific approach to denotational semantics in my thesis:
 domain theory~\cite{scott:1969} viewed from the lens of point-free topology and especially
-a fundamental notion called \emph{Stone duality}.
+a fundamental adjunction called \emph{Stone duality}.
 
-My primary aim for this thesis project will be the formalization of locale theory in
-Agda~\cite{norell:2008}, specifically Cubical Agda~\cite{cubicalagda}, purely as a
-mathematical theory.
+The primary aim of this thesis project will be the formalization of locale
+theory~\cite{johnstone:1982} in Agda~\cite{norell:2008}, specifically Cubical
+Agda~\cite{cubicalagda}, purely as a mathematical theory.
 
-Once the theoretical formalization has been done, then I would like to make use of it in
+Once the theoretical formalization has been done, I plan to develop applications of it in
 one or more of the following ways:
 \begin{itemize}
   \item reasoning about computability and models of general recursive computation,
   \item expressing the semantics of a concurrent language using the notion of
-    \emph{power domains}, and
+    \emph{power domains} [TODO: CITATION NEEDED], and
   \item extraction of constructive content from classical proofs by eliminating uses of
     the axiom of choice (as described in~\cite{coquand:1997}).
 \end{itemize}
@@ -96,8 +96,8 @@ applications.
 
 Construction of a semantic model for the untyped $\lambda$-calculus had eluded computer
 scientists for quite some time when the first solution was given by Dana Scott in
-1969~\cite{scott:1969}; he termed the mathematical structures which can be appropriately
-regarded as the model of $\lambda$-calculus \emph{domains} hence giving rise to what is now
+1969~\cite{scott:1969}; he termed the mathematical structures which can be used to create
+a denotational semantics for $\lambda$-calculus \emph{domains} hence giving rise to what is now
 known as \emph{domain theory}. The key insight in Scott's solution was the formulation of
 an \emph{information ordering} between terms of the $\lambda$-calculus that orders them with
 respect to ``how defined'' they are and then focus on functions that are \emph{continuous}
@@ -119,8 +119,7 @@ It is for this reason that Scott tried another presentation in 1981 (???) formul
 notion of \emph{neighborhood systems}, making a direct link with the underlying
 topological insights. Even though this approach turned out to simplify the presentation,
 Scott thought they left ``too much implicit'' and hence attempted yet another formulation
-of domains, formulating this time the notion of \emph{information systems} in
-1982~\cite{scott:1982}.
+of domains, which he called \emph{information systems}, in 1982~\cite{scott:1982}.
 
 Right around the time Scott first devised the theory of domains, a mathematical
 development was also taking place: the theory of \emph{abstract} or \emph{point-free}
@@ -131,7 +130,7 @@ was not until the 1970s that the study of abstract topological spaces became a d
 of study in its own right with an important paper by John Isbell~\cite{isbell:1973}.
 
 \emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{
-  johnstone:1982} and it was pointed out that it has direct connections to computer
+johnstone:1982} and it was pointed out that it has direct connections to computer
 science in the vein of research instigated by Scott and it turns out that the notion of
 information systems was already leaning towards this topological view of computer science.
 
@@ -157,10 +156,11 @@ the third one that was put forth by Abramsky is
 
 It is a remarkable result that Stone duality, when interpreted in this way, provides the
 right framework for understanding the relationship between denotational semantics and
-program logic. The fundamental relation of interest in software verification is
+program logic. To put it more precisely: the fundamental relation of interest in software
+verification is
 
 \begin{center}
-  $P \vDash \phi$ \qquad ``program $P$ satisfies property $\phi$''
+  $P \vDash \phi$, \qquad read as, \qquad ``program $P$ satisfies property $\phi$''.
 \end{center}
 
 The spatial (``pointful'') side of the duality enables us to view types as topological
@@ -170,47 +170,59 @@ proof-theoretic system.
 
 \section{Goals and Challenges}
 
+The main goals of this thesis project are as follows.
+
+\begin{itemize}
+  \item Formalizing pointless topology and locale theory.
+  \item The reconstruction of domain-theoretic results within this framework
+  \item Show that univalent type theory is a setting conducive to the such a
+    \emph{constructive} mathematical development.
+  \item Develop a practical application of this Agda development in one of the following fields:
+    \begin{itemize}
+      \item computability theory, providing examples of reasoning about computability by reasoning
+        about continuity,
+      \item semantics of concurrent languages using the idea of power domains, or
+      \item algorithmic extraction of constructive content from non-constructive proofs.
+    \end{itemize}
+\end{itemize}
+
+Some possible challenges are the fact that Cubical Agda is relatively experimental and is
+likely to have bugs as well as presenting the practical application in an interesting and
+convincing way.
+
 \section{Approach}
+
+As previously mentioned, I will be using Cubical Agda~\cite{cubicalagda} which as an
+extension of the Agda proof assistant~\cite{norell:2008}. Let us start by briefly
+explaining what Cubical Type Theory is (or rather what it achieves).
 
 The development of Homotopy Type Theory (HoTT)~\cite{hottbook} has been a substantial
 advancement throughout the history of type theory if not all of mathematical foundations.
-From the practical point of view, HoTT provides the user access to the following technical
-advantages.
+From the practical point of view, HoTT provides the user with access to the following
+technical advantages that revolve around the \emph{univalence axiom}. For the sake of
+brevity, we refrain from engaging in a technical explanation of the univalence axiom and
+instead focus on the more practical applications:
 
 \begin{itemize}
-  \item \emph{Function extensionality}: It is common for Agda programmers to postulate
+  \item \emph{Function extensionality}. It is extremely common for Agda users to postulate
     function extensionality which is not a theorem of type theory. However, it was proven
     by Voevodsky that function extensionality is a theorem in a univalent setting.
-  \item \emph{Homotopy levels}:
-  \item \emph{Higher inductive types}:
+  \item \emph{Homotopy levels}.
+  \item \emph{Higher inductive types}. Normally inductive types are defined by defining
+    what inhabitants they have. The notion of a higher inductive type extends this idea by
+    allowing the user to add \emph{equalities} (i.e., new inhabitants of the identity
+    type) in the type therefore identifying some of the elements.
 \end{itemize}
 
-A severe shortcoming of the HoTT has been the fact that univalence needs to postulated. In
-light of the view of type theory as a practical programming language, this means that we
-do not know how to run programs that make use of univalence.
+A severe shortcoming of HoTT has been the fact that univalence needs to postulated. In
+light of the view of type theory as a practical programming language, this means that
+\emph{we do not know how to run programs that make use of univalence}.
 
-The computational meaning of univalence was formulated by the development of \emph{cubical
-type theory}~\cite{cubicaltt}. This is an amazing result in a sense since this allows a
-programmer to prove that insertion sort is (extensionally) equal to quicksort and then a
-develop a theory of their programs that use quicksort as though they used insertion sort.
-In other words, they can constructively \emph{transport along} the equivalences of these
-two algorithms.
-
-The topic I plan to investigate in this thesis is the formalization of
-
-\begin{itemize}
-  \item pointless topology and locale theory, and
-  \item the reconstruction of domain-theoretic results within the framework of pointless
-    topology.
-\end{itemize}
-
-I plan to use \emph{cubical Agda}, an extension to the Agda programming language that was
-incorporates cubical type theory hence enabling the use of univalence in a constructive
-setting.
-
-One of the main goals of my thesis will be illustrating how such a development can benefit
-from univalent type theory. I believe there are several points where the use of univalence
-and homotopical features will be beneficial for this development.
+The computational meaning of univalence was came to light with by the development of
+\emph{cubical type theory}~\cite{cubicaltt} in which the univalence axiom is a theorem.
+This is an amazing result in a sense in that it allows a programmer to prove insertion
+sort (extensionally) equal to quicksort and then a develop a theory of their programs that
+use quicksort as though they used insertion sort.
 
 \bibliographystyle{plain}
 \bibliography{references}
