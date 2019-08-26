@@ -1,30 +1,103 @@
-\documentclass[11pt]{article}
-\usepackage[margin=1in]{geometry}
-\usepackage{mathpazo}
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+
+%% \usepackage{natbib}
+\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{url}
 
-%% \usepackage{placeins}
-%% \usepackage{amsmath}
-%% \usepackage{amsthm}
-%% \usepackage{unicode-math}
-%% \usepackage{fontspec}
-%% \usepackage{todonotes}
+\usepackage{graphicx}
 
-%%  LocalWords: LocalWords Pagella Asana Gyre PragmataPro
+%% \usepackage[colorinlistoftodos]{todonotes}
 
-%% \setmainfont{TeX Gyre Pagella}
-%% \setmathfont{Asana Math}
-%% \setmonofont[Scale=0.85]{PragmataPro}
+\usepackage{parskip}
+\setlength{\parskip}{10pt} 
 
-\title{Master's Thesis Proposal}
-\author{Ayberk Tosun}
+\usepackage{tikz}
+\usetikzlibrary{arrows, decorations.markings}
+
+\usepackage{chngcntr}
+\counterwithout{figure}{section}
 
 \begin{document}
-\maketitle
+
+
+\begin{titlepage}
+  
+
+\centering
+  
+  
+{\scshape\LARGE Master thesis project proposal\\}
+  
+\vspace{0.5cm}
+  
+{\huge\bfseries Point-free Topology in Univalent Type Theory\\}
+  
+\vspace{2cm}
+  
+{\Large Ayberk Tosun (\texttt{ayberk@student.chalmers.se})\\}
+  
+\vspace{1.0cm}
+  
+{\large Suggested Supervisor at CSE: Thierry Coquand\\}
+  
+\vspace{1.5cm}
+  
+{\large Relevant completed courses:\par}
+  
+{\itshape Types for Proofs and Programs\\}
+{\itshape Models of Computation\\}
+{\itshape Formal Methods in Software Engineering\\}
+{\itshape Research-oriented Course in Domain Theory\\}
+  
+\vfill
+
+\vfill
+  
+{\large \today\\} 
+
+\end{titlepage}
 
 \section{Introduction}
+
+How does one mathematically model the semantics of a programming language? Historically,
+there have been three major approaches: (1) operational semantics, in which one formally
+describes the evaluation/execution relation; (2) axiomatic semantics, in which one
+specifies the effect of executing certain commands on some state; and (3)
+\emph{denotational semantics} in which one assigns to terms of a programming language
+mathematical structures which are seen as their values.
+
+The dominating approach in the current state of programming language theory is operational
+semantics. Given the success of the operational approach, one might wonder what the
+motivation for the denotational approach is. We would argue that, despite their
+practicality, operational models are not \emph{insightful} of the programming language
+being studied. If one of the defining traits of science is \emph{making the familiar
+strange}, we can reasonably expect from the scientific study of programming languages to
+give rise to novel ways of thinking about the languages being studied.
+
+I would like to focus on a specific approach to denotational semantics in my thesis:
+domain theory~\cite{scott:1969} viewed from the lens of point-free topology and especially
+a fundamental notion called \emph{Stone duality}.
+
+My primary aim for this thesis project will be the formalization of locale theory in
+Agda~\cite{norell:2008}, specifically Cubical Agda~\cite{cubicalagda}, purely as a
+mathematical theory.
+
+Once the theoretical formalization has been done, then I would like to make use of it in
+one or more of the following ways:
+\begin{itemize}
+  \item reasoning about computability and models of general recursive computation,
+  \item expressing the semantics of a concurrent language using the notion of
+    \emph{power domains}, and
+  \item extraction of constructive content from classical proofs by eliminating uses of
+    the axiom of choice (as described in~\cite{coquand:1997}).
+\end{itemize}
+At the time of writing this proposal, I have not decisively chosen any of these possible
+applications.
+
+\section{Context}
 
 Construction of a semantic model for the untyped $\lambda$-calculus had eluded computer
 scientists for quite some time when the first solution was given by Dana Scott in
@@ -35,10 +108,12 @@ an \emph{information ordering} between terms of the $\lambda$-calculus that orde
 respect to ``how defined'' they are and then focus on functions that are \emph{continuous}
 with respect to this ordering.
 
-Scott initially formulated this story in the language of order theory. Even though this
-approach is elegant and enables a smooth development of the required constructions (for
-purposes of semantics), it doesn't express the underlying ideas in their full generality.
-To put it in Scott's words~\cite[pg.~577]{scott:1982}:
+Scott initially formulated this story in the language of lattice
+theory~\cite{birkhoff:1940}. Even though this approach is elegant and enables a smooth
+development of the required constructions (for purposes of semantics), it doesn't express
+the underlying ideas in their full generality and involves the development of some
+technical machinery that seems \emph{ad hoc} when taken out of context. To put it in
+Scott's words~\cite[pg.~577]{scott:1982}:
 
 \begin{quote}
   I feel I made a mistake in 1969 in using Lattice Theory as a mode of
@@ -49,36 +124,40 @@ It is for this reason that Scott tried another presentation in 1981 (???) formul
 notion of \emph{neighborhood systems}, making a direct link with the underlying
 topological insights. Even though this approach turned out to simplify the presentation,
 Scott thought they left ``too much implicit'' and hence attempted yet another formulation
-of the idea of domains, formulating this time the notion of information systems in
+of domains, formulating this time the notion of \emph{information systems} in
 1982~\cite{scott:1982}.
 
 Right around the time Scott first devised the theory of domains, a mathematical
-development was also taking place: the theory of \emph{abstract} or \emph{synthetic}
-topological spaces in which one takes the notion of a ``set of opens'' as a primordial
+development was also taking place: the theory of \emph{abstract} or \emph{point-free}
+topological spaces in which one takes the notion of a ``set of open sets'' as a primordial
 entity and carries out the development based on the algebraic essence of these opens.
 Although the pioneering development in this field was done by Stone~\cite{stone:1934}, it
 was not until the 1970s that the study of abstract topological spaces became a discipline
 of study in its own right with an important paper by John Isbell~\cite{isbell:1973}.
 
-\emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{%
-johnstone:1982} and it was pointed out that it has direct connections to computer
-science: it algebraicizes the notion of an \emph{observable property} building upon the
-realization that observable properties of programs behave like open sets in a topology. It
-was Abramsky~\cite{abramsky:1991} who first took advantage of locale theory for the
-elucidation and further transformation of domain theory.
+\emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{
+  johnstone:1982} and it was pointed out that it has direct connections to computer
+science in the vein of research instigated by Scott and it turns out that the notion of
+information systems was already leaning towards this topological view of computer science.
+
+Practically, we may say that locale theory gives us a way to algebraicize the notion of an
+\emph{observable property of a program}: a property whose satisfaction an observer can
+judge \emph{on the basis of finite information}. This idea builds upon the realization
+that observable properties of programs behave like open sets in a topological space.
+
+Abramsky~\cite{abramsky:1991} took advantage of locale theory for the elucidation and
+further transformation of domain theory.
+%% Expand this paragraph.
 
 As explained by Abramsky~\cite{abramsky:1991}, there are two interpretations of Stone
-duality
-
+duality:
 \begin{enumerate}
-  \item The topological view: \emph{points vs. open sets}
-  \item The logical view: \emph{models vs. formulas}
+  \item the topological view: \emph{points vs. open sets}, and
+  \item the logical view: \emph{models vs. formulas}.
 \end{enumerate}
-
 the third one that was put forth by Abramsky is
-
 \begin{center}
-  The computer science view: computations and their specifications.
+  The computer science view: computations vs. their specifications.
 \end{center}
 
 It is a remarkable result that Stone duality, when interpreted in this way, provides the
@@ -94,10 +173,12 @@ spaces consisting of points and programs as those points. The localic (``pointle
 of the duality provides a ``logical interpretation of denotational semantics'', as a
 proof-theoretic system.
 
-\section{Thesis topic}
+\section{Goals and Challenges}
+
+\section{Approach}
 
 The development of Homotopy Type Theory (HoTT)~\cite{hottbook} has been a substantial
-advancement throughout the history of type theory, if not all of mathematical foundations.
+advancement throughout the history of type theory if not all of mathematical foundations.
 From the practical point of view, HoTT provides the user access to the following technical
 advantages.
 
@@ -136,15 +217,7 @@ One of the main goals of my thesis will be illustrating how such a development c
 from univalent type theory. I believe there are several points where the use of univalence
 and homotopical features will be beneficial for this development.
 
-%% Explain these points.
-
-\section{List of possible applications}
-
-\section{Previous work}
-
-\section{Work plan}
-
+\bibliographystyle{plain}
 \bibliography{references}
-\bibliographystyle{alpha}
 
 \end{document}
