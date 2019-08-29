@@ -23,7 +23,7 @@
 
 \centering
   
-{\scshape\LARGE Master thesis project proposal\\}
+{\scshape\LARGE Master thesis project proposal (DRAFT)\\}
   
 \vspace{0.5cm}
   
@@ -81,16 +81,15 @@ theory~\cite{johnstone:1982} in Agda~\cite{norell:2008}, specifically Cubical
 Agda~\cite{cubicalagda}, purely as a mathematical theory.
 
 Once the theoretical formalization has been done, I plan to develop applications of it in
-one or more of the following ways:
+one or more of the following domains:
 \begin{itemize}
   \item reasoning about computability and models of general recursive computation,
   \item expressing the semantics of a concurrent language using the notion of
-    \emph{power domains} [TODO: CITATION NEEDED], and
+    \emph{power domains} [TODO: CITATION], and
   \item extraction of constructive content from classical proofs by eliminating uses of
     the axiom of choice (as described in~\cite{coquand:1997}).
 \end{itemize}
-At the time of writing this proposal, I have not decisively chosen any of these possible
-applications.
+At the time of writing, I have not decisively chosen any of these possible applications.
 
 \section{Context}
 
@@ -140,44 +139,39 @@ judge \emph{on the basis of finite information}. This idea builds upon the reali
 that observable properties of programs behave like open sets in a topological space.
 
 Abramsky~\cite{abramsky:1991} took advantage of locale theory for the elucidation and
-further transformation of domain theory.
-%% Expand this paragraph.
-
-As explained by Abramsky~\cite{abramsky:1991}, there are two interpretations of Stone
-duality:
+further transformation of domain theory; as he explains Abramsky~\cite{abramsky:1991},
+there are two interpretations of Stone duality:
 \begin{enumerate}
   \item the topological view: \emph{points vs. open sets}, and
   \item the logical view: \emph{models vs. formulas}.
 \end{enumerate}
-the third one that was put forth by Abramsky is
+the third one that was put forth by Abramsky is:
 \begin{center}
   The computer science view: computations vs. their specifications.
 \end{center}
 
-It is a remarkable result that Stone duality, when interpreted in this way, provides the
-right framework for understanding the relationship between denotational semantics and
-program logic. To put it more precisely: the fundamental relation of interest in software
-verification is
+To put it more precisely: the fundamental relation of interest in software verification is
 
 \begin{center}
   $P \vDash \phi$, \qquad read as, \qquad ``program $P$ satisfies property $\phi$''.
 \end{center}
 
-The spatial (``pointful'') side of the duality enables us to view types as topological
-spaces consisting of points and programs as those points. The localic (``pointless'') side
-of the duality provides a ``logical interpretation of denotational semantics'', as a
-proof-theoretic system.
+Stone duality allows us to understand this relationship better: the spatial (``pointful'')
+side of the duality enables us to view types as topological spaces consisting of points
+and programs as those points whereas the localic (``pointless'') side of the duality
+provides a ``logical interpretation of denotational semantics'', as a proof-theoretic
+system.
 
 \section{Goals and Challenges}
 
 The main goals of this thesis project are as follows.
 
 \begin{itemize}
-  \item Formalizing pointless topology and locale theory.
-  \item The reconstruction of domain-theoretic results within this framework
-  \item Show that univalent type theory is a setting conducive to the such a
+  \item Formalizing pointless topology and locale theory, and
+  \item the reconstruction of domain-theoretic results within this framework.
+  \item Showing that univalent type theory is a setting conducive to such a
     \emph{constructive} mathematical development.
-  \item Develop a practical application of this Agda development in one of the following fields:
+  \item Developing a practical application of this Agda development in one of the following fields:
     \begin{itemize}
       \item computability theory, providing examples of reasoning about computability by reasoning
         about continuity,
@@ -207,7 +201,7 @@ instead focus on the more practical applications:
   \item \emph{Function extensionality}. It is extremely common for Agda users to postulate
     function extensionality which is not a theorem of type theory. However, it was proven
     by Voevodsky that function extensionality is a theorem in a univalent setting.
-  \item \emph{Homotopy levels}.
+  \item \emph{Homotopy levels}. TODO: explain.
   \item \emph{Higher inductive types}. Normally inductive types are defined by defining
     what inhabitants they have. The notion of a higher inductive type extends this idea by
     allowing the user to add \emph{equalities} (i.e., new inhabitants of the identity
