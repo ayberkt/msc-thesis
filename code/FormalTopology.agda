@@ -31,9 +31,9 @@ record FormalTopology (S : Set) : Set₁ where
   field
     refl   : (x   : S) (U   : Subset S) → x ∈ U → x ◀ U
     trans  : (a   : S) (U V : Subset S) → a ◀ U → U ◀ₛ V → a ◀ V
+    ·-pair : (a   : S) (U V : Subset S) → a ◀ U → a ◀ V → a ◀ (U ∙ₛ V)
     ·-inj₁ : (a b : S) (U   : Subset S) → a ◀ U → (a ∙ b) ◀ U
     ·-inj₂ : (a b : S) (U   : Subset S) → b ◀ U → (a ∙ b) ◀ U
-    ·-pair : (a   : S) (U V : Subset S) → a ◀ U → a ◀ V → a ◀ (U ∙ₛ V)
     top    : (a   : S)                  → a ◀ [ 𝟏 ]
 
     mono   : (a   : S) (U   : Subset S) → Σ[ b ∈ S ](U b → Pos b)
