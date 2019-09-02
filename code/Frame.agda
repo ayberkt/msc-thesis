@@ -1,14 +1,15 @@
 module Frame where
 
+open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
-Subset : Set → Set₁
-Subset S = S → Set
+Sub : {ℓ : Level} → Set ℓ → Set (suc ℓ)
+Sub {ℓ} S = S → Set ℓ
 
-record Poset : Set₁ where
+record Poset {ℓ : Level} : Set (suc ℓ) where
 
   field
-    A    : Set
+    A    : Set ℓ
     _⊑_  : A → A → Set
 
   field
@@ -16,10 +17,10 @@ record Poset : Set₁ where
     trans : (x y z : A) → x ⊑ y → y ⊑ z → x ⊑ z
     sym⁻¹ : (x y   : A) → x ⊑ y → y ⊑ x → x ≡ y
 
-record Frame : Set₁ where
+record Frame {ℓ : Level} : Set (suc ℓ) where
 
   field
-    P   : Poset
+    P   : Poset {ℓ}
 
   O   = Poset.A P
   _⊑_ = Poset._⊑_ P
@@ -27,7 +28,7 @@ record Frame : Set₁ where
   field
     𝟏   : O
     _⊓_ : O → O → O
-    ⊔_  : Subset O → O
+    ⊔_  : Sub O → O
 
   field
     top    : (x     : O)     → x ⊑ 𝟏
