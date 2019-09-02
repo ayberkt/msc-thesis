@@ -30,6 +30,10 @@ record Frame : Set₁ where
     ⊔_  : Subset O → O
 
   field
-    top    : (x   : O) → x ⊑ 𝟏
-    ⊓-up₁  : (x y : O) → (x ⊓ y) ⊑ x
-    ⊓-up₂  : (x y : O) → (x ⊓ y) ⊑ y
+    top    : (x     : O)     → x ⊑ 𝟏
+    ⊓-low₁ : (x y   : O)     → (x ⊓ y) ⊑ x
+    ⊓-low₂ : (x y   : O)     → (x ⊓ y) ⊑ y
+    ⊓-max  : (x y z : O)     → z ⊑ x → z ⊑ y → z ⊑ (x ⊓ y)
+    ⊔-up   : (S     : Sub O) → (o : O) → o ⊑ (⊔ S)
+    ⊔-min  : (S     : Sub O) → (z : O) → ((o : O) → o ⊑ z) → (⊔ S) ⊑ z
+
