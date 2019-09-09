@@ -23,7 +23,7 @@
 
 \centering
   
-{\scshape\LARGE Master thesis project proposal (DRAFT)\\}
+{\scshape\LARGE Master thesis project planning report\\}
   
 \vspace{0.5cm}
   
@@ -39,7 +39,7 @@
   
 \vspace{1.5cm}
   
-{\large Relevant completed courses:\par}
+{\large Relevant completed courses:\\}
   
 {\itshape (Exempted from) Logic in Computer Science\\}
 {\itshape (Exempted from) Programming Language Technology\\}
@@ -55,83 +55,55 @@
 {\large \today\\} 
 
 \end{titlepage}
+
 \section{Introduction}
-
-How does one mathematically model the semantics of a programming language? Historically,
-there have been three major approaches: (1) operational semantics, in which one formally
-describes the evaluation/execution relation; (2) axiomatic semantics, in which one
-describes the effect of executing a command on the program state; and (3)
-\emph{denotational semantics} in which one assigns mathematical structures to terms of a
-programming language as their denotations.
-
-The dominating approach in the current state of programming language theory is operational
-semantics. Given the success of the operational approach, one might wonder what the
-motivation for the denotational approach is and I would argue that, despite their
-practicality, operational models are usually not \emph{insightful} of the programming
-language being studied. If one of the defining traits of science is \emph{making the
-  familiar strange}, we can reasonably expect from the scientific study of programming
-languages to give rise to novel ways of thinking about programming languages.
-
-I would like to focus on a specific approach to denotational semantics in my thesis:
-domain theory~\cite{scott:1969} viewed from the lens of point-free topology and especially
-a fundamental adjunction called \emph{Stone duality}.
-
-The primary aim of this thesis project will be the formalization of locale
-theory~\cite{johnstone:1982} in Agda~\cite{norell:2008}, specifically Cubical
-Agda~\cite{cubicalagda}, purely as a mathematical theory.
-
-Once the theoretical formalization has been done, I plan to develop applications of it in
-one or more of the following domains:
-\begin{itemize}
-  \item reasoning about computability and models of general recursive computation,
-  \item expressing the semantics of a concurrent language using the notion of
-    \emph{power domains} [TODO: CITATION], and
-  \item extraction of constructive content from classical proofs by eliminating uses of
-    the axiom of choice (as described in~\cite{coquand:1997}).
-\end{itemize}
-At the time of writing, I have not decisively chosen any of these possible applications.
-
-\section{Context}
 
 Construction of a semantic model for the untyped $\lambda$-calculus had eluded computer
 scientists for quite some time when the first solution was given by Dana Scott in
-1969~\cite{scott:1969}; he termed the mathematical structures which can be used to create
-a denotational semantics for $\lambda$-calculus \emph{domains} hence giving rise to what is now
-known as \emph{domain theory}. The key insight in Scott's solution was the formulation of
-an \emph{information ordering} between terms of the $\lambda$-calculus that orders them with
-respect to ``how defined'' they are and then focus on functions that are \emph{continuous}
-with respect to this ordering.
+1969~\cite{scott:1969}; he termed the mathematical structures he used to present a
+denotational semantics for the $\lambda$-calculus \emph{domains}, hence giving rise to what is
+now known as \emph{domain theory}.
 
-Scott initially formulated this story in the language of lattice
-theory~\cite{birkhoff:1940}. Even though this approach is elegant and enables a smooth
-development of the required constructions (for purposes of semantics), it doesn't express
-the underlying ideas in their full generality and involves the development of some
-technical machinery that seems \emph{ad hoc} when taken out of context. To put it in
-Scott's words~\cite[pg.~577]{scott:1982}:
+The key insight in Scott's solution was the formulation of an \emph{information ordering}
+between terms of the $\lambda$-calculus that orders terms with respect to ``how defined'' they
+are. It turns out that considering functions that respect this information ordering in
+various ways is crucial for the construction of a semantic model for the untyped
+$\lambda$-calculus, and in fact for any programming language that is capable of general
+recursion. The information ordering arose from an insight into the \emph{topological nature}
+(in a sense that will be explained later) of the notion of partial information that
+pervades the realm of computer science.
+
+Scott initially formulated the theory of domains in the language of lattice
+theory~\cite{birkhoff:1940}. Even though this approach enables a smooth development of the
+required constructions (for purposes of semantics), it doesn't express the underlying
+ideas in their full generality and involves the development of some technical machinery
+that seems \emph{ad hoc} when taken out of context. To put it in Scott's
+words~\cite[pg.~577]{scott:1982}:
 
 \begin{quote}
   I feel I made a mistake in 1969 in using Lattice Theory as a mode of
   presentation---a mistake as far as Computer Science is concerned.
 \end{quote}
 
-It is for this reason that Scott tried another presentation in 1981 (???) formulating the
-notion of \emph{neighborhood systems}, making a direct link with the underlying
-topological insights. Even though this approach turned out to simplify the presentation,
-Scott thought they left ``too much implicit'' and hence attempted yet another formulation
-of domains, which he called \emph{information systems}, in 1982~\cite{scott:1982}.
+It is for this reason that Scott tried another presentation in 1982~\cite{scott:1981}
+formulating the notion of \emph{neighbourhood systems}, making a direct link with the
+underlying topological insights. Even though this approach turned out to simplify the
+presentation, Scott thought they left ``too much implicit'' and hence attempted yet
+another formulation of domains, which he called \emph{information systems}.
 
 Right around the time Scott first devised the theory of domains, a mathematical
 development was also taking place: the theory of \emph{abstract} or \emph{point-free}
 topological spaces in which one takes the notion of a ``set of open sets'' as a primordial
-entity and carries out the development based on the algebraic essence of these opens.
-Although the pioneering development in this field was done by Stone~\cite{stone:1934}, it
-was not until the 1970s that the study of abstract topological spaces became a discipline
-of study in its own right with an important paper by John Isbell~\cite{isbell:1973}.
+entity and carries out the development based on the algebraic essence of these abstract
+opens. Although the pioneering development in this field was done by
+Stone~\cite{stone:1934}, it was not until the 1970s that the study of abstract topological
+spaces became a discipline of study in its own right with an important paper by John
+Isbell~\cite{isbell:1973}.
 
 \emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{
 johnstone:1982} and it was pointed out that it has direct connections to computer
 science in the vein of research instigated by Scott and it turns out that the notion of
-information systems was already leaning towards this topological view of computer science.
+information systems was already leaning towards this topological view of computation.
 
 Practically, we may say that locale theory gives us a way to algebraicize the notion of an
 \emph{observable property of a program}: a property whose satisfaction an observer can
@@ -139,15 +111,15 @@ judge \emph{on the basis of finite information}. This idea builds upon the reali
 that observable properties of programs behave like open sets in a topological space.
 
 Abramsky~\cite{abramsky:1991} took advantage of locale theory for the elucidation and
-further transformation of domain theory; as he explains Abramsky~\cite{abramsky:1991},
-there are two interpretations of Stone duality:
+further transformation of domain theory; as he explains \cite{abramsky:1991}, there are
+two interpretations of Stone duality:
 \begin{enumerate}
   \item the topological view: \emph{points vs. open sets}, and
   \item the logical view: \emph{models vs. formulas}.
 \end{enumerate}
 the third one that was put forth by Abramsky is:
 \begin{center}
-  The computer science view: computations vs. their specifications.
+  the computer science view: computations vs. their specifications.
 \end{center}
 
 To put it more precisely: the fundamental relation of interest in software verification is
@@ -164,25 +136,7 @@ system.
 
 \section{Goals and Challenges}
 
-The main goals of this thesis project are as follows.
-
-\begin{itemize}
-  \item Formalizing pointless topology and locale theory, and
-  \item the reconstruction of domain-theoretic results within this framework.
-  \item Showing that univalent type theory is a setting conducive to such a
-    \emph{constructive} mathematical development.
-  \item Developing a practical application of this Agda development in one of the following fields:
-    \begin{itemize}
-      \item computability theory, providing examples of reasoning about computability by reasoning
-        about continuity,
-      \item semantics of concurrent languages using the idea of power domains, or
-      \item algorithmic extraction of constructive content from non-constructive proofs.
-    \end{itemize}
-\end{itemize}
-
-Some possible challenges are the fact that Cubical Agda is relatively experimental and is
-likely to have bugs as well as presenting the practical application in an interesting and
-convincing way.
+%% TODO.
 
 \section{Approach}
 
