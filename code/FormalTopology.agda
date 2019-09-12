@@ -24,12 +24,12 @@ record FormalTopology (S : Set) : Set₁ where
   [ s ] = λ x → x ≡ s
 
   field
-    refl   : (x   : S) (U   : Subset S) → x ∈ U → x ◀ U
-    trans  : (a   : S) (U V : Subset S) → a ◀ U → U ◀ₛ V → a ◀ V
-    ·-pair : (a   : S) (U V : Subset S) → a ◀ U → a ◀ V → a ◀ (U ∙ₛ V)
-    ·-inj₁ : (a b : S) (U   : Subset S) → a ◀ U → (a ∙ b) ◀ U
-    ·-inj₂ : (a b : S) (U   : Subset S) → b ◀ U → (a ∙ b) ◀ U
-    top    : (a   : S)                  → a ◀ [ 𝟏 ]
+    refl    : (a   : S) (U   : Subset S) → a ∈ U → a ◀ U
+    trans   : (a   : S) (U V : Subset S) → a ◀ U → U ◀ₛ V → a ◀ V
+    ·-right : (a   : S) (U V : Subset S) → a ◀ U → a ◀ V → a ◀ (U ∙ₛ V)
+    ·-left₁ : (a b : S) (U V : Subset S) → a ◀ U → (a ∙ b) ◀ V
+    ·-left₂ : (a b : S) (U V : Subset S) → b ◀ U → (a ∙ b) ◀ V
+    top     : (a   : S)                  → a ◀ [ 𝟏 ]
 
-    mono   : (a   : S) (U   : Subset S) → Σ[ b ∈ S ](U b → Pos b)
-    posit  : (a   : S) (U   : Subset S) → (Pos a → a ◀ U) → a ◀ U
+    mono    : (a   : S) (U   : Subset S) → Pos a → a ◀ U → Σ[ b ∈ S ](b ∈ U → Pos b)
+    posit   : (a   : S) (U   : Subset S) → (Pos a → a ◀ U) → a ◀ U
