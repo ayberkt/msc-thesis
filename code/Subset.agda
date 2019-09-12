@@ -1,11 +1,12 @@
 module Subset where
 
 open import Data.Product using (Σ-syntax; _×_)
+open import Level
 
-Subset : Set → Set₁
-Subset S = S → Set
+Subset : {ℓ : Level} → Set ℓ → Set (suc ℓ)
+Subset {ℓ} S = S → Set ℓ
 
-_∈_ : {S : Set} → S → Subset S → Set
+_∈_ : {ℓ : Level} {S : Set ℓ} → S → Subset S → Set ℓ
 x ∈ U = U x
 
 _⊆_ : {S : Set} → Subset S → Subset S → Set
