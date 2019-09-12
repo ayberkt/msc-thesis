@@ -2,12 +2,7 @@ module FormalTopology where
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax)
-
-Subset : Set → Set₁
-Subset S = S → Set
-
-_∈_ : {S : Set} → S → Subset S → Set
-x ∈ U = U x
+open import Subset
 
 
 -- Definition 1.2.
