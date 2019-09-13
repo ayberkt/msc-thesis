@@ -136,7 +136,57 @@ system.
 
 \section{Goals and Challenges}
 
-%% TODO.
+In order to state the goal of the thesis project precisely, let us first start with the
+development of some technical notions, starting with the question of: \emph{what is
+  topology?}
+
+Topology, as classically conceived, is the abstract study of nearness between points in
+some space; it is abstract in the sense that the notion of nearness is formulated without
+any reference to a measure of ``how near'' the points are.
+
+Let $X$ be a set of points. A \emph{topology} on $X$ is a collection of subsets of
+$\Omega(X) \subseteq P(X)$, called its \emph{open subsets}, that satisfy:
+\begin{itemize}
+  \item $X \in \Omega(X)$
+  \item $O_1, O_2 \in \Omega(X)$, $O_1 \cap O_2 \in \Omega(X)$
+  \item $O \subseteq \Omega(X)$, $\bigcup O \in \Omega(X)$.
+\end{itemize}
+
+A set $X$ equipped with a topology is called a \emph{topological space}. To move towards a
+\emph{pointless} formulation of topology, we start by noticing that the inclusion relation
+on the collection $\Omega(X)$ of open subsets is crucial and start by characterising it as an
+abstract order. We take some set $O$ of opens and an ordering relation $\sqsubseteq \subseteq O \times O$ which
+must be partial order that admits finite meets and arbitrary joins. Furthermore, the
+following law is also validated in the pointful setting: given some $U \in \Omega(X)$,
+$\mathcal{V} \subseteq \Omega(X)$
+\begin{equation*}
+  X \cap (\bigcup_{i} V_i) = \bigcup_{i} X \cap V_i
+\end{equation*}
+meaning we must also require that binary meets distribute over arbitrary joins. Such a
+partially ordered set that admits all finite meets, all joins, and in which binary meets
+distribute over joins is called a \emph{frame}. Frames form a category in which the
+morphisms are frame homomorphisms. A \emph{locale} is an object in the opposite category
+of the category of frames. So locales are identical to frames as long as no reference to
+morphisms are made. Locales play a more important role that frames do
+
+A powerful technique in pointless topology is that of a \emph{presentation} originating
+from the realm of universal algebra. We start with an algebraic theory $F$ providing a
+syntactic specification for an algebra. The presentation of an $F$-algebra $A$ is then a
+pair of a set of \emph{generators} and a set of \emph{relations} such that $A$ generated
+\emph{freely} by these generators and relations.
+
+So how are locales related to logic exactly? The idea is that we can view locales as being
+\emph{systems of finite observations} by viewing the set of opens as a set of observable
+properties i.e. properties whose validity can be judged on the basis of a finite amount of
+information. Once we start viewing locales in this way, the relevance of presentations
+also becomes evident: this is a fundamental method in logic where one inductively
+generates logical expressions via connectives and then identifies the expressions that
+entail each other.
+
+%% The connection to logic and computer science begins to appear upon the realisation that
+%% frames can be viewed as \emph{systems of finite observations} by viewing each open as an
+%% observable property i.e. a property whose validity can be judged on the basis of finite
+%% information.
 
 \section{Approach}
 
