@@ -3,7 +3,7 @@ module UniversalAlgebra (Var : Set) where
 open import Relation.Binary.PropositionalEquality as Eq
 
 open        Eq           using (_≡_; refl)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_; Σ-syntax)
 open import Data.List    using (List)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Data.Vec     using (Vec; _∷_; []; map)
@@ -55,6 +55,9 @@ _holds-in_ : {𝒮 : Signature} → Equation 𝒮 → Algebra 𝒮 → Set
 
 _models_ : {𝒮 : Signature} → Algebra 𝒮 → Theory 𝒮 → Set
 _models_ {𝒮} 𝒜 𝒯 = (eq : Equation 𝒮) → eq ∈ 𝒯 → eq holds-in 𝒜
+
+_generated-by_ : {𝒮 : Signature} → (𝒜 : Algebra 𝒮) → (Var → ∣ 𝒜 ∣A) → Set
+_generated-by_ {𝒮} 𝒜 g = (a : ∣ 𝒜 ∣A) → Σ[ t ∈ (Term 𝒮) ] ext 𝒜 g t ≡ a
 
 -- -}
 -- -}
