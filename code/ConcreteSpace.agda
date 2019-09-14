@@ -7,6 +7,8 @@ open        Eq           using (_≡_; refl)
 open import Subset
 open import Function     using (flip)
 open import Data.Unit    using (⊤)
+open import Data.Nat     using (ℕ)
+open import Data.Integer using (ℤ)
 open import Data.Product using (Σ-syntax; _×_)
 
 record ConcreteSpace : Set₁ where
@@ -35,3 +37,14 @@ record ConcreteSpace : Set₁ where
   field
     B₁ : (x   : X) → x ⊩⋆ S1
     B₂ : (a b : S) → ext a ∩ ext b ≡ ext⋆ (a ↓ b)
+
+data ℕ⁺ : Set where
+  one : ℕ⁺
+  suc : ℕ⁺ → ℕ⁺
+
+ℚ : Set
+ℚ = ℤ × ℕ⁺
+
+ℚ⁺ : Set
+ℚ⁺ = ℕ × ℕ⁺
+
