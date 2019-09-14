@@ -30,7 +30,7 @@
 {\huge\bfseries Point-free Topology in Univalent Type Theory\\}
   
 \vspace{2cm}
-  
+
 {\Large Ayberk Tosun (\texttt{ayberk@student.chalmers.se})\\}
   
 \vspace{1.0cm}
@@ -134,31 +134,74 @@ and programs as those points whereas the localic (``pointless'') side of the dua
 provides a ``logical interpretation of denotational semantics'', as a proof-theoretic
 system.
 
-\section{Goals and Challenges}
+\section{Problem}
 
-In order to state the goal of the thesis project precisely, let us first start with the
-development of some technical notions, starting with the question of: \emph{what is
-  topology?}
+In order to state the goal of the thesis project precisely, we provide a more technical
+explanation of the problem in this section. Let us start with the question:
+\emph{what is topology?}.
 
-Topology, as classically conceived, is the abstract study of nearness between points in
-some space; it is abstract in the sense that the notion of nearness is formulated without
-any reference to a measure of ``how near'' the points are.
+Topology is the study of abstract spaces. As classically conceived, a space comprises a a
+set of locations in the space i.e., its \emph{points}. These are required to satisfy some
+axioms characterising what points must behave like. One take on this characterisation that
+forms the basis of real analysis is to require a distance function on the space giving the
+distance between any two points as a real number, and then require this distance function
+to behave in a certain way; for example, a set in which the distance between point $x$ and
+point $y$ is not the same as that between point $y$ and point $x$ is a surely weird space
+that does not meet our intuition of what a space is.
 
-Let $X$ be a set of points. A \emph{topology} on $X$ is a collection of subsets of
-$\Omega(X) \subseteq P(X)$, called its \emph{open subsets}, that satisfy:
+The reason topology is said to study \emph{abstract} spaces is that its approach to
+characterising spaces does not involve any reference to ``how near'' two points are. So
+topology studies spaces whose inherent notions of nearness is given by finite
+\emph{observations} of the space rather than a complete scan of the space revealing all
+the information about every point. A fisherman who is not in possession of a sonar to tell
+him the distance between every fish in some lake can still have a notion of nearness by
+observing what kinds of fish are caught in consecutive casts of his rod.
+
+Let us now formalise this intuition: let $X$ be a set of points. If we had some distance
+function $d : X \times X \rightarrow \mathbb{R}$, we could take some $x \in X$ and talk about the set
+$\{ y\ \|\ d(x, y) < \epsilon \}$ of all points within some distance $\epsilon$ of $x$; this set
+approximates $x$ in some sense. Instead of requiring the distance function then, we
+require that the set $X$ is equipped with a collection of \emph{open} subsets of $X$ that
+are used for approximating points of $X$. $X$ is itself must be an approximation of every
+point it contains so it must be an open set. Similarly, $\emptyset$ contains no points so it is
+vacuously an approximation of all the points it contains. If we have two approximation
+sets $X_1, X_2$ are both approximations of everything they contain so their intersection
+is clearly an approximation of what falls in both; a similar observation can made for
+unions of approximation sets. Summarizing this up, brings us to the following definition.
+
+A \emph{topology} on $X$ is a collection of subsets of $\Omega(X) \subseteq P(X)$, called its
+\emph{open subsets}, that satisfy:
 \begin{itemize}
   \item $X \in \Omega(X)$
   \item $O_1, O_2 \in \Omega(X)$, $O_1 \cap O_2 \in \Omega(X)$
   \item $O \subseteq \Omega(X)$, $\bigcup O \in \Omega(X)$.
 \end{itemize}
 
-A set $X$ equipped with a topology is called a \emph{topological space}. To move towards a
+A set $X$ equipped with a topology is called a \emph{topological space}.
+
+Explicit formulation of points within a space was not the manner in which the ancient
+Greeks invented geometry. Instead they took a ruler and a compass as being primordial
+entities and formulated shapes in terms of them. By this approach, lines are not sets of
+points, lines are \emph{pointless} primitive entities.
+
+Topology was invented in a pointful manner in the first place although there is plenty of
+motivation for doing it without points. The first and the most relevant for this thesis is
+the fact non-constructive proofs of point-set topology can be done constructively in the
+pointless setting. Although this is quite compelling for anyone who wishes to write down
+his proofs as a computer program, the more transcendent reason is that topology is really
+a theory of approximations (i.e., observations, experiments) and it makes a lot of sense
+work in a setting where observations are primitive entities much like it makes sense to
+take lines as primitive entities for geometry.
+
+Now the question
+To move towards a
 \emph{pointless} formulation of topology, we start by noticing that the inclusion relation
 on the collection $\Omega(X)$ of open subsets is crucial and start by characterising it as an
 abstract order. We take some set $O$ of opens and an ordering relation $\sqsubseteq \subseteq O \times O$ which
 must be partial order that admits finite meets and arbitrary joins. Furthermore, the
 following law is also validated in the pointful setting: given some $U \in \Omega(X)$,
 $\mathcal{V} \subseteq \Omega(X)$
+
 \begin{equation*}
   X \cap (\bigcup_{i} V_i) = \bigcup_{i} X \cap V_i
 \end{equation*}
@@ -175,52 +218,59 @@ syntactic specification for an algebra. The presentation of an $F$-algebra $A$ i
 pair of a set of \emph{generators} and a set of \emph{relations} such that $A$ generated
 \emph{freely} by these generators and relations.
 
-So how are locales related to logic exactly? The idea is that we can view locales as being
-\emph{systems of finite observations} by viewing the set of opens as a set of observable
-properties i.e. properties whose validity can be judged on the basis of a finite amount of
-information. Once we start viewing locales in this way, the relevance of presentations
-also becomes evident: this is a fundamental method in logic where one inductively
-generates logical expressions via connectives and then identifies the expressions that
-entail each other.
+So how are locales related to logic and computation? The idea is that we can view locales
+as \emph{systems of verifiable properties} i.e. properties whose validity can be judged on
+the basis of a finite amount of information. Examination of the behaviour of verifiable
+properties shows that they satisfy the locale laws.
 
-%% The connection to logic and computer science begins to appear upon the realisation that
-%% frames can be viewed as \emph{systems of finite observations} by viewing each open as an
-%% observable property i.e. a property whose validity can be judged on the basis of finite
-%% information.
+An example is the familiar set of real numbers: we can never pinpoint the value of a real
+number $r$, only judge that it lies within some range $q \pm \epsilon$ where $q, \epsilon \in \mathbb{Q}$
+and $\epsilon \ge 0$. When $r$ lies within $q \pm \epsilon$ we write
+\begin{equation*}
+  r \vDash q \pm \epsilon
+\end{equation*}
+denoting a \emph{finite observation} on $r \in \mathbb{R}$. We can also take our domain as
+the set of programs in some programming language and take the set of opens to be the set
+of observable properties, properties whose validity can be judged after observing a finite
+prefix of the sequence of outputs the program produces.
+
+The reason that the presentation method is crucial to pointless topology is that the
+theory of locales is usually developed in an \emph{impredicative} setting, such as a
+topos. Although one can express the notion of a locale predicatively, is not possible, for
+instance, to define the product of two locales in a predicative manner.
+
+\section{Goals and Challenges}
+
+
+The question of how one can develop locale theory in type theory then arises. One answer
+is that it is possible to engage in a predicative development for those locales that have
+presentations. Although not every locale is presentable, many interesting locales are. One
+convenient way of presenting a locale is using the coverage method invented by Johnstone
+(???).
+
+The goal of my thesis will be to carry out a development of pointless topology in
+univalent type theory which provides a suitable setting for the development of the
+technical machinery involved in locale theory.
+
+There are a few possible challenges...
 
 \section{Approach}
 
-As previously mentioned, I will be using Cubical Agda~\cite{cubicalagda} which as an
-extension of the Agda proof assistant~\cite{norell:2008}. Let us start by briefly
-explaining what Cubical Type Theory is (or rather what it achieves).
+The technical development will be carried out in the type-theoretical proof assistant
+Agda~\cite{norell:2008}. Until recently, Agda did not have intrinsic support for the
+univalence axiom which was remedied with the development of Cubical
+Agda~\cite{cubicalagda} which is an implementation of Cubical Type Theory (CTT) developed
+specifically to serve as a setting in which the computational meaning of the univalence
+axiom can be understood. Development of the mathematical results in a type-theoretic proof
+assistant such as Agda will ensure the validity of mathematical constructions and
+arguments.
 
-The development of Homotopy Type Theory (HoTT)~\cite{hottbook} has been a substantial
-advancement throughout the history of type theory if not all of mathematical foundations.
-From the practical point of view, HoTT provides the user with access to the following
-technical advantages that revolve around the \emph{univalence axiom}. For the sake of
-brevity, we refrain from engaging in a technical explanation of the univalence axiom and
-instead focus on the more practical applications:
+The thesis report will then be an informalisation of the formal development.
 
-\begin{itemize}
-  \item \emph{Function extensionality}. It is extremely common for Agda users to postulate
-    function extensionality which is not a theorem of type theory. However, it was proven
-    by Voevodsky that function extensionality is a theorem in a univalent setting.
-  \item \emph{Homotopy levels}. TODO: explain.
-  \item \emph{Higher inductive types}. Normally inductive types are defined by defining
-    what inhabitants they have. The notion of a higher inductive type extends this idea by
-    allowing the user to add \emph{equalities} (i.e., new inhabitants of the identity
-    type) in the type therefore identifying some of the elements.
-\end{itemize}
-
-A severe shortcoming of HoTT has been the fact that univalence needs to postulated. In
-light of the view of type theory as a practical programming language, this means that
-\emph{we do not know how to run programs that make use of univalence}.
-
-The computational meaning of univalence was came to light with by the development of
-\emph{cubical type theory}~\cite{cubicaltt} in which the univalence axiom is a theorem.
-This is an amazing result in a sense in that it allows a programmer to prove insertion
-sort (extensionally) equal to quicksort and then a develop a theory of their programs that
-use quicksort as though they used insertion sort.
+For some of the applications we have proposed, it might be interesting to actually run the
+proofs as standalone programs (e.g., real number computation, the Tychonoff theorem) that
+do IO. As Agda provides the user with fine-grained control over how the compiled programs
+look like, we believe it will provide an ideal setting for such applications.
 
 \bibliographystyle{plain}
 \bibliography{references}
