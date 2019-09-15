@@ -69,9 +69,9 @@ between terms of the $\lambda$-calculus that orders terms with respect to ``how 
 are. It turns out that considering functions that respect this information ordering in
 various ways is crucial for the construction of a semantic model for the untyped
 $\lambda$-calculus, and in fact for any programming language that is capable of general
-recursion. The information ordering arose from an insight into the \emph{topological nature}
-(in a sense that will be explained later) of the notion of partial information that
-pervades the realm of computer science.
+recursion. The information ordering arose from an insight into the topological nature (in
+a sense that will be explained later) of the notion of partial information that pervades
+the realm of computer science.
 
 Scott initially formulated the theory of domains in the language of lattice
 theory~\cite{birkhoff:1940}. Even though this approach enables a smooth development of the
@@ -140,34 +140,35 @@ In order to state the goal of the thesis project precisely, we provide a more te
 explanation of the problem in this section. Let us start with the question:
 \emph{what is topology?}.
 
-Topology is the study of abstract spaces. As classically conceived, a space comprises a a
+Topology is the study of abstract spaces. As classically conceived, a space comprises a
 set of locations in the space i.e., its \emph{points}. These are required to satisfy some
 axioms characterising what points must behave like. One take on this characterisation that
 forms the basis of real analysis is to require a distance function on the space giving the
-distance between any two points as a real number, and then require this distance function
+distance between any two points as a real number and then require this distance function
 to behave in a certain way; for example, a set in which the distance between point $x$ and
 point $y$ is not the same as that between point $y$ and point $x$ is a surely weird space
 that does not meet our intuition of what a space is.
 
 The reason topology is said to study \emph{abstract} spaces is that its approach to
 characterising spaces does not involve any reference to ``how near'' two points are. So
-topology studies spaces whose inherent notions of nearness is given by finite
+topology studies spaces whose inherent notions of nearness are given by finite
 \emph{observations} of the space rather than a complete scan of the space revealing all
 the information about every point. A fisherman who is not in possession of a sonar to tell
 him the distance between every fish in some lake can still have a notion of nearness by
 observing what kinds of fish are caught in consecutive casts of his rod.
 
 Let us now formalise this intuition: let $X$ be a set of points. If we had some distance
-function $d : X \times X \rightarrow \mathbb{R}$, we could take some $x \in X$ and talk about the set
-$\{ y\ \|\ d(x, y) < \epsilon \}$ of all points within some distance $\epsilon$ of $x$; this set
+function $d : X \times X \rightarrow \mathbb{R}$, we could take some $x \in X$ and talk about the set $\{
+y\ \|\ d(x, y) < \epsilon \}$ of all points within some distance $\epsilon$ of $x$; this set
 approximates $x$ in some sense. Instead of requiring the distance function then, we
-require that the set $X$ is equipped with a collection of \emph{open} subsets of $X$ that
-are used for approximating points of $X$. $X$ is itself must be an approximation of every
-point it contains so it must be an open set. Similarly, $\emptyset$ contains no points so it is
-vacuously an approximation of all the points it contains. If we have two approximation
-sets $X_1, X_2$ are both approximations of everything they contain so their intersection
-is clearly an approximation of what falls in both; a similar observation can made for
-unions of approximation sets. Summarizing this up, brings us to the following definition.
+require that the set $X$ is equipped with a collection of \emph{open subsets} of $X$ that
+are used for approximating points of $X$. Clearly, $X$ itself must be an approximation of
+every point it contains so it must be an open set. Similarly, $\emptyset$ contains no points so it
+is vacuously an approximation of all the points it contains. If we have two approximation
+sets $X_1, X_2$ they both must be approximations of everything they contain so their
+intersection is clearly an approximation of what falls in both; a similar observation can
+made for unions of approximation sets. Summarizing this up, brings us to the following
+definition.
 
 A \emph{topology} on $X$ is a collection of subsets of $\Omega(X) \subseteq P(X)$, called its
 \emph{open subsets}, that satisfy:
@@ -185,85 +186,90 @@ entities and formulated shapes in terms of them. By this approach, lines are not
 points, lines are \emph{pointless} primitive entities.
 
 Topology was invented in a pointful manner in the first place although there is plenty of
-motivation for doing it without points. The first and the most relevant for this thesis is
-the fact non-constructive proofs of point-set topology can be done constructively in the
-pointless setting. Although this is quite compelling for anyone who wishes to write down
-his proofs as a computer program, the more transcendent reason is that topology is really
-a theory of approximations (i.e., observations, experiments) and it makes a lot of sense
-work in a setting where observations are primitive entities much like it makes sense to
-take lines as primitive entities for geometry.
+motivation for doing it without points. The first and the most relevant justification for
+this thesis is the fact non-constructive proofs of point-set topology can be done
+constructively in the pointless setting. Although this is quite compelling for anyone who
+wishes to write down his proofs as a computer program, the more transcendent reason is
+that topology is really a theory of approximations (i.e., observations, experiments) and
+it makes a lot of sense to work in a setting where observations are primitive entities much
+like taking lines as primitive entities in geometry is a sensible approach.
 
-Now the question
-To move towards a
-\emph{pointless} formulation of topology, we start by noticing that the inclusion relation
-on the collection $\Omega(X)$ of open subsets is crucial and start by characterising it as an
-abstract order. We take some set $O$ of opens and an ordering relation $\sqsubseteq \subseteq O \times O$ which
-must be partial order that admits finite meets and arbitrary joins. Furthermore, the
-following law is also validated in the pointful setting: given some $U \in \Omega(X)$,
-$\mathcal{V} \subseteq \Omega(X)$
-
+To move towards a formalism for a ``pointless topological space'', we start by noticing
+that the inclusion relation on the collection $\Omega(X)$ of open subsets is crucial so we
+characterise it as an order. We take some set $O$ of opens and an ordering relation $\sqsubseteq \subseteq O
+\times O$ which must be a partial order that admits finite meets and arbitrary joins.
+Furthermore, the following law is also validated in the pointful setting: given some $U \in
+\Omega(X)$, $\mathcal{V} \subseteq \Omega(X)$
 \begin{equation*}
   X \cap (\bigcup_{i} V_i) = \bigcup_{i} X \cap V_i
 \end{equation*}
-meaning we must also require that binary meets distribute over arbitrary joins. Such a
-partially ordered set that admits all finite meets, all joins, and in which binary meets
-distribute over joins is called a \emph{frame}. Frames form a category in which the
-morphisms are frame homomorphisms. A \emph{locale} is an object in the opposite category
-of the category of frames. So locales are identical to frames as long as no reference to
-morphisms are made. Locales play a more important role that frames do
+meaning we must also require that binary meets distribute over arbitrary joins.
 
-A powerful technique in pointless topology is that of a \emph{presentation} originating
-from the realm of universal algebra. We start with an algebraic theory $F$ providing a
+Such a partially ordered set that admits all finite meets, all joins, and in which binary
+meets distribute over joins is called a \emph{frame}. Frames form a category in which the
+morphisms are frame homomorphisms. A \emph{locale}, on the other hand, is an object in the
+opposite category of the category of frames. So locales are identical to frames as long as
+no reference to morphisms are made. Locales play a more important role that frames do
+hence giving the theory its name.
+
+A powerful technique in locale theory is that of a \emph{presentation} originating from
+the realm of universal algebra. We start with an algebraic theory $F$ providing a
 syntactic specification for an algebra. The presentation of an $F$-algebra $A$ is then a
-pair of a set of \emph{generators} and a set of \emph{relations} such that $A$ generated
-\emph{freely} by these generators and relations.
+pair of a set of \emph{generators} and a set of \emph{relations} such that $A$ is the
+freest algebra that is generated by the generators satisfying the relations.
 
 So how are locales related to logic and computation? The idea is that we can view locales
 as \emph{systems of verifiable properties} i.e. properties whose validity can be judged on
-the basis of a finite amount of information. Examination of the behaviour of verifiable
-properties shows that they satisfy the locale laws.
+the basis of a finite amount of information. Execution of a computer program is a possibly
+infinite structure in that it might never terminate. However, we can still look at finite
+prefixes of the output it produces and judge that it meets certain properties. This is
+analogous to the aforementioned example of drawing open balls arounds points in that even
+though we cannot pinpoint the complete behaviour of the program we approximate it by its
+observable/verifiable properties. This seemingly superficial insight runs surprisingly
+deep.
 
-An example is the familiar set of real numbers: we can never pinpoint the value of a real
-number $r$, only judge that it lies within some range $q \pm \epsilon$ where $q, \epsilon \in \mathbb{Q}$
-and $\epsilon \ge 0$. When $r$ lies within $q \pm \epsilon$ we write
-\begin{equation*}
-  r \vDash q \pm \epsilon
-\end{equation*}
-denoting a \emph{finite observation} on $r \in \mathbb{R}$. We can also take our domain as
-the set of programs in some programming language and take the set of opens to be the set
-of observable properties, properties whose validity can be judged after observing a finite
-prefix of the sequence of outputs the program produces.
-
-The reason that the presentation method is crucial to pointless topology is that the
-theory of locales is usually developed in an \emph{impredicative} setting, such as a
-topos. Although one can express the notion of a locale predicatively, is not possible, for
-instance, to define the product of two locales in a predicative manner.
+Examination of the behaviour of verifiable properties shows that verifiable properties
+satisfy the locale laws.
 
 \section{Goals and Challenges}
 
+The reason that the presentation method is crucial to pointless topology is that the
+theory of locales is usually developed in an \emph{impredicative} setting, such as a
+topos. Although one can express the notion of a locale predicatively, it is not possible,
+for instance, to define the product of two locales in a predicative manner.
 
-The question of how one can develop locale theory in type theory then arises. One answer
-is that it is possible to engage in a predicative development for those locales that have
-presentations. Although not every locale is presentable, many interesting locales are. One
+One may wonder then how locale theory is to be done in type theory. One possible answer is
+that it is possible to engage in a predicative development for those locales that have
+presentations. Although not every locale is presentable, many interesting ones are. One
 convenient way of presenting a locale is using the coverage method invented by Johnstone
 (???).
 
-The goal of my thesis will be to carry out a development of pointless topology in
-univalent type theory which provides a suitable setting for the development of the
-technical machinery involved in locale theory.
+The goal of this thesis will be to carry out a development of pointless topology in
+univalent type theory (i.e., in which \emph{equivalent} types can be identified), focusing
+specifically on the presentation method. The idea is that a univalent setting provides a
+suitable setting for the development for the development of locale theory which will
+involve, for example, homotopy levels.
 
 There are a few possible challenges...
 
+%% TODO: comment on the challenges.
+
+\section{Possible applications}
+
+One practical application of such a development will be to define domains in terms of
+locales using the notion of a \emph{spectral algebraic locale}.
+
 \section{Approach}
 
-The technical development will be carried out in the type-theoretical proof assistant
+The technical development will be carried out in the type-theoretic proof assistant
 Agda~\cite{norell:2008}. Until recently, Agda did not have intrinsic support for the
 univalence axiom which was remedied with the development of Cubical
-Agda~\cite{cubicalagda} which is an implementation of Cubical Type Theory (CTT) developed
-specifically to serve as a setting in which the computational meaning of the univalence
-axiom can be understood. Development of the mathematical results in a type-theoretic proof
-assistant such as Agda will ensure the validity of mathematical constructions and
-arguments.
+Agda~\cite{cubicalagda}. Cubical Agda is an implementation of Cubical Type Theory (CTT)
+developed specifically to serve as a setting in which the computational meaning of the
+univalence axiom can be understood. Development of the mathematical results in a
+type-theoretic proof assistant such as Agda will not only ensure the validity of
+mathematical constructions and arguments but also reveal the computational nature of the
+proofs involved.
 
 The thesis report will then be an informalisation of the formal development.
 
@@ -271,6 +277,23 @@ For some of the applications we have proposed, it might be interesting to actual
 proofs as standalone programs (e.g., real number computation, the Tychonoff theorem) that
 do IO. As Agda provides the user with fine-grained control over how the compiled programs
 look like, we believe it will provide an ideal setting for such applications.
+
+\section{Time plan}
+
+A tentative plan for the thesis work is provided below.
+
+\begin{table}[]
+\begin{tabular}{lllll}
+     & Milestone        &  & \\
+W37  &                  &  & \\
+W38  &                  &  & \\
+W39  &                  &  & \\
+W40  &                  &  & \\
+W41  &                  &  & \\
+W42  &                  &  & \\
+W43  &                  &  & \\
+\end{tabular}
+\end{table}
 
 \bibliographystyle{plain}
 \bibliography{references}
