@@ -18,6 +18,8 @@
 \usepackage{chngcntr}
 \counterwithout{figure}{section}
 
+\usepackage{multirow}
+
 \begin{document}
 \begin{titlepage}
 
@@ -274,27 +276,56 @@ proofs involved.
 The thesis report will then be an informalisation of the formal development.
 
 For some of the applications we have proposed, it might be interesting to actually run the
-proofs as standalone programs (e.g., real number computation, the Tychonoff theorem) that
+roofs as standalone programs (e.g., real number computation, the Tychonoff theorem) that
 do IO. As Agda provides the user with fine-grained control over how the compiled programs
 look like, we believe it will provide an ideal setting for such applications.
 
 \section{Time plan}
 
-A tentative plan for the thesis work is provided below.
+A tentative plan for the thesis work is provided in Table \ref{table:plan}.
 
-\begin{table}[]
-\begin{tabular}{lllll}
-     & Milestone        &  & \\
-W37  &                  &  & \\
-W38  &                  &  & \\
-W39  &                  &  & \\
-W40  &                  &  & \\
-W41  &                  &  & \\
-W42  &                  &  & \\
-W43  &                  &  & \\
+\begin{table}[]\caption{Work plan.}\label{table:plan}
+\begin{tabular}{lll}
+&      Week no. & Milestone                                                                  \\\hline
+\multirow{3}{*}{Sep} & W37  & Submission deadline for planning report. \\
+                     & W38  & Complete formalisation of basic ideas from universal algebra. \\
+                     & W39  & Complete formalisation of presentation for a space. \\ \hline
+\multirow{4}{*}{Oct} & W40  & Formalise the adjunction between spatialisation and localification. \\
+                     & W41  & Continue work from W40. Formalise sober spaces. \\
+                     & W42  & \\
+                     & W43  & \\ \hline
+\multirow{4}{*}{Nov} & W44  & \\
+                     & W45  & \\
+                     & W46  & \\
+                     & W47  & \\ \hline
+\multirow{4}{*}{Dec} & W48  & \\
+                     & W49  & \\
+                     & W50  & \\
+                     & W51  & \\ \hline
+\multirow{4}{*}{Jan} & W01  & \\
+                     & W02  & \\
+                     & W03  & \\
+                     & W04  & \\ \hline
+\multirow{4}{*}{Feb} & W05  & \\
+                     & W06  & \\
+                     & W07  & \\
+                     & W08  & \\ \hline
+\multirow{4}{*}{Mar} & W09  & \\
+                     & W10  & \\
+                     & W11  & \\
+                     & W12  & \\ \hline
+\multirow{4}{*}{Apr} & W13  & Finalise first draft of the report. \\
+                     & W14  & \\
+                     & W15  & \\
+                     & W16  & \\ \hline
+\multirow{4}{*}{May} & W17  & \\
+                     & W18  & \\
+                     & W19  & \\
+                     & W20  & \\
 \end{tabular}
 \end{table}
 
+\newpage
 \bibliographystyle{plain}
 \bibliography{references}
 
