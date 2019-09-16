@@ -62,22 +62,22 @@
 
 Construction of a semantic model for the untyped $\lambda$-calculus had eluded computer
 scientists for quite some time when the first solution was given by Dana Scott in
-1969~\cite{scott:1969}; he termed the mathematical structures he used to present a
-denotational semantics for the $\lambda$-calculus \emph{domains}, hence giving rise to what is
-now known as \emph{domain theory}.
+1969~\cite{scott:1969}. He termed the mathematical structures he used to build a
+denotational model for the $\lambda$-calculus \emph{domains}, hence giving rise to what is now
+known as \emph{domain theory}.
 
 The key insight in Scott's solution was the formulation of an \emph{information ordering}
 between terms of the $\lambda$-calculus that orders terms with respect to ``how defined'' they
 are. It turns out that considering functions that respect this information ordering in
 various ways is crucial for the construction of a semantic model for the untyped
-$\lambda$-calculus, and in fact for any programming language that is capable of general
+$\lambda$-calculus, and in fact, for any programming language that is capable of general
 recursion. The information ordering arose from an insight into the topological nature (in
 a sense that will be explained later) of the notion of partial information that pervades
 the realm of computer science.
 
 Scott initially formulated the theory of domains in the language of lattice
 theory~\cite{birkhoff:1940}. Even though this approach enables a smooth development of the
-required constructions (for purposes of semantics), it doesn't express the underlying
+required constructions (for purposes of semantics), it does not express the underlying
 ideas in their full generality and involves the development of some technical machinery
 that seems \emph{ad hoc} when taken out of context. To put it in Scott's
 words~\cite[pg.~577]{scott:1982}:
@@ -88,29 +88,28 @@ words~\cite[pg.~577]{scott:1982}:
 \end{quote}
 
 It is for this reason that Scott tried another presentation in 1982~\cite{scott:1981}
-formulating the notion of \emph{neighbourhood systems}, making a direct link with the
+formulating the notion of \emph{neighbourhood systems}, making a more direct link with the
 underlying topological insights. Even though this approach turned out to simplify the
 presentation, Scott thought they left ``too much implicit'' and hence attempted yet
-another formulation of domains, which he called \emph{information systems}.
+another formulation of domains, which he called \emph{information systems}~\cite{scott:1982}.
 
 Right around the time Scott first devised the theory of domains, a mathematical
 development was also taking place: the theory of \emph{abstract} or \emph{point-free}
-topological spaces in which one takes the notion of a ``set of open sets'' as a primordial
-entity and carries out the development based on the algebraic essence of these abstract
-opens. Although the pioneering development in this field was done by
-Stone~\cite{stone:1934}, it was not until the 1970s that the study of abstract topological
-spaces became a discipline of study in its own right with an important paper by John
-Isbell~\cite{isbell:1973}.
+topological spaces in which one takes the notion of an ``open set'' as a primordial entity
+and carries out the development based on the algebraic essence of these abstract opens.
+Although the pioneering development in this field was done by Stone~\cite{stone:1934}, it
+was not until the 1970s that the study of abstract topological spaces became a discipline
+of study in its own right with an important paper by John Isbell~\cite{isbell:1973}.
 
 \emph{Locale theory} emerged as a refinement of the pointless approach to topology~\cite{
 johnstone:1982} and it was pointed out that it has direct connections to computer
-science in the vein of research instigated by Scott and it turns out that the notion of
+science in the vein of research instigated by Scott. It turns out that the idea of
 information systems was already leaning towards this topological view of computation.
 
-Practically, we may say that locale theory gives us a way to algebraicize the notion of an
-\emph{observable property of a program}: a property whose satisfaction an observer can
-judge \emph{on the basis of finite information}. This idea builds upon the realization
-that observable properties of programs behave like open sets in a topological space.
+%% Practically, we may say that locale theory gives us a way to algebraicize the notion of an
+%% \emph{observable property of a program}: a property whose satisfaction an observer can
+%% judge \emph{on the basis of finite information}. This idea builds upon the realization
+%% that observable properties of programs behave like open sets in a topological space.
 
 Abramsky~\cite{abramsky:1991} took advantage of locale theory for the elucidation and
 further transformation of domain theory; as he explains \cite{abramsky:1991}, there are
@@ -119,7 +118,7 @@ two interpretations of Stone duality:
   \item the topological view: \emph{points vs. open sets}, and
   \item the logical view: \emph{models vs. formulas}.
 \end{enumerate}
-the third one that was put forth by Abramsky is:
+The third one that was pioneered by Abramsky was:
 \begin{center}
   the computer science view: computations vs. their specifications.
 \end{center}
@@ -136,58 +135,67 @@ and programs as those points whereas the localic (``pointless'') side of the dua
 provides a ``logical interpretation of denotational semantics'', as a proof-theoretic
 system.
 
-\section{Problem}
+Having provided a rough overview of the main idea of pointless topology and its relation
+to computer science, we proceed to give a more technical explanation in Section
+\ref{sec:problem}. The goals of the thesis are outlined in Section \ref{sec:goals} whereas
+in Section \ref{sec:approach} we explain the practical methodology we plan to follow to
+achieve these goals. In Section \ref{sec:applications}, we provide a discussion of
+possible applications and experiments that can be carried out using the topological
+development we plan to conduct. Finally, we provide a full work plan schedule in Table
+\ref{table:plan}.
+
+\section{Problem}\label{sec:problem}
 
 In order to state the goal of the thesis project precisely, we provide a more technical
 explanation of the problem in this section. Let us start with the question:
-\emph{what is topology?}.
+\emph{what is topology?}
 
 Topology is the study of abstract spaces. As classically conceived, a space comprises a
 set of locations in the space i.e., its \emph{points}. These are required to satisfy some
 axioms characterising what points must behave like. One take on this characterisation that
-forms the basis of real analysis is to require a distance function on the space giving the
-distance between any two points as a real number and then require this distance function
-to behave in a certain way; for example, a set in which the distance between point $x$ and
-point $y$ is not the same as that between point $y$ and point $x$ is a surely weird space
-that does not meet our intuition of what a space is.
+forms the basis of real analysis is to require a distance function on the space, that
+gives the distance between any two points as a real number, and then require this distance
+function to behave in a certain way; for example, a set in which the distance between
+point $x$ and point $y$ is not the same as that between point $y$ and point $x$ is a
+surely weird space that violates our intuition on what a space is.
 
 The reason topology is said to study \emph{abstract} spaces is that its approach to
 characterising spaces does not involve any reference to ``how near'' two points are. So
 topology studies spaces whose inherent notions of nearness are given by finite
-\emph{observations} of the space rather than a complete scan of the space revealing all
-the information about every point. A fisherman who is not in possession of a sonar to tell
-him the distance between every fish in some lake can still have a notion of nearness by
-observing what kinds of fish are caught in consecutive casts of his rod.
+\emph{observations} of the space rather than a complete scan of the space that reveals
+every bit of distance information about every point. To give an example, consider a
+fisherman who is not in possession of a sonar to tell him the distance between every fish
+in the lake he is fishing at; he can still have a notion of nearness by observing what kinds
+of fish are caught in consecutive casts of his rod\footnote{I thank Adam Bj\"{o}rndahl
+from CMU for this vivid analogy.}.
 
 Let us now formalise this intuition: let $X$ be a set of points. If we had some distance
 function $d : X \times X \rightarrow \mathbb{R}$, we could take some $x \in X$ and talk about the set $\{
-y\ \|\ d(x, y) < \epsilon \}$ of all points within some distance $\epsilon$ of $x$; this set
-approximates $x$ in some sense. Instead of requiring the distance function then, we
-require that the set $X$ is equipped with a collection of \emph{open subsets} of $X$ that
-are used for approximating points of $X$. Clearly, $X$ itself must be an approximation of
-every point it contains so it must be an open set. Similarly, $\emptyset$ contains no points so it
-is vacuously an approximation of all the points it contains. If we have two approximation
-sets $X_1, X_2$ they both must be approximations of everything they contain so their
-intersection is clearly an approximation of what falls in both; a similar observation can
-made for unions of approximation sets. Summarizing this up, brings us to the following
-definition.
+y\ |\ d(x, y) < \epsilon \}$ of all points within some distance $\epsilon$ of $x$; this set can be said
+to approximate $x$ with accuracy $\epsilon$ in some sense as by making $\epsilon$ smaller and smaller we
+can get more and more information about $x$. Generalising this idea a bit, we can view
+every open interval $(x, y) = \{ k\ |\ x < k < y \}$ as some form of an ``approximation set''.
+
+Instead of requiring the distance function then, we require that the set $X$ is equipped
+with a collection of \emph{open subsets} of $X$ that are used for approximating its
+points. These are required to satisfy the following axioms.
 
 A \emph{topology} on $X$ is a family $\Omega(X)$ of subsets of $X$, called its
 \emph{open subsets}, that satisfy:
-\begin{itemize}
+\begin{enumerate}
   \item $X \in \Omega(X)$
   \item for every $O_1, O_2 \subseteq X$ if $O_1, O_2 \in \Omega(X)$ then $O_1 \cap O_2 \in \Omega(X)$.
   \item for every family $\mathcal{F}$ of subsets of $X$, if $\mathcal{F} \subseteq \Omega(X)$ then
-    $(\bigcup \mathcal{F}) \in \Omega(X)$.
-\end{itemize}
+    $\bigcup \mathcal{F} \in \Omega(X)$.
+\end{enumerate}
 
-At this point already, one may notice the impredicativity involved in axiom (3) which is
-not a good sign from the point-of-view of type theory. We will get back to this later.
+At this point already, one may notice the impredicativity involved in axiom (3) which
+seems rather ominous from the point-of-view of type theory.
 
-Explicit formulation of points within a space was not the manner in which the ancient
+``Collections of points'' within a space was not the manner in which the ancient
 Greeks invented geometry. Instead they took a ruler and a compass as being primordial
 entities and formulated shapes in terms of them. By this approach, lines are not sets of
-points, lines are \emph{pointless} primitive entities.
+points; they are \emph{pointless} primitive entities.
 
 Topology was invented in a pointful manner in the first place although there is plenty of
 motivation for doing it without points. The first and the most relevant justification for
@@ -200,88 +208,89 @@ like taking lines as primitive entities in geometry is a sensible approach.
 
 To move towards a formalism for a ``pointless topological space'', we start by noticing
 that the inclusion relation on the collection $\Omega(X)$ of open subsets is crucial so we
-characterise it as an order. We take some set $O$ of opens and an ordering relation $\sqsubseteq \subseteq O
-\times O$ which must be a partial order that admits finite meets and arbitrary joins.
+characterise it as an order. We take some set $O$ of opens and an ordering relation
+$\_\sqsubseteq\_ \subseteq O \times O$ which must be a partial order that admits finite meets and arbitrary joins.
 Furthermore, the following law is also validated in the pointful setting: given some $U \in
-\Omega(X)$, $\mathcal{V} \subseteq \Omega(X)$
+O$, $\mathcal{V} \subseteq O$
 \begin{equation*}
-  X \cap (\bigcup_{i} V_i) = \bigcup_{i} X \cap V_i
+  X \cap (\bigcup_{i} \mathcal{V}_i) = \bigcup_{i} X \cap \mathcal{V}_i
 \end{equation*}
-meaning we must also require that binary meets distribute over arbitrary joins.
+meaning we must also require binary meets to distribute ove arbitrary joins.
 
 Such a partially ordered set that admits all finite meets, all joins, and in which binary
 meets distribute over joins is called a \emph{frame}. Frames form a category in which the
 morphisms are frame homomorphisms. A \emph{locale}, on the other hand, is an object in the
 opposite category of the category of frames. So locales are identical to frames as long as
 no reference to morphisms are made. Locales play a more important role that frames do
-hence giving the theory its name.
+hence the name \emph{locale theory}.
 
 A powerful technique in locale theory is that of a \emph{presentation} originating from
 the realm of universal algebra. We start with an algebraic theory $F$ providing a
 syntactic specification for an algebra. The presentation of an $F$-algebra $A$ is then a
 pair of a set of \emph{generators} and a set of \emph{relations} such that $A$ is the
-freest algebra that is generated by the generators satisfying the relations.
+freest algebra that is generated by the generators and that satisfies the relations.
 
 The presentation method is crucial for at least two reasons: first, it gives a way of
 expressing locales in a predicative manner therefore rendering them amenable to
 development in type theory; secondly, as Sambin puts it~\cite{sambin:2007}, it allows us
-to express frames using finitely many rules that look a lot like inference rules. This
+to express frames using finitely many rules that can be viewed as inference rules which
 allows the importation of proof-theoretic methods and ideas into topology, providing a
-tangible handle on various topologies.
+tangible method of doing topological reasoning.
 
 So how are locales related to logic and computation? The idea is that we can view locales
 as \emph{systems of verifiable properties} i.e. properties whose validity can be judged on
-the basis of a finite amount of information. Execution of a computer program is a possibly
-infinite structure in that it might never terminate. However, we can still look at finite
-prefixes of the output it produces and judge that it meets certain properties. This is
+the basis of a finite amount of information. Execution of a computer program is possibly
+infinite in that it might never terminate. However, we can still look at finite prefixes
+of the output it produces and judge that it satisfies certain properties. This is
 analogous to the aforementioned example of drawing open balls arounds points in that even
-though we cannot pinpoint the complete behaviour of the program we approximate it by its
-observable/verifiable properties. This seemingly superficial insight runs surprisingly
+though we cannot pinpoint the complete behaviour of the program, we can approximate it by
+its observable/verifiable properties. This seemingly superficial insight runs surprisingly
 deep.
 
-Examination of the behaviour of verifiable properties shows that verifiable properties
-satisfy the locale laws.
+\section{Goals}\label{sec:goals}
 
-\section{Goals and Challenges}
+There have been many important works on doing locale theory in predicative type theory
+(see~\cite{sambin:2007} for a survey). These attempts gave rise to \emph{formal topology}
+which focuses on a specific way of presenting frames called the coverage method which
+seems to work well for the purpose implementing locale theory in type theory.
 
-As mentioned before, it is an interesting problem to do locale theory in predicative type
-theory. The effort to do this has given rise to \emph{formal topology} which focuses on
-one particular way of presenting frames called the coverage method.
+The goal of this thesis will be to carry out a development of pointless topology in type
+theory as well paying special attention to the presentation method. The main contribution
+of the thesis, however, will be that the development will be conducted in a univalent type
+theory (i.e., in which \emph{equivalent} types can be identified) attempting to answer the
+question of \emph{what locales mean and behave like in univalent foundations}. It is in
+general well-known that univalent foundations tend to be more conducive to conducting
+ordinary mathematics.
 
-The goal of this thesis will be to carry out a development of pointless topology in
-univalent type theory (i.e., in which \emph{equivalent} types can be identified), focusing
-specifically on the presentation method. The idea is that a univalent setting provides a
-suitable setting for the development for the development of locale theory which will
-involve, for example, homotopy levels.
+\section{Possible applications}\label{sec:applications}
 
-There are a few possible challenges...
-
-%% TODO: comment on the challenges.
-
-\section{Possible applications}
-
-One immediate application of this development will be to define domains in terms of
-locales and formalise a computationally adequate semantic model for PCF, that is, a model
-in which the semantic equality of two programs entails their operational equality. (The
-intuition is that if a model is computationally adequate, it is as useful as an
-interpreter.) Formalisation of such a model would be interesting in itself as there are
-many other formalisations of semantic models in type theory and it would be interesting to
-see how the locale-theoretic approach affects the same development.
+One immediate application of this development will be defining domains in terms of locales
+and hence formalising a computationally adequate semantic model for PCF, that is, a model
+that is sound and complete with respect to the operational semantics. (The intuition is
+that if a model is computationally adequate, it is capable of serving as an interpreter.)
+Formalisation of such a model would be interesting in itself as there are many other
+formalisations of semantic models in type theory and it would be interesting to see how
+the locale-theoretic approach affects the same development.
 
 Another possible application springs from the fact that in domain theory computable
 functions are interpreted as continuous functions between domains, or in our case, between
-certain kind of locales. Once a model for PCF has been developed, for instance, to show
-that a certain function is not PCF-computable it suffices to show that the corresponding
-semantic function is not continuous. This gives a much more different way of thinking and
+certain kinds of locales. Once a model for PCF has been developed, we can reason about
+computability (or lack thereof) by reasoning about continuity. For instance, to show that
+a certain function is not PCF-computable it suffices to show that the corresponding
+semantic function is not continuous. This yields a much different way of thinking and
 reasoning about computability.
 
 Once we develop a locale-theoretic model for PCF, it would be an interesting application
 to prove the undecidability of certain well-known problems (e.g., the Post correspondence
 problem, diophantine equations, aperiodic tilings) through the use of topological methods
-and see if it simplifies the standard proof or at least experiment with the topological
-manifestation of the proof.
+to experiment with the topological manifestation of the proof, and see if it simplifies
+the standard proof.
 
-\section{Approach}
+As the project takes place, it is likely that other applications are considered in which
+case this planning report will be updated to reflect those (in consultation with the
+examiner).
+
+\section{Approach}\label{sec:approach}
 
 The technical development will be carried out in the type-theoretic proof assistant
 Agda~\cite{norell:2008}. Until recently, Agda did not have intrinsic support for the
@@ -296,9 +305,9 @@ proofs involved.
 The thesis report will then be an informalisation of the formal development.
 
 For some of the applications we have proposed, it might be interesting to actually run the
-roofs as standalone programs (e.g., real number computation, the Tychonoff theorem) that
-do IO. As Agda provides the user with fine-grained control over how the compiled programs
-look like, we believe it will provide an ideal setting for such applications.
+proofs as standalone programs (e.g., computational adequacy) that do IO. As Agda provides
+the user with fine-grained control over how the compiled programs look like, we believe it
+will provide an ideal setting for such applications.
 
 \section{Time plan}
 
@@ -312,36 +321,36 @@ A tentative plan for the thesis work is provided in Table \ref{table:plan}.
                      & W39  & Complete formalisation of presentation for a space. \\ \hline
 \multirow{4}{*}{Oct} & W40  & Formalise the adjunction between spatialisation and localification. \\
                      & W41  & Continue work from W40. Formalise sober spaces. \\
-                     & W42  & \\
-                     & W43  & \\ \hline
-\multirow{4}{*}{Nov} & W44  & \\
-                     & W45  & \\
-                     & W46  & \\
-                     & W47  & \\ \hline
-\multirow{4}{*}{Dec} & W48  & \\
-                     & W49  & \\
-                     & W50  & \\
-                     & W51  & \\ \hline
-\multirow{4}{*}{Jan} & W01  & \\
-                     & W02  & \\
-                     & W03  & \\
-                     & W04  & \\ \hline
-\multirow{4}{*}{Feb} & W05  & \\
-                     & W06  & \\
-                     & W07  & \\
-                     & W08  & \\ \hline
-\multirow{4}{*}{Mar} & W09  & \\
-                     & W10  & \\
-                     & W11  & \\
-                     & W12  & \\ \hline
+                     & W42  & ??? \\
+                     & W43  & ??? \\ \hline
+\multirow{4}{*}{Nov} & W44  & Begin working on product/co-product topologies. \\
+                     & W45  & ??? \\
+                     & W46  & ??? \\
+                     & W47  & ??? \\ \hline
+\multirow{4}{*}{Dec} & W48  & ??? \\
+                     & W49  & ??? \\
+                     & W50  & ??? \\
+                     & W51  & ??? \\ \hline
+\multirow{4}{*}{Jan} & W01  & Begin formalising domains. \\
+                     & W02  & ??? \\
+                     & W03  & ??? \\
+                     & W04  & Finish the model for PCF. Prove computational adequacy. \\ \hline
+\multirow{4}{*}{Feb} & W05  & ??? \\
+                     & W06  & ??? \\
+                     & W07  & ??? \\
+                     & W08  & ??? \\ \hline
+\multirow{4}{*}{Mar} & W09  & ??? \\
+                     & W10  & ??? \\
+                     & W11  & ??? \\
+                     & W12  & ??? \\ \hline
 \multirow{4}{*}{Apr} & W13  & Finalise first draft of the report. \\
-                     & W14  & \\
-                     & W15  & \\
-                     & W16  & \\ \hline
-\multirow{4}{*}{May} & W17  & \\
-                     & W18  & \\
-                     & W19  & \\
-                     & W20  & \\
+                     & W14  & ??? \\
+                     & W15  & ??? \\
+                     & W16  & ??? \\ \hline
+\multirow{4}{*}{May} & W17  & ??? \\
+                     & W18  & ??? \\
+                     & W19  & ??? \\
+                     & W20  & ???
 \end{tabular}
 \end{table}
 
