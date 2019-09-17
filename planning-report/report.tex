@@ -163,11 +163,7 @@ The reason topology is said to study \emph{abstract} spaces is that its approach
 characterising spaces does not involve any reference to ``how near'' two points are. So
 topology studies spaces whose inherent notions of nearness are given by finite
 \emph{observations} of the space rather than a complete scan of the space that reveals
-every bit of distance information about every point. To give an example, consider a
-fisherman who is not in possession of a sonar to tell him the distance between every fish
-in the lake he is fishing at; he can still have a notion of nearness by observing what kinds
-of fish are caught in consecutive casts of his rod\footnote{I thank Adam Bj\"{o}rndahl
-from CMU for this vivid analogy.}.
+every bit of distance information about every point.
 
 Let us now formalise this intuition: let $X$ be a set of points. If we had some distance
 function $d : X \times X \rightarrow \mathbb{R}$, we could take some $x \in X$ and talk about the set $\{
@@ -252,15 +248,44 @@ deep.
 There have been many important works on doing locale theory in predicative type theory
 (see~\cite{sambin:2007} for a survey). These attempts gave rise to \emph{formal topology}
 which focuses on a specific way of presenting frames called the coverage method which
-seems to work well for the purpose implementing locale theory in type theory.
+seems to work well for the purpose of implementing locale theory in type theory.
 
-The goal of this thesis will be to carry out a development of pointless topology in type
-theory as well paying special attention to the presentation method. The main contribution
+The main goal of this thesis will be to carry out a development of pointless topology in
+type theory as well, paying special attention to the presentation method. The contribution
 of the thesis, however, will be that the development will be conducted in a univalent type
 theory (i.e., in which \emph{equivalent} types can be identified) attempting to answer the
-question of \emph{what locales mean and behave like in univalent foundations}. It is in
-general well-known that univalent foundations tend to be more conducive to conducting
-ordinary mathematics.
+question of \emph{what locales mean and how they behave in univalent foundations}.
+
+It is in general well-known that univalent foundations tend to be more conducive to
+conducting ordinary mathematics than standard Martin-L\"{o}f Type Theory. This is thanks
+to Voevodsky's univalence axiom that restores essential tools such as function
+extensionality as well as his idea of \emph{homotopy levels} that provides a way of
+stratifying types with respect to higher homotopical structure they bear. This
+stratification clarifies what kind of types are like ordinary sets and by exploiting this
+we can express certain set-theoretical ideas in type theory~\cite[Chapter 10]{hottbook}
+
+Given this capability of univalent type theory, it is a natural question to consider how
+pointless topology and locale theory can benefit from this setting, considering that the
+development of pointless topology in type theory has not been straightforward.
+
+\section{Approach}\label{sec:approach}
+
+The technical development will be carried out in the type-theoretic proof assistant
+Agda~\cite{norell:2008}. Until recently, Agda did not have intrinsic support for the
+univalence axiom which was remedied with the development of Cubical
+Agda~\cite{cubicalagda}. Cubical Agda is an implementation of Cubical Type Theory (CTT)
+developed specifically to serve as a setting in which the computational meaning of the
+univalence axiom can be understood. Development of the mathematical results in a
+type-theoretic proof assistant such as Agda will not only ensure the validity of
+mathematical constructions and arguments but also reveal the computational nature of the
+proofs involved.
+
+The thesis report will then be an informalisation of the formal development.
+
+For some of the applications we have proposed, it might be interesting to actually run the
+proofs as standalone programs (e.g., computational adequacy) that do IO. As Agda provides
+the user with fine-grained control over how the compiled programs look like, we believe it
+will provide an ideal setting for such applications.
 
 \section{Possible applications}\label{sec:applications}
 
@@ -290,24 +315,6 @@ As the project takes place, it is likely that other applications are considered 
 case this planning report will be updated to reflect those (in consultation with the
 examiner).
 
-\section{Approach}\label{sec:approach}
-
-The technical development will be carried out in the type-theoretic proof assistant
-Agda~\cite{norell:2008}. Until recently, Agda did not have intrinsic support for the
-univalence axiom which was remedied with the development of Cubical
-Agda~\cite{cubicalagda}. Cubical Agda is an implementation of Cubical Type Theory (CTT)
-developed specifically to serve as a setting in which the computational meaning of the
-univalence axiom can be understood. Development of the mathematical results in a
-type-theoretic proof assistant such as Agda will not only ensure the validity of
-mathematical constructions and arguments but also reveal the computational nature of the
-proofs involved.
-
-The thesis report will then be an informalisation of the formal development.
-
-For some of the applications we have proposed, it might be interesting to actually run the
-proofs as standalone programs (e.g., computational adequacy) that do IO. As Agda provides
-the user with fine-grained control over how the compiled programs look like, we believe it
-will provide an ideal setting for such applications.
 
 \section{Time plan}
 
