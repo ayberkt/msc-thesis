@@ -46,3 +46,22 @@ foo : ℕ-+-0 is-a Monoid
 foo Z         g = proj₂ +-identity (g 𝓍)
 foo (S Z)     g = refl
 foo (S (S Z)) g = +-assoc (g 𝓍) (g 𝓎) (g 𝓏)
+
+data SemilatticeOp : Set where
+  true meet : SemilatticeOp
+
+SemilatticeSyntax : Signature
+SemilatticeSyntax = record { Σ = SemilatticeOp ; ar = λ { true → 0 ; meet → 2 } }
+
+Semilattice : Theory SemilatticeSyntax
+Semilattice = Fin 4 , ℰ
+  where
+    _∧_ : Term SemilatticeSyntax Var → Term SemilatticeSyntax Var → Term SemilatticeSyntax Var
+    x ∧ y = meet $ (x ∷ y ∷ [])
+    ⊤ : Term SemilatticeSyntax Var
+    ⊤ = true $ []
+    ℰ : Fin 4 → Equation SemilatticeSyntax
+    ℰ Z             = (` 𝓍) , (` 𝓍)
+    ℰ (S Z)         = ((` 𝓍) ∧ (` 𝓎)) ∧ (` 𝓏) , (` 𝓍) ∧ ((` 𝓎) ∧ (` 𝓏))
+    ℰ (S (S Z))     = (` 𝓍) ∧ ⊤ , (` 𝓍)
+    ℰ (S (S (S Z))) = (` 𝓍) ∧ (` 𝓍) , (` 𝓍)
