@@ -59,6 +59,16 @@ _models_ {𝒮} 𝒜 𝒯 = (eq : Equation 𝒮) → eq ∈ 𝒯 → eq holds-in
 _generated-by_ : {𝒮 : Signature} → (𝒜 : Algebra 𝒮) → (Var → ∣ 𝒜 ∣A) → Set
 _generated-by_ {𝒮} 𝒜 g = (a : ∣ 𝒜 ∣A) → Σ[ t ∈ (Term 𝒮) ] ext 𝒜 g t ≡ a
 
+Relation : Set → Set₁
+Relation A = A → A → Set
+
+record Presentation (𝒮 : Signature) : Set₁ where
+  constructor _⟨_||_⟩
+
+  field
+    𝕋 : Theory 𝒮
+    G : Set
+    R : Relation G
 -- -}
 -- -}
 -- -}
