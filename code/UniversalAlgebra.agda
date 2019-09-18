@@ -3,10 +3,11 @@ module UniversalAlgebra (Var : Set) where
 open import Relation.Binary.PropositionalEquality as Eq
 
 open        Eq           using (_≡_; refl)
-open import Data.Product using (_×_; _,_; Σ-syntax)
+open import Data.Product using (_×_; _,_; Σ-syntax; proj₁; proj₂)
 open import Data.List    using (List)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Data.Vec     using (Vec; _∷_; []; map)
+open import Data.Fin     using (Fin) renaming (suc to S; zero to Z)
 open import Function     using (_∘_)
 open import Data.Nat     using (ℕ; zero; suc)
 open import Data.Unit    using (⊤)
@@ -39,8 +40,6 @@ record Algebra (𝒮 : Signature) : Set₁ where
     ext⋆ _ []       = []
     ext⋆ g (t ∷ ts) = ext g t ∷ ext⋆ g ts
 
-open Algebra
-
 ∣_∣A : {𝒮 : Signature} → Algebra 𝒮 → Set
 ∣_∣A = Algebra.A
 
@@ -51,7 +50,7 @@ Theory : Signature → Set₁
 Theory 𝒮 = Σ[ I ∈ Set ] (I → Equation 𝒮)
 
 _holds-in_ : {𝒮 : Signature} → Equation 𝒮 → Algebra 𝒮 → Set
-(s , t) holds-in 𝒜 = (g : Var → ∣ 𝒜 ∣A) → ext 𝒜 g s ≡ ext 𝒜 g t
+(s , t) holds-in 𝒜 = (g : Var → ∣ 𝒜 ∣A) → Algebra.ext 𝒜 g s ≡ Algebra.ext 𝒜 g t
 
 _is-a_ : {𝒮 : Signature} → Algebra 𝒮 → Theory 𝒮 → Set
 _is-a_ {𝒮} 𝒜 𝕋@(I , ℰ) = (i : I) → (ℰ i) holds-in 𝒜
@@ -68,7 +67,22 @@ record Presentation (𝒮 : Signature) : Set₁ where
   field
     𝕋 : Theory 𝒮
     G : Set
-    R : Relation G
+    R : Σ[ n ∈ ℕ ] (Fin n → Relation G)
+
+record Model (𝒮 : Signature) (ℙ : Presentation 𝒮) : Set₁ where
+  field
+    A : Algebra 𝒮
+
+  𝕋         = Presentation.𝕋 ℙ
+  ∣ℛ∣       = proj₁ (Presentation.R ℙ)
+  ℛ         = proj₂ (Presentation.R ℙ)
+  generator = Presentation.G ℙ
+
+  field
+    is-𝕋-algebra : A is-a 𝕋
+    ⟦_⟧          : generator → ∣ A ∣A
+
+  -- TODO: complete missing law.
 
 -- -}
 -- -}
