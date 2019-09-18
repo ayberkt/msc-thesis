@@ -19,9 +19,9 @@ record Signature : Set₁ where
 ∣_∣ : Signature → Set
 ∣_∣ = Signature.Σ
 
-data Term (𝒮 : Signature) : Set where
-  `_  : Var → Term 𝒮
-  _$_ : (op : Signature.Σ 𝒮) → Vec (Term 𝒮) (Signature.ar 𝒮 op) → Term 𝒮
+data Term (𝒮 : Signature) (X : Set) : Set where
+  `_  : X → Term 𝒮 X
+  _$_ : (op : Signature.Σ 𝒮) → Vec (Term 𝒮 X) (Signature.ar 𝒮 op) → Term 𝒮 X
 
 record Algebra (𝒮 : Signature) : Set₁ where
   open Signature 𝒮
@@ -31,11 +31,11 @@ record Algebra (𝒮 : Signature) : Set₁ where
     ⟦_⟧ : (op : Σ) → Vec A (ar op) → A
 
   mutual
-    ext : (Var → A) → Term 𝒮 → A
+    ext : (Var → A) → Term 𝒮 Var → A
     ext g (` x)    = g x
     ext g (f $ ts) = ⟦ f ⟧ (ext⋆ g ts)
 
-    ext⋆ : {n : ℕ} → (Var → A)→ Vec (Term 𝒮) n → Vec A n
+    ext⋆ : {n : ℕ} → (Var → A)→ Vec (Term 𝒮 Var) n → Vec A n
     ext⋆ _ []       = []
     ext⋆ g (t ∷ ts) = ext g t ∷ ext⋆ g ts
 
@@ -45,7 +45,7 @@ open Algebra
 ∣_∣A = Algebra.A
 
 Equation : Signature → Set
-Equation 𝒮 = Term 𝒮 × Term 𝒮
+Equation 𝒮 = Term 𝒮 Var × Term 𝒮 Var
 
 Theory : Signature → Set₁
 Theory 𝒮 = Σ[ I ∈ Set ] (I → Equation 𝒮)
@@ -57,7 +57,7 @@ _is-a_ : {𝒮 : Signature} → Algebra 𝒮 → Theory 𝒮 → Set
 _is-a_ {𝒮} 𝒜 𝕋@(I , ℰ) = (i : I) → (ℰ i) holds-in 𝒜
 
 _generated-by_ : {𝒮 : Signature} → (𝒜 : Algebra 𝒮) → (Var → ∣ 𝒜 ∣A) → Set
-_generated-by_ {𝒮} 𝒜 g = (a : ∣ 𝒜 ∣A) → Σ[ t ∈ (Term 𝒮) ] ext 𝒜 g t ≡ a
+_generated-by_ {𝒮} 𝒜 g = (a : ∣ 𝒜 ∣A) → Σ[ t ∈ (Term 𝒮 Var) ] Algebra.ext 𝒜 g t ≡ a
 
 Relation : Set → Set₁
 Relation A = A → A → Set

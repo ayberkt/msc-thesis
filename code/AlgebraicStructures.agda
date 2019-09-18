@@ -27,7 +27,7 @@ Monoid : Theory MonoidSyntax
 Monoid = Fin 3 , ℰ
   where
     open Signature MonoidSyntax
-    _·_ : Term MonoidSyntax → Term MonoidSyntax → Term MonoidSyntax
+    _·_ : Term MonoidSyntax Var → Term MonoidSyntax Var → Term MonoidSyntax Var
     a · b =  mappend $ (a ∷ b ∷ [])
     ε = mempty $ []
     ℰ : Fin 3 → Equation MonoidSyntax
