@@ -47,14 +47,14 @@ open Algebra
 Equation : Signature → Set
 Equation 𝒮 = Term 𝒮 × Term 𝒮
 
-Theory : Signature → Set
-Theory = List ∘ Equation
+Theory : Signature → Set₁
+Theory 𝒮 = Σ[ I ∈ Set ] (I → Equation 𝒮)
 
 _holds-in_ : {𝒮 : Signature} → Equation 𝒮 → Algebra 𝒮 → Set
 (s , t) holds-in 𝒜 = (g : Var → ∣ 𝒜 ∣A) → ext 𝒜 g s ≡ ext 𝒜 g t
 
-_models_ : {𝒮 : Signature} → Algebra 𝒮 → Theory 𝒮 → Set
-_models_ {𝒮} 𝒜 𝒯 = (eq : Equation 𝒮) → eq ∈ 𝒯 → eq holds-in 𝒜
+_is-a_ : {𝒮 : Signature} → Algebra 𝒮 → Theory 𝒮 → Set
+_is-a_ {𝒮} 𝒜 𝕋@(I , ℰ) = (i : I) → (ℰ i) holds-in 𝒜
 
 _generated-by_ : {𝒮 : Signature} → (𝒜 : Algebra 𝒮) → (Var → ∣ 𝒜 ∣A) → Set
 _generated-by_ {𝒮} 𝒜 g = (a : ∣ 𝒜 ∣A) → Σ[ t ∈ (Term 𝒮) ] ext 𝒜 g t ≡ a
@@ -69,6 +69,7 @@ record Presentation (𝒮 : Signature) : Set₁ where
     𝕋 : Theory 𝒮
     G : Set
     R : Relation G
+
 -- -}
 -- -}
 -- -}
