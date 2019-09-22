@@ -2,8 +2,11 @@ module Frame where
 
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Data.Product                          using (Σ-syntax)
 open import Poset
-open import Subset renaming (Subset to Sub)
+
+Sub : {ℓ : Level} → Set ℓ → Set (suc ℓ)
+Sub {ℓ} A = Σ[ I ∈ Set ℓ ] (I → A)
 
 record Frame {ℓ : Level} : Set (suc ℓ) where
 
