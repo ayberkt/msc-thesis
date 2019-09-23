@@ -26,3 +26,6 @@ postulate
 
 IsSet : {ℓ : Level} → Set ℓ → Set ℓ
 IsSet A = (x y : A) → (p q : x ≡ y) → p ≡ q
+
+isprop : {ℓ : Level} → Set ℓ → Set ℓ
+isprop A = (x y : A) → x ≡ y
