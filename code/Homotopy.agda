@@ -18,6 +18,10 @@ idtoeqv : {ℓ : Level} → {A B : Set ℓ} → A ≡ B → A ≃ B
 idtoeqv refl = id , ((λ x → x) , (λ x → refl)) , (λ x → x) , (λ x → refl)
 
 postulate
+  funext : {ℓ : Level} {A : Set ℓ} {B : A → Set ℓ}
+         → (f g : (x : A) → B x)
+         → ((x : A) → (f x) ≡ (g x))
+         → f ≡ g
   ua : {ℓ : Level} {A B : Set ℓ} → isequiv {_} {_} {A ≡ B} {A ≃ B} idtoeqv
 
 IsSet : {ℓ : Level} → Set ℓ → Set ℓ
