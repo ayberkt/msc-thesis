@@ -58,16 +58,13 @@ _is-a_ {𝒮} 𝒜 𝕋@(I , ℰ) = (i : I) → (ℰ i) holds-in 𝒜
 _generated-by_ : {𝒮 : Signature} → (𝒜 : Algebra 𝒮) → (Var → ∣ 𝒜 ∣A) → Set
 _generated-by_ {𝒮} 𝒜 g = (a : ∣ 𝒜 ∣A) → Σ[ t ∈ (Term 𝒮 Var) ] Algebra.ext 𝒜 g t ≡ a
 
-Relation : Set → Set₁
-Relation A = A → A → Set
-
 record Presentation (𝒮 : Signature) : Set₁ where
   constructor _⟨_||_⟩
 
   field
     𝕋 : Theory 𝒮
     G : Set
-    R : Σ[ n ∈ ℕ ] (Fin n → Relation G)
+    R : Σ[ n ∈ ℕ ] (Fin n → Term 𝒮 G × Term 𝒮 G)
 
 record Model (𝒮 : Signature) (ℙ : Presentation 𝒮) : Set₁ where
   field
@@ -81,6 +78,20 @@ record Model (𝒮 : Signature) (ℙ : Presentation 𝒮) : Set₁ where
   field
     is-𝕋-algebra : A is-a 𝕋
     ⟦_⟧          : generator → ∣ A ∣A
+
+{--
+
+  ⟦_⟧T : Term 𝒮 generator → ∣ A ∣A
+  ⟦_⟧T⋆ : {n : ℕ} → Vec (Term 𝒮 generator) n → Vec ∣ A ∣A n
+
+  ⟦ ` g     ⟧T = ⟦ g ⟧
+  ⟦ op $ xs ⟧T = Algebra.⟦ A ⟧ op ⟦ xs ⟧T⋆
+
+  ⟦ []     ⟧T⋆ = []
+  ⟦ x ∷ xs ⟧T⋆ = ⟦ x ⟧T ∷ ⟦ xs ⟧T⋆
+
+  field
+    foo : (i : Fin ∣ℛ∣) → ⟦ proj₁ (ℛ i) ⟧T ≡ ⟦ proj₂ (ℛ i) ⟧T
 
   -- TODO: complete missing law.
 
