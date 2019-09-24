@@ -33,3 +33,28 @@ record AlgMeetSemilatticeStr (A : Set) : Set where
     right-id : (x     : A) → x ≡ x ∧ true
     idem     : (x     : A) → x ≡ x ∧ x
 
+poset-of : {A : Set} → AlgMeetSemilatticeStr A → PosetStr A
+poset-of {A} S = posetstr (λ x y → x ≡ x ∧ y) idem trans antisym is-prop
+  where
+    open AlgMeetSemilatticeStr S using (_∧_; true; idem; assoc; comm)
+    trans : (x y z : A) → x ≡ (x ∧ y) → y ≡ (y ∧ z) → x ≡ (x ∧ z)
+    trans x y z p q =
+      begin
+        x              ≡⟨ p                             ⟩
+        (x ∧ y)        ≡⟨ cong (λ k → x ∧ k) q          ⟩
+        (x ∧ (y ∧ z))  ≡⟨ assoc x y z                   ⟩
+        ((x ∧ y) ∧ z)  ≡⟨ cong (λ k → k ∧ z) (sym p)    ⟩
+        (x ∧ z)
+      ∎
+    antisym : (x y : A) → x ≡ (x ∧ y) → y ≡ (y ∧ x) → x ≡ y
+    antisym x y p q =
+      begin
+        x              ≡⟨ p                             ⟩
+        x ∧ y          ≡⟨ cong (λ k → k ∧ y) p          ⟩
+        (x ∧ y) ∧ y    ≡⟨ cong (λ k → k ∧ y) (comm x y) ⟩
+        (y ∧ x) ∧ y    ≡⟨ cong (λ k → k ∧ y) (sym q)    ⟩
+        y ∧ y          ≡⟨ sym (idem y)                  ⟩
+        y
+      ∎
+    is-prop : (x y : A) → Homotopy.isprop (x ≡ (x ∧ y))
+    is-prop x y = Homotopy.UIP
