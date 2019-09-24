@@ -102,3 +102,7 @@ eqp′ {A} {B} P₀ P₁ iso =
     φ : _⊑₀_ ≡ _⊑₁_
     φ = funext _ _ (λ x → funext _ _ (λ y → bar x y))
 
+↓ : (P : Poset) → proj₁ P → Set
+↓ P x = Σ[ y ∈ (proj₁ P) ] (x ⊑ y)
+  where
+    open PosetStr (proj₂ P) using (_⊑_)
