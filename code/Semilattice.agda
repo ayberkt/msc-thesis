@@ -1,13 +1,15 @@
 module Semilattice where
 
 open import Poset
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong) renaming (trans to _·_)
+import Relation.Binary.PropositionalEquality as Eq
+open        Eq using (_≡_; refl; cong; sym) renaming (trans to _·_)
+open Eq.≡-Reasoning
+open import Data.Product using (proj₁; proj₂)
+import Homotopy
 
-record MeetSemilattice : Set₁ where
-  field
-    P   : Poset
-
-  open Poset.Poset P using (A; _⊑_)
+record MeetSemilatticeStr (P : Poset) : Set where
+  open PosetStr (proj₂ P) using (_⊑_)
+  A = proj₁ P
 
   field
     𝟏   : A
@@ -20,11 +22,8 @@ record MeetSemilattice : Set₁ where
     𝟏-lower₂   : (x y   : A) → (x ⊓ y) ⊑ y
     𝟏-greatest : (x y z : A) → z ⊑ x → z ⊑ y → z ⊑ (x ⊓ y)
 
-record AlgebraicMeetSemilattice : Set₁ where
-  constructor alg-meet-semilattice
-
+record AlgMeetSemilatticeStr (A : Set) : Set where
   field
-    A        : Set
     _∧_      : A → A → A
     true     : A
 
@@ -34,17 +33,3 @@ record AlgebraicMeetSemilattice : Set₁ where
     right-id : (x     : A) → x ≡ x ∧ true
     idem     : (x     : A) → x ≡ x ∧ x
 
-orderification : AlgebraicMeetSemilattice → MeetSemilattice
-orderification (alg-meet-semilattice A _∧_ true comm assoc right-id idem) =
-  record
-    { P = record { A = A
-                 ; _⊑_ = λ x y → x ≡ x ∧ y
-                 ; refl = idem
-                 ; trans = λ x y z p q → {!!} ; sym⁻¹ = {!!} }
-    ; 𝟏     = true
-    ; _⊓_   = _∧_
-    ; 𝟏-top = right-id
-    ; 𝟏-lower₁ = λ x y → comm x y · (cong (_∧_ y) (idem x) · (assoc y x x · cong (λ k → k ∧ x) (comm y x)))
-    ; 𝟏-lower₂ = {!!}
-    ; 𝟏-greatest = {!!}
-    }
