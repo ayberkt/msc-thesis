@@ -6,7 +6,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Level
 
 
-UIP : {A : Set} {x y : A} → (p q : x ≡ y) → p ≡ q
+UIP : {ℓ : Level} {A : Set ℓ} {x y : A} → (p q : x ≡ y) → p ≡ q
 UIP refl refl = refl
 
 _~_ : {ℓ : Level} {A B : Set ℓ} → (A → B) → (A → B) → Set ℓ
