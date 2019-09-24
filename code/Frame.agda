@@ -29,19 +29,16 @@ record Frame {ℓ : Level} : Set (suc ℓ) where
     ⊔-up   : (S     : Sub O) → (o : O) → o ⊑ (⊔ S)
     ⊔-min  : (S     : Sub O) → (z : O) → ((o : O) → o ⊑ z) → (⊔ S) ⊑ z
 
-_─f→_ : {ℓ : Level} {A B : Set ℓ}
-      → Frame {ℓ} → Frame {ℓ} → Set (suc ℓ)
-F₀ ─f→ F₁ =
-  let
-     open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
-     open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
-     A₀  = proj₁ P₀
-     A₁  = proj₁ P₁
-     _$_ = proj₁
-   in
-     Σ[ m ∈ ((proj₂ P₀) ─m→ (proj₂ P₁)) ]
-     m $ 𝟏₀ ≡ 𝟏₁
-     ×
-     ((x y : A₀) → m $ (x ⊓₀ y) ≡ (m $ x) ⊓₁ (m $ y))
-     ×
-     ((ℱ : Sub A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i))))
+record _─f→_ {ℓ} {A B : Set ℓ} (F₀ : Frame {ℓ}) (F₁ : Frame {ℓ}) : Set (suc ℓ) where
+  open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
+  open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
+  A₀ = proj₁ P₀
+  A₁ = proj₁ P₁
+
+  field
+    m : (proj₂ P₀) ─m→ (proj₂ P₁)
+
+  field
+     resp-id : m $ 𝟏₀ ≡ 𝟏₁
+     resp-⊓  : (x y : A₀) → m $ (x ⊓₀ y) ≡ (m $ x) ⊓₁ (m $ y)
+     resp-⊔  : ((ℱ : Sub A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i))))
