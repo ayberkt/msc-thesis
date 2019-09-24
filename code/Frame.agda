@@ -3,6 +3,7 @@ module Frame where
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
+open import Function                              using (_∘_)
 open import Poset
 
 Sub : {ℓ : Level} → Set ℓ → Set (suc ℓ)
@@ -29,7 +30,7 @@ record Frame {ℓ : Level} : Set (suc ℓ) where
     ⊔-up   : (S     : Sub O) → (o : O) → o ⊑ (⊔ S)
     ⊔-min  : (S     : Sub O) → (z : O) → ((o : O) → o ⊑ z) → (⊔ S) ⊑ z
 
-record _─f→_ {ℓ} {A B : Set ℓ} (F₀ : Frame {ℓ}) (F₁ : Frame {ℓ}) : Set (suc ℓ) where
+record _─f→_ {ℓ} (F₀ : Frame {ℓ}) (F₁ : Frame {ℓ}) : Set (suc ℓ) where
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
   open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
   A₀ = proj₁ P₀
