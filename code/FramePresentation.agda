@@ -7,7 +7,6 @@ open import Level
 
 open import Poset
 open import Frame
-
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
 data Basis (G : Set) : Set where
@@ -34,7 +33,7 @@ record Presentation : Set₁ where
     rels : Σ[ n ∈ ℕ ] (Fin n → Equality (Open gens))
 
 RawModel : Frame → Presentation → Set
-RawModel F P = Presentation.gens P → (Poset.A (Frame.P F))
+RawModel F P = Presentation.gens P → (proj₁ (Frame.P F))
 
 module _ (F : Frame) (P : Presentation) (⟦_⟧ : RawModel F P) where
 
@@ -42,7 +41,7 @@ module _ (F : Frame) (P : Presentation) (⟦_⟧ : RawModel F P) where
   ∣R∣ = proj₁ rels
   R   = proj₂ rels
 
-  ∣F∣ = Poset.A (Frame.P F)
+  ∣F∣ = proj₁ (Frame.P F)
 
   ⟦_⟧B : Basis gens → ∣F∣
   ⟦ subbasic x ⟧B = ⟦ x ⟧
@@ -55,3 +54,13 @@ module _ (F : Frame) (P : Presentation) (⟦_⟧ : RawModel F P) where
 
 _models_ : Presentation → Frame → Set
 P models F = Σ[ ⟦_⟧ ∈ (RawModel F P) ] (resp-rels F P ⟦_⟧)
+
+_presents_ : Presentation → Frame → Set₁
+P presents F = Σ[ M ∈ (P models F) ]
+  ((F′ : Frame) → (M′ : P models F′) →
+     let
+       open Presentation P using (gens)
+       ⟦_⟧F  = proj₁ M
+       ⟦_⟧F′ = proj₁ M′
+     in
+       Σ[ θ ∈ (F ─f→ F′) ] ((g : gens) → θ $f ⟦ g ⟧F ≡ ⟦ g ⟧F′))
