@@ -15,7 +15,7 @@ record PosetStr {ℓ : Level} (A : Set ℓ) : Set (suc ℓ) where
 
   -- Data.
   field
-    _⊑_  : A → A → Set
+    _⊑_  : A → A → Set ℓ
 
   -- Laws.
   field

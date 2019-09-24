@@ -5,6 +5,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open        Eq using (_≡_; refl; cong; sym) renaming (trans to _·_)
 open Eq.≡-Reasoning
 open import Data.Product using (proj₁; proj₂)
+open import Level
 import Homotopy
 
 record MeetSemilatticeStr (P : Poset) : Set where
@@ -22,7 +23,7 @@ record MeetSemilatticeStr (P : Poset) : Set where
     𝟏-lower₂   : (x y   : A) → (x ⊓ y) ⊑ y
     𝟏-greatest : (x y z : A) → z ⊑ x → z ⊑ y → z ⊑ (x ⊓ y)
 
-record AlgMeetSemilatticeStr (A : Set) : Set where
+record AlgMeetSemilatticeStr {ℓ : Level} (A : Set ℓ) : Set ℓ where
   field
     _∧_      : A → A → A
     true     : A
@@ -33,8 +34,8 @@ record AlgMeetSemilatticeStr (A : Set) : Set where
     right-id : (x     : A) → x ≡ x ∧ true
     idem     : (x     : A) → x ≡ x ∧ x
 
-poset-of : {A : Set} → AlgMeetSemilatticeStr A → PosetStr A
-poset-of {A} S = posetstr (λ x y → x ≡ x ∧ y) idem trans antisym is-prop
+poset-of : {ℓ : Level} {A : Set ℓ} → AlgMeetSemilatticeStr A → PosetStr A
+poset-of {_} {A} S = posetstr (λ x y → x ≡ x ∧ y) idem trans antisym is-prop
   where
     open AlgMeetSemilatticeStr S using (_∧_; true; idem; assoc; comm)
     trans : (x y z : A) → x ≡ (x ∧ y) → y ≡ (y ∧ z) → x ≡ (x ∧ z)
