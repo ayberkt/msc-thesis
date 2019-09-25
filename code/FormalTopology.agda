@@ -2,11 +2,12 @@ module FormalTopology where
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax)
+open import Level
 open import Subset
 
 
 -- Definition 1.2.
-record FormalTopology (S : Set) : Set₁ where
+record FormalSpaceStr {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
 
   field
     𝟏   : S
@@ -14,7 +15,7 @@ record FormalTopology (S : Set) : Set₁ where
     _◀_ : S → Subset S → Set
     Pos : S → Set
 
-  _◀ₛ_ : Subset S → Subset S → Set
+  _◀ₛ_ : Subset S → Subset S → Set ℓ
   U ◀ₛ V = (b : S) → U b → b ◀ V
 
   _∙ₛ_ : Subset S → Subset S → Subset S
