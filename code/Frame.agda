@@ -23,12 +23,12 @@ record Frame {ℓ : Level} : Set (suc ℓ) where
     ⊔_  : Sub O → O
 
   field
-    top    : (x     : O)     → x ⊑ 𝟏
-    ⊓-low₁ : (x y   : O)     → (x ⊓ y) ⊑ x
-    ⊓-low₂ : (x y   : O)     → (x ⊓ y) ⊑ y
-    ⊓-max  : (x y z : O)     → z ⊑ x → z ⊑ y → z ⊑ (x ⊓ y)
-    ⊔-up   : (S     : Sub O) → (o : O) → o ⊑ (⊔ S)
-    ⊔-min  : (S     : Sub O) → (z : O) → ((o : O) → o ⊑ z) → (⊔ S) ⊑ z
+    top    : (x     : O)         → x ⊑ 𝟏
+    ⊓-low₁ : (x y   : O)         → (x ⊓ y) ⊑ x
+    ⊓-low₂ : (x y   : O)         → (x ⊓ y) ⊑ y
+    ⊓-max  : (x y z : O)         → z ⊑ x → z ⊑ y → z ⊑ (x ⊓ y)
+    ⊔-up   : (S     : Sub O)     → (o : O) → o ⊑ (⊔ S)
+    ⊔-min  : (S     : Sub O)     → (z : O) → ((o : O) → o ⊑ z) → (⊔ S) ⊑ z
     dist   : (x : O) (S : Sub O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
 
 record _─f→_ {ℓ} (F₀ : Frame {ℓ}) (F₁ : Frame {ℓ}) : Set (suc ℓ) where
