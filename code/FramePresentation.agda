@@ -5,6 +5,7 @@ open import Data.Nat     using (ℕ) renaming (suc to S; zero to Z)
 open import Data.Fin     using (Fin)
 open import Level
 
+open import Common
 open import Poset
 open import Frame
 open import Relation.Binary.PropositionalEquality using (_≡_)
@@ -63,4 +64,4 @@ P presents F = Σ[ M ∈ (P models F) ]
        ⟦_⟧F  = proj₁ M
        ⟦_⟧F′ = proj₁ M′
      in
-       Σ[ θ ∈ (F ─f→ F′) ] ((g : gens) → θ $f ⟦ g ⟧F ≡ ⟦ g ⟧F′))
+       Σ![ θ ∈ (F ─f→ F′) ] ((g : gens) → θ $f ⟦ g ⟧F ≡ ⟦ g ⟧F′))
