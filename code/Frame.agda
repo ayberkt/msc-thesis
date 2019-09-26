@@ -29,6 +29,7 @@ record Frame {ℓ : Level} : Set (suc ℓ) where
     ⊓-max  : (x y z : O)     → z ⊑ x → z ⊑ y → z ⊑ (x ⊓ y)
     ⊔-up   : (S     : Sub O) → (o : O) → o ⊑ (⊔ S)
     ⊔-min  : (S     : Sub O) → (z : O) → ((o : O) → o ⊑ z) → (⊔ S) ⊑ z
+    dist   : (x : O) (S : Sub O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
 
 record _─f→_ {ℓ} (F₀ : Frame {ℓ}) (F₁ : Frame {ℓ}) : Set (suc ℓ) where
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
