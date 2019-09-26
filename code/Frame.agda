@@ -43,7 +43,7 @@ record _─f→_ {ℓ} (F₀ : Frame {ℓ}) (F₁ : Frame {ℓ}) : Set (suc ℓ)
   field
      resp-id : m $ 𝟏₀ ≡ 𝟏₁
      resp-⊓  : (x y : A₀) → m $ (x ⊓₀ y) ≡ (m $ x) ⊓₁ (m $ y)
-     resp-⊔  : ((ℱ : Sub A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i))))
+     resp-⊔  : (ℱ : Sub A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i)))
 
 _$f_ : {ℓ : Level} {F₀ : Frame {ℓ}} {F₁ : Frame {ℓ}}
      → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
