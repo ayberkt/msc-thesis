@@ -1,14 +1,12 @@
 module FramePresentation where
 
-open import Data.Product using (_×_; _,_; Σ-syntax; proj₁; proj₂)
+open import Common
+
 open import Data.Nat     using (ℕ) renaming (suc to S; zero to Z)
 open import Data.Fin     using (Fin)
-open import Level
 
-open import Common
 open import Poset
 open import Frame
-open import Relation.Binary.PropositionalEquality using (_≡_)
 
 data Basis {ℓ : Level} (G : Set ℓ) : Set ℓ where
   subbasic : G → Basis G

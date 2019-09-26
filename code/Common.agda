@@ -2,9 +2,9 @@ module Common where
 
 import Relation.Binary.PropositionalEquality as Eq
 
-open        Eq           using (_≡_; refl)
-open import Data.Product using (Σ; Σ-syntax; _,_; _×_)
-open import Level
+open Eq                  public using (_≡_; refl)
+open import Data.Product public using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
+open import Level        public
 
 Σ!-syntax : {ℓ ℓ′ : Level} (A : Set ℓ) → (A → Set ℓ′) → Set (ℓ ⊔ ℓ′)
 Σ!-syntax A p = Σ A (λ a → (p a) × ((b : A) → p b → a ≡ b))
