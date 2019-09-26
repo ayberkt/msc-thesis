@@ -33,8 +33,10 @@ record Presentation {ℓ : Level} : Set (suc ℓ) where
     gens : Set ℓ
     rels : Σ[ n ∈ ℕ ] (Fin n → Equality (Open gens))
 
+-- The data of a model is simply a function from the set of generators to the underlying
+-- set of the frame.
 RawModel : Frame → Presentation → Set
-RawModel F P = Presentation.gens P → (proj₁ (Frame.P F))
+RawModel F Fr⟨ gens , rels ⟩ = gens → (proj₁ (Frame.P F))
 
 module _ (F : Frame) (P : Presentation) (⟦_⟧ : RawModel F P) where
 
@@ -47,15 +49,18 @@ module _ (F : Frame) (P : Presentation) (⟦_⟧ : RawModel F P) where
   ⟦_⟧B : Basis gens → ∣F∣
   ⟦ subbasic x ⟧B = ⟦ x ⟧
   ⟦ b₀ ∧ b₁    ⟧B = Frame._⊓_ F ⟦ b₀ ⟧B ⟦ b₁ ⟧B
+
   ⟦_⟧O : Open gens → ∣F∣
   ⟦ ∨ (I , ℱ) ⟧O = (Frame.⊔ F) (I , λ i → ⟦ ℱ i ⟧B)
 
   resp-rels : Set
   resp-rels = (i : Fin ∣R∣) → ⟦ lhs (R i) ⟧O ≡ ⟦ rhs (R i) ⟧O
 
+-- A model is a raw model that respects the relations of the presentation.
 _models_ : Presentation → Frame → Set
 P models F = Σ[ ⟦_⟧ ∈ (RawModel F P) ] (resp-rels F P ⟦_⟧)
 
+-- A presentation P *presents* the frame F if it is the least model for F.
 _presents_ : Presentation → Frame → Set₁
 P presents F = Σ[ M ∈ (P models F) ]
   ((F′ : Frame) → (M′ : P models F′) →
