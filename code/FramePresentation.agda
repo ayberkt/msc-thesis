@@ -1,7 +1,7 @@
 module FramePresentation where
 
 open import Data.Product using (_×_; _,_; Σ-syntax; proj₁; proj₂)
-open import Data.Nat     using (ℕ; suc; zero)
+open import Data.Nat     using (ℕ) renaming (suc to S; zero to Z)
 open import Data.Fin     using (Fin)
 open import Level
 
@@ -9,11 +9,11 @@ open import Poset
 open import Frame
 open import Relation.Binary.PropositionalEquality using (_≡_)
 
-data Basis (G : Set) : Set where
+data Basis {ℓ : Level} (G : Set ℓ) : Set ℓ where
   subbasic : G → Basis G
   _∧_      : Basis G → Basis G → Basis G
 
-data Open (G : Set) : Set₁ where
+data Open {ℓ : Level} (G : Set ℓ) : Set (suc ℓ) where
   ∨_ : Sub (Basis G) → Open G
 
 data Equality {ℓ : Level} (X : Set ℓ) : Set ℓ where
@@ -25,11 +25,11 @@ lhs (l ≈ _) = l
 rhs : {ℓ : Level} {X : Set ℓ} → Equality X → X
 rhs (_ ≈ r) = r
 
-record Presentation : Set₁ where
+record Presentation {ℓ : Level} : Set (suc ℓ) where
   constructor Fr⟨_,_⟩
 
   field
-    gens : Set
+    gens : Set ℓ
     rels : Σ[ n ∈ ℕ ] (Fin n → Equality (Open gens))
 
 RawModel : Frame → Presentation → Set
