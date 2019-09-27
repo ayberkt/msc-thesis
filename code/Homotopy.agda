@@ -29,3 +29,6 @@ IsSet A = (x y : A) → (p q : x ≡ y) → p ≡ q
 
 isprop : {ℓ : Level} → Set ℓ → Set ℓ
 isprop A = (x y : A) → x ≡ y
+
+Proposition : (ℓ : Level) → Set (suc ℓ)
+Proposition ℓ = Σ[ A ∈ (Set ℓ) ] (isprop A)
