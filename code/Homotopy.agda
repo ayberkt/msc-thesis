@@ -27,11 +27,11 @@ postulate
 IsSet : {ℓ : Level} → Set ℓ → Set ℓ
 IsSet A = (x y : A) → (p q : x ≡ y) → p ≡ q
 
-isprop : {ℓ : Level} → Set ℓ → Set ℓ
-isprop A = (x y : A) → x ≡ y
+IsProp : {ℓ : Level} → Set ℓ → Set ℓ
+IsProp A = (x y : A) → x ≡ y
 
 Proposition : (ℓ : Level) → Set (suc ℓ)
-Proposition ℓ = Σ[ A ∈ (Set ℓ) ] (isprop A)
+Proposition ℓ = Σ[ A ∈ (Set ℓ) ] (IsProp A)
 
 -- The product of two propositions is a proposition.
 _×p_ : {ℓ : Level} → Proposition ℓ → Proposition ℓ → Proposition ℓ
