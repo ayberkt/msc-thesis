@@ -1,10 +1,6 @@
 module Homotopy where
 
-open import Data.Product using (_×_; Σ-syntax; _,_; Σ)
-open import Function     using (_∘_; id)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Level
-
+open import Common
 
 UIP : {ℓ : Level} {A : Set ℓ} {x y : A} → (p q : x ≡ y) → p ≡ q
 UIP refl refl = refl
