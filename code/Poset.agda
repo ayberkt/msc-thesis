@@ -17,15 +17,15 @@ record PosetStr {ℓ : Level} (A : Set ℓ) : Set (suc ℓ) where
   field
     _⊑_  : A → A → Set ℓ
 
+  -- Homotopy structure.
+  field
+    ⊑-set : (x y : A) → IsProp (x ⊑ y)
+
   -- Laws.
   field
     refl  : (x     : A) → x ⊑ x
     trans : (x y z : A) → x ⊑ y → y ⊑ z → x ⊑ z
     sym⁻¹ : (x y   : A) → x ⊑ y → y ⊑ x → x ≡ y
-
-  -- Homotopy structure.
-  field
-    ⊑-set : (x y : A) → isprop (x ⊑ y)
 
 Poset : {ℓ : Level} → Set (suc ℓ)
 Poset {ℓ} = Σ[ A ∈ Set ℓ ] (PosetStr A)
