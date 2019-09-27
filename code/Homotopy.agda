@@ -32,3 +32,15 @@ isprop A = (x y : A) → x ≡ y
 
 Proposition : (ℓ : Level) → Set (suc ℓ)
 Proposition ℓ = Σ[ A ∈ (Set ℓ) ] (isprop A)
+
+-- The product of two propositions is a proposition.
+_×p_ : {ℓ : Level} → Proposition ℓ → Proposition ℓ → Proposition ℓ
+(A , A-prop) ×p (B , B-prop) = (A × B) , A×B-prop
+  where
+    A×B-prop : (x y : A × B) → x ≡ y
+    A×B-prop (x₀ , y₀) (x₁ , y₁) =
+      begin
+        (x₀ , y₀) ≡⟨ cong (λ k → (k , y₀)) (A-prop x₀ x₁) ⟩
+        (x₁ , y₀) ≡⟨ cong (λ k → (x₁ , k)) (B-prop y₀ y₁) ⟩
+        (x₁ , y₁)
+      ∎
