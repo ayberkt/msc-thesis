@@ -20,6 +20,7 @@ record PosetStr {ℓ : Level} (A : Set ℓ) : Set (suc ℓ) where
   -- Homotopy structure.
   field
     ⊑-set : (x y : A) → IsProp (x ⊑ y)
+    A-set : IsSet A
 
   -- Laws.
   field
