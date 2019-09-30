@@ -1,0 +1,7 @@
+The intended audience of this thesis is researchers in type theory and logic who are
+mathematically oriented. The reader is expected to be interested in and have the necessary
+background to understand univalent foundations. Although _topology_ is the main topic of
+the thesis, it will be approached from the perspective of logic and computation enabling
+the reader to understand it without a background in topology. I believe it to be a
+significant challenge to explain the significance of topology to an audience that I do not
+expect to have a background in topology.
