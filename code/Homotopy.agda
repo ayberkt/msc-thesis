@@ -11,7 +11,7 @@ _~_ {_} {A} {B} f g = (x : A) → f x ≡ g x
 isequiv : {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} → (f : A → B) → Set (ℓ ⊔ ℓ′)
 isequiv {_} {_} {A} {B} f = (Σ[ g ∈ (B → A) ] (g ∘ f) ~ id) × (Σ[ h ∈ (B → A) ] (f ∘ h) ~ id)
 
-_≃_ : {ℓ : Level} → Set ℓ → Set ℓ → Set ℓ
+_≃_ : {ℓ ℓ′ : Level} → Set ℓ → Set ℓ′ → Set (ℓ ⊔ ℓ′)
 A ≃ B = Σ[ f ∈ (A → B) ] (isequiv f)
 
 idtoeqv : {ℓ : Level} → {A B : Set ℓ} → A ≡ B → A ≃ B
