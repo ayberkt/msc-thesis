@@ -14,6 +14,9 @@ isequiv {_} {_} {A} {B} f = (Σ[ g ∈ (B → A) ] (g ∘ f) ~ id) × (Σ[ h ∈
 _≃_ : {ℓ ℓ′ : Level} → Set ℓ → Set ℓ′ → Set (ℓ ⊔ ℓ′)
 A ≃ B = Σ[ f ∈ (A → B) ] (isequiv f)
 
+id-≃ : {ℓ : Level} → (X : Set ℓ) → X ≃ X
+id-≃ X = id , (id , (λ _ → refl)) , (id , (λ _ → refl))
+
 idtoeqv : {ℓ : Level} → {A B : Set ℓ} → A ≡ B → A ≃ B
 idtoeqv refl = id , ((λ x → x) , (λ x → refl)) , (λ x → x) , (λ x → refl)
 
