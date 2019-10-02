@@ -19,6 +19,36 @@ IsProp A = (x y : A) → x ≡ y
 isequiv : {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} → (f : A → B) → Set (ℓ ⊔ ℓ′)
 isequiv {_} {_} {A} {B} f = (y : B) → IsContractible (fiber f y)
 
+center : {ℓ : Level} → (X : Set ℓ) → IsContractible X → X
+center _ (c , _) = c
+
+centrality : {ℓ : Level} → (X : Set ℓ) → (i : IsContractible X) → (x : X) → center X i ≡ x
+centrality X (c , φ) = φ
+
+fiber-point : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′} {f : X → Y} {y : Y}
+            → fiber f y → X
+fiber-point (x , p) = x
+
+fiber-identification : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′} {f : X → Y} {y : Y}
+                     → (w : fiber f y) → f (fiber-point w) ≡ y
+fiber-identification (x , p) = p
+
+inverse : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′} → (f : X → Y) → isequiv f → Y → X
+inverse {X = X} {Y} f e y = fiber-point (center (fiber f y) (e y))
+
+rcancel : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′}
+        → (f : X → Y) → (e : isequiv f) → (f ∘ inverse f e) ~ id
+rcancel f e y = fiber-identification (center (fiber f y) (e y))
+
+inverse-centrality : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′}
+                   → (f : X → Y) (e : isequiv f) (y : Y) (t : fiber f y)
+                   → (inverse f e y , rcancel f e y) ≡ t
+inverse-centrality f e y = centrality (fiber f y) (e y)
+
+lcancel : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′}
+        → (f : X → Y) → (e : isequiv f) → (inverse f e ∘ f) ~ id
+lcancel f e x = cong fiber-point (inverse-centrality f e (f x) (x , refl))
+
 _≃_ : {ℓ ℓ′ : Level} → Set ℓ → Set ℓ′ → Set (ℓ ⊔ ℓ′)
 A ≃ B = Σ[ f ∈ (A → B) ] (isequiv f)
 
@@ -40,6 +70,9 @@ postulate
          → ((x : A) → (f x) ≡ (g x))
          → f ≡ g
   ua : {ℓ : Level} {A B : Set ℓ} → isequiv {_} {_} {A ≡ B} {A ≃ B} idtoeqv
+
+equivtoid : {ℓ : Level} {A B : Set ℓ} → A ≃ B → A ≡ B
+equivtoid {A = A} {B} (f , e) = proj₁ (proj₁ (ua {_} {A} {B} (f , e)))
 
 IsSet : {ℓ : Level} → Set ℓ → Set ℓ
 IsSet A = (x y : A) → (p q : x ≡ y) → p ≡ q
@@ -122,3 +155,9 @@ IsContractible-prop {A = A} c@(a₀ , c₀) (a₁ , c₁) = to-subtype-≡ foo (
 -- Being equivalence is a proposition.
 equiv-prop : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : Set ℓ′} → (f : X → Y) → IsProp (isequiv f)
 equiv-prop {X = X} f = ∏-resp-prop (λ _ → IsContractible-prop)
+
+-- Logically equivant propositions are equivalent.
+P↔Q⇒P≃Q : {ℓ : Level} {X Y : Set ℓ} → IsProp X → IsProp Y → (X → Y) → (Y → X) → X ≃ Y
+P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar y
+  where
+    postulate bar : (y : Y) (fib : fiber f y) → (g y , q (f (g y)) y) ≡ fib
