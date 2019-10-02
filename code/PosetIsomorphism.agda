@@ -97,12 +97,11 @@ equiv⇒iso P₀ P₁ f (e , f-mono) = f-mono , g , k , η , ε
     g      = inverse f e
     _⊑₁_   = rel P₁
     _⊑₀_   = rel P₀
-    _>>>₁_ = trans P₁
     η : (inverse f e ∘ f) ~ id
     η = lcancel f e
     ε : (f ∘ inverse f e) ~ id
     ε = rcancel f e
-    k : (x y : ∣ P₁ ∣) → rel P₁ x y ≡ rel P₀ (g x) (g y)
+    k : (x y : ∣ P₁ ∣) → x ⊑₁ y ≡ (g x) ⊑₀ (g y)
     k x y = begin
       (x ⊑₁ y)              ≡⟨ cong (λ k → k ⊑₁ y)   (sym (ε x)) ⟩
       (f (g x) ⊑₁ y)        ≡⟨ cong (_⊑₁_ (f (g x))) (sym (ε y)) ⟩
