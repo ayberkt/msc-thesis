@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 module PosetIsomorphism where
 
 open import Common

@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 module Poset where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; sym)

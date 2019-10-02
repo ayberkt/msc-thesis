@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 module Common where
 
 import Relation.Binary.PropositionalEquality as Eq
