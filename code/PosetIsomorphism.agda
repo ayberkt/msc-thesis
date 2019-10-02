@@ -26,6 +26,9 @@ Poset′ ℓ = Σ (Set ℓ) PosetStr′
 rel : (P : Poset′ ℓ)→ ∣ P ∣ → ∣ P ∣ → Set ℓ
 rel (_ , _ , _⊑_ , _) = _⊑_
 
+trans : (P : Poset′ ℓ)→ IsTransitive (rel P)
+trans (_ , _ , _ , _ , _ , trans , _) = trans
+
 setlike : (P : Poset′ ℓ) → IsSet ∣ P ∣
 setlike (_ , ∣P∣-set , _ , _) = ∣P∣-set
 
@@ -74,23 +77,77 @@ PosetStr′≡PosetStr = equivtoid ∘ PosetStr′≃PosetStr
 ⌜_⌝ : {P₀ P₁ : Poset′ ℓ} → P₀ ≡ P₁ → ∣ P₀ ∣ → ∣ P₁ ∣
 ⌜ p ⌝ = transport ∣_∣ p
 
-eq⇒iso : {P₀ P₁ : Poset′ ℓ} → P₀ ≡ P₁ → P₀ ≅ₚ P₁
-eq⇒iso refl = id , ((λ _ _ p → p) , (id , ((λ _ _ p → p) , (λ _ → refl) , λ _ → refl)))
+eq⇒iso : (P₀ P₁ : Poset′ ℓ) → P₀ ≡ P₁ → P₀ ≅ₚ P₁
+eq⇒iso _ _ refl = id , ((λ _ _ p → p) , (id , ((λ _ _ p → p) , (λ _ → refl) , λ _ → refl)))
 
-iso⇒equiv : {P₀ P₁ : Poset′ ℓ}
+-- Every poset isomorphism is a poset equivalence.
+iso⇒equiv : (P₀ P₁ : Poset′ ℓ)
           → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsIsomorphism P₀ P₁ f → IsMonoEquiv P₀ P₁ f
-iso⇒equiv {P₁ = P₁} f (mono , (g , (g-mono , li , ri))) = f-equiv , mono
+iso⇒equiv P₀ P₁ f (mono , (g , (g-mono , li , ri))) = f-equiv , mono
   where
     bar : (y : ∣ P₁ ∣) (f : fiber f y) → (g y , ri y) ≡ f
     bar y (x , refl) = to-subtype-≡ (λ x′ → setlike P₁ (f x′) (f x)) (li x)
     f-equiv : isequiv f
     f-equiv x = (g x , ri x) , bar x
 
+equiv⇒iso : (P₀ P₁ : Poset′ ℓ) (f : ∣ P₀ ∣ → ∣ P₁ ∣)
+          → IsMonoEquiv P₀ P₁ f → IsIsomorphism P₀ P₁ f
+equiv⇒iso P₀ P₁ f (e , f-mono) = f-mono , (inverse f e) , k , η , ε
+  where
+    f⁻¹    = inverse f e
+    _⊑₁_   = rel P₁
+    _⊑₀_   = rel P₀
+    _>>>₁_ = trans P₁
+    η : (inverse f e ∘ f) ~ id
+    η = lcancel f e
+    ε : (f ∘ inverse f e) ~ id
+    ε = rcancel f e
+    k : (x y : ∣ P₁ ∣) → x ⊑₁ y → (f⁻¹ x) ⊑₀ (f⁻¹ y)
+    k x y x⊑y = {!!}
+      where
+        bar : x ⊑₁ f (f⁻¹ y)
+        bar = transport (rel P₁ x) (sym (ε y)) x⊑y
+        foo : f (f⁻¹ x) ⊑₁ (f (f⁻¹ y))
+        foo = transport (λ k₁ → k₁ ⊑₁ f (f⁻¹ y)) (sym (ε x)) bar
+
 -- Being monotonic is a propositional type.
 Mono-prop : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsMonotonic P₀ P₁ f)
 Mono-prop P₀ P₁ f =
   ∏-resp-prop λ x → ∏-resp-prop λ y → ∏-resp-prop λ p → ⊑-prop P₁ (f x) (f y)
 
-MonoEquiv-prop : {P₀ P₁ : Poset′ ℓ} → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsMonoEquiv P₀ P₁ f)
-MonoEquiv-prop {P₀ = P₀} {P₁} f =
+MonoEquiv-prop : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsMonoEquiv P₀ P₁ f)
+MonoEquiv-prop P₀ P₁ f =
   ×-resp-prop (isequiv f) (IsMonotonic P₀ P₁ f) (equiv-prop f) (Mono-prop P₀ P₁ f)
+
+Iso-prop : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsIsomorphism P₀ P₁ f)
+Iso-prop P₀ P₁ f = {!!}
+
+iso≃equiv : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣)
+          → IsIsomorphism P₀ P₁ f ≃ IsMonoEquiv P₀ P₁ f
+iso≃equiv P₀ P₁ f = P↔Q⇒P≃Q
+                      (Iso-prop P₀ P₁ f)
+                      (MonoEquiv-prop P₀ P₁ f)
+                      (iso⇒equiv P₀ P₁ f)
+                      (equiv⇒iso P₀ P₁ f)
+
+{--
+
+iso≃equiv : (P₀ P₁ : Poset′ ℓ) → (P₀ ≅ₚ P₁) ≃ (P₀ ≃ₚ P₁)
+iso≃equiv P₀ P₁ = iso-to-equiv , {!!}
+  where
+    iso-to-equiv : P₀ ≅ₚ P₁ → P₀ ≃ₚ P₁
+    iso-to-equiv (f , h) = f , iso⇒equiv P₀ P₁ f h
+    equiv-to-iso : P₀ ≃ₚ P₁ → P₀ ≅ₚ P₁
+    equiv-to-iso (f , fe , f-mono) =
+      f , (f-mono , g , g-mono , lcancel f fe , rcancel f fe)
+      where
+        g : ∣ P₁ ∣ → ∣ P₀ ∣
+        g = inverse f fe
+        g-mono : IsMonotonic P₁ P₀ g
+        g-mono x y x⊑y = {!!}
+    iso-to-equiv-equiv : isequiv iso-to-equiv
+    iso-to-equiv-equiv me@(f , f-equiv , f-mono) =
+      (equiv-to-iso me , {!!}) , {!!}
+
+
+-- -}
