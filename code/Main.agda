@@ -1,6 +1,7 @@
 module Main where
 
-import FormalTopology
+-- import FormalTopology
+import Homotopy
 import Poset
-import Semilattice
+-- import Semilattice
 import Frame
