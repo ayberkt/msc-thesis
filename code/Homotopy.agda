@@ -81,7 +81,7 @@ Proposition : (ℓ : Level) → Set (suc ℓ)
 Proposition ℓ = Σ[ A ∈ (Set ℓ) ] (IsProp A)
 
 -- The product of two propositions is a proposition.
-×-resp-prop : {ℓ : Level} → (A B : Set ℓ) → IsProp A → IsProp B → IsProp (A × B)
+×-resp-prop : {ℓ ℓ′ : Level} → (A : Set ℓ) → (B : Set ℓ′) → IsProp A → IsProp B → IsProp (A × B)
 ×-resp-prop A B A-prop B-prop (a₀ , b₀) (a₁ , b₁) =
   begin
     (a₀ , b₀) ≡⟨ cong (λ k → (k , b₀)) (A-prop a₀ a₁) ⟩
