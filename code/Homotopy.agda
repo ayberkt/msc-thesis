@@ -216,8 +216,40 @@ P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar
 postulate ∏-set : {X : Set ℓ} {Y : X → Set ℓ′}
                 → ((x : X) → IsSet (Y x)) → IsSet ((x : X) → Y x)
 
-postulate Σ-set : {A : Set ℓ} {B : A → Set ℓ′}
-                → ((x : A) → IsSet (B x)) → IsSet (Σ A B)
+_=×=_ : {A : Set ℓ} {B : Set ℓ′} → (x y : A × B) → Set (ℓ ⊔ ℓ′)
+_=×=_ {B = B} (a₀ , b₀) (a₁ , b₁) = (a₀ ≡ a₁) × (b₀ ≡ b₁)
+
+ap-pr₁ : {A : Set ℓ} {B : A → Set ℓ′} {x y : Σ A B} → x ≡ y → proj₁ x ≡ proj₁ y
+ap-pr₁ refl = refl
+
+ap-pr₂ : {A : Set ℓ} {B : Set ℓ′} {x y : A × B} → x ≡ y → (proj₂ x) ≡ proj₂ y
+ap-pr₂ refl = refl
+
+pair⁼ : {A : Set ℓ} {B : Set ℓ′} {x y : A × B} → x =×= y → x ≡ y
+pair⁼ {x = (x₀ , y₀)} {x₁ , y₁} (refl , refl) = refl
+
+×-set : {A : Set ℓ} {B : Set ℓ′} → IsSet A → IsSet B → IsSet (A × B)
+×-set {A = A} {B} A-set B-set (x₀ , y₀) (x₁ , y₁) p q =
+  p                             ≡⟨ φ                             ⟩
+  pair⁼ (ap-pr₁ p , ap-pr₂ p)   ≡⟨ cong (λ k → pair⁼ (k , _)) I  ⟩
+  pair⁼ (ap-pr₁ q , ap-pr₂ p)   ≡⟨ cong (λ k → pair⁼ (_ , k)) II ⟩
+  pair⁼ (ap-pr₁ q , ap-pr₂ q)   ≡⟨ ψ                             ⟩
+  q                             ∎
+  where
+    -- TODO: do this without using `rewrite`.
+    φ : p ≡ pair⁼ (ap-pr₁ p , ap-pr₂ p)
+    φ rewrite p = refl
+    -- TODO: do this without using `rewrite`.
+    ψ : pair⁼ (ap-pr₁ q , ap-pr₂ q) ≡ q
+    ψ rewrite q = refl
+    I : ap-pr₁ p ≡ ap-pr₁ q
+    I = A-set x₀ x₁ (ap-pr₁ p) (ap-pr₁ q)
+    II : ap-pr₂ p ≡ ap-pr₂ q
+    II = B-set y₀ y₁ (ap-pr₂ p) (ap-pr₂ q)
+
+-- TODO: generalise ×-set to Σ-types.
+postulate
+  Σ-set : {A : Set ℓ} {B : A → Set ℓ′} → IsSet A → ((x : A) → IsSet (B x)) → IsSet (Σ A B)
 
 ------------------------------------------------------------------------------------------
 -- POWERSETS
@@ -234,3 +266,5 @@ x ∈ A = A x holds
 
 _⊆_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → Set ℓ
 _⊆_ {X = X} S T = (x : X) → x ∈ S → x ∈ T
+
+-- --}
