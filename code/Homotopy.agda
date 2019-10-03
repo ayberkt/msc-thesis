@@ -259,8 +259,8 @@ postulate
 𝒫 : Set ℓ → Set (suc ℓ)
 𝒫 {ℓ} X = X → Ω ℓ
 
-powersets-are-sets : {X : Set ℓ} → IsSet (𝒫 X)
-powersets-are-sets = ∏-set (λ _ → Ω-set)
+𝒫-set : {X : Set ℓ} → IsSet (𝒫 X)
+𝒫-set = ∏-set (λ _ → Ω-set)
 
 _∈_ : {X : Set ℓ} → X → 𝒫 X → Set ℓ
 x ∈ A = A x holds

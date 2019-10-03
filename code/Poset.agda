@@ -74,4 +74,4 @@ DownwardClosedSubset : (P : Poset ℓ ℓ′) → Set (suc ℓ ⊔ ℓ′)
 DownwardClosedSubset P = Σ[ S ∈ (𝒫 ∣ P ∣) ] (IsDownwardClosed P S holds)
 
 DownwardClosedSubset-set : (P : Poset ℓ ℓ′) → IsSet (DownwardClosedSubset P)
-DownwardClosedSubset-set P = Σ-set (prop⇒set ∘ proj₂ ∘ IsDownwardClosed P)
+DownwardClosedSubset-set P = Σ-set 𝒫-set (prop⇒set ∘ proj₂ ∘ IsDownwardClosed P)
