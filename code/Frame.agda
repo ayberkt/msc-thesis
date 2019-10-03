@@ -4,6 +4,7 @@ open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
 open import Function                              using (_∘_)
+open import AlgebraicProperties
 open import Homotopy
 -- open import Subset                                using (SubP)
 open import Poset
@@ -51,17 +52,34 @@ _$f_ : {ℓ ℓ′ : Level} {F₀ : Frame ℓ ℓ′} {F₁ : Frame ℓ ℓ′}
      → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
 _$f_ = proj₁ ∘ _─f→_.m
 
-downward : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
-downward {ℓ = ℓ} (X , P) = A , posetstr _⊑d′_ A-set ⊑d-refl {!!} {!!}
+downward : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) (ℓ ⊔ ℓ′)
+downward {ℓ = ℓ} {ℓ′} (X , P) = A , posetstr _⊑d′_ A-set ⊑d-refl ⊑d-trans {!!}
   where
+    open PosetStr P using    (_⊑_)
+                    renaming (refl to ⊑-refl; trans to ⊑-trans; sym⁻¹ to ⊑-antisym)
     A = DownwardClosedSubset (X , P)
     A-set : IsSet (DownwardClosedSubset (X , P))
     A-set = DownwardClosedSubset-set (X , P)
-    _⊑d_ : A → A → Set ℓ
-    _⊑d_ (S , S↓) (T , T↓) = (x : X) → x ∈ S → x ∈ T
+    _⊑d_ : A → A → Set (ℓ ⊔ ℓ′)
+    _⊑d_ (S , _) (T , _) = (x : X) → x ∈ S → Σ[ y ∈ X ] (y ∈ T × (x ⊑ y) holds)
     ⊑d-prop : (S T : A) → IsProp (S ⊑d T)
     ⊑d-prop S T = {!!}
-    _⊑d′_ : A → A → Ω ℓ
+    _⊑d′_ : A → A → Ω (ℓ ⊔ ℓ′)
     _⊑d′_ S T = S ⊑d T , ⊑d-prop S T
-    ⊑d-refl : (x : A) → (x ⊑d′ x) holds
-    ⊑d-refl _ _ x∈S′ = x∈S′
+    ⊑d-refl : (S : A) → (S ⊑d′ S) holds
+    ⊑d-refl S x x∈S = x , (x∈S , ⊑-refl x)
+    ⊑d-trans : IsTransitive _⊑d_
+    ⊑d-trans S T U p q s s∈S with p s s∈S
+    ⊑d-trans S T U p q s s∈S | t , t∈T , s⊑t with q t t∈T
+    ⊑d-trans S T U p q s s∈S | t , t∈T , s⊑t | u , u∈U , t⊑u =
+      u , u∈U , (⊑-trans s t u s⊑t t⊑u)
+    ⊑d-antisym : IsAntisym _⊑d_
+    ⊑d-antisym S T S⊑T T⊑S =
+      to-subtype-≡ (proj₂ ∘ IsDownwardClosed (X , P)) (subsetext S⊆T T⊆S)
+        where
+          S⊆T : (proj₁ S) ⊆ (proj₁ T)
+          S⊆T s s∈S with S⊑T s s∈S
+          S⊆T s s∈S | t , t∈T , s⊑t with T⊑S t t∈T
+          S⊆T s s∈S | t , t∈T , s⊑t | s′ , s′∈S , t⊑s′ = {!!}
+          T⊆S : (proj₁ T) ⊆ (proj₁ S)
+          T⊆S t t∈S = {!!}
