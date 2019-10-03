@@ -4,8 +4,9 @@ module Homotopy where
 
 open import Common
 
-variable
-  ℓ ℓ′ : Level
+private
+  variable
+    ℓ ℓ′ : Level
 
 ------------------------------------------------------------------------------------------
 -- BASICS
