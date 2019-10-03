@@ -268,4 +268,13 @@ x ∈ A = A x holds
 _⊆_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → Set ℓ
 _⊆_ {X = X} S T = (x : X) → x ∈ S → x ∈ T
 
+subsetext : {X : Set ℓ} {A B : 𝒫 X} → A ⊆ B → B ⊆ A → A ≡ B
+subsetext {X = X} {A} {B} A⊆B B⊆A = funext _ _ φ
+  where
+    φ : (x : X) → A x ≡ B x
+    φ x = to-subtype-≡ (λ _ → IsProp-prop) (equivtoid foo)
+      where
+        foo : (A x holds) ≃ (B x holds)
+        foo = P↔Q⇒P≃Q (proj₂ (A x)) (proj₂ (B x)) (A⊆B x) (B⊆A x)
+
 -- --}
