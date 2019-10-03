@@ -6,6 +6,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; sym)
             renaming (cong to ap; subst to transport; trans to _·_)
 open import Data.Product using (Σ; Σ-syntax; proj₁; proj₂; _,_; _×_)
 open import Function     using (id; _∘_)
+open import Common       using (Σ-resp₀)
 open import Level
 open import Homotopy
 
@@ -62,5 +63,15 @@ _≃m≃_ {A} {B} P₁ P₂ =
   Σ[ m₁ ∈ (P₁ ─m→ P₂) ]
   Σ[ m₂ ∈ (P₂ ─m→ P₁) ] ((proj₁ m₁ ∘ proj₁ m₂) ~ id) × ((proj₁ m₂ ∘ proj₁ m₁) ~ id)
 
+IsDownwardClosed : (P : Poset ℓ ℓ′) → (𝒫 ∣ P ∣) → Ω (ℓ ⊔ ℓ′)
+IsDownwardClosed (X , P) D = ((x y : X) → x ∈ D → (y ⊑ x) holds → y ∈ D) , prop
   where
-    open PosetStr (proj₂ P) using (_⊑_)
+    prop = ∏-resp-prop λ _ → ∏-resp-prop λ y → ∏-resp-prop λ _ → ∏-resp-prop λ _ →
+      proj₂ (D y)
+    open PosetStr P using (_⊑_)
+
+DownwardClosedSubset : (P : Poset ℓ ℓ′) → Set (suc ℓ ⊔ ℓ′)
+DownwardClosedSubset P = Σ[ S ∈ (𝒫 ∣ P ∣) ] (IsDownwardClosed P S holds)
+
+DownwardClosedSubset-set : (P : Poset ℓ ℓ′) → IsSet (DownwardClosedSubset P)
+DownwardClosedSubset-set P = Σ-set (prop⇒set ∘ proj₂ ∘ IsDownwardClosed P)

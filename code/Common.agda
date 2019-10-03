@@ -20,6 +20,6 @@ syntax Σ!-syntax A (λ x → B) = Σ![ x ∈ A ] B
         → (x₀ , y₀) ≡ (x₁ , y₁) → x₀ ≡ x₁
 ×-resp₀ refl = refl
 
-Σ-resp₀ : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : X → Set ℓ′} {x : X} {x₀ x₁ : X} {y₀ y₁ : Y x}
-        → (x₀ , y₀) ≡ (x₁ , y₁) → x₀ ≡ x₁
-Σ-resp₀ refl = refl
+Σ-resp₀ : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : X → Set ℓ′} (x : X) {x₀ x₁ : X}
+        → (y₀ : Y x₀) → (y₁ : Y x₁) → (x₀ , y₀) ≡ (x₁ , y₁) → x₀ ≡ x₁
+Σ-resp₀ x y₀ y₁ refl = refl
