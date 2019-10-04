@@ -193,6 +193,9 @@ IsProp-prop {X = X} X-prop₀ X-prop₁ = funext _ _ exteq′
     exteq′ : (x : X) → X-prop₀ x ≡ X-prop₁ x
     exteq′ x = funext _ _ λ y → exteq x y
 
+IsSet-prop : {X : Set ℓ} → IsProp (IsSet X)
+IsSet-prop = ∏-resp-prop λ x → ∏-resp-prop λ y → IsProp-prop
+
 -- Being equivalence is a proposition.
 equiv-prop : {X : Set ℓ} {Y : Set ℓ′} → (f : X → Y) → IsProp (isequiv f)
 equiv-prop {X = X} f = ∏-resp-prop (λ _ → IsContractible-prop)
