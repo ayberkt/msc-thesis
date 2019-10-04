@@ -4,7 +4,7 @@ open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
 open import Function                              using (_∘_)
-open import AlgebraicProperties
+import AlgebraicProperties
 open import Homotopy
 -- open import Subset                                using (SubP)
 open import Poset
@@ -64,16 +64,18 @@ downward {ℓ = ℓ} {ℓ′} (X , P) = A , posetstr _⊑d′_ A-set ⊑d-refl �
     _⊑d_ (S , _) (T , _) = (x : X) → x ∈ S → Σ[ y ∈ X ] (y ∈ T × (x ⊑ y) holds)
     ⊑d-prop : (S T : A) → IsProp (S ⊑d T)
     ⊑d-prop S T = {!!}
+    open AlgebraicProperties A-set (λ S T → S ⊑d T , ⊑d-prop S T)
+       renaming (IsTransitive to IsTransitive-⊑d; IsAntisym to IsAntisym-⊑d)
     _⊑d′_ : A → A → Ω (ℓ ⊔ ℓ′)
     _⊑d′_ S T = S ⊑d T , ⊑d-prop S T
     ⊑d-refl : (S : A) → (S ⊑d′ S) holds
     ⊑d-refl S x x∈S = x , (x∈S , ⊑-refl x)
-    ⊑d-trans : IsTransitive _⊑d_
+    ⊑d-trans : IsTransitive-⊑d holds
     ⊑d-trans S T U p q s s∈S with p s s∈S
     ⊑d-trans S T U p q s s∈S | t , t∈T , s⊑t with q t t∈T
     ⊑d-trans S T U p q s s∈S | t , t∈T , s⊑t | u , u∈U , t⊑u =
       u , u∈U , (⊑-trans s t u s⊑t t⊑u)
-    ⊑d-antisym : IsAntisym _⊑d_
+    ⊑d-antisym : IsAntisym-⊑d holds
     ⊑d-antisym S T S⊑T T⊑S =
       to-subtype-≡ (proj₂ ∘ IsDownwardClosed (X , P)) (subsetext S⊆T T⊆S)
         where
