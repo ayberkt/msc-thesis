@@ -10,8 +10,9 @@ open import Common       using (Σ-resp₀)
 open import Level
 open import Homotopy
 
-variable
-  ℓ ℓ′ : Level
+private
+  variable
+    ℓ ℓ′ : Level
 
 _$_ : {A : Set ℓ} {B : A → Set ℓ′} → Σ A B → A
 _$_ = proj₁
