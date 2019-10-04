@@ -281,3 +281,5 @@ subsetext {X = X} {A} {B} A⊆B B⊆A = funext _ _ φ
         foo = P↔Q⇒P≃Q (proj₂ (A x)) (proj₂ (B x)) (A⊆B x) (B⊆A x)
 
 -- --}
+-- --}
+-- --}
