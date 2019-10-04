@@ -4,139 +4,84 @@ module PosetIsomorphism where
 
 open import Common
 open import Homotopy
-open import Poset
-open import AlgebraicProperties
+open import SIP
+open import SIPWithAxioms
 
 variable
   ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
 
-IsPartial : {X : Set ℓ} → (X → X → Set ℓ) → Set ℓ
-IsPartial _⊑_ = IsReflexive _⊑_ × IsTransitive _⊑_ × IsAntisym _⊑_
-
-PosetStr′ : Set ℓ → Set (suc ℓ)
-PosetStr′ {ℓ} X =
-  IsSet X × Σ[ _⊑_ ∈ (X → X → Set ℓ) ] (((x y : X) → IsProp (x ⊑ y)) × IsPartial _⊑_)
-
-Poset′ : (ℓ : Level) → Set (suc ℓ)
-Poset′ ℓ = Σ (Set ℓ) PosetStr′
-
-∣_∣ : (P : Poset′ ℓ) → Set ℓ
-∣ X , _ ∣ = X
-
-rel : (P : Poset′ ℓ)→ ∣ P ∣ → ∣ P ∣ → Set ℓ
-rel (_ , _ , _⊑_ , _) = _⊑_
-
-trans : (P : Poset′ ℓ)→ IsTransitive (rel P)
-trans (_ , _ , _ , _ , _ , trans , _) = trans
-
-setlike : (P : Poset′ ℓ) → IsSet ∣ P ∣
-setlike (_ , ∣P∣-set , _ , _) = ∣P∣-set
-
-⊑-prop : (P : Poset′ ℓ) → (x y : ∣ P ∣) → IsProp (rel P x y)
-⊑-prop (_ , _ , _ , ⊑-prop , _) = ⊑-prop
-
-IsMonotonic : (P₀ P₁ : Poset′ ℓ) → (∣ P₀ ∣ → ∣ P₁ ∣) → Set (suc ℓ)
-IsMonotonic P₀ P₁ f = (x y : ∣ P₀ ∣) → rel P₀ x y ≡ rel P₁ (f x) (f y)
-
-id-monotonic : (P : Poset′ ℓ) → IsMonotonic P P (id {A = ∣ P ∣})
-id-monotonic P x y = refl
-
-IsIsomorphism : (P₀ P₁ : Poset′ ℓ) → (∣ P₀ ∣ → ∣ P₁ ∣) → Set (suc ℓ)
-IsIsomorphism P₀ P₁ f = (IsMonotonic P₀ P₁ f) × Σ (∣ P₁ ∣ → ∣ P₀ ∣) λ g →
-  IsMonotonic P₁ P₀ g × ((g ∘ f) ~ id × ((f ∘ g) ~ id))
-
--- The type of poset isomorphisms.
-_≅ₚ_ : Poset′ ℓ → Poset′ ℓ → Set (suc ℓ)
-P₀ ≅ₚ P₁ = Σ (∣ P₀ ∣ → ∣ P₁ ∣) (λ f → IsIsomorphism P₀ P₁ f)
-
--- Expresses that a given f : ∣P₀∣ → ∣P₁∣ is an equivalence that is monotonic.
-IsMonoEquiv : (P₀ P₁ : Poset′ ℓ) → (∣ P₀ ∣ → ∣ P₁ ∣) → Set (suc ℓ)
-IsMonoEquiv P₀ P₁ f = isequiv f × IsMonotonic P₀ P₁ f
-
--- The type of *monotonic equivalences*.
-_≃ₚ_ : Poset′ ℓ → Poset′ ℓ → Set (suc ℓ)
-P₀ ≃ₚ P₁ = Σ (∣ P₀ ∣ → ∣ P₁ ∣) λ f → IsMonoEquiv P₀ P₁ f
-
-PosetStr′≃PosetStr : (X : Set ℓ) → PosetStr X ≃ PosetStr′ X
-PosetStr′≃PosetStr X = to-Σ , λ P → (from-Σ P , cancellation P) , foo P
+IsPartial : {X : Set ℓ} → IsSet X → (X → X → Ω ℓ′) → Ω (ℓ ⊔ ℓ′)
+IsPartial {ℓ = ℓ} {ℓ′} {X = X} X-set _⊑_ = φ , φ-prop
   where
-    to-Σ : PosetStr X → PosetStr′ X
-    to-Σ (posetstr _⊑_ ⊑-prop A-set rlx trans antisym) =
-      A-set , (_⊑_ , ⊑-prop , rlx , (trans , antisym))
-    from-Σ : PosetStr′ X → PosetStr X
-    from-Σ (X-set , _⊑_ , ⊑-prop , rfl , trans , antisym) =
-      posetstr _⊑_ ⊑-prop X-set rfl trans antisym
-    cancellation : (P : PosetStr′ X) → to-Σ (from-Σ P) ≡ P
-    cancellation _ = refl
-    foo : (P : PosetStr′ X) (x : fiber to-Σ P) → (from-Σ P , refl) ≡ x
-    foo  _ (_ , refl) = refl
+    φ : Set (ℓ ⊔ ℓ′)
+    φ = IsReflexive holds × (IsTransitive holds × IsAntisym holds)
+     where
+       open import AlgebraicProperties X-set _⊑_
+    φ-prop : IsProp φ
+    φ-prop = ×-resp-prop _ _ (proj₂ IsReflexive )
+             (×-resp-prop _ _ (proj₂ IsTransitive) (proj₂ IsAntisym))
+      where
+        open import AlgebraicProperties X-set _⊑_
 
-PosetStr′≡PosetStr : (X : Set ℓ) → PosetStr X ≡ PosetStr′ X
-PosetStr′≡PosetStr = equivtoid ∘ PosetStr′≃PosetStr
+PosetStr : Set → Set₁
+PosetStr X = X → X → Ω zero
 
-⌜_⌝ : {P₀ P₁ : Poset′ ℓ} → P₀ ≡ P₁ → ∣ P₀ ∣ → ∣ P₁ ∣
-⌜ p ⌝ = transport ∣_∣ p
+PosetAxioms′ : (X : Set) → IsSet X → (X → X → Ω zero) → Ω zero
+PosetAxioms′ X X-set _⊑_ = IsPartial X-set _⊑_
 
-eq⇒iso : (P₀ P₁ : Poset′ ℓ) → P₀ ≡ P₁ → P₀ ≅ₚ P₁
-eq⇒iso _ _ refl = id , ((λ _ _ → refl) , (id , ((λ _ _ → refl) , (λ _ → refl) , λ _ → refl)))
-
--- Every poset isomorphism is a poset equivalence.
-iso⇒equiv : (P₀ P₁ : Poset′ ℓ)
-          → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsIsomorphism P₀ P₁ f → IsMonoEquiv P₀ P₁ f
-iso⇒equiv P₀ P₁ f (mono , (g , (g-mono , li , ri))) = f-equiv , mono
+PosetAxioms : (X : Set) → (X → X → Ω zero) → Ω zero
+PosetAxioms X _⊑_ = (Σ[ X-set ∈ (IsSet X) ] PosetAxioms′ X X-set _⊑_ holds) , prop
   where
-    bar : (y : ∣ P₁ ∣) (f : fiber f y) → (g y , ri y) ≡ f
-    bar y (x , refl) = to-subtype-≡ (λ x′ → setlike P₁ (f x′) (f x)) (li x)
-    f-equiv : isequiv f
-    f-equiv x = (g x , ri x) , bar x
+    prop : IsProp (Σ[ X-set ∈ (IsSet X) ] PosetAxioms′ X X-set _⊑_ holds)
+    prop = Σ-resp-prop IsSet-prop λ X-set → proj₂ (PosetAxioms′ X X-set _⊑_)
 
-equiv⇒iso : (P₀ P₁ : Poset′ ℓ) (f : ∣ P₀ ∣ → ∣ P₁ ∣)
-          → IsMonoEquiv P₀ P₁ f → IsIsomorphism P₀ P₁ f
-equiv⇒iso P₀ P₁ f (e , f-mono) = f-mono , g , k , η , ε
+sns-data : SNS PosetStr (suc zero)
+sns-data = ι , ρ , θ
   where
-    g      = inverse f e
-    _⊑₁_   = rel P₁
-    _⊑₀_   = rel P₀
-    η : (inverse f e ∘ f) ~ id
-    η = lcancel f e
-    ε : (f ∘ inverse f e) ~ id
-    ε = rcancel f e
-    k : (x y : ∣ P₁ ∣) → x ⊑₁ y ≡ (g x) ⊑₀ (g y)
-    k x y = begin
-      (x ⊑₁ y)              ≡⟨ cong (λ k → k ⊑₁ y)   (sym (ε x)) ⟩
-      (f (g x) ⊑₁ y)        ≡⟨ cong (_⊑₁_ (f (g x))) (sym (ε y)) ⟩
-      (f (g x) ⊑₁ f (g y))  ≡⟨ sym (f-mono (g x) (g y))          ⟩
-      (g x) ⊑₀ (g y)        ∎
+    ι : (A B : Σ _ PosetStr) → ∣ A ∣ ≃ ∣ B ∣ → Set₁
+    ι (X , d) (Y , e) (f , _) = d ≡ λ x x′ → e (f x) (f x′)
 
--- Being monotonic is a propositional type.
-Mono-prop : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsMonotonic P₀ P₁ f)
-Mono-prop P₀ P₁ f = ∏-resp-prop λ x → ∏-resp-prop λ y →
-  {!!}
+    ρ : (A : Σ _ PosetStr) → ι A A (id-≃ ∣ A ∣)
+    ρ (X , d) = refl
 
-MonoEquiv-prop : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsMonoEquiv P₀ P₁ f)
-MonoEquiv-prop P₀ P₁ f =
-  ×-resp-prop (isequiv f) (IsMonotonic P₀ P₁ f) (equiv-prop f) (Mono-prop P₀ P₁ f)
+    h : {X : Set} {d e : PosetStr X} → canonical-map ι ρ d e ~ id
+    h refl = refl
 
-Iso-prop : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣) → IsProp (IsIsomorphism P₀ P₁ f)
-Iso-prop P₀ P₁ f (m₀ , rest) (m₁ , rest′) = {!!}
+    θ : {X : Set} (d e : PosetStr X) → isequiv (canonical-map ι ρ d e)
+    θ d e = {!!}
 
-iso≃equiv : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣)
-          → IsIsomorphism P₀ P₁ f ≃ IsMonoEquiv P₀ P₁ f
-iso≃equiv P₀ P₁ f = P↔Q⇒P≃Q
-                      (Iso-prop P₀ P₁ f)
-                      (MonoEquiv-prop P₀ P₁ f)
-                      (iso⇒equiv P₀ P₁ f)
-                      (equiv⇒iso P₀ P₁ f)
+Poset : Set₁
+Poset = Σ[ X ∈ Set ] Σ[ _⊑_ ∈ (PosetStr X) ] (PosetAxioms X _⊑_ holds)
 
-iso≡equiv : (P₀ P₁ : Poset′ ℓ) → (f : ∣ P₀ ∣ → ∣ P₁ ∣)
-          → IsIsomorphism P₀ P₁ f ≡ IsMonoEquiv P₀ P₁ f
-iso≡equiv P₀ P₁ f = equivtoid (iso≃equiv P₀ P₁ f)
+carrier : (P : Poset) → Set
+carrier (X , _) = X
 
-≅ₚ-charac : (P₀ P₁ : Poset′ ℓ) → (P₀ ≅ₚ P₁) ≃ (P₀ ≃ₚ P₁)
-≅ₚ-charac P₀ P₁ = {!Σ-cong!}
+rel : (P : Poset)→ ∣ P ∣ → ∣ P ∣ → Ω zero
+rel (_ , _⊑_ , _) = _⊑_
 
-≃ₚ-charac′ : (P₀ P₁ : Poset′ ℓ) → (P₀ ≅ₚ P₁) ≡ (P₀ ≃ₚ P₁)
-≃ₚ-charac′ P₀ P₁ = equivtoid (≅ₚ-charac P₀ P₁)
+setlike : (P : Poset) → IsSet ∣ P ∣
+setlike (_ , _ , X-set , _) = X-set
+
+axioms : (P : Poset) → PosetAxioms ∣ P ∣ (rel P) holds
+axioms (_ , _ , axioms) = axioms
+
+_≅_ : Poset → Poset → Set₁
+(X , _⊑₀_ , _) ≅ (Y , _⊑₁_ , _) =
+  Σ[ f ∈ (X → Y) ] (isequiv f × (_⊑₀_ ≡ λ x x′ → (f x) ⊑₁ (f x′)))
+
+eq≃iso : (P₀ P₁ : Poset) → (P₀ ≡ P₁) ≃ (P₀ ≅ P₁)
+eq≃iso P₀ P₁ =
+  characterisation-of-≡-with-axioms
+    sns-data
+    foo
+    (λ X _⊑_ → proj₂ (PosetAxioms X _⊑_))
+    (proj₁ P₀ , rel P₀ , axioms P₀) (proj₁ P₁ , (rel P₁ , axioms P₁))
+  where
+    foo : (X : Set) → PosetStr X → Set
+    foo X _⊑_ = (PosetAxioms X _⊑_) holds
+
+eq≡iso : (P₀ P₁ : Poset) → (P₀ ≡ P₁) ≡ (P₀ ≅ P₁)
+eq≡iso P₀ P₁ = equivtoid (eq≃iso P₀ P₁)
 
 -- -}
 -- -}
