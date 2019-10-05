@@ -3,6 +3,6 @@ image: ayberkt/agda:v0
 before_script:
   - cd code
 
-test
+test:
   script:
   - ./check.sh
