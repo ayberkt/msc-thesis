@@ -27,6 +27,8 @@ record Frame (ℓ ℓ′ : Level) : Set (suc ℓ ⊔ suc ℓ′) where
 
   field
     top    : (x     : O)         → (x ⊑ 𝟏) holds
+    -- Consider merging the following three requirements alternate between this
+    -- using univalence.
     ⊓-low₁ : (x y   : O)         → ((x ⊓ y) ⊑ x) holds
     ⊓-low₂ : (x y   : O)         → ((x ⊓ y) ⊑ y) holds
     ⊓-max  : (x y z : O)         → (z ⊑ x) holds → (z ⊑ y) holds → (z ⊑ (x ⊓ y)) holds
@@ -51,6 +53,9 @@ record _─f→_ {ℓ ℓ′ : Level} (F₀ : Frame ℓ ℓ′) (F₁ : Frame �
 _$f_ : {ℓ ℓ′ : Level} {F₀ : Frame ℓ ℓ′} {F₁ : Frame ℓ ℓ′}
      → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
 _$f_ = proj₁ ∘ _─f→_.m
+
+-- An element of the poset is like a finite observation whereas an element of the
+-- frame of downward closed posets is like a general observation.
 
 downward : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) (ℓ ⊔ ℓ′)
 downward {ℓ = ℓ} {ℓ′} (X , P) = A , posetstr _⊑d′_ A-set ⊑d-refl ⊑d-trans {!!}
