@@ -99,44 +99,58 @@ to-subtype-≡ {x = x} {y} {a} {b} p refl = cong (λ k → (x , k)) (p x a b)
             → IsProp X → ((x : X) → IsProp (Y x)) → IsProp (Σ X Y)
 Σ-resp-prop X-prop Y-prop (x₀ , _) (x₁ , _) = to-subtype-≡ Y-prop (X-prop x₀ x₁)
 
-wconstant : {X : Set ℓ} {Y : Set ℓ′} → (X → Y) → Set (ℓ ⊔ ℓ′)
-wconstant {X = X} f = (x x′ : X) → f x ≡ f x′
+wconst : {X : Set ℓ} {Y : Set ℓ′} → (X → Y) → Set (ℓ ⊔ ℓ′)
+wconst {X = X} f = (x x′ : X) → f x ≡ f x′
 
-wconstant-endomap : Set ℓ → Set ℓ
-wconstant-endomap X = Σ (X → X) wconstant
+wconst-endomap : Set ℓ → Set ℓ
+wconst-endomap X = Σ (X → X) wconst
 
-wcmap : (X : Set ℓ) → wconstant-endomap X → X → X
+wcmap : (X : Set ℓ) → wconst-endomap X → X → X
 wcmap X (f , _) = f
 
-wcmap-constancy : (X : Set ℓ) → (c : wconstant-endomap X) → wconstant (wcmap X c)
+wcmap-constancy : (X : Set ℓ) → (c : wconst-endomap X) → wconst (wcmap X c)
 wcmap-constancy X (_ , w) = w
 
-wconstant-≡-endomaps : Set ℓ → Set ℓ
-wconstant-≡-endomaps X = (x y : X) → wconstant-endomap (x ≡ y)
+wconst-≡-endomaps : Set ℓ → Set ℓ
+wconst-≡-endomaps X = (x y : X) → wconst-endomap (x ≡ y)
 
-sets-have-wconstant-≡-endomaps : (X : Set ℓ) → IsSet X → wconstant-≡-endomaps X
-sets-have-wconstant-≡-endomaps X s x y = id , s x y
+-- Hedberg's theorem: if the identity type of some type has all wildly constant endomaps
+-- then the identity type is a proposition.
+Hedberg : {X : Set ℓ}
+        → ((x y : X)→ wconst-endomap (x ≡ y))
+        → (x y : X) → IsProp (x ≡ y)
+Hedberg {ℓ} {X} φ x y p q =
+  begin
+    p                           ≡⟨ a y p ⟩
+    (sym (f x refl) >>> f y p)  ≡⟨ cong (_>>>_ (sym (f x refl))) (κ y p q) ⟩
+    (sym (f x refl) >>> f y q)  ≡⟨ sym (a y q) ⟩
+    q                           ∎
+  where
+    f : (y : X) → x ≡ y → x ≡ y
+    f = proj₁ ∘ φ x
+    κ : (y : X) (p q : x ≡ y) → f y p ≡ f y q
+    κ = proj₂ ∘ φ x
+    lemma : (a b : X) (p : a ≡ b) → (sym p) >>> p ≡ refl
+    lemma _ _ refl = refl
+    a : (y : X) (p : x ≡ y) → p ≡ (sym (f x refl)) >>> f y p
+    a y refl = sym (lemma y x (f x refl))
 
-props-have-wconstant-≡-endomaps : (X : Set ℓ) → IsProp X → wconstant-≡-endomaps X
-props-have-wconstant-≡-endomaps X X-prop x y = (λ _ → X-prop x y) , λ _ _ → refl
+-- (Generalised) Hedberg's *theorem*.
+wconst-≡-endomap⇒set : (X : Set ℓ) → wconst-≡-endomaps X → IsSet X
+wconst-≡-endomap⇒set X wconst = Hedberg wconst
 
--- A type is a set iff its identity types all have designated wconstant endomaps.
-postulate
-  Hedberg : {X : Set ℓ} (x : X)
-          → ((y : X) → wconstant-endomap (x ≡ y))
-          → (y : X) → IsProp (x ≡ y)
-
-types-with-wconstant-≡-endomaps-are-sets : (X : Set ℓ)
-                                         → wconstant-≡-endomaps X → IsSet X
-types-with-wconstant-≡-endomaps-are-sets X c x =
-  Hedberg x (λ y → wcmap (x ≡ y) (c x y) , wcmap-constancy (x ≡ y) (c x y))
+-- Converse of Hedberg's theorem which is trivial.
+set⇒wconst-≡-endomap : (X : Set ℓ) → IsSet X → wconst-≡-endomaps X
+set⇒wconst-≡-endomap X X-set x y = id , X-set x y
 
 contra⇒prop : {A : Set ℓ} → IsContractible A → IsProp A
 contra⇒prop (c , φ) x y = begin x ≡⟨ sym (φ x) ⟩ c ≡⟨ φ y ⟩ y ∎
 
 prop⇒set : {A : Set ℓ} → IsProp A → IsSet A
-prop⇒set {A = A} A-prop =
-  types-with-wconstant-≡-endomaps-are-sets A (props-have-wconstant-≡-endomaps A A-prop)
+prop⇒set {A = A} A-prop x y = wconst-≡-endomap⇒set _ f x y
+  where
+    f : wconst-≡-endomaps A
+    f x y = (λ _ → A-prop x y) , λ _ _ → refl
 
 ------------------------------------------------------------------------------------------
 -- PROPOSITIONS
@@ -151,8 +165,6 @@ _holds : Ω ℓ → Set ℓ
 
 holds-prop : (p : Ω ℓ) → IsProp (p holds)
 holds-prop (P , i) = i
-
-postulate Ω-set : IsSet (Ω ℓ)
 
 -- Some things that are propositions
 
@@ -206,8 +218,8 @@ P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar
   where
     postulate bar : (y : Y) (fib : fiber f y) → (g y , q (f (g y)) y) ≡ fib
 
--- Ω-ext : {ℓ : Level} {p q : Ω ℓ} → (p holds → q holds) → (q holds → p holds) → p ≡ q
--- Ω-ext p⇒q q⇒p = to-subtype-≡ (λ _ → IsProp-prop) {!!}
+postulate
+  Ω-ext : {ℓ : Level} {p q : Ω ℓ} → (p holds → q holds) → (q holds → p holds) → p ≡ q
 
 ------------------------------------------------------------------------------------------
 -- SETS
@@ -258,6 +270,25 @@ postulate
 ------------------------------------------------------------------------------------------
 -- POWERSETS
 ------------------------------------------------------------------------------------------
+
+Ω-set : IsSet (Ω ℓ)
+Ω-set {ℓ} = wconst-≡-endomap⇒set (Ω ℓ) c
+  where
+    _↔_ : (p q : Ω ℓ) → Set ℓ
+    p ↔ q = (p holds → q holds) × (q holds → p holds)
+    ↔-set : (p q : Ω ℓ) → IsProp (p ↔ q)
+    ↔-set p q =
+      ×-resp-prop _ _ (∏-resp-prop λ _ → holds-prop q) (∏-resp-prop λ _ → holds-prop p)
+    g : (p q : Ω ℓ) → p ≡ q → p ↔ q
+    g p q refl = id , id
+    h : (p q : Ω ℓ) → p ↔ q → p ≡ q
+    h p q p↔q = Ω-ext (proj₁ p↔q) (proj₂ p↔q)
+    f : (P Q : Ω ℓ) → P ≡ Q → P ≡ Q
+    f P Q = h P Q ∘ g P Q
+    f-const : (P Q : Ω ℓ) (d e : P ≡ Q) → f P Q d ≡ f P Q e
+    f-const P Q d e = cong (h P Q) (↔-set P Q (g P Q d) (g P Q e))
+    c : (p q : Ω ℓ) → Σ[ f ∈ (p ≡ q → p ≡ q) ] (wconst f)
+    c P Q = f P Q , f-const P Q
 
 𝒫 : Set ℓ → Set (suc ℓ)
 𝒫 {ℓ} X = X → Ω ℓ
