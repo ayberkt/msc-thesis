@@ -1,4 +1,4 @@
-image: ayberkt/agda:v0
+image: ayberkt/agda:v1
 
 before_script:
   - cd code
