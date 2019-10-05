@@ -1,0 +1,8 @@
+image: ayberkt/agda:v0
+
+before_script:
+  - cd code
+
+test
+  script:
+  - ./check.sh
