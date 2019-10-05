@@ -1,10 +1,11 @@
 module PostSystem where
 
 open import Common
+open import Poset    renaming (∣_∣ to ∣_∣P)
 open import Homotopy
 
 variable
-  ℓ : Level
+  ℓ ℓ′ : Level
 
 PostSystemStr : Set ℓ → Set (suc (suc ℓ))
 PostSystemStr X = X → 𝒫 (𝒫 X)
@@ -28,3 +29,10 @@ module _ (PS : PostSystem ℓ) where
 
     _◀ₛ_ : 𝒫 ∣ PS ∣ → 𝒫 ∣ PS ∣ → Set (suc ℓ)
     _◀ₛ_ S U = (s : ∣ PS ∣) → s ∈ S → s ◀ U
+
+ext : {X : Set ℓ} (_⊑_ : X → X → Set ℓ′)
+     → 𝒫 X → 𝒫 X → Set (ℓ ⊔ ℓ′)
+ext {X = X} _⊑_ S T = (t : X) → t ∈ T → Σ[ s ∈ X ] (s ∈ S × t ⊑ s)
+
+CompletePosetStr : (ℓ ℓ′ : Level) → Set ℓ → Set (suc (suc ℓ) ⊔ suc ℓ′)
+CompletePosetStr ℓ ℓ′ X = PosetStr ℓ ℓ′ X × PostSystemStr X
