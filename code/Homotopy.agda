@@ -218,8 +218,9 @@ P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar
   where
     postulate bar : (y : Y) (fib : fiber f y) → (g y , q (f (g y)) y) ≡ fib
 
-postulate
-  Ω-ext : {ℓ : Level} {p q : Ω ℓ} → (p holds → q holds) → (q holds → p holds) → p ≡ q
+Ω-ext : {ℓ : Level} {P Q : Ω ℓ} → (P holds → Q holds) → (Q holds → P holds) → P ≡ Q
+Ω-ext {P = (A , A-prop)} {B , B-prop} P⇒Q Q⇒P =
+  to-subtype-≡ (λ _ → IsProp-prop) (equivtoid (P↔Q⇒P≃Q A-prop B-prop P⇒Q Q⇒P))
 
 ------------------------------------------------------------------------------------------
 -- SETS
