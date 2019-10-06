@@ -82,6 +82,10 @@ postulate
          → f ≡ g
   ua : {A B : Set ℓ} → isequiv {_} {_} {A ≡ B} {A ≃ B} idtoeqv
 
+funext-conv : {X : Set ℓ} {Y : X → Set ℓ′}
+            → (f g : (x : X) → Y x) → f ≡ g → ((x : X) → f x ≡ g x)
+funext-conv f g refl x = refl
+
 equivtoid : {A B : Set ℓ} → A ≃ B → A ≡ B
 equivtoid {A = A} {B} (f , e) = proj₁ (proj₁ (ua {_} {A} {B} (f , e)))
 
@@ -230,8 +234,9 @@ P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar
 -- SET CLOSURE
 ------------------------------------------------------------------------------------------
 
-postulate ∏-set : {X : Set ℓ} {Y : X → Set ℓ′}
-                → ((x : X) → IsSet (Y x)) → IsSet ((x : X) → Y x)
+∏-set : {X : Set ℓ} {Y : X → Set ℓ′}
+      → ((x : X) → IsSet (Y x)) → IsSet ((x : X) → Y x)
+∏-set {X = X} {Y} Y-set= ?
 
 _=×=_ : {A : Set ℓ} {B : Set ℓ′} → (x y : A × B) → Set (ℓ ⊔ ℓ′)
 _=×=_ {B = B} (a₀ , b₀) (a₁ , b₁) = (a₀ ≡ a₁) × (b₀ ≡ b₁)
