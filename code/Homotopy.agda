@@ -236,7 +236,21 @@ P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar
 
 ∏-set : {X : Set ℓ} {Y : X → Set ℓ′}
       → ((x : X) → IsSet (Y x)) → IsSet ((x : X) → Y x)
-∏-set {X = X} {Y} Y-set= ?
+∏-set {X = X} {Y} Y-set = wconst-≡-endomap⇒set _ φ
+  where
+    𝔎 : (x : X) → (y y′ : Y x) → y ≡ y′ → y ≡ y′
+    𝔎 x y y′ = proj₁ (set⇒wconst-≡-endomap (Y x) (Y-set x) y y′)
+    𝔎-wconst : (x : X) → (y y′ : Y x) → wconst (𝔎 x y y′)
+    𝔎-wconst x y y′ = proj₂ (set⇒wconst-≡-endomap (Y x) (Y-set x) y y′)
+    φ : wconst-≡-endomaps ((x : X) → Y x)
+    φ f g = 𝔏 , 𝔏-wconst
+      where
+        𝔏 : f ≡ g → f ≡ g
+        𝔏 p = funext _ _ λ x → 𝔎 x (f x) (g x) (funext-conv f g p x)
+        exteq : f ≡ g → (x : X) → f x ≡ g x
+        exteq = funext-conv f g
+        𝔏-wconst : wconst 𝔏
+        𝔏-wconst p q = cong (funext f g) (funext _ _ λ x → 𝔎-wconst x (f x) (g x) (exteq p x) (exteq q x))
 
 _=×=_ : {A : Set ℓ} {B : Set ℓ′} → (x y : A × B) → Set (ℓ ⊔ ℓ′)
 _=×=_ {B = B} (a₀ , b₀) (a₁ , b₁) = (a₀ ≡ a₁) × (b₀ ≡ b₁)
