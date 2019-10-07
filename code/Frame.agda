@@ -10,10 +10,14 @@ open import Homotopy
 -- open import Subset                                using (SubP)
 open import Poset
 
-Sub : {ℓ : Level} → Set ℓ → Set (suc ℓ)
-Sub {ℓ} A = Σ[ I ∈ Set ℓ ] (I → A)
+private
+  variable
+    ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
 
-record Frame (ℓ ℓ′ : Level) : Set (suc ℓ ⊔ suc ℓ′) where
+Sub : (ℓ : Level) → Set ℓ′ → Set (ℓ′ ⊔ suc ℓ)
+Sub ℓ A = Σ[ I ∈ Set ℓ ] (I → A)
+
+record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc ℓ ⊔ suc ℓ′ ⊔ suc ℓ₂) where
 
   field
     P   : Poset ℓ ℓ′
@@ -24,7 +28,7 @@ record Frame (ℓ ℓ′ : Level) : Set (suc ℓ ⊔ suc ℓ′) where
   field
     𝟏   : O
     _⊓_ : O → O → O
-    ⊔_  : Sub O → O
+    ⊔_  : Sub ℓ₂ O → O
 
   field
     top    : (x     : O)         → (x ⊑ 𝟏) holds
@@ -33,11 +37,11 @@ record Frame (ℓ ℓ′ : Level) : Set (suc ℓ ⊔ suc ℓ′) where
     ⊓-low₁ : (x y   : O)         → ((x ⊓ y) ⊑ x) holds
     ⊓-low₂ : (x y   : O)         → ((x ⊓ y) ⊑ y) holds
     ⊓-max  : (x y z : O)         → (z ⊑ x) holds → (z ⊑ y) holds → (z ⊑ (x ⊓ y)) holds
-    ⊔-up   : (S     : Sub O)     → (o : O) → (o ⊑ (⊔ S)) holds
-    ⊔-min  : (S     : Sub O)     → (z : O) → ((o : O) → (o ⊑ z) holds) → ((⊔ S) ⊑ z) holds
-    dist   : (x : O) (S : Sub O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
+    ⊔-up   : (S     : Sub ℓ₂ O)     → (o : O) → (o ⊑ (⊔ S)) holds
+    ⊔-min  : (S     : Sub ℓ₂ O)     → (z : O) → ((o : O) → (o ⊑ z) holds) → ((⊔ S) ⊑ z) holds
+    dist   : (x : O) (S : Sub ℓ₂ O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
 
-record _─f→_ {ℓ ℓ′ : Level} (F₀ : Frame ℓ ℓ′) (F₁ : Frame ℓ ℓ′) : Set (suc ℓ ⊔ ℓ′) where
+record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ : Frame ℓ ℓ′ ℓ₂) (F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ (suc ℓ₂)) where
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
   open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
   A₀ = proj₁ P₀
@@ -49,16 +53,16 @@ record _─f→_ {ℓ ℓ′ : Level} (F₀ : Frame ℓ ℓ′) (F₁ : Frame �
   field
      resp-id : m $ 𝟏₀ ≡ 𝟏₁
      resp-⊓  : (x y : A₀) → m $ (x ⊓₀ y) ≡ (m $ x) ⊓₁ (m $ y)
-     resp-⊔  : (ℱ : Sub A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i)))
+     resp-⊔  : (ℱ : Sub ℓ₂ A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i)))
 
-_$f_ : {ℓ ℓ′ : Level} {F₀ : Frame ℓ ℓ′} {F₁ : Frame ℓ ℓ′}
+_$f_ : {F₀ : Frame ℓ ℓ′ ℓ₂} {F₁ : Frame ℓ ℓ′ ℓ₂}
      → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
 _$f_ = proj₁ ∘ _─f→_.m
 
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
-downward : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
+downward : (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
 downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-trans <<-antisym)
   where
     open PosetStr P using    (_⊑_)
@@ -82,7 +86,7 @@ downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-tran
     <<-antisym (S , _) (T , _) S⊆T T⊆S =
       to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
 
-downward-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame {!!} {!!}
+downward-frame : {ℓ ℓ′ ℓ₂ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ₂
 downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
   record
     { P       =  downward (X , P)
