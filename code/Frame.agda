@@ -3,6 +3,7 @@ module Frame where
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
+open import Unit                                  using (tt)
 open import Function                              using (_∘_)
 import AlgebraicProperties
 open import Homotopy
@@ -80,6 +81,41 @@ downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-tran
     <<-antisym : <<-IsAntisym holds
     <<-antisym (S , _) (T , _) S⊆T T⊆S =
       to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
+
+downward-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame {!!} {!!}
+downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
+  record
+    { P       =  downward (X , P)
+    ; 𝟏       =  𝟏
+    ; _⊓_     =  _⊓_
+    ; ⊔_      =  {!!}
+    ; top     =  𝟏-top
+    ; ⊓-low₁  =  ⊓-low₀
+    ; ⊓-low₂  =  ⊓-low₁
+    ; ⊓-max   =  ⊓-max
+    ; ⊔-up    =  {!!}
+    ; ⊔-min   =  {!!}
+    ; dist    =  {!!}
+    }
+  where
+    𝔻 = ∣ downward (X , P) ∣
+    open PosetStr (proj₂ (downward (X , P))) renaming (_⊑_ to _<<_)
+    𝟏 = entirety , λ _ _ _ _ → tt
+    ∩-down : (S T : 𝒫 X)
+           → IsDownwardClosed (X , P) S       holds
+           → IsDownwardClosed (X , P) T       holds
+           → IsDownwardClosed (X , P) (S ∩ T) holds
+    ∩-down S T S-dc T-dc x y x∈S∩T y⊑x = S-dc x y (proj₁ x∈S∩T) y⊑x , T-dc x y (proj₂ x∈S∩T) y⊑x
+    _⊓_ : 𝔻 → 𝔻 → 𝔻
+    (S , S-dc) ⊓ (T , T-dc) = (S ∩ T) , ∩-down S T S-dc T-dc
+    𝟏-top : (D : ∣ downward (X , P) ∣) → (D << 𝟏) holds
+    𝟏-top D _ _ = tt
+    ⊓-low₀ : (D E : 𝔻) → ((D ⊓ E) << D) holds
+    ⊓-low₀ D E x (x∈D , _) = x∈D
+    ⊓-low₁ : (D E : 𝔻) → ((D ⊓ E) << E) holds
+    ⊓-low₁ D E x (_ , x∈F) = x∈F
+    ⊓-max : (D E F : 𝔻) → (F << D) holds → (F << E) holds → (F << (D ⊓ E)) holds
+    ⊓-max D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
 -- -}
 -- -}

@@ -3,6 +3,7 @@
 module Homotopy where
 
 open import Common
+open import Unit
 open import HLevels public
 
 private
@@ -311,6 +312,13 @@ x ∈ A = A x holds
 
 _⊆_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → Set ℓ
 _⊆_ {X = X} S T = (x : X) → x ∈ S → x ∈ T
+
+entirety : {X : Set ℓ} → 𝒫 X
+entirety x = ⊤ , ⊤-prop
+
+_∩_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → 𝒫 X
+_∩_ {X = X} S T x =
+  (x ∈ S × x ∈ T) , ×-resp-prop (S x holds) (T x holds) (holds-prop (S x)) (holds-prop (T x))
 
 ⊆-refl : {X : Set ℓ} → (S : 𝒫 X) → S ⊆ S
 ⊆-refl S x x∈S = x∈S
