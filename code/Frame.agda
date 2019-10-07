@@ -17,6 +17,12 @@ private
 Sub : (ℓ : Level) → Set ℓ′ → Set (ℓ′ ⊔ suc ℓ)
 Sub ℓ A = Σ[ I ∈ Set ℓ ] (I → A)
 
+indices : {X : Set ℓ} → Sub ℓ′ X → Set ℓ′
+indices (I , _) = I
+
+_€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → indices ℱ → X
+_€_ (_ , f) = f
+
 record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc ℓ ⊔ suc ℓ′ ⊔ suc ℓ₂) where
 
   field
