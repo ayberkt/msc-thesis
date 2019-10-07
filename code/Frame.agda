@@ -5,6 +5,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
 open import Unit                                  using (tt)
 open import Function                              using (_∘_)
+open import Truncation
 import AlgebraicProperties
 open import Homotopy
 -- open import Subset                                using (SubP)
@@ -17,10 +18,10 @@ private
 Sub : (ℓ : Level) → Set ℓ′ → Set (ℓ′ ⊔ suc ℓ)
 Sub ℓ A = Σ[ I ∈ Set ℓ ] (I → A)
 
-indices : {X : Set ℓ} → Sub ℓ′ X → Set ℓ′
-indices (I , _) = I
+index : {X : Set ℓ} → Sub ℓ′ X → Set ℓ′
+index (I , _) = I
 
-_€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → indices ℱ → X
+_€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → index ℱ → X
 _€_ (_ , f) = f
 
 record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc ℓ ⊔ suc ℓ′ ⊔ suc ℓ₂) where
@@ -108,18 +109,32 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; dist    =  {!!}
     }
   where
-    𝔻 = ∣ downward (X , P) ∣
-    open PosetStr (proj₂ (downward (X , P))) renaming (_⊑_ to _<<_)
+    𝔻ₚ = downward (X , P)
+    𝔻  = proj₁ 𝔻ₚ
+    open PosetStr (proj₂ 𝔻ₚ) renaming (_⊑_ to _<<_)
+    open PosetStr P using (_⊑_)
     𝟏 = entirety , λ _ _ _ _ → tt
+
     ∩-down : (S T : 𝒫 X)
-           → IsDownwardClosed (X , P) S       holds
-           → IsDownwardClosed (X , P) T       holds
+           → IsDownwardClosed (X , P) S holds
+           → IsDownwardClosed (X , P) T holds
            → IsDownwardClosed (X , P) (S ∩ T) holds
-    ∩-down S T S-dc T-dc x y x∈S∩T y⊑x = S-dc x y (proj₁ x∈S∩T) y⊑x , T-dc x y (proj₂ x∈S∩T) y⊑x
+    ∩-down S T S-dc T-dc x y x∈S∩T y⊑x =
+      S-dc x y (proj₁ x∈S∩T) y⊑x , T-dc x y (proj₂ x∈S∩T) y⊑x
+
     _⊓_ : 𝔻 → 𝔻 → 𝔻
     (S , S-dc) ⊓ (T , T-dc) = (S ∩ T) , ∩-down S T S-dc T-dc
-    𝟏-top : (D : ∣ downward (X , P) ∣) → (D << 𝟏) holds
+
+    𝟏-top : (D : 𝔻) → (D << 𝟏) holds
     𝟏-top D _ _ = tt
+
+    ⊔_ : Sub ℓ 𝔻 → 𝔻
+    ⊔ ℱ = (λ x → ∥ Σ[ i ∈ (index ℱ) ] (x ∈ (proj₁ (ℱ € i))) ∥ , squash) , ⊔-dc
+      where
+        ⊔-dc : (x y : X) →
+                 (∥ Σ-syntax (index ℱ) (λ i → proj₁ (ℱ € i) x holds) ∥ , squash) holds → (y ⊑ x) holds → (∥ Σ-syntax (index ℱ) (λ i → proj₁ (ℱ € i) y holds) ∥ , squash) holds
+        ⊔-dc x y ∥_∥.∣ i , x∈Fi ∣ y⊑x = ∥_∥.∣ (i , {!!}) ∣
+
     ⊓-low₀ : (D E : 𝔻) → ((D ⊓ E) << D) holds
     ⊓-low₀ D E x (x∈D , _) = x∈D
     ⊓-low₁ : (D E : 𝔻) → ((D ⊓ E) << E) holds
