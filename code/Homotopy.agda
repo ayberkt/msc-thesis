@@ -322,6 +322,15 @@ x ∈ A = A x holds
 _⊆_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → Set ℓ
 _⊆_ {X = X} S T = (x : X) → x ∈ S → x ∈ T
 
+⊆-refl : {X : Set ℓ} → (S : 𝒫 X) → S ⊆ S
+⊆-refl S x x∈S = x∈S
+
+⊆-prop : {X : Set ℓ} → (S : 𝒫 X) → (T : 𝒫 X) → IsProp (S ⊆ T)
+⊆-prop S T = ∏-resp-prop λ x → ∏-resp-prop (λ x∈S → holds-prop (T x))
+
+⊆-trans : {X : Set ℓ} → (S T U : 𝒫 X) → S ⊆ T → T ⊆ U → S ⊆ U
+⊆-trans S T U S⊆T T⊆U x x∈S = T⊆U x (S⊆T x x∈S)
+
 subsetext : {X : Set ℓ} {A B : 𝒫 X} → A ⊆ B → B ⊆ A → A ≡ B
 subsetext {X = X} {A} {B} A⊆B B⊆A = funext _ _ φ
   where
@@ -330,6 +339,9 @@ subsetext {X = X} {A} {B} A⊆B B⊆A = funext _ _ φ
       where
         foo : (A x holds) ≃ (B x holds)
         foo = P↔Q⇒P≃Q (proj₂ (A x)) (proj₂ (B x)) (A⊆B x) (B⊆A x)
+
+⊆-antisym : {X : Set ℓ} → {S T : 𝒫 X} → S ⊆ T → T ⊆ S → S ≡ T
+⊆-antisym = subsetext
 
 -- --}
 -- --}

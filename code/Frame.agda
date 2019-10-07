@@ -57,36 +57,30 @@ _$f_ = proj₁ ∘ _─f→_.m
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
-downward : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) (ℓ ⊔ ℓ′)
-downward {ℓ = ℓ} {ℓ′} (X , P) = A , posetstr _⊑d′_ A-set ⊑d-refl ⊑d-trans {!!}
+downward : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
+downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-trans <<-antisym)
   where
     open PosetStr P using    (_⊑_)
                     renaming (refl to ⊑-refl; trans to ⊑-trans; sym⁻¹ to ⊑-antisym)
     A = DownwardClosedSubset (X , P)
     A-set : IsSet (DownwardClosedSubset (X , P))
     A-set = DownwardClosedSubset-set (X , P)
-    _⊑d_ : A → A → Set (ℓ ⊔ ℓ′)
-    _⊑d_ (S , _) (T , _) = (x : X) → x ∈ S → Σ[ y ∈ X ] (y ∈ T × (x ⊑ y) holds)
-    ⊑d-prop : (S T : A) → IsProp (S ⊑d T)
-    ⊑d-prop S T = {!!}
-    open AlgebraicProperties A-set (λ S T → S ⊑d T , ⊑d-prop S T)
-       renaming (IsTransitive to IsTransitive-⊑d; IsAntisym to IsAntisym-⊑d)
-    _⊑d′_ : A → A → Ω (ℓ ⊔ ℓ′)
-    _⊑d′_ S T = S ⊑d T , ⊑d-prop S T
-    ⊑d-refl : (S : A) → (S ⊑d′ S) holds
-    ⊑d-refl S x x∈S = x , (x∈S , ⊑-refl x)
-    ⊑d-trans : IsTransitive-⊑d holds
-    ⊑d-trans S T U p q s s∈S with p s s∈S
-    ⊑d-trans S T U p q s s∈S | t , t∈T , s⊑t with q t t∈T
-    ⊑d-trans S T U p q s s∈S | t , t∈T , s⊑t | u , u∈U , t⊑u =
-      u , u∈U , (⊑-trans s t u s⊑t t⊑u)
-    ⊑d-antisym : IsAntisym-⊑d holds
-    ⊑d-antisym S T S⊑T T⊑S =
-      to-subtype-≡ (proj₂ ∘ IsDownwardClosed (X , P)) (subsetext S⊆T T⊆S)
-        where
-          S⊆T : (proj₁ S) ⊆ (proj₁ T)
-          S⊆T s s∈S with S⊑T s s∈S
-          S⊆T s s∈S | t , t∈T , s⊑t with T⊑S t t∈T
-          S⊆T s s∈S | t , t∈T , s⊑t | s′ , s′∈S , t⊑s′ = {!!}
-          T⊆S : (proj₁ T) ⊆ (proj₁ S)
-          T⊆S t t∈S = {!!}
+    inc : A → A → Set ℓ
+    inc (S , _) (T , _) = S ⊆ T
+    <<-prop : (S T : A) → IsProp (inc S T)
+    <<-prop (S , _) (T , _) = ⊆-prop S T
+    open AlgebraicProperties A-set (λ S T → inc S T , <<-prop S T)
+       renaming (IsReflexive to <<-IsReflexive; IsTransitive to <<-IsTransitive; IsAntisym to <<-IsAntisym)
+    _<<_ : A → A → Ω ℓ
+    S << T = (inc S T) , (<<-prop S T)
+    <<-refl : <<-IsReflexive holds
+    <<-refl = ⊆-refl ∘ proj₁
+    <<-trans : <<-IsTransitive holds
+    <<-trans (S , _) (T , _) (U , _) = ⊆-trans S T U
+    <<-antisym : <<-IsAntisym holds
+    <<-antisym (S , _) (T , _) S⊆T T⊆S =
+      to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
+
+-- -}
+-- -}
+-- -}
