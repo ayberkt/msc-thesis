@@ -3,6 +3,7 @@
 module Homotopy where
 
 open import Common
+open import HLevels public
 
 private
   variable
@@ -11,14 +12,6 @@ private
 ------------------------------------------------------------------------------------------
 -- BASICS
 ------------------------------------------------------------------------------------------
-
--- Contractibility.
-IsContractible : Set ℓ → Set ℓ
-IsContractible X = Σ X (λ c → (x : X) → c ≡ x)
-
--- Propositionality.
-IsProp : Set ℓ → Set ℓ
-IsProp A = (x y : A) → x ≡ y
 
 -- Homotopy.
 _~_ : {A B : Set ℓ} → (A → B) → (A → B) → Set ℓ
@@ -88,9 +81,6 @@ funext-conv f g refl x = refl
 
 equivtoid : {A B : Set ℓ} → A ≃ B → A ≡ B
 equivtoid {A = A} {B} (f , e) = proj₁ (proj₁ (ua {_} {A} {B} (f , e)))
-
-IsSet : Set ℓ → Set ℓ
-IsSet A = (x y : A) → (p q : x ≡ y) → p ≡ q
 
 to-subtype-≡ : {X : Set ℓ} {A : X → Set ℓ′}
                {x y : X} {a : A x} {b : A y}
