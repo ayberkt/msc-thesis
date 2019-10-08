@@ -2,12 +2,7 @@
 
 module Poset where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; sym)
-            renaming (cong to ap; subst to transport; trans to _·_)
-open import Data.Product using (Σ; Σ-syntax; proj₁; proj₂; _,_; _×_)
-open import Function     using (id; _∘_)
-open import Common       using (Σ-resp₀)
-open import Level
+open import Common
 open import Homotopy
 
 private
