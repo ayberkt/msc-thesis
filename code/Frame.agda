@@ -65,7 +65,7 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Set ℓ₀
 ∣_∣F = proj₁ ∘ Frame.P
 
-record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ : Frame ℓ ℓ′ ℓ₂) (F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ suc ℓ₂) where
+record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ suc ℓ₂) where
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
   open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
 
@@ -77,6 +77,7 @@ record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ : Frame ℓ ℓ′ ℓ₂) (F
      resp-⊓  : (x y : ∣ P₀ ∣ₚ) → m $ₘ (x ⊓₀ y) ≡ (m $ₘ x) ⊓₁ (m $ₘ y)
      resp-⊔  : (ℱ : Sub ℓ₂ ∣ P₀ ∣ₚ) → m $ₘ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ₘ (ℱ € i)))
 
+-- Convenient notation for frame homomorphism application.
 _$f_ : {F₀ : Frame ℓ ℓ′ ℓ₂} {F₁ : Frame ℓ ℓ′ ℓ₂}
      → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
 _$f_ = proj₁ ∘ _─f→_.m
@@ -84,8 +85,10 @@ _$f_ = proj₁ ∘ _─f→_.m
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
-downward : (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
-downward {ℓ = ℓ} {ℓ′} (X , P) = 𝔻 , posetstr _<<_ A-set <<-refl <<-trans <<-antisym
+-- The set of downward-closed subsets of a poset forms a frame.
+downward-subset-poset : (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
+downward-subset-poset {ℓ = ℓ} {ℓ′} (X , P) =
+  𝔻 , posetstr _<<_ A-set <<-refl <<-trans <<-antisym
   where
     open PosetStr P using (_⊑_; ⊑-refl; ⊑-trans; ⊑-antisym)
 
@@ -118,8 +121,9 @@ downward {ℓ = ℓ} {ℓ′} (X , P) = 𝔻 , posetstr _<<_ A-set <<-refl <<-tr
     <<-antisym (S , _) (T , _) S⊆T T⊆S =
       to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
 
-downward-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ
-downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
+-- The set of downward-closed subsets of a poset forms a frame.
+downward-subset-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ
+downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
   record
     { P       =  𝔻ₚ
     ; 𝟏       =  𝟏
@@ -134,7 +138,7 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; dist    =  dist
     }
   where
-    𝔻ₚ = downward (X , P)
+    𝔻ₚ = downward-subset-poset (X , P)
     𝔻  = ∣ 𝔻ₚ ∣ₚ
 
     ∣_∣𝔻 : 𝔻 → 𝒫 X
