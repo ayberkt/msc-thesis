@@ -169,11 +169,11 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ⊔_ : Sub ℓ 𝔻 → 𝔻
     ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
       where
-        foo : (x y : X) → y ⊑ x holds → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
-        foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
+        ind : (x y : X) → y ⊑ x holds → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
+        ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
 
         ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) holds
-        ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds)} (∥∥-prop _) (foo x y y⊑x) ∣p∣
+        ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
 
     ⊔-up : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) holds
     ⊔-up ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
