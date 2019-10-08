@@ -10,6 +10,7 @@ test:
 pages:
   script:
   - agda --html Main.agda
+  - mv html/Main.html html/index.html
   - mv html ../public
   artifacts:
     paths:
