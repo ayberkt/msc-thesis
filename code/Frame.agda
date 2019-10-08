@@ -1,5 +1,8 @@
-module Frame where
+open import Truncation
 
+module Frame (pt : TruncationExists) where
+
+open import Common
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
@@ -9,7 +12,9 @@ open import Truncation
 import AlgebraicProperties
 open import Homotopy
 -- open import Subset                                using (SubP)
-open import Poset
+open import Poset                                 hiding (∣_∣)
+
+open TruncationExists pt
 
 private
   variable
@@ -24,7 +29,10 @@ index (I , _) = I
 _€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → index ℱ → X
 _€_ (_ , f) = f
 
-record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc ℓ ⊔ suc ℓ′ ⊔ suc ℓ₂) where
+_ε_ : {X : Set ℓ} → X → Sub ℓ′ X → Set (ℓ ⊔ ℓ′)
+x ε S = Σ[ i ∈ (index S) ] (S € i) ≡ x
+
+record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc (ℓ ⊔ ℓ′ ⊔ ℓ₂)) where
 
   field
     P   : Poset ℓ ℓ′
@@ -44,7 +52,7 @@ record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc ℓ ⊔ suc ℓ′ ⊔ suc �
     ⊓-low₁ : (x y   : O)         → ((x ⊓ y) ⊑ x) holds
     ⊓-low₂ : (x y   : O)         → ((x ⊓ y) ⊑ y) holds
     ⊓-max  : (x y z : O)         → (z ⊑ x) holds → (z ⊑ y) holds → (z ⊑ (x ⊓ y)) holds
-    ⊔-up   : (S     : Sub ℓ₂ O)     → (o : O) → (o ⊑ (⊔ S)) holds
+    ⊔-up   : (S     : Sub ℓ₂ O)     → (o : O) → o ε S → (o ⊑ (⊔ S)) holds
     ⊔-min  : (S     : Sub ℓ₂ O)     → (z : O) → ((o : O) → (o ⊑ z) holds) → ((⊔ S) ⊑ z) holds
     dist   : (x : O) (S : Sub ℓ₂ O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
 
@@ -93,13 +101,13 @@ downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-tran
     <<-antisym (S , _) (T , _) S⊆T T⊆S =
       to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
 
-downward-frame : {ℓ ℓ′ ℓ₂ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ₂
+downward-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame {!!} {!!} {!!}
 downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
   record
-    { P       =  downward (X , P)
+    { P       =  𝔻ₚ
     ; 𝟏       =  𝟏
     ; _⊓_     =  _⊓_
-    ; ⊔_      =  {!!}
+    ; ⊔_      =  ⊔_
     ; top     =  𝟏-top
     ; ⊓-low₁  =  ⊓-low₀
     ; ⊓-low₂  =  ⊓-low₁
@@ -109,7 +117,7 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; dist    =  {!!}
     }
   where
-    𝔻ₚ = downward (X , P)
+    𝔻ₚ = (downward (X , P))
     𝔻  = proj₁ 𝔻ₚ
     open PosetStr (proj₂ 𝔻ₚ) renaming (_⊑_ to _<<_)
     open PosetStr P using (_⊑_)
@@ -129,11 +137,14 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     𝟏-top D _ _ = tt
 
     ⊔_ : Sub ℓ 𝔻 → 𝔻
-    ⊔ ℱ = (λ x → ∥ Σ[ i ∈ (index ℱ) ] (x ∈ (proj₁ (ℱ € i))) ∥ , squash) , ⊔-dc
+    ⊔ ℱ = (λ x → in-some-set x , ∥∥-prop _) , dc
       where
-        ⊔-dc : (x y : X) →
-                 (∥ Σ-syntax (index ℱ) (λ i → proj₁ (ℱ € i) x holds) ∥ , squash) holds → (y ⊑ x) holds → (∥ Σ-syntax (index ℱ) (λ i → proj₁ (ℱ € i) y holds) ∥ , squash) holds
-        ⊔-dc x y ∥_∥.∣ i , x∈Fi ∣ y⊑x = ∥_∥.∣ (i , {!!}) ∣
+        in-some-set : X → Set ℓ
+        in-some-set x = ∥ (Σ[ i ∈ (index ℱ) ] x ∈ (proj₁ (ℱ € i))) ∥
+        foo : (x y : X) → (y ⊑ x) holds → (Σ[ i ∈ (index ℱ) ] x ∈ (proj₁ (ℱ € i))) → in-some-set y
+        foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , (proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x) ∣
+        dc : IsDownwardClosed (X , P) (λ x → in-some-set x , ∥∥-prop _) holds
+        dc x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ (proj₁ (ℱ € i)))} (∥∥-prop _) (foo x y y⊑x) ∣p∣
 
     ⊓-low₀ : (D E : 𝔻) → ((D ⊓ E) << D) holds
     ⊓-low₀ D E x (x∈D , _) = x∈D
