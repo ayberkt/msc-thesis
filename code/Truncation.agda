@@ -1,9 +1,15 @@
 module Truncation where
 
 open import Common
+open import Homotopy
 
-data ∥_∥ {ℓ : Level} (A : Set ℓ) : Set ℓ where
-  ∣_∣ : A → ∥ A ∥
+private
+  variable
+    ℓ ℓ′ : Level
 
-postulate
-  squash : {ℓ : Level} {A : Set ℓ} → (x y : ∥ A ∥) → x ≡ y
+record TruncationExists : Setω where
+  field
+    ∥_∥     : Set ℓ → Set ℓ
+    ∥∥-prop : (X : Set ℓ) → IsProp ∥ X ∥
+    ∣_∣     : {X : Set ℓ} → X → ∥ X ∥
+    ∥∥-rec  : {X : Set ℓ} {P : Set ℓ′} → IsProp P → (X → P) → ∥ X ∥ → P
