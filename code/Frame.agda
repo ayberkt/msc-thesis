@@ -85,7 +85,7 @@ _$f_ = proj₁ ∘ _─f→_.m
 -- frame of downward closed posets is like a general observation.
 
 downward : (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
-downward {ℓ = ℓ} {ℓ′} (X , P) = 𝔻 , (posetstr _<<_ A-set <<-refl <<-trans <<-antisym)
+downward {ℓ = ℓ} {ℓ′} (X , P) = 𝔻 , posetstr _<<_ A-set <<-refl <<-trans <<-antisym
   where
     open PosetStr P using (_⊑_; ⊑-refl; ⊑-trans; ⊑-antisym)
 
