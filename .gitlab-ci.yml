@@ -9,6 +9,7 @@ test:
 
 pages:
   script:
+  - ./mark-version.sh Main.agda
   - agda --html Main.agda
   - mv html/Main.html html/index.html
   - mv html ../public
