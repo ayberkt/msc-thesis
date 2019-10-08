@@ -206,10 +206,13 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
             ind (i , x∈ℱᵢ) = ∣ i , x∈D , x∈ℱᵢ ∣
 
         up : (x : X) → x ∈ ℬ holds → x ∈ 𝒜 holds
-        up x x∈ℬ = ∥∥-rec (Σ-resp-prop (holds-prop (x ∈ ∣ D ∣𝔻)) λ _ → holds-prop (x ∈ ∣ ⊔ ℱ ∣𝔻)) lemma x∈ℬ
+        up x x∈ℬ =
+          ∥∥-rec (Σ-resp-prop (holds-prop (x ∈ ∣ D ∣𝔻)) λ _ →
+            holds-prop (x ∈ ∣ ⊔ ℱ ∣𝔻)) φ x∈ℬ
           where
-            lemma : in-some-set-of (index ℱ , λ j → D ⊓ (ℱ € j)) x → Σ (x ∈ ∣ D ∣𝔻 holds) (λ _ → x ∈ ∣ ⊔ ℱ ∣𝔻 holds)
-            lemma (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
+            φ : in-some-set-of (index ℱ , λ j → D ⊓ (ℱ € j)) x
+              → x ∈ ∣ D ∣𝔻 holds × x ∈ ∣ ⊔ ℱ ∣𝔻 holds
+            φ (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
 
 -- -}
 -- -}
