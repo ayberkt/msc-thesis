@@ -161,33 +161,36 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     𝟏-top : (D : 𝔻) → (D << 𝟏) holds
     𝟏-top D _ _ = tt
 
+    -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
+    -- set S among ℱ such that x ∈ S.
     in-some-set-of : (ℱ : Sub ℓ 𝔻) → X → Set ℓ
-    in-some-set-of ℱ x = ∥ (Σ[ i ∈ (index ℱ) ] (x ∈ ∣ ℱ € i ∣𝔻) holds) ∥
+    in-some-set-of ℱ x = Σ[ i ∈ index ℱ ] (x ∈ ∣ ℱ € i ∣𝔻) holds
 
     ⊔_ : Sub ℓ 𝔻 → 𝔻
-    ⊔ ℱ = (λ x → in-some-set-of ℱ x , ∥∥-prop _) , ⊔ℱ↓
+    ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
       where
-        foo : (x y : X) → (y ⊑ x) holds → (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds) → in-some-set-of ℱ y
-        foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , (proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x) ∣
-        ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → in-some-set-of ℱ x , ∥∥-prop _) holds
+        foo : (x y : X) → y ⊑ x holds → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
+        foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
+
+        ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) holds
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds)} (∥∥-prop _) (foo x y y⊑x) ∣p∣
 
-    ⊔-up : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → (D << (⊔ ℱ)) holds
+    ⊔-up : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) holds
     ⊔-up ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
 
-    ⊔-min : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → ((⊔ ℱ) << z) holds
-    ⊔-min ℱ D₀ φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D₀ ∣𝔻 x)) foo x∈⊔S
+    ⊔-min : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → (⊔ ℱ) << z holds
+    ⊔-min ℱ D φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D ∣𝔻 x)) foo x∈⊔S
       where
-        foo : Σ[ i ∈ index ℱ ] ∣ ℱ € i ∣𝔻 x holds → x ∈ ∣ D₀ ∣𝔻 holds
+        foo : Σ[ i ∈ index ℱ ] ∣ ℱ € i ∣𝔻 x holds → x ∈ ∣ D ∣𝔻 holds
         foo (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
 
-    ⊓-low₀ : (D E : 𝔻) → ((D ⊓ E) << D) holds
+    ⊓-low₀ : (D E : 𝔻) → (D ⊓ E) << D holds
     ⊓-low₀ D E x (x∈D , _) = x∈D
 
-    ⊓-low₁ : (D E : 𝔻) → ((D ⊓ E) << E) holds
+    ⊓-low₁ : (D E : 𝔻) → (D ⊓ E) << E holds
     ⊓-low₁ D E x (_ , x∈F) = x∈F
 
-    ⊓-max : (D E F : 𝔻) → (F << D) holds → (F << E) holds → (F << (D ⊓ E)) holds
+    ⊓-max : (D E F : 𝔻) → (F << D) holds → (F << E) holds → F << (D ⊓ E) holds
     ⊓-max D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
     dist : (D : 𝔻) (ℱ : Sub ℓ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
