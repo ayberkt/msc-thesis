@@ -65,7 +65,7 @@ _≃m≃_ {A} {B} P₁ P₂ =
   Σ[ m₂ ∈ (P₂ ─m→ P₁) ] ((proj₁ m₁ ∘ proj₁ m₂) ~ id) × ((proj₁ m₂ ∘ proj₁ m₁) ~ id)
 
 IsDownwardClosed : (P : Poset ℓ ℓ′) → (𝒫 ∣ P ∣) → Ω (ℓ ⊔ ℓ′)
-IsDownwardClosed (X , P) D = ((x y : X) → x ∈ D → (y ⊑ x) holds → y ∈ D) , prop
+IsDownwardClosed (X , P) D = ((x y : X) → x ∈ D holds → (y ⊑ x) holds → y ∈ D holds) , prop
   where
     prop = ∏-resp-prop λ _ → ∏-resp-prop λ y → ∏-resp-prop λ _ → ∏-resp-prop λ _ →
       proj₂ (D y)

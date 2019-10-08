@@ -53,7 +53,7 @@ record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc (ℓ ⊔ ℓ′ ⊔ ℓ₂))
     ⊓-low₂ : (x y   : O)         → ((x ⊓ y) ⊑ y) holds
     ⊓-max  : (x y z : O)         → (z ⊑ x) holds → (z ⊑ y) holds → (z ⊑ (x ⊓ y)) holds
     ⊔-up   : (S     : Sub ℓ₂ O)     → (o : O) → o ε S → (o ⊑ (⊔ S)) holds
-    ⊔-min  : (S     : Sub ℓ₂ O)     → (z : O) → ((o : O) → (o ⊑ z) holds) → ((⊔ S) ⊑ z) holds
+    ⊔-min  : (S     : Sub ℓ₂ O)     → (z : O) → ((o : O) → o ε S → (o ⊑ z) holds) → ((⊔ S) ⊑ z) holds
     dist   : (x : O) (S : Sub ℓ₂ O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
 
 record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ : Frame ℓ ℓ′ ℓ₂) (F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ (suc ℓ₂)) where
@@ -101,7 +101,7 @@ downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-tran
     <<-antisym (S , _) (T , _) S⊆T T⊆S =
       to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
 
-downward-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame {!!} {!!} {!!}
+downward-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ
 downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
   record
     { P       =  𝔻ₚ
@@ -112,13 +112,15 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; ⊓-low₁  =  ⊓-low₀
     ; ⊓-low₂  =  ⊓-low₁
     ; ⊓-max   =  ⊓-max
-    ; ⊔-up    =  {!!}
-    ; ⊔-min   =  {!!}
+    ; ⊔-up    =  ⊔-up
+    ; ⊔-min   =  ⊔-min
     ; dist    =  {!!}
     }
   where
     𝔻ₚ = (downward (X , P))
     𝔻  = proj₁ 𝔻ₚ
+    ∣_∣𝔻 : 𝔻 → 𝒫 X
+    ∣ S , _ ∣𝔻 = S
     open PosetStr (proj₂ 𝔻ₚ) renaming (_⊑_ to _<<_)
     open PosetStr P using (_⊑_)
     𝟏 = entirety , λ _ _ _ _ → tt
@@ -140,16 +142,27 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ⊔ ℱ = (λ x → in-some-set x , ∥∥-prop _) , dc
       where
         in-some-set : X → Set ℓ
-        in-some-set x = ∥ (Σ[ i ∈ (index ℱ) ] x ∈ (proj₁ (ℱ € i))) ∥
-        foo : (x y : X) → (y ⊑ x) holds → (Σ[ i ∈ (index ℱ) ] x ∈ (proj₁ (ℱ € i))) → in-some-set y
+        in-some-set x = ∥ (Σ[ i ∈ (index ℱ) ] (x ∈ ∣ ℱ € i ∣𝔻) holds) ∥
+        foo : (x y : X) → (y ⊑ x) holds → (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds) → in-some-set y
         foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , (proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x) ∣
         dc : IsDownwardClosed (X , P) (λ x → in-some-set x , ∥∥-prop _) holds
-        dc x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ (proj₁ (ℱ € i)))} (∥∥-prop _) (foo x y y⊑x) ∣p∣
+        dc x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds)} (∥∥-prop _) (foo x y y⊑x) ∣p∣
+
+    ⊔-up : (S : Sub ℓ 𝔻) (D : 𝔻) → D ε S → (D << (⊔ S)) holds
+    ⊔-up S D DεS@(i , p) x x∈D = ∣ i , (transport (λ D′ → ∣ D′ ∣𝔻 x holds) (sym p) x∈D) ∣
+
+    ⊔-min : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → ((⊔ ℱ) << z) holds
+    ⊔-min ℱ D₀ φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D₀ ∣𝔻 x)) foo x∈⊔S
+      where
+        foo : Σ[ i ∈ index ℱ ] ∣ ℱ € i ∣𝔻 x holds → x ∈ ∣ D₀ ∣𝔻 holds
+        foo (i , x∈ℱᵢ) = φ (ℱ € i) (i , Common.refl) x x∈ℱᵢ
 
     ⊓-low₀ : (D E : 𝔻) → ((D ⊓ E) << D) holds
     ⊓-low₀ D E x (x∈D , _) = x∈D
+
     ⊓-low₁ : (D E : 𝔻) → ((D ⊓ E) << E) holds
     ⊓-low₁ D E x (_ , x∈F) = x∈F
+
     ⊓-max : (D E F : 𝔻) → (F << D) holds → (F << E) holds → (F << (D ⊓ E)) holds
     ⊓-max D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 

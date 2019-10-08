@@ -158,6 +158,8 @@ prop⇒set {A = A} A-prop x y = wconst-≡-endomap⇒set _ f x y
 _holds : Ω ℓ → Set ℓ
 (P , _) holds = P
 
+infix 5 _holds
+
 holds-prop : (p : Ω ℓ) → IsProp (p holds)
 holds-prop (P , i) = i
 
@@ -307,18 +309,21 @@ postulate
 𝒫-set : {X : Set ℓ} → IsSet (𝒫 X)
 𝒫-set = ∏-set (λ _ → Ω-set)
 
-_∈_ : {X : Set ℓ} → X → 𝒫 X → Set ℓ
-x ∈ A = A x holds
+_∈_ : {X : Set ℓ} → X → 𝒫 X → Ω ℓ
+x ∈ A = A x
+
+infix 20 _∈_
 
 _⊆_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → Set ℓ
-_⊆_ {X = X} S T = (x : X) → x ∈ S → x ∈ T
+_⊆_ {X = X} S T = (x : X) → (x ∈ S) holds → (x ∈ T) holds
 
 entirety : {X : Set ℓ} → 𝒫 X
 entirety x = ⊤ , ⊤-prop
 
 _∩_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → 𝒫 X
 _∩_ {X = X} S T x =
-  (x ∈ S × x ∈ T) , ×-resp-prop (S x holds) (T x holds) (holds-prop (S x)) (holds-prop (T x))
+    (x ∈ S holds × x ∈ T holds)
+  , ×-resp-prop (x ∈ S holds) (x ∈ T holds) (holds-prop (S x)) (holds-prop (T x))
 
 ⊆-refl : {X : Set ℓ} → (S : 𝒫 X) → S ⊆ S
 ⊆-refl S x x∈S = x∈S
