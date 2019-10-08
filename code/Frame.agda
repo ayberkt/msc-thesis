@@ -11,7 +11,6 @@ open import Function                              using (_∘_)
 open import Truncation
 import AlgebraicProperties
 open import Homotopy
--- open import Subset                                using (SubP)
 open import Poset                                 hiding (∣_∣)
 
 open TruncationExists pt
