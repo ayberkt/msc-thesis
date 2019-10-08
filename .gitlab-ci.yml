@@ -6,3 +6,11 @@ before_script:
 test:
   script:
   - ./check.sh
+
+pages:
+  script:
+  - agda --html Main.agda
+  - mv html public
+  artifacts:
+    paths:
+    - public
