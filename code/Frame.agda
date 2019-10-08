@@ -121,7 +121,7 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     𝔻  = proj₁ 𝔻ₚ
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
-    open PosetStr (proj₂ 𝔻ₚ) renaming (_⊑_ to _<<_)
+    open PosetStr (proj₂ 𝔻ₚ) using () renaming (_⊑_ to _<<_)
     open PosetStr P using (_⊑_)
     𝟏 = entirety , λ _ _ _ _ → tt
 
@@ -155,7 +155,7 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ⊔-min ℱ D₀ φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D₀ ∣𝔻 x)) foo x∈⊔S
       where
         foo : Σ[ i ∈ index ℱ ] ∣ ℱ € i ∣𝔻 x holds → x ∈ ∣ D₀ ∣𝔻 holds
-        foo (i , x∈ℱᵢ) = φ (ℱ € i) (i , Common.refl) x x∈ℱᵢ
+        foo (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
 
     ⊓-low₀ : (D E : 𝔻) → ((D ⊓ E) << D) holds
     ⊓-low₀ D E x (x∈D , _) = x∈D
