@@ -9,9 +9,6 @@ private
   variable
     ℓ ℓ′ : Level
 
-_$_ : {A : Set ℓ} {B : A → Set ℓ′} → Σ A B → A
-_$_ = proj₁
-
 record PosetStr (ℓ ℓ′ : Level) (A : Set ℓ) : Set ((suc ℓ) ⊔ (suc ℓ′)) where
   constructor posetstr
 
@@ -46,6 +43,9 @@ _─m→_ {_} {_} {A} {B} P₁ P₂ =
      open PosetStr P₂ using () renaming (_⊑_ to _⊑₂_)
    in
      Σ[ f ∈ (A → B) ] ((x y : A) → (x ⊑₁ y) holds → ((f x) ⊑₂ (f y))  holds)
+
+-- Projection for the underlying function of a monotonic map.
+_$ₘ_ = proj₁
 
 -- Monotonic function composition.
 _∘m_ : {A B C : Set ℓ} {P₁ : PosetStr ℓ ℓ′ A} {P₂ : PosetStr ℓ ℓ′ B} {P₃ : PosetStr ℓ ℓ′ C}
