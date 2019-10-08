@@ -3,6 +3,8 @@
 module Homotopy where
 
 open import Common
+open import Unit
+open import HLevels public
 
 private
   variable
@@ -11,14 +13,6 @@ private
 ------------------------------------------------------------------------------------------
 -- BASICS
 ------------------------------------------------------------------------------------------
-
--- Contractibility.
-IsContractible : Set ℓ → Set ℓ
-IsContractible X = Σ X (λ c → (x : X) → c ≡ x)
-
--- Propositionality.
-IsProp : Set ℓ → Set ℓ
-IsProp A = (x y : A) → x ≡ y
 
 -- Homotopy.
 _~_ : {A B : Set ℓ} → (A → B) → (A → B) → Set ℓ
@@ -88,9 +82,6 @@ funext-conv f g refl x = refl
 
 equivtoid : {A B : Set ℓ} → A ≃ B → A ≡ B
 equivtoid {A = A} {B} (f , e) = proj₁ (proj₁ (ua {_} {A} {B} (f , e)))
-
-IsSet : Set ℓ → Set ℓ
-IsSet A = (x y : A) → (p q : x ≡ y) → p ≡ q
 
 to-subtype-≡ : {X : Set ℓ} {A : X → Set ℓ′}
                {x y : X} {a : A x} {b : A y}
@@ -166,6 +157,8 @@ prop⇒set {A = A} A-prop x y = wconst-≡-endomap⇒set _ f x y
 
 _holds : Ω ℓ → Set ℓ
 (P , _) holds = P
+
+infix 5 _holds
 
 holds-prop : (p : Ω ℓ) → IsProp (p holds)
 holds-prop (P , i) = i
@@ -316,11 +309,30 @@ postulate
 𝒫-set : {X : Set ℓ} → IsSet (𝒫 X)
 𝒫-set = ∏-set (λ _ → Ω-set)
 
-_∈_ : {X : Set ℓ} → X → 𝒫 X → Set ℓ
-x ∈ A = A x holds
+_∈_ : {X : Set ℓ} → X → 𝒫 X → Ω ℓ
+x ∈ A = A x
+
+infix 20 _∈_
 
 _⊆_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → Set ℓ
-_⊆_ {X = X} S T = (x : X) → x ∈ S → x ∈ T
+_⊆_ {X = X} S T = (x : X) → (x ∈ S) holds → (x ∈ T) holds
+
+entirety : {X : Set ℓ} → 𝒫 X
+entirety x = ⊤ , ⊤-prop
+
+_∩_ : {X : Set ℓ} → 𝒫 X → 𝒫 X → 𝒫 X
+_∩_ {X = X} S T x =
+    (x ∈ S holds × x ∈ T holds)
+  , ×-resp-prop (x ∈ S holds) (x ∈ T holds) (holds-prop (S x)) (holds-prop (T x))
+
+⊆-refl : {X : Set ℓ} → (S : 𝒫 X) → S ⊆ S
+⊆-refl S x x∈S = x∈S
+
+⊆-prop : {X : Set ℓ} → (S : 𝒫 X) → (T : 𝒫 X) → IsProp (S ⊆ T)
+⊆-prop S T = ∏-resp-prop λ x → ∏-resp-prop (λ x∈S → holds-prop (T x))
+
+⊆-trans : {X : Set ℓ} → (S T U : 𝒫 X) → S ⊆ T → T ⊆ U → S ⊆ U
+⊆-trans S T U S⊆T T⊆U x x∈S = T⊆U x (S⊆T x x∈S)
 
 subsetext : {X : Set ℓ} {A B : 𝒫 X} → A ⊆ B → B ⊆ A → A ≡ B
 subsetext {X = X} {A} {B} A⊆B B⊆A = funext _ _ φ
@@ -330,6 +342,9 @@ subsetext {X = X} {A} {B} A⊆B B⊆A = funext _ _ φ
       where
         foo : (A x holds) ≃ (B x holds)
         foo = P↔Q⇒P≃Q (proj₂ (A x)) (proj₂ (B x)) (A⊆B x) (B⊆A x)
+
+⊆-antisym : {X : Set ℓ} → {S T : 𝒫 X} → S ⊆ T → T ⊆ S → S ≡ T
+⊆-antisym = subsetext
 
 -- --}
 -- --}
