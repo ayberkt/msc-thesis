@@ -114,15 +114,18 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; ⊓-max   =  ⊓-max
     ; ⊔-up    =  ⊔-up
     ; ⊔-min   =  ⊔-min
-    ; dist    =  {!!}
+    ; dist    =  dist
     }
   where
     𝔻ₚ = (downward (X , P))
     𝔻  = proj₁ 𝔻ₚ
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
-    open PosetStr (proj₂ 𝔻ₚ) using () renaming (_⊑_ to _<<_)
-    open PosetStr P using (_⊑_)
+    open PosetStr (proj₂ 𝔻ₚ) using    ()
+                             renaming ( _⊑_   to  _<<_
+                                      ; refl  to  <<-refl
+                                      ; sym⁻¹ to  <<-antisym)
+    open PosetStr P          using    (_⊑_)
     𝟏 = entirety , λ _ _ _ _ → tt
 
     ∩-down : (S T : 𝒫 X)
@@ -165,6 +168,22 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
 
     ⊓-max : (D E F : 𝔻) → (F << D) holds → (F << E) holds → (F << (D ⊓ E)) holds
     ⊓-max D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
+
+    dist : (D : 𝔻) (ℱ : Sub ℓ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
+    dist D ℱ = <<-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , (λ i → D ⊓ (ℱ € i)))) down up
+      where
+        𝒜 = ∣ D ⊓ (⊔ ℱ) ∣𝔻
+        ℬ = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
+        down : (x : X) → x ∈ 𝒜 holds → x ∈ ℬ holds
+        down x x∈𝒜@(x∈D , x∈⊔ℱ) = ∥∥-rec (∥∥-prop _) foo x∈⊔ℱ
+          where
+            foo : Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds → ∥ Σ[ i ∈ (index ℱ) ] x ∈ ∣ (index ℱ , (λ i₁ → D ⊓ (ℱ € i₁))) € i ∣𝔻 holds ∥
+            foo (i , x∈ℱᵢ) = ∣ i , (x∈D , x∈ℱᵢ) ∣
+        up : (x : X) → x ∈ ℬ holds → x ∈ 𝒜 holds
+        up x x∈ℬ = ∥∥-rec (Σ-resp-prop (proj₂ (x ∈ ∣ D ∣𝔻)) λ _ → proj₂ (x ∈ ∣ ⊔ ℱ ∣𝔻)) lemma x∈ℬ
+          where
+            lemma : Σ[ i ∈ index ℱ ] ∣ (index ℱ , (λ j → D ⊓ (ℱ € j))) € i ∣𝔻 x holds → Σ (x ∈ ∣ D ∣𝔻 holds) (λ _ → x ∈ ∣ ⊔ ℱ ∣𝔻 holds)
+            lemma (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
 
 -- -}
 -- -}
