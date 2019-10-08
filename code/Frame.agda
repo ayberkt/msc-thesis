@@ -156,8 +156,7 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
            → IsDownwardClosed (X , P) S holds
            → IsDownwardClosed (X , P) T holds
            → IsDownwardClosed (X , P) (S ∩ T) holds
-    ∩-down S T S↓ T↓ x y x∈S∩T y⊑x =
-      S↓ x y (proj₁ x∈S∩T) y⊑x , T↓ x y (proj₂ x∈S∩T) y⊑x
+    ∩-down S T S↓ T↓ x y x∈S∩T y⊑x = S↓ x y (proj₁ x∈S∩T) y⊑x , T↓ x y (proj₂ x∈S∩T) y⊑x
 
     _⊓_ : 𝔻 → 𝔻 → 𝔻
     (S , S-dc) ⊓ (T , T-dc) = (S ∩ T) , ∩-down S T S-dc T-dc
