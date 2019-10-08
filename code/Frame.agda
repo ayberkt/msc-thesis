@@ -3,15 +3,12 @@ open import Truncation
 module Frame (pt : TruncationExists) where
 
 open import Common
-open import Level
-open import Relation.Binary.PropositionalEquality using (_≡_)
-open import Data.Product                          using (Σ-syntax; _×_; _,_; proj₁; proj₂)
-open import Unit                                  using (tt)
-open import Function                              using (_∘_)
 open import Truncation
-import AlgebraicProperties
 open import Homotopy
-open import Poset                                 hiding (∣_∣)
+open import Unit        using (tt)
+open import Poset
+
+import AlgebraicProperties
 
 open TruncationExists pt
 
@@ -25,16 +22,18 @@ Sub ℓ A = Σ[ I ∈ Set ℓ ] (I → A)
 index : {X : Set ℓ} → Sub ℓ′ X → Set ℓ′
 index (I , _) = I
 
+-- Application of a family over X to an index.
 _€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → index ℱ → X
 _€_ (_ , f) = f
 
+-- Membership for families.
 _ε_ : {X : Set ℓ} → X → Sub ℓ′ X → Set (ℓ ⊔ ℓ′)
-x ε S = Σ[ i ∈ (index S) ] (S € i) ≡ x
+x ε S = Σ[ i ∈ index S ] (S € i) ≡ x
 
-record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc (ℓ ⊔ ℓ′ ⊔ ℓ₂)) where
+record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)) where
 
   field
-    P   : Poset ℓ ℓ′
+    P   : Poset ℓ₀ ℓ₁
 
   O   = proj₁ P
   _⊑_ = PosetStr._⊑_ (proj₂ P)
@@ -45,29 +44,38 @@ record Frame (ℓ ℓ′ ℓ₂ : Level) : Set (suc (ℓ ⊔ ℓ′ ⊔ ℓ₂))
     ⊔_  : Sub ℓ₂ O → O
 
   field
-    top    : (x     : O)         → (x ⊑ 𝟏) holds
-    -- Consider merging the following three requirements alternate between this
-    -- using univalence.
-    ⊓-low₁ : (x y   : O)         → ((x ⊓ y) ⊑ x) holds
-    ⊓-low₂ : (x y   : O)         → ((x ⊓ y) ⊑ y) holds
-    ⊓-max  : (x y z : O)         → (z ⊑ x) holds → (z ⊑ y) holds → (z ⊑ (x ⊓ y)) holds
-    ⊔-up   : (S     : Sub ℓ₂ O)     → (o : O) → o ε S → (o ⊑ (⊔ S)) holds
-    ⊔-min  : (S     : Sub ℓ₂ O)     → (z : O) → ((o : O) → o ε S → (o ⊑ z) holds) → ((⊔ S) ⊑ z) holds
+
+    -- Greatest lower bound.
+    -- Consider merging the following three requirements and prove that equivalent to
+    -- this. Thanks to univalence, one can alternate between the two styles if one happens
+    -- to be more preferable than the other in certain cases.
+    top    : (x     : O) → x ⊑ 𝟏 holds
+    ⊓-low₁ : (x y   : O) → (x ⊓ y) ⊑ x holds
+    ⊓-low₂ : (x y   : O) → (x ⊓ y) ⊑ y holds
+    ⊓-max  : (x y z : O) → (z ⊑ x) holds → z ⊑ y holds → (z ⊑ (x ⊓ y)) holds
+
+    -- Least upper bound.
+    ⊔-up   : (S : Sub ℓ₂ O) → (o : O) → o ε S → o ⊑ (⊔ S) holds
+    ⊔-min  : (S : Sub ℓ₂ O) → (z : O) → ((o : O) → o ε S → (o ⊑ z) holds) → (⊔ S) ⊑ z holds
+
+    -- Binary meety distribute over arbitrary joins.
     dist   : (x : O) (S : Sub ℓ₂ O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
 
-record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ : Frame ℓ ℓ′ ℓ₂) (F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ (suc ℓ₂)) where
+-- Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
+∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Set ℓ₀
+∣_∣F = proj₁ ∘ Frame.P
+
+record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ : Frame ℓ ℓ′ ℓ₂) (F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ suc ℓ₂) where
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
   open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
-  A₀ = proj₁ P₀
-  A₁ = proj₁ P₁
 
   field
-    m : (proj₂ P₀) ─m→ (proj₂ P₁)
+    m : strₚ P₀ ─m→ strₚ P₁
 
   field
      resp-id : m $ 𝟏₀ ≡ 𝟏₁
-     resp-⊓  : (x y : A₀) → m $ (x ⊓₀ y) ≡ (m $ x) ⊓₁ (m $ y)
-     resp-⊔  : (ℱ : Sub ℓ₂ A₀) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (proj₂ ℱ i)))
+     resp-⊓  : (x y : ∣ P₀ ∣ₚ) → m $ (x ⊓₀ y) ≡ (m $ x) ⊓₁ (m $ y)
+     resp-⊔  : (ℱ : Sub ℓ₂ ∣ P₀ ∣ₚ) → m $ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ (ℱ € i)))
 
 _$f_ : {F₀ : Frame ℓ ℓ′ ℓ₂} {F₁ : Frame ℓ ℓ′ ℓ₂}
      → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
@@ -77,25 +85,35 @@ _$f_ = proj₁ ∘ _─f→_.m
 -- frame of downward closed posets is like a general observation.
 
 downward : (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
-downward {ℓ = ℓ} {ℓ′} (X , P) = A , (posetstr _<<_ A-set <<-refl <<-trans <<-antisym)
+downward {ℓ = ℓ} {ℓ′} (X , P) = 𝔻 , (posetstr _<<_ A-set <<-refl <<-trans <<-antisym)
   where
-    open PosetStr P using    (_⊑_)
-                    renaming (refl to ⊑-refl; trans to ⊑-trans; sym⁻¹ to ⊑-antisym)
-    A = DownwardClosedSubset (X , P)
+    open PosetStr P using (_⊑_; ⊑-refl; ⊑-trans; ⊑-antisym)
+
+    𝔻 = DownwardClosedSubset (X , P)
+
     A-set : IsSet (DownwardClosedSubset (X , P))
     A-set = DownwardClosedSubset-set (X , P)
-    inc : A → A → Set ℓ
+
+    inc : 𝔻 → 𝔻 → Set ℓ
     inc (S , _) (T , _) = S ⊆ T
-    <<-prop : (S T : A) → IsProp (inc S T)
+
+    <<-prop : (S T : 𝔻) → IsProp (inc S T)
     <<-prop (S , _) (T , _) = ⊆-prop S T
+
     open AlgebraicProperties A-set (λ S T → inc S T , <<-prop S T)
-       renaming (IsReflexive to <<-IsReflexive; IsTransitive to <<-IsTransitive; IsAntisym to <<-IsAntisym)
-    _<<_ : A → A → Ω ℓ
+       renaming ( IsReflexive  to <<-IsReflexive
+                ; IsTransitive to <<-IsTransitive
+                ; IsAntisym    to <<-IsAntisym)
+
+    _<<_ : 𝔻 → 𝔻 → Ω ℓ
     S << T = (inc S T) , (<<-prop S T)
+
     <<-refl : <<-IsReflexive holds
     <<-refl = ⊆-refl ∘ proj₁
+
     <<-trans : <<-IsTransitive holds
     <<-trans (S , _) (T , _) (U , _) = ⊆-trans S T U
+
     <<-antisym : <<-IsAntisym holds
     <<-antisym (S , _) (T , _) S⊆T T⊆S =
       to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
@@ -116,23 +134,26 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; dist    =  dist
     }
   where
-    𝔻ₚ = (downward (X , P))
-    𝔻  = proj₁ 𝔻ₚ
+    𝔻ₚ = downward (X , P)
+    𝔻  = ∣ 𝔻ₚ ∣ₚ
+
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
+
     open PosetStr (proj₂ 𝔻ₚ) using    ()
-                             renaming ( _⊑_   to  _<<_
-                                      ; refl  to  <<-refl
-                                      ; sym⁻¹ to  <<-antisym)
+                             renaming ( _⊑_       to  _<<_
+                                      ; ⊑-refl    to  <<-refl
+                                      ; ⊑-antisym to  <<-antisym)
     open PosetStr P          using    (_⊑_)
+
     𝟏 = entirety , λ _ _ _ _ → tt
 
     ∩-down : (S T : 𝒫 X)
            → IsDownwardClosed (X , P) S holds
            → IsDownwardClosed (X , P) T holds
            → IsDownwardClosed (X , P) (S ∩ T) holds
-    ∩-down S T S-dc T-dc x y x∈S∩T y⊑x =
-      S-dc x y (proj₁ x∈S∩T) y⊑x , T-dc x y (proj₂ x∈S∩T) y⊑x
+    ∩-down S T S↓ T↓ x y x∈S∩T y⊑x =
+      S↓ x y (proj₁ x∈S∩T) y⊑x , T↓ x y (proj₂ x∈S∩T) y⊑x
 
     _⊓_ : 𝔻 → 𝔻 → 𝔻
     (S , S-dc) ⊓ (T , T-dc) = (S ∩ T) , ∩-down S T S-dc T-dc
@@ -140,18 +161,19 @@ downward-frame {ℓ = ℓ} {ℓ′} (X , P) =
     𝟏-top : (D : 𝔻) → (D << 𝟏) holds
     𝟏-top D _ _ = tt
 
-    ⊔_ : Sub ℓ 𝔻 → 𝔻
-    ⊔ ℱ = (λ x → in-some-set x , ∥∥-prop _) , dc
-      where
-        in-some-set : X → Set ℓ
-        in-some-set x = ∥ (Σ[ i ∈ (index ℱ) ] (x ∈ ∣ ℱ € i ∣𝔻) holds) ∥
-        foo : (x y : X) → (y ⊑ x) holds → (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds) → in-some-set y
-        foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , (proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x) ∣
-        dc : IsDownwardClosed (X , P) (λ x → in-some-set x , ∥∥-prop _) holds
-        dc x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds)} (∥∥-prop _) (foo x y y⊑x) ∣p∣
+    in-some-set-of : (ℱ : Sub ℓ 𝔻) → X → Set ℓ
+    in-some-set-of ℱ x = ∥ (Σ[ i ∈ (index ℱ) ] (x ∈ ∣ ℱ € i ∣𝔻) holds) ∥
 
-    ⊔-up : (S : Sub ℓ 𝔻) (D : 𝔻) → D ε S → (D << (⊔ S)) holds
-    ⊔-up S D DεS@(i , p) x x∈D = ∣ i , (transport (λ D′ → ∣ D′ ∣𝔻 x holds) (sym p) x∈D) ∣
+    ⊔_ : Sub ℓ 𝔻 → 𝔻
+    ⊔ ℱ = (λ x → in-some-set-of ℱ x , ∥∥-prop _) , ⊔ℱ↓
+      where
+        foo : (x y : X) → (y ⊑ x) holds → (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds) → in-some-set-of ℱ y
+        foo x y y⊑x (i , x∈ℱᵢ) = ∣ i , (proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x) ∣
+        ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → in-some-set-of ℱ x , ∥∥-prop _) holds
+        ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec {X = (Σ[ i ∈ (index ℱ) ] x ∈ ∣ ℱ € i ∣𝔻 holds)} (∥∥-prop _) (foo x y y⊑x) ∣p∣
+
+    ⊔-up : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → (D << (⊔ ℱ)) holds
+    ⊔-up ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
 
     ⊔-min : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → ((⊔ ℱ) << z) holds
     ⊔-min ℱ D₀ φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D₀ ∣𝔻 x)) foo x∈⊔S
