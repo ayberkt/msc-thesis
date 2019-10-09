@@ -134,7 +134,7 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ; ⊓-lower₁    =  ⊓-lower₁
     ; ⊓-greatest  =  ⊓-greatest
     ; ⊔-upper     =  ⊔-upper
-    ; ⊔-least     =  ⊔-min
+    ; ⊔-least     =  ⊔-least
     ; dist        =  dist
     }
   where
@@ -181,11 +181,11 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ⊔-upper : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) holds
     ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
 
-    ⊔-min : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → (⊔ ℱ) << z holds
-    ⊔-min ℱ D φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D ∣𝔻 x)) foo x∈⊔S
+    ⊔-least : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → (⊔ ℱ) << z holds
+    ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D ∣𝔻 x)) ind x∈⊔S
       where
-        foo : Σ[ i ∈ index ℱ ] ∣ ℱ € i ∣𝔻 x holds → x ∈ ∣ D ∣𝔻 holds
-        foo (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
+        ind : in-some-set-of ℱ x → x ∈ ∣ D ∣𝔻 holds
+        ind (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
 
     ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) << D holds
     ⊓-lower₀ D E x (x∈D , _) = x∈D
