@@ -49,17 +49,17 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
     -- Consider merging the following three requirements and prove that equivalent to
     -- this. Thanks to univalence, one can alternate between the two styles if one happens
     -- to be more preferable than the other in certain cases.
-    top    : (o     : O) → o ⊑ 𝟏 holds
-    ⊓-low₁ : (o p   : O) → (o ⊓ p) ⊑ o holds
-    ⊓-low₂ : (o p   : O) → (o ⊓ p) ⊑ p holds
-    ⊓-max  : (o p q : O) → q ⊑ o holds → q ⊑ p holds → q ⊑ (o ⊓ p) holds
+    top         : (o     : O) → o ⊑ 𝟏 holds
+    ⊓-lower₀    : (o p   : O) → (o ⊓ p) ⊑ o holds
+    ⊓-lower₁    : (o p   : O) → (o ⊓ p) ⊑ p holds
+    ⊓-greatest  : (o p q : O) → q ⊑ o holds → q ⊑ p holds → q ⊑ (o ⊓ p) holds
 
     -- Least upper bound.
-    ⊔-up   : (ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⊔ ℱ) holds
-    ⊔-min  : (ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → (o ⊑ p) holds) → (⊔ ℱ) ⊑ p holds
+    ⊔-upper : (ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⊔ ℱ) holds
+    ⊔-least : (ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p holds) → (⊔ ℱ) ⊑ p holds
 
     -- Binary meety distribute over arbitrary joins.
-    dist   : (o : O) (ℱ : Sub ℓ₂ O) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → o ⊓ (ℱ € i))
+    dist : (o : O) (ℱ : Sub ℓ₂ O) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → o ⊓ (ℱ € i))
 
 -- Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Set ℓ₀
@@ -125,17 +125,17 @@ downward-subset-poset {ℓ = ℓ} {ℓ′} (X , P) =
 downward-subset-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ
 downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
   record
-    { P       =  𝔻ₚ
-    ; 𝟏       =  𝟏
-    ; _⊓_     =  _⊓_
-    ; ⊔_      =  ⊔_
-    ; top     =  𝟏-top
-    ; ⊓-low₁  =  ⊓-low₀
-    ; ⊓-low₂  =  ⊓-low₁
-    ; ⊓-max   =  ⊓-max
-    ; ⊔-up    =  ⊔-up
-    ; ⊔-min   =  ⊔-min
-    ; dist    =  dist
+    { P           =  𝔻ₚ
+    ; 𝟏           =  𝟏
+    ; _⊓_         =  _⊓_
+    ; ⊔_          =  ⊔_
+    ; top         =  𝟏-top
+    ; ⊓-lower₀    =  ⊓-lower₀
+    ; ⊓-lower₁    =  ⊓-lower₁
+    ; ⊓-greatest  =  ⊓-greatest
+    ; ⊔-upper     =  ⊔-upper
+    ; ⊔-least     =  ⊔-min
+    ; dist        =  dist
     }
   where
     𝔻ₚ = downward-subset-poset (X , P)
@@ -178,8 +178,8 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
         ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) holds
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
 
-    ⊔-up : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) holds
-    ⊔-up ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
+    ⊔-upper : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) holds
+    ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
 
     ⊔-min : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → (⊔ ℱ) << z holds
     ⊔-min ℱ D φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D ∣𝔻 x)) foo x∈⊔S
@@ -187,14 +187,14 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
         foo : Σ[ i ∈ index ℱ ] ∣ ℱ € i ∣𝔻 x holds → x ∈ ∣ D ∣𝔻 holds
         foo (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
 
-    ⊓-low₀ : (D E : 𝔻) → (D ⊓ E) << D holds
-    ⊓-low₀ D E x (x∈D , _) = x∈D
+    ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) << D holds
+    ⊓-lower₀ D E x (x∈D , _) = x∈D
 
-    ⊓-low₁ : (D E : 𝔻) → (D ⊓ E) << E holds
-    ⊓-low₁ D E x (_ , x∈F) = x∈F
+    ⊓-lower₁ : (D E : 𝔻) → (D ⊓ E) << E holds
+    ⊓-lower₁ D E x (_ , x∈F) = x∈F
 
-    ⊓-max : (D E F : 𝔻) → (F << D) holds → (F << E) holds → F << (D ⊓ E) holds
-    ⊓-max D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
+    ⊓-greatest : (D E F : 𝔻) → (F << D) holds → (F << E) holds → F << (D ⊓ E) holds
+    ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
     dist : (D : 𝔻) (ℱ : Sub ℓ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
     dist D ℱ = <<-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , λ i → D ⊓ (ℱ € i))) down up
