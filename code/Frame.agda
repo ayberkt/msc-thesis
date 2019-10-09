@@ -49,17 +49,17 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
     -- Consider merging the following three requirements and prove that equivalent to
     -- this. Thanks to univalence, one can alternate between the two styles if one happens
     -- to be more preferable than the other in certain cases.
-    top    : (x     : O) → x ⊑ 𝟏 holds
-    ⊓-low₁ : (x y   : O) → (x ⊓ y) ⊑ x holds
-    ⊓-low₂ : (x y   : O) → (x ⊓ y) ⊑ y holds
-    ⊓-max  : (x y z : O) → (z ⊑ x) holds → z ⊑ y holds → (z ⊑ (x ⊓ y)) holds
+    top    : (o     : O) → o ⊑ 𝟏 holds
+    ⊓-low₁ : (o p   : O) → (o ⊓ p) ⊑ o holds
+    ⊓-low₂ : (o p   : O) → (o ⊓ p) ⊑ p holds
+    ⊓-max  : (o p q : O) → (q ⊑ o) holds → q ⊑ p holds → (q ⊑ (o ⊓ p)) holds
 
     -- Least upper bound.
-    ⊔-up   : (S : Sub ℓ₂ O) → (o : O) → o ε S → o ⊑ (⊔ S) holds
-    ⊔-min  : (S : Sub ℓ₂ O) → (z : O) → ((o : O) → o ε S → (o ⊑ z) holds) → (⊔ S) ⊑ z holds
+    ⊔-up   : (ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⊔ ℱ) holds
+    ⊔-min  : (ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → (o ⊑ p) holds) → (⊔ ℱ) ⊑ p holds
 
     -- Binary meety distribute over arbitrary joins.
-    dist   : (x : O) (S : Sub ℓ₂ O) → x ⊓ (⊔ S) ≡ ⊔ (proj₁ S , λ i → x ⊓ proj₂ S i)
+    dist   : (o : O) (ℱ : Sub ℓ₂ O) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → o ⊓ (ℱ € i))
 
 -- Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Set ℓ₀
