@@ -52,7 +52,7 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
     top    : (o     : O) → o ⊑ 𝟏 holds
     ⊓-low₁ : (o p   : O) → (o ⊓ p) ⊑ o holds
     ⊓-low₂ : (o p   : O) → (o ⊓ p) ⊑ p holds
-    ⊓-max  : (o p q : O) → (q ⊑ o) holds → q ⊑ p holds → (q ⊑ (o ⊓ p)) holds
+    ⊓-max  : (o p q : O) → q ⊑ o holds → q ⊑ p holds → q ⊑ (o ⊓ p) holds
 
     -- Least upper bound.
     ⊔-up   : (ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⊔ ℱ) holds
