@@ -76,7 +76,7 @@ nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
 
     open AlgebraicProperties 𝔽-set _≤_
 
-    ≤-refl : (a : 𝔽) → a ≤ a holds
+    ≤-refl : IsReflexive holds
     ≤-refl (x , _) = ⊑-refl x
 
     ≤-trans : IsTransitive holds
