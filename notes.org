@@ -12,5 +12,10 @@
 *** Nucleus of a frame: ν : L → L
 *** J-closed elements form a frame.
 *** Remove the index mono and set requirements from the notion of family-based subset.
+** ii
+*** _◀_ : D(A) → D(A)
+*** U ⊆ ◀ U
+*** Thm:
+*** Lawvere-Tierney topology: j : Ω → Ω
 
 
