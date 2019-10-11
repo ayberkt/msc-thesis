@@ -64,17 +64,24 @@ nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
   where
     open Frame L            using (P)
     open PosetStr (proj₂ P) using (A-set; _⊑_; ⊑-refl; ⊑-trans; ⊑-antisym)
+
     𝔽 : Set ℓ₀
     𝔽 = Σ[ a ∈ ∣ L ∣F ] j a ≡ a
+
     𝔽-set : IsSet 𝔽
     𝔽-set = Σ-set A-set (λ a → prop⇒set (A-set (j a) a))
+
     _≤_ : 𝔽 → 𝔽 → Ω ℓ₁
     (a , _) ≤ (b , _) = a ⊑ b holds , holds-prop (a ⊑ b)
+
     open AlgebraicProperties 𝔽-set _≤_
+
     ≤-refl : (a : 𝔽) → a ≤ a holds
     ≤-refl (x , _) = ⊑-refl x
+
     ≤-trans : IsTransitive holds
     ≤-trans (x , _) (y , _) (z , _) x≤y y≤x = ⊑-trans x y z x≤y y≤x
+
     ≤-antisym : IsAntisym holds
     ≤-antisym (x , _) (y , _) x≤y y≤x =
       to-subtype-≡ (λ z → A-set (j z) z) (⊑-antisym x y x≤y y≤x)
