@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 open import Truncation
 
 module Nucleus (pt : TruncationExists) where

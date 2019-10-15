@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 module Truncation where
 
 open import Common
