@@ -85,3 +85,57 @@ nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
     ≤-antisym : IsAntisym holds
     ≤-antisym (x , _) (y , _) x≤y y≤x =
       to-subtype-≡ (λ z → A-set (j z) z) (⊑-antisym x y x≤y y≤x)
+
+nuclear-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
+nuclear-frame L N@(j , n₀ , n₁ , n₂) =
+  record
+    { P          =  nuclear-poset L N
+    ; 𝟏          =  𝟏L , 𝟏-fixed
+    ; _⊓_        =  _⊓_
+    ; ⊔_         =  {!!}
+    ; top        =  top
+    ; ⊓-lower₀   =  ⊓-lower₀
+    ; ⊓-lower₁   =  ⊓-lower₁
+    ; ⊓-greatest =  ⊓-greatest
+    ; ⊔-upper    =  {!!}
+    ; ⊔-least    =  {!!}
+    ; dist       =  {!!}
+    }
+  where
+    A = proj₁ (nuclear-poset L N)
+    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans)
+    open PosetStr (proj₂ (nuclear-poset L N)) using () renaming (_⊑_ to _⊑N_)
+    open Frame L using (P) renaming (𝟏 to 𝟏L; _⊓_ to _⊓L_; top to topL
+                                    ; ⊓-greatest to ⊓L-greatest
+                                    ; ⊓-lower₀ to ⊓L-lower₀
+                                    ; ⊓-lower₁ to ⊓L-lower₁)
+    𝟏-fixed : j 𝟏L ≡ 𝟏L
+    𝟏-fixed = ⊑-antisym (j 𝟏L) 𝟏L (topL (j 𝟏L)) (n₁ 𝟏L)
+
+    _⊓_ : A → A → A
+    _⊓_ (x , x-f) (y , y-f) = x ⊓L y , ⊑-antisym (j (x ⊓L y)) (x ⊓L y) φ (n₁ (x ⊓L y))
+      where
+        ⊑jx : j (x ⊓L y) ⊑ j x holds
+        ⊑jx = ⊑-trans _ (j x ⊓L j y) _ (≡⇒⊑ P (n₀ x y)) (⊓L-lower₀ (j x) (j y))
+        ⊑jy : j (x ⊓L y) ⊑ j y holds
+        ⊑jy = ⊑-trans _ (j x ⊓L j y) _ (≡⇒⊑ P (n₀ x y)) (⊓L-lower₁ (j x) (j y))
+
+        ⊑x : j (x ⊓L y) ⊑ x holds
+        ⊑x = transport (λ z → j (x ⊓L y) ⊑ z holds) x-f ⊑jx
+        ⊑y : j (x ⊓L y) ⊑ y holds
+        ⊑y = transport (λ z → j (x ⊓L y) ⊑ z holds) y-f ⊑jy
+
+        φ : j (x ⊓L y) ⊑ (x ⊓L y) holds
+        φ = ⊓L-greatest x y (j (x ⊓L y)) ⊑x ⊑y
+
+    top : (o : A) → (o ⊑N (𝟏L , 𝟏-fixed)) holds
+    top = topL ∘ proj₁
+
+    ⊓-lower₀ : (o p : A) → (o ⊓ p) ⊑N o holds
+    ⊓-lower₀ (o , _) (p , _) = ⊓L-lower₀ o p
+
+    ⊓-lower₁ : (o p : A) → (o ⊓ p) ⊑N p holds
+    ⊓-lower₁ (o , _) (p , _) = ⊓L-lower₁ o p
+
+    ⊓-greatest : (o p q : A) → q ⊑N o holds → q ⊑N p holds → q ⊑N (o ⊓ p) holds
+    ⊓-greatest (o , _) (p , _) (q , _) q⊑o q⊑p = ⊓L-greatest o p q q⊑o q⊑p
