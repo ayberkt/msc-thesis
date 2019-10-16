@@ -29,6 +29,11 @@ _€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → index ℱ → X
 _€_ (_ , f) = f
 
 infixr 7 _€_
+
+-- Composition of a family with a function.
+_⊚_ : {X : Set ℓ₀} {Y : Set ℓ₁} → (g : X → Y) → (ℱ : Sub ℓ₂ X) → Sub ℓ₂ Y
+g ⊚ ℱ = (index ℱ) , g ∘ (_€_ ℱ)
+
 -- Membership for families.
 _ε_ : {X : Set ℓ} → X → Sub ℓ′ X → Set (ℓ ⊔ ℓ′)
 x ε S = Σ[ i ∈ index S ] (S € i) ≡ x
