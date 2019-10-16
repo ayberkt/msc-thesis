@@ -28,6 +28,7 @@ index (I , _) = I
 _€_ : {X : Set ℓ} → (ℱ : Sub ℓ′ X) → index ℱ → X
 _€_ (_ , f) = f
 
+infixr 7 _€_
 -- Membership for families.
 _ε_ : {X : Set ℓ} → X → Sub ℓ′ X → Set (ℓ ⊔ ℓ′)
 x ε S = Σ[ i ∈ index S ] (S € i) ≡ x
