@@ -15,6 +15,7 @@ open TruncationExists pt
 private
   variable
     ℓ₀ ℓ₁ ℓ₂ : Level
+    L : Frame ℓ₀ ℓ₁ ℓ₂
 
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
 IsNuclear L j = N₀ × N₁ × N₂
@@ -26,6 +27,17 @@ IsNuclear L j = N₀ × N₁ × N₂
 
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
+
+nuclear⇒mono : (j : ∣ L ∣F → ∣ L ∣F)
+             → IsNuclear L j → IsMonotonic (Frame.P L) (Frame.P L) j
+nuclear⇒mono {L = L} j (n₀ , n₁ , n₂) x y x⊑y =
+  ⊑-trans _ _ _ φ
+    (⊑-trans _ _ _ (n₂ (x ⊓ y)) (transport (λ z → (z ⊑ j y) holds) (sym (n₀ x y)) (⊓-lower₁ (j x) (j y))))
+  where
+    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-trans)
+    open Frame L using (_⊓_; ⊓-greatest; ⊓-lower₁)
+    φ : proj₁ (j x ⊑ j (j (x ⊓ y)))
+    φ = {!⊓-greatest!}
 
 IsInvertible : {X : Set ℓ₀} {Y : Set ℓ₁} → (X → Y) → Set (ℓ₀ ⊔ ℓ₁)
 IsInvertible {X = X} {Y} f = Σ[ g ∈ (Y → X) ] (g ∘ f) ~ id × (f ∘ g) ~ id
