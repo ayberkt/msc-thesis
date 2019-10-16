@@ -16,8 +16,8 @@ private
   variable
     ℓ₀ ℓ₁ ℓ₂ : Level
 
-NucleusAx : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
-NucleusAx L j = N₀ × N₁ × N₂
+IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
+IsNuclear L j = N₀ × N₁ × N₂
   where
     open Frame L using (P; _⊓_; _⊑_)
     N₀ = (a b : ∣ L ∣F) → j (a ⊓ b) ≡ (j a) ⊓ (j b)
@@ -25,7 +25,7 @@ NucleusAx L j = N₀ × N₁ × N₂
     N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a holds
 
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
-Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (NucleusAx L)
+Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
 IsInvertible : {X : Set ℓ₀} {Y : Set ℓ₁} → (X → Y) → Set (ℓ₀ ⊔ ℓ₁)
 IsInvertible {X = X} {Y} f = Σ[ g ∈ (Y → X) ] (g ∘ f) ~ id × (f ∘ g) ~ id
@@ -38,7 +38,7 @@ invertibility→≃ f inv = f , (invertible⇒equiv f inv)
 
 nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
-              → NucleusAx L j
+              → IsNuclear L j
               → (Σ[ b ∈ ∣L∣ ] ∥ Σ[ a ∈ ∣L∣ ] (b ≡ j a) ∥) ≡ (Σ[ a ∈ ∣L∣ ] (j a ≡ a))
 nuclear-image L j (n₀ , n₁ , n₂) = equivtoid (invertibility→≃ f (g , lc , rc))
   where
