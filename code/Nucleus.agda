@@ -89,12 +89,12 @@ nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
       to-subtype-≡ (λ z → A-set (j z) z) (⊑-antisym x y x≤y y≤x)
 
 nuclear-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
-nuclear-frame L N@(j , n₀ , n₁ , n₂) =
+nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
   record
     { P          =  nuclear-poset L N
     ; 𝟏          =  𝟏L , 𝟏-fixed
     ; _⊓_        =  _⊓_
-    ; ⊔_         =  {!!}
+    ; ⊔_         =  ⊔_
     ; top        =  top
     ; ⊓-lower₀   =  ⊓-lower₀
     ; ⊓-lower₁   =  ⊓-lower₁
@@ -107,10 +107,12 @@ nuclear-frame L N@(j , n₀ , n₁ , n₂) =
     A = proj₁ (nuclear-poset L N)
     open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans)
     open PosetStr (proj₂ (nuclear-poset L N)) using () renaming (_⊑_ to _⊑N_)
-    open Frame L using (P) renaming (𝟏 to 𝟏L; _⊓_ to _⊓L_; top to topL
+    open Frame L using (P) renaming (𝟏 to 𝟏L; _⊓_ to _⊓L_; ⊔_ to ⊔L_; top to topL
                                     ; ⊓-greatest to ⊓L-greatest
                                     ; ⊓-lower₀ to ⊓L-lower₀
-                                    ; ⊓-lower₁ to ⊓L-lower₁)
+                                    ; ⊓-lower₁ to ⊓L-lower₁
+                                    ; ⊔-least  to ⊔L-least
+                                    ; ⊔-upper  to ⊔L-upper)
     𝟏-fixed : j 𝟏L ≡ 𝟏L
     𝟏-fixed = ⊑-antisym (j 𝟏L) 𝟏L (topL (j 𝟏L)) (n₁ 𝟏L)
 
@@ -129,6 +131,32 @@ nuclear-frame L N@(j , n₀ , n₁ , n₂) =
 
         φ : j (x ⊓L y) ⊑ (x ⊓L y) holds
         φ = ⊓L-greatest x y (j (x ⊓L y)) ⊑x ⊑y
+
+    ⊔_ : Sub ℓ₂ A → A
+    ⊔ ℱ@(I , F) = ⊔L 𝒢 , φ
+      where
+        𝒢 = I , proj₁ ∘ F
+
+        ℱ-fixed : (i : I) → j (𝒢 € i) ≡ 𝒢 € i
+        ℱ-fixed i = proj₂ (ℱ € i)
+
+        foo : 𝒢 ≡ (I , λ i → j (𝒢 € i))
+        foo = Σ= (proj₁ ∘ F) (λ i → j (𝒢 € i)) refl (funext _ _ (sym ∘ ℱ-fixed))
+
+        down : j (⊔L 𝒢) ⊑ (⊔L 𝒢) holds
+        down = {!!}
+
+        lemma : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ j (⊔L 𝒢) holds
+        lemma o o∈𝒢@(i , refl) =
+          ⊑-trans _ _ _
+            (≡⇒⊑ P (sym (ℱ-fixed i)))
+            (⊑-trans _ (⊔L 𝒢) _ (⊔L-upper 𝒢 (j (𝒢 € i)) (i , sym (ℱ-fixed i))) (n₁ (⊔L 𝒢)))
+
+        up : (⊔L 𝒢) ⊑ j (⊔L 𝒢) holds
+        up = ⊔L-least 𝒢 (j (⊔L 𝒢)) lemma
+
+        φ : j (⊔L 𝒢) ≡ (⊔L 𝒢)
+        φ = ⊑-antisym (j (⊔L 𝒢)) (⊔L 𝒢) down up
 
     top : (o : A) → (o ⊑N (𝟏L , 𝟏-fixed)) holds
     top = topL ∘ proj₁
