@@ -78,7 +78,7 @@ record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ F₁ : Frame ℓ ℓ′ ℓ�
   open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
 
   field
-    m : strₚ P₀ ─m→ strₚ P₁
+    m : P₀ ─m→ P₁
 
   field
      resp-id : m $ₘ 𝟏₀ ≡ 𝟏₁
