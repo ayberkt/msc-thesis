@@ -137,14 +137,20 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
       where
         𝒢 = I , proj₁ ∘ F
 
-        ℱ-fixed : (i : I) → j (𝒢 € i) ≡ 𝒢 € i
+        ℱ-fixed : (i : I) → (j ⊚ 𝒢 € i) ≡ 𝒢 € i
         ℱ-fixed i = proj₂ (ℱ € i)
 
-        foo : 𝒢 ≡ (I , λ i → j (𝒢 € i))
-        foo = Σ= (proj₁ ∘ F) (λ i → j (𝒢 € i)) refl (funext _ _ (sym ∘ ℱ-fixed))
+        j-id : j ⊚ 𝒢 ≡ 𝒢
+        j-id = Σ= (_€_ (j ⊚ 𝒢)) (proj₁ ∘ F) refl (funext _ _ ℱ-fixed)
+
+        ψ : j (⊔L 𝒢) ⊑ (⊔L (j ⊚ 𝒢)) holds
+        ψ = {!!}
+
+        bar : (i : I) → (j ⊚ 𝒢 € i) ⊑ (𝒢 € i) holds
+        bar i = ≡⇒⊑ P (ℱ-fixed i)
 
         down : j (⊔L 𝒢) ⊑ (⊔L 𝒢) holds
-        down = {!!}
+        down = ⊑-trans _ _ _ ψ (≡⇒⊒ P (⊔L 𝒢) _ (cong ⊔L_ (sym j-id)))
 
         lemma : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ j (⊔L 𝒢) holds
         lemma o o∈𝒢@(i , refl) =
