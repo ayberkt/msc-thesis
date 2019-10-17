@@ -28,17 +28,6 @@ IsNuclear L j = N₀ × N₁ × N₂
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
-nuclear⇒mono : (j : ∣ L ∣F → ∣ L ∣F)
-             → IsNuclear L j → IsMonotonic (Frame.P L) (Frame.P L) j
-nuclear⇒mono {L = L} j (n₀ , n₁ , n₂) x y x⊑y =
-  ⊑-trans _ _ _ φ
-    (⊑-trans _ _ _ (n₂ (x ⊓ y)) (transport (λ z → (z ⊑ j y) holds) (sym (n₀ x y)) (⊓-lower₁ (j x) (j y))))
-  where
-    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-trans)
-    open Frame L using (_⊓_; ⊓-greatest; ⊓-lower₁)
-    φ : proj₁ (j x ⊑ j (j (x ⊓ y)))
-    φ = {!⊓-greatest!}
-
 IsInvertible : {X : Set ℓ₀} {Y : Set ℓ₁} → (X → Y) → Set (ℓ₀ ⊔ ℓ₁)
 IsInvertible {X = X} {Y} f = Σ[ g ∈ (Y → X) ] (g ∘ f) ~ id × (f ∘ g) ~ id
 
@@ -145,36 +134,11 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
         φ = ⊓L-greatest x y (j (x ⊓L y)) ⊑x ⊑y
 
     ⊔_ : Sub ℓ₂ A → A
-    ⊔ ℱ@(I , F) = ⊔L 𝒢 , φ
+    ⊔ (I , F) = j (⊔L 𝒢) , j⊔L-fixed
       where
         𝒢 = I , proj₁ ∘ F
-
-        ℱ-fixed : (i : I) → (j ⊚ 𝒢 € i) ≡ 𝒢 € i
-        ℱ-fixed i = proj₂ (ℱ € i)
-
-        j-id : j ⊚ 𝒢 ≡ 𝒢
-        j-id = Σ= (_€_ (j ⊚ 𝒢)) (proj₁ ∘ F) refl (funext _ _ ℱ-fixed)
-
-        ψ : j (⊔L 𝒢) ⊑ (⊔L (j ⊚ 𝒢)) holds
-        ψ = {!!}
-
-        bar : (i : I) → (j ⊚ 𝒢 € i) ⊑ (𝒢 € i) holds
-        bar i = ≡⇒⊑ P (ℱ-fixed i)
-
-        down : j (⊔L 𝒢) ⊑ (⊔L 𝒢) holds
-        down = ⊑-trans _ _ _ ψ (≡⇒⊒ P (⊔L 𝒢) _ (cong ⊔L_ (sym j-id)))
-
-        lemma : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ j (⊔L 𝒢) holds
-        lemma o o∈𝒢@(i , refl) =
-          ⊑-trans _ _ _
-            (≡⇒⊑ P (sym (ℱ-fixed i)))
-            (⊑-trans _ (⊔L 𝒢) _ (⊔L-upper 𝒢 (j (𝒢 € i)) (i , sym (ℱ-fixed i))) (n₁ (⊔L 𝒢)))
-
-        up : (⊔L 𝒢) ⊑ j (⊔L 𝒢) holds
-        up = ⊔L-least 𝒢 (j (⊔L 𝒢)) lemma
-
-        φ : j (⊔L 𝒢) ≡ (⊔L 𝒢)
-        φ = ⊑-antisym (j (⊔L 𝒢)) (⊔L 𝒢) down up
+        j⊔L-fixed : j (j (⊔L 𝒢)) ≡ j (⊔L 𝒢)
+        j⊔L-fixed = ⊑-antisym (j (j (⊔L 𝒢))) (j (⊔L 𝒢)) (n₂ (⊔L 𝒢)) (n₁ (j (⊔L 𝒢)))
 
     top : (o : A) → (o ⊑N (𝟏L , 𝟏-fixed)) holds
     top = topL ∘ proj₁
