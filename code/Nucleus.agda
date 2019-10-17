@@ -18,12 +18,13 @@ private
     L : Frame ℓ₀ ℓ₁ ℓ₂
 
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
-IsNuclear L j = N₀ × N₁ × N₂
+IsNuclear L j = N₀ × N₁ × N₂ × N₃
   where
     open Frame L using (P; _⊓_; _⊑_)
     N₀ = (a b : ∣ L ∣F) → j (a ⊓ b) ≡ (j a) ⊓ (j b)
     N₁ = (a   : ∣ L ∣F) → a ⊑ (j a) holds
     N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a holds
+    N₃ = (a b : ∣ L ∣F) → a ⊑ b holds → j a ⊑ j b holds
 
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
@@ -41,7 +42,7 @@ nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
               → IsNuclear L j
               → (Σ[ b ∈ ∣L∣ ] ∥ Σ[ a ∈ ∣L∣ ] (b ≡ j a) ∥) ≡ (Σ[ a ∈ ∣L∣ ] (j a ≡ a))
-nuclear-image L j (n₀ , n₁ , n₂) = equivtoid (invertibility→≃ f (g , lc , rc))
+nuclear-image L j (n₀ , n₁ , n₂ , n₃) = equivtoid (invertibility→≃ f (g , lc , rc))
   where
     open Frame L using (P)
     open PosetStr (proj₂ P) using (A-set; ⊑-antisym; ⊑-refl)
@@ -90,7 +91,7 @@ nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
       to-subtype-≡ (λ z → A-set (j z) z) (⊑-antisym x y x≤y y≤x)
 
 nuclear-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
-nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
+nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
   record
     { P          =  nuclear-poset L N
     ; 𝟏          =  𝟏L , 𝟏-fixed
@@ -100,14 +101,14 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
     ; ⊓-lower₀   =  ⊓-lower₀
     ; ⊓-lower₁   =  ⊓-lower₁
     ; ⊓-greatest =  ⊓-greatest
-    ; ⊔-upper    =  {!!}
-    ; ⊔-least    =  {!!}
+    ; ⊔-upper    =  ⊔-upper
+    ; ⊔-least    =  ⊔-least
     ; dist       =  {!!}
     }
   where
     A = proj₁ (nuclear-poset L N)
     open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans)
-    open PosetStr (proj₂ (nuclear-poset L N)) using () renaming (_⊑_ to _⊑N_)
+    open PosetStr (proj₂ (nuclear-poset L N)) using (A-set) renaming (_⊑_ to _⊑N_)
     open Frame L using (P) renaming (𝟏 to 𝟏L; _⊓_ to _⊓L_; ⊔_ to ⊔L_; top to topL
                                     ; ⊓-greatest to ⊓L-greatest
                                     ; ⊓-lower₀ to ⊓L-lower₀
@@ -151,3 +152,22 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
 
     ⊓-greatest : (o p q : A) → q ⊑N o holds → q ⊑N p holds → q ⊑N (o ⊓ p) holds
     ⊓-greatest (o , _) (p , _) (q , _) q⊑o q⊑p = ⊓L-greatest o p q q⊑o q⊑p
+
+    ⊔-least : (ℱ : Sub ℓ₂ A) (p : A)
+            → ((o : A) → o ε ℱ → o ⊑N p holds) → ((⊔ ℱ) ⊑N p) holds
+    ⊔-least ℱ p@(p′ , eq) ℱ⊑p = φ
+      where
+        𝒢 : Sub ℓ₂ ∣ P ∣ₚ
+        𝒢 = index ℱ , (λ i → proj₁ (ℱ € i))
+        ϑ : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ p′ holds
+        ϑ o o∈𝒢@(i , eq′) rewrite (sym eq′) = ℱ⊑p (proj₁ (ℱ € i) , proj₂ (ℱ € i)) (i , refl)
+        ψ : j (⊔L 𝒢) ⊑ (j p′) holds
+        ψ = n₃ (⊔L 𝒢) p′ (⊔L-least 𝒢 p′ ϑ)
+        φ : j (⊔L 𝒢) ⊑ p′ holds
+        φ = transport (λ k → (j (⊔L 𝒢) ⊑ k) holds) eq ψ
+
+    ⊔-upper : (ℱ : Sub ℓ₂ A) (o : A) → o ε ℱ → (o ⊑N (⊔ ℱ)) holds
+    ⊔-upper ℱ (o , _) o∈ℱ@(i , eq) = ⊑-trans _ _ _ bar (n₁ (⊔L (proj₁ ⊚ ℱ)))
+      where
+        bar : o ⊑ (⊔L (proj₁ ⊚ ℱ)) holds
+        bar = ⊔L-upper (proj₁ ⊚ ℱ) o (i , Σ-resp₀ o _ _ eq)
