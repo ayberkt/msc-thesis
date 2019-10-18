@@ -178,24 +178,24 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     dist : (o : A) (ℱ : Sub ℓ₂ A) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
     dist o@(o′ , o′-fixes-j) ℱ@(I , F) = ⊑N-antisym _ _ down up
       where
-        ℱ-fixes-j : (i : I) → j (proj₁ ⊚ ℱ € i) ≡ proj₁ ⊚ ℱ € i
-        ℱ-fixes-j i = proj₂ (ℱ € i)
         𝒢 : Sub ℓ₂ ∣ P ∣ₚ
         𝒢 = proj₁ ⊚ ℱ
+        ℱ-fixes-j : (i : I) → j (𝒢 € i) ≡ 𝒢 € i
+        ℱ-fixes-j i = proj₂ (ℱ € i)
         foo : (o′ ⊓L (⊔L 𝒢)) ≡ ⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))
         foo = distL o′ 𝒢
         foo₀ : (o′ ⊓L (⊔L 𝒢)) ⊑ (⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))) holds
         foo₀ = ≡⇒⊑ P foo
         foo₁ : (⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))) ⊑ (o′ ⊓L (⊔L 𝒢))  holds
         foo₁ = ≡⇒⊑ P (sym foo)
-        a : (o′ ⊓L j (⊔L (proj₁ ⊚ ℱ))) ⊑ (j o′ ⊓L j (⊔L (proj₁ ⊚ ℱ))) holds
+        a : (o′ ⊓L j (⊔L 𝒢)) ⊑ (j o′ ⊓L j (⊔L 𝒢)) holds
         a = ⊓L-greatest _ _ _
               (⊑-trans _ _ _ (⊓L-lower₀ o′ _) (n₁ o′))
-                (⊑-trans _ _ _ (⊓L-lower₁ o′ (j (⊔L (proj₁ ⊚ (I , F)))))
-                  (⊑-refl (j (⊔L (proj₁ ⊚ (I , F))))))
-        b : (j o′ ⊓L j (⊔L (proj₁ ⊚ ℱ))) ⊑ j (o′ ⊓L (⊔L (proj₁ ⊚ ℱ))) holds
-        b = ≡⇒⊑ P (sym (n₀ o′ (⊔L (proj₁ ⊚ ℱ))))
+                (⊑-trans _ _ _ (⊓L-lower₁ o′ (j (⊔L 𝒢)))
+                  (⊑-refl (j (⊔L 𝒢))))
+        b : (j o′ ⊓L j (⊔L 𝒢)) ⊑ j (o′ ⊓L (⊔L 𝒢)) holds
+        b = ≡⇒⊑ P (sym (n₀ o′ (⊔L 𝒢)))
         down :  (proj₁ (o ⊓ (⊔ ℱ)) ⊑ proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i))))) holds
         down = ⊑-trans _ _ _ a (⊑-trans _ _ _ b (n₃ _ _ foo₀))
         up : proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i)))) ⊑ proj₁ (o ⊓ (⊔ ℱ)) holds
-        up rewrite (sym o′-fixes-j) | (sym (n₀ o′ (⊔L (I , (λ x → proj₁ (F x)))))) | o′-fixes-j = n₃ _ _ foo₁
+        up rewrite sym o′-fixes-j | sym (n₀ o′ (⊔L 𝒢)) | o′-fixes-j = n₃ _ _ foo₁
