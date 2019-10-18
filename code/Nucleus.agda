@@ -169,11 +169,14 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     ⊔-least ℱ p@(p′ , eq) ℱ⊑p = φ
       where
         𝒢 : Sub ℓ₂ ∣ P ∣ₚ
-        𝒢 = index ℱ , (λ i → proj₁ (ℱ € i))
+        𝒢 = index ℱ , λ i → proj₁ (ℱ € i)
+
         ϑ : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ p′ holds
-        ϑ o o∈𝒢@(i , eq′) rewrite sym eq′ = ℱ⊑p (proj₁ (ℱ € i) , proj₂ (ℱ € i)) (i , refl)
+        ϑ o o∈𝒢@(i , eq′) rewrite sym eq′ = ℱ⊑p (𝒢 € i , proj₂ (ℱ € i)) (i , refl)
+
         ψ : j (⊔L 𝒢) ⊑ (j p′) holds
         ψ = n₃ (⊔L 𝒢) p′ (⊔L-least 𝒢 p′ ϑ)
+
         φ : j (⊔L 𝒢) ⊑ p′ holds
         φ = transport (λ k → (j (⊔L 𝒢) ⊑ k) holds) eq ψ
 
