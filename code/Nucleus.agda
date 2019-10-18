@@ -114,8 +114,8 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     }
   where
     A = proj₁ (nuclear-poset L N)
-    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans
-                                            ; _⊑⟨_⟩_; _■) renaming (A-set to X-set)
+    open PosetStr (proj₂ (Frame.P L))         using    (_⊑_; ⊑-antisym; ⊑-refl; _⊑⟨_⟩_; _■)
+                                              renaming (A-set to X-set)
     open PosetStr (proj₂ (nuclear-poset L N)) using    (A-set)
                                               renaming ( _⊑_ to _⊑N_
                                                        ; ⊑-antisym to ⊑N-antisym)
@@ -133,9 +133,9 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     _⊓_ (x , x-f) (y , y-f) = x ⊓L y , ⊑-antisym (j (x ⊓L y)) (x ⊓L y) φ (n₁ (x ⊓L y))
       where
         ⊑jx : j (x ⊓L y) ⊑ j x holds
-        ⊑jx = ⊑-trans _ (j x ⊓L j y) _ (≡⇒⊑ P (n₀ x y)) (⊓L-lower₀ (j x) (j y))
+        ⊑jx = j (x ⊓L y) ⊑⟨ ≡⇒⊑ P (n₀ x y) ⟩ j x ⊓L j y ⊑⟨ ⊓L-lower₀ (j x) (j y) ⟩ j x ■
         ⊑jy : j (x ⊓L y) ⊑ j y holds
-        ⊑jy = ⊑-trans _ (j x ⊓L j y) _ (≡⇒⊑ P (n₀ x y)) (⊓L-lower₁ (j x) (j y))
+        ⊑jy = j (x ⊓L y) ⊑⟨ ≡⇒⊑ P (n₀ x y) ⟩ j x ⊓L j y ⊑⟨ ⊓L-lower₁ (j x) (j y) ⟩ j y ■
 
         ⊑x : j (x ⊓L y) ⊑ x holds
         ⊑x = transport (λ z → j (x ⊓L y) ⊑ z holds) x-f ⊑jx
@@ -181,10 +181,13 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
         φ = transport (λ k → (j (⊔L 𝒢) ⊑ k) holds) eq ψ
 
     ⊔-upper : (ℱ : Sub ℓ₂ A) (o : A) → o ε ℱ → (o ⊑N (⊔ ℱ)) holds
-    ⊔-upper ℱ (o , _) o∈ℱ@(i , eq) = ⊑-trans _ _ _ bar (n₁ (⊔L (proj₁ ⊚ ℱ)))
+    ⊔-upper ℱ (o , _) o∈ℱ@(i , eq) =
+      o                  ⊑⟨ φ ⟩
+      ⊔L (proj₁ ⊚ ℱ)     ⊑⟨ n₁ (⊔L (proj₁ ⊚ ℱ)) ⟩
+      j (⊔L (proj₁ ⊚ ℱ)) ■
       where
-        bar : o ⊑ (⊔L (proj₁ ⊚ ℱ)) holds
-        bar = ⊔L-upper (proj₁ ⊚ ℱ) o (i , Σ-resp₀ o _ _ eq)
+        φ : o ⊑ (⊔L (proj₁ ⊚ ℱ)) holds
+        φ = ⊔L-upper (proj₁ ⊚ ℱ) o (i , Σ-resp₀ o _ _ eq)
 
     dist : (o : A) (ℱ : Sub ℓ₂ A) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
     dist o@(o′ , j-fix-o′) ℱ@(I , F) = Σ= _ (idem L N _) φ (X-set _ _ _ _)
