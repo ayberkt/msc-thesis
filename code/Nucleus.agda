@@ -103,18 +103,21 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     ; ⊓-greatest =  ⊓-greatest
     ; ⊔-upper    =  ⊔-upper
     ; ⊔-least    =  ⊔-least
-    ; dist       =  {!!}
+    ; dist       =  dist
     }
   where
     A = proj₁ (nuclear-poset L N)
     open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans)
-    open PosetStr (proj₂ (nuclear-poset L N)) using (A-set) renaming (_⊑_ to _⊑N_)
+    open PosetStr (proj₂ (nuclear-poset L N)) using    (A-set)
+                                              renaming ( _⊑_ to _⊑N_
+                                                       ; ⊑-antisym to ⊑N-antisym)
     open Frame L using (P) renaming (𝟏 to 𝟏L; _⊓_ to _⊓L_; ⊔_ to ⊔L_; top to topL
                                     ; ⊓-greatest to ⊓L-greatest
                                     ; ⊓-lower₀ to ⊓L-lower₀
                                     ; ⊓-lower₁ to ⊓L-lower₁
                                     ; ⊔-least  to ⊔L-least
-                                    ; ⊔-upper  to ⊔L-upper)
+                                    ; ⊔-upper  to ⊔L-upper
+                                    ; dist     to distL)
     𝟏-fixed : j 𝟏L ≡ 𝟏L
     𝟏-fixed = ⊑-antisym (j 𝟏L) 𝟏L (topL (j 𝟏L)) (n₁ 𝟏L)
 
@@ -160,7 +163,7 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
         𝒢 : Sub ℓ₂ ∣ P ∣ₚ
         𝒢 = index ℱ , (λ i → proj₁ (ℱ € i))
         ϑ : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ p′ holds
-        ϑ o o∈𝒢@(i , eq′) rewrite (sym eq′) = ℱ⊑p (proj₁ (ℱ € i) , proj₂ (ℱ € i)) (i , refl)
+        ϑ o o∈𝒢@(i , eq′) rewrite sym eq′ = ℱ⊑p (proj₁ (ℱ € i) , proj₂ (ℱ € i)) (i , refl)
         ψ : j (⊔L 𝒢) ⊑ (j p′) holds
         ψ = n₃ (⊔L 𝒢) p′ (⊔L-least 𝒢 p′ ϑ)
         φ : j (⊔L 𝒢) ⊑ p′ holds
@@ -171,3 +174,28 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
       where
         bar : o ⊑ (⊔L (proj₁ ⊚ ℱ)) holds
         bar = ⊔L-upper (proj₁ ⊚ ℱ) o (i , Σ-resp₀ o _ _ eq)
+
+    dist : (o : A) (ℱ : Sub ℓ₂ A) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
+    dist o@(o′ , o′-fixes-j) ℱ@(I , F) = ⊑N-antisym _ _ down up
+      where
+        ℱ-fixes-j : (i : I) → j (proj₁ ⊚ ℱ € i) ≡ proj₁ ⊚ ℱ € i
+        ℱ-fixes-j i = proj₂ (ℱ € i)
+        𝒢 : Sub ℓ₂ ∣ P ∣ₚ
+        𝒢 = proj₁ ⊚ ℱ
+        foo : (o′ ⊓L (⊔L 𝒢)) ≡ ⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))
+        foo = distL o′ 𝒢
+        foo₀ : (o′ ⊓L (⊔L 𝒢)) ⊑ (⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))) holds
+        foo₀ = ≡⇒⊑ P foo
+        foo₁ : (⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))) ⊑ (o′ ⊓L (⊔L 𝒢))  holds
+        foo₁ = ≡⇒⊑ P (sym foo)
+        a : (o′ ⊓L j (⊔L (proj₁ ⊚ ℱ))) ⊑ (j o′ ⊓L j (⊔L (proj₁ ⊚ ℱ))) holds
+        a = ⊓L-greatest _ _ _
+              (⊑-trans _ _ _ (⊓L-lower₀ o′ _) (n₁ o′))
+                (⊑-trans _ _ _ (⊓L-lower₁ o′ (j (⊔L (proj₁ ⊚ (I , F)))))
+                  (⊑-refl (j (⊔L (proj₁ ⊚ (I , F))))))
+        b : (j o′ ⊓L j (⊔L (proj₁ ⊚ ℱ))) ⊑ j (o′ ⊓L (⊔L (proj₁ ⊚ ℱ))) holds
+        b = ≡⇒⊑ P (sym (n₀ o′ (⊔L (proj₁ ⊚ ℱ))))
+        down :  (proj₁ (o ⊓ (⊔ ℱ)) ⊑ proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i))))) holds
+        down = ⊑-trans _ _ _ a (⊑-trans _ _ _ b (n₃ _ _ foo₀))
+        up : proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i)))) ⊑ proj₁ (o ⊓ (⊔ ℱ)) holds
+        up rewrite (sym o′-fixes-j) | (sym (n₀ o′ (⊔L (I , (λ x → proj₁ (F x)))))) | o′-fixes-j = n₃ _ _ foo₁
