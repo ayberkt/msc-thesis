@@ -26,6 +26,15 @@ record PosetStr (ℓ ℓ′ : Level) (A : Set ℓ) : Set ((suc ℓ) ⊔ (suc ℓ
     ⊑-trans   : (x y z : A) → (x ⊑ y) holds → (y ⊑ z) holds → (x ⊑ z) holds
     ⊑-antisym : (x y   : A) → (x ⊑ y) holds → (y ⊑ x) holds → x ≡ y
 
+  _⊑⟨_⟩_ : (x : A) {y z : A} → x ⊑ y holds → y ⊑ z holds → x ⊑ z holds
+  _ ⊑⟨ p ⟩ q = ⊑-trans _ _ _ p q
+
+  _■ : (x : A) → x ⊑ x holds
+  _■ = ⊑-refl
+
+  infixr 0 _⊑⟨_⟩_
+  infix  1 _■
+
 Poset : (ℓ ℓ′ : Level) → Set (suc ℓ ⊔ suc ℓ′)
 Poset ℓ ℓ′ = Σ[ A ∈ Set ℓ ] (PosetStr ℓ ℓ′ A)
 
