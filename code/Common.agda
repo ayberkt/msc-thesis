@@ -27,3 +27,5 @@ syntax Σ!-syntax A (λ x → B) = Σ![ x ∈ A ] B
 Σ= : {ℓ ℓ′ : Level} {X : Set ℓ} {Y : X → Set ℓ′} {x₀ x₁ : X}
    → (y₀ : Y x₀) → (y₁ : Y x₁) → (p : x₀ ≡ x₁) → transport Y p y₀ ≡ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
 Σ= y₀ y₁ refl refl = refl
+
+_⁻¹ = sym

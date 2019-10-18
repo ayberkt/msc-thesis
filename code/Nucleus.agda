@@ -38,6 +38,13 @@ postulate
 invertibility→≃ : {X : Set ℓ₀} {Y : Set ℓ₁} (f : X → Y) → IsInvertible f → X ≃ Y
 invertibility→≃ f inv = f , (invertible⇒equiv f inv)
 
+idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
+     → (N : Nucleus L)
+     → let j = proj₁ N in (x : ∣ L ∣F) → j (j x) ≡ j x
+idem L (j , n₀ , n₁ , n₂ , n₃) x = ⊑-antisym (j (j x)) (j x) (n₂ x) (n₁ (j x))
+  where
+    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym)
+
 nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
               → IsNuclear L j
@@ -107,7 +114,8 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     }
   where
     A = proj₁ (nuclear-poset L N)
-    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans)
+    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym; ⊑-refl; ⊑-trans
+                                            ; _⊑⟨_⟩_; _■) renaming (A-set to X-set)
     open PosetStr (proj₂ (nuclear-poset L N)) using    (A-set)
                                               renaming ( _⊑_ to _⊑N_
                                                        ; ⊑-antisym to ⊑N-antisym)
@@ -176,26 +184,16 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
         bar = ⊔L-upper (proj₁ ⊚ ℱ) o (i , Σ-resp₀ o _ _ eq)
 
     dist : (o : A) (ℱ : Sub ℓ₂ A) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
-    dist o@(o′ , o′-fixes-j) ℱ@(I , F) = ⊑N-antisym _ _ down up
+    dist o@(o′ , j-fix-o′) ℱ@(I , F) = Σ= _ (idem L N _) φ (X-set _ _ _ _)
       where
         𝒢 : Sub ℓ₂ ∣ P ∣ₚ
         𝒢 = proj₁ ⊚ ℱ
-        ℱ-fixes-j : (i : I) → j (𝒢 € i) ≡ 𝒢 € i
-        ℱ-fixes-j i = proj₂ (ℱ € i)
-        foo : (o′ ⊓L (⊔L 𝒢)) ≡ ⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))
-        foo = distL o′ 𝒢
-        foo₀ : (o′ ⊓L (⊔L 𝒢)) ⊑ (⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))) holds
-        foo₀ = ≡⇒⊑ P foo
-        foo₁ : (⊔L (I , (λ i → o′ ⊓L (𝒢 € i)))) ⊑ (o′ ⊓L (⊔L 𝒢))  holds
-        foo₁ = ≡⇒⊑ P (sym foo)
-        a : (o′ ⊓L j (⊔L 𝒢)) ⊑ (j o′ ⊓L j (⊔L 𝒢)) holds
-        a = ⊓L-greatest _ _ _
-              (⊑-trans _ _ _ (⊓L-lower₀ o′ _) (n₁ o′))
-                (⊑-trans _ _ _ (⊓L-lower₁ o′ (j (⊔L 𝒢)))
-                  (⊑-refl (j (⊔L 𝒢))))
-        b : (j o′ ⊓L j (⊔L 𝒢)) ⊑ j (o′ ⊓L (⊔L 𝒢)) holds
-        b = ≡⇒⊑ P (sym (n₀ o′ (⊔L 𝒢)))
-        down :  (proj₁ (o ⊓ (⊔ ℱ)) ⊑ proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i))))) holds
-        down = ⊑-trans _ _ _ a (⊑-trans _ _ _ b (n₃ _ _ foo₀))
-        up : proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i)))) ⊑ proj₁ (o ⊓ (⊔ ℱ)) holds
-        up rewrite sym o′-fixes-j | sym (n₀ o′ (⊔L 𝒢)) | o′-fixes-j = n₃ _ _ foo₁
+
+        φ :  proj₁ (o ⊓ (⊔ ℱ)) ≡ proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i))))
+        φ =
+          proj₁ (o ⊓ (⊔ ℱ))                   ≡⟨ refl                                     ⟩
+          o′ ⊓L j (⊔L 𝒢)                      ≡⟨ cong (λ - → - ⊓L j (⊔L 𝒢)) (j-fix-o′ ⁻¹) ⟩
+          j o′ ⊓L (j (⊔L 𝒢))                  ≡⟨ sym (n₀ o′ (⊔L 𝒢))                       ⟩
+          j (o′ ⊓L (⊔L 𝒢))                    ≡⟨ cong j (distL o′ 𝒢)                      ⟩
+          j (⊔L (I , (λ i → o′ ⊓L (𝒢 € i))))  ≡⟨ refl                                     ⟩
+          proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i)))) ∎
