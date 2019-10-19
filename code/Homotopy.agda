@@ -8,7 +8,7 @@ open import HLevels public
 
 private
   variable
-    ℓ ℓ′ : Level
+    ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
 
 ------------------------------------------------------------------------------------------
 -- BASICS
@@ -62,6 +62,15 @@ id-≃ X = id , φ
   where
     φ : (x : X) → IsContractible (fiber id x)
     φ x = (x , refl) , λ { (y , refl) → refl }
+
+IsInvertible : {X : Set ℓ₀} {Y : Set ℓ₁} → (X → Y) → Set (ℓ₀ ⊔ ℓ₁)
+IsInvertible {X = X} {Y} f = Σ[ g ∈ (Y → X) ] (g ∘ f) ~ id × (f ∘ g) ~ id
+
+postulate
+  invertible⇒equiv : {X : Set ℓ₀} {Y : Set ℓ₁} → (f : X → Y) → IsInvertible f → isequiv f
+
+invertibility→≃ : {X : Set ℓ₀} {Y : Set ℓ₁} (f : X → Y) → IsInvertible f → X ≃ Y
+invertibility→≃ f inv = f , (invertible⇒equiv f inv)
 
 idtoeqv : {A B : Set ℓ} → A ≡ B → A ≃ B
 idtoeqv {A = A} refl = id , φ

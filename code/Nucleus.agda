@@ -29,15 +29,6 @@ IsNuclear L j = N₀ × N₁ × N₂ × N₃
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
-IsInvertible : {X : Set ℓ₀} {Y : Set ℓ₁} → (X → Y) → Set (ℓ₀ ⊔ ℓ₁)
-IsInvertible {X = X} {Y} f = Σ[ g ∈ (Y → X) ] (g ∘ f) ~ id × (f ∘ g) ~ id
-
-postulate
-  invertible⇒equiv : {X : Set ℓ₀} {Y : Set ℓ₁} → (f : X → Y) → IsInvertible f → isequiv f
-
-invertibility→≃ : {X : Set ℓ₀} {Y : Set ℓ₁} (f : X → Y) → IsInvertible f → X ≃ Y
-invertibility→≃ f inv = f , (invertible⇒equiv f inv)
-
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
      → (N : Nucleus L)
      → let j = proj₁ N in (x : ∣ L ∣F) → j (j x) ≡ j x
