@@ -17,6 +17,7 @@ private
     ℓ₀ ℓ₁ ℓ₂ : Level
     L : Frame ℓ₀ ℓ₁ ℓ₂
 
+-- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
 IsNuclear L j = N₀ × N₁ × N₂ × N₃
   where
@@ -26,6 +27,7 @@ IsNuclear L j = N₀ × N₁ × N₂ × N₃
     N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a holds
     N₃ = (a b : ∣ L ∣F) → a ⊑ b holds → j a ⊑ j b holds
 
+-- The type of nuclei.
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
@@ -36,6 +38,8 @@ idem L (j , n₀ , n₁ , n₂ , n₃) x = ⊑-antisym (j (j x)) (j x) (n₂ x) 
   where
     open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym)
 
+-- The set of fixed points for nucleus `j` is equivalent hence equal to its image.
+-- This is essentially due to the fact that j (j ())
 nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
               → IsNuclear L j
