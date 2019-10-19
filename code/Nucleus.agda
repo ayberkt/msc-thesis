@@ -15,7 +15,6 @@ open TruncationExists pt
 private
   variable
     ℓ₀ ℓ₁ ℓ₂ : Level
-    L : Frame ℓ₀ ℓ₁ ℓ₂
 
 -- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
@@ -44,28 +43,33 @@ nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
               → IsNuclear L j
               → (Σ[ b ∈ ∣L∣ ] ∥ Σ[ a ∈ ∣L∣ ] (b ≡ j a) ∥) ≡ (Σ[ a ∈ ∣L∣ ] (j a ≡ a))
-nuclear-image L j (n₀ , n₁ , n₂ , n₃) = equivtoid (invertibility→≃ f (g , lc , rc))
+nuclear-image L j N@(n₀ , n₁ , n₂ , n₃) = equivtoid (invertibility→≃ f (g , lc , rc))
   where
-    open Frame L using (P)
+    open Frame L            using (P)
     open PosetStr (proj₂ P) using (A-set; ⊑-antisym; ⊑-refl)
-    f : (Σ[ b ∈ ∣ L ∣F ] ∥ Σ[ a ∈ ∣ L ∣F ] (b ≡ j a) ∥) → (Σ[ a ∈ ∣ L ∣F ] (j a ≡ a))
+
+    f : (Σ[ b ∈ ∣ L ∣F ] ∥ Σ[ a ∈ ∣ L ∣F ] (b ≡ j a) ∥) → Σ[ a ∈ ∣ L ∣F ] (j a ≡ a)
     f (b , img) = b , ∥∥-rec (A-set (j b) b) ind img
       where
         ind : Σ[ a ∈ ∣ L ∣F ](b ≡ j a) → j b ≡ b
         ind (a , img) =
           j b     ≡⟨ cong j img ⟩
-          j (j a) ≡⟨ ⊑-antisym (j (j a)) (j a) (n₂ a) (n₁ (j a)) ⟩
+          j (j a) ≡⟨ idem L (j , N) a ⟩
           j a     ≡⟨ sym img ⟩
           b       ∎
+
     g : (Σ[ a ∈ ∣ L ∣F ] (j a ≡ a)) → (Σ[ b ∈ ∣ L ∣F ] ∥ Σ[ a ∈ ∣ L ∣F ] (b ≡ j a) ∥)
     g (a , a-fix) = a , ∣ a , (sym a-fix) ∣
-    lc : ∀ x → g (f x) ≡ x
-    lc (a , img) = to-subtype-≡ (λ _ → ∥∥-prop _) refl
-    rc : ∀ x → f (g x) ≡ x
-    rc (a , a-fixed) = to-subtype-≡ (λ x → A-set (j x) x) refl
 
-nuclear-poset : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Poset ℓ₀ ℓ₁
-nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
+    lc : (x : Σ ∣ L ∣F (λ b → ∥ Σ-syntax ∣ L ∣F (λ a → b ≡ j a) ∥)) → g (f x) ≡ x
+    lc (a , img) = to-subtype-≡ (λ _ → ∥∥-prop _) refl
+
+    rc : (x : Σ ∣ L ∣F (λ y → j y ≡ y)) → f (g x) ≡ x
+    rc (a , _) = to-subtype-≡ (λ x → A-set (j x) x) refl
+
+-- The set of fixed points for a nucleus `j` forms a poset.
+nuclear-fixed-point-poset : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Poset ℓ₀ ℓ₁
+nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
   𝔽 , posetstr _≤_ 𝔽-set ≤-refl ≤-trans ≤-antisym
   where
     open Frame L            using (P)
@@ -92,10 +96,10 @@ nuclear-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
     ≤-antisym (x , _) (y , _) x≤y y≤x =
       to-subtype-≡ (λ z → A-set (j z) z) (⊑-antisym x y x≤y y≤x)
 
-nuclear-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
-nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
+nuclear-fixed-point-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
+nuclear-fixed-point-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
   record
-    { P          =  nuclear-poset L N
+    { P          =  nuclear-fixed-point-poset L N
     ; 𝟏          =  𝟏L , 𝟏-fixed
     ; _⊓_        =  _⊓_
     ; ⊔_         =  ⊔_
@@ -108,19 +112,21 @@ nuclear-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
     ; dist       =  dist
     }
   where
-    A = proj₁ (nuclear-poset L N)
-    open PosetStr (proj₂ (Frame.P L))         using    (_⊑_; ⊑-antisym; ⊑-refl; _⊑⟨_⟩_; _■)
-                                              renaming (A-set to X-set)
-    open PosetStr (proj₂ (nuclear-poset L N)) using    (A-set)
-                                              renaming ( _⊑_ to _⊑N_
-                                                       ; ⊑-antisym to ⊑N-antisym)
-    open Frame L using (P) renaming (𝟏 to 𝟏L; _⊓_ to _⊓L_; ⊔_ to ⊔L_; top to topL
+    A = proj₁ (nuclear-fixed-point-poset L N)
+    open PosetStr (proj₂ (Frame.P L))
+      using (_⊑_; ⊑-antisym; ⊑-refl; _⊑⟨_⟩_; _■) renaming (A-set to X-set)
+    open PosetStr (proj₂ (nuclear-fixed-point-poset L N))
+      using (A-set) renaming ( _⊑_ to _⊑N_; ⊑-antisym to ⊑N-antisym)
+    open Frame L using (P) renaming ( 𝟏          to 𝟏L
+                                    ; _⊓_        to _⊓L_
+                                    ; ⊔_         to ⊔L_
+                                    ; top        to topL
                                     ; ⊓-greatest to ⊓L-greatest
-                                    ; ⊓-lower₀ to ⊓L-lower₀
-                                    ; ⊓-lower₁ to ⊓L-lower₁
-                                    ; ⊔-least  to ⊔L-least
-                                    ; ⊔-upper  to ⊔L-upper
-                                    ; dist     to distL)
+                                    ; ⊓-lower₀   to ⊓L-lower₀
+                                    ; ⊓-lower₁   to ⊓L-lower₁
+                                    ; ⊔-least    to ⊔L-least
+                                    ; ⊔-upper    to ⊔L-upper
+                                    ; dist       to distL)
     𝟏-fixed : j 𝟏L ≡ 𝟏L
     𝟏-fixed = ⊑-antisym (j 𝟏L) 𝟏L (topL (j 𝟏L)) (n₁ 𝟏L)
 
