@@ -1,13 +1,16 @@
-module FormalSpaceSambin where
+open import Truncation
+
+module FormalSpaceSambin (pt : TruncationExists) where
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _,_)
 open import Homotopy
 open import Level
 
+open TruncationExists pt
 
 -- Definition 1.2.
-record FormalSpaceStr {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
+record IsFormalTopology {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
 
   field
     𝟏   : S
@@ -15,16 +18,18 @@ record FormalSpaceStr {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
     _◀_ : S → 𝒫 S → Set
     Pos : S → Set
 
+  field
+    S-set : IsSet S
+
   _◀ₛ_ : 𝒫 S → 𝒫 S → Set ℓ
   U ◀ₛ V = (b : S) → b ∈ U holds → b ◀ V
 
   _∙ₛ_ : 𝒫 S → 𝒫 S → 𝒫 S
-  U ∙ₛ V = λ x → (Σ[ u ∈ S ] Σ[ v ∈ S ] (u ∈ U holds → v ∈ V holds → x ≡ (u ∙ v)))
-         , {!Σ-resp-prop!}
-  -- (λ x → Σ[ u ∈ S ] Σ[ v ∈ S ] (u ∈ U holds → v ∈ V holds → x ≡ (u ∙ v))) , ?
+  U ∙ₛ V = λ x → ∥ Σ[ u ∈ S ] Σ[ v ∈ S ] (u ∈ U holds → v ∈ V holds → x ≡ (u ∙ v)) ∥
+         , ∥∥-prop _
 
   [_] : S → 𝒫 S
-  [ s ] = {!!} -- (λ x → x ≡ s) , ?
+  [ s ] x = (x ≡ s) , (S-set x s)
 
   field
     refl    : (a   : S) (U   : 𝒫 S) → a ∈ U holds → a ◀ U
@@ -36,3 +41,6 @@ record FormalSpaceStr {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
 
     mono    : (a   : S) (U   : 𝒫 S) → Pos a → a ◀ U → Σ[ b ∈ S ](b ∈ U holds → Pos b)
     posit   : (a   : S) (U   : 𝒫 S) → (Pos a → a ◀ U) → a ◀ U
+
+FormalTopology : (ℓ : Level) → Set (suc ℓ)
+FormalTopology ℓ = Σ[ S ∈ (Set ℓ) ] IsFormalTopology S
