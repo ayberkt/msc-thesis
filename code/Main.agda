@@ -1,6 +1,7 @@
 module Main where
 
 import Homotopy
+import FormalTopologySambin
 import Poset
 import Frame
 import Nucleus
