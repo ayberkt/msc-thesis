@@ -1,6 +1,6 @@
 open import Truncation
 
-module FormalSpaceSambin (pt : TruncationExists) where
+module FormalTopologySambin (pt : TruncationExists) where
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Data.Product                          using (Σ-syntax; _,_)
