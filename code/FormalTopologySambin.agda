@@ -35,9 +35,9 @@ record IsFormalTopology {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
     refl    : (a   : S) (U   : 𝒫 S) → a ∈ U holds → a ◀ U
     trans   : (a   : S) (U V : 𝒫 S) → a ◀ U → U ◀ₛ V → a ◀ V
     ·-right : (a   : S) (U V : 𝒫 S) → a ◀ U → a ◀ V → a ◀ (U ∙ₛ V)
-    ·-left₁ : (a b : S) (U V : 𝒫 S) → a ◀ U → (a ∙ b) ◀ V
-    ·-left₂ : (a b : S) (U V : 𝒫 S) → b ◀ U → (a ∙ b) ◀ V
-    top     : (a   : S)                  → a ◀ [ 𝟏 ]
+    ·-left₀ : (a b : S) (U V : 𝒫 S) → a ◀ U → (a ∙ b) ◀ V
+    ·-left₁ : (a b : S) (U V : 𝒫 S) → b ◀ U → (a ∙ b) ◀ V
+    top     : (a   : S)             → a ◀ [ 𝟏 ]
 
     mono    : (a   : S) (U   : 𝒫 S) → Pos a → a ◀ U → Σ[ b ∈ S ](b ∈ U holds → Pos b)
     posit   : (a   : S) (U   : 𝒫 S) → (Pos a → a ◀ U) → a ◀ U
