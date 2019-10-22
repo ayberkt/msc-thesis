@@ -25,7 +25,7 @@ record IsFormalTopology {ℓ : Level} (S : Set ℓ) : Set (suc ℓ) where
   U ◀ₛ V = (b : S) → b ∈ U holds → b ◀ V
 
   _∙ₛ_ : 𝒫 S → 𝒫 S → 𝒫 S
-  U ∙ₛ V = λ x → ∥ Σ[ u ∈ S ] Σ[ v ∈ S ] (u ∈ U holds → v ∈ V holds → x ≡ (u ∙ v)) ∥
+  U ∙ₛ V = λ x → ∥ Σ[ u ∈ S ] Σ[ v ∈ S ] (u ∈ U holds → v ∈ V holds → x ≡ u ∙ v) ∥
          , ∥∥-prop _
 
   [_] : S → 𝒫 S
