@@ -37,6 +37,24 @@ idem L (j , n₀ , n₁ , n₂ , n₃) x = ⊑-antisym (j (j x)) (j x) (n₂ x) 
   where
     open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym)
 
+mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L)
+     → let j = proj₁ N
+       in (x y : ∣ L ∣F) → x ⊑[ pos L ] y holds → (j x) ⊑[ pos L ] (j y) holds
+mono L (j , n₀ , n₁ , n₂ , _) x y x⊑y =
+  transport (λ - → j - ⊑ j y holds) (sym I) II
+  where
+    open PosetStr (proj₂ (pos L)) using (_⊑_; ⊑-trans; ⊑-refl; ⊑-antisym; _⊑⟨_⟩_; _■)
+    open Frame    L               using (𝟏; _⊓_; ⊓-greatest; ⊓-lower₀; ⊓-lower₁; top)
+
+    x⊑x⊓y : x ⊑ (x ⊓ y) holds
+    x⊑x⊓y = ⊓-greatest x y x (⊑-refl x) x⊑y
+
+    I : x ≡ (x ⊓ y)
+    I = ⊑-antisym x (x ⊓ y) x⊑x⊓y (⊓-lower₀ x y)
+
+    II : j (x ⊓ y) ⊑ j y holds
+    II = j (x ⊓ y) ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y) ⟩ j x ⊓ j y ⊑⟨ ⊓-lower₁ (j x) (j y) ⟩ j y ■
+
 -- The set of fixed points for nucleus `j` is equivalent hence equal to its image.
 -- This is essentially due to the fact that j (j ())
 nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
