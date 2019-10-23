@@ -47,6 +47,9 @@ strₚ (_ , s) = s
 rel : (P : Poset ℓ ℓ′) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω ℓ′
 rel P = PosetStr._⊑_ (proj₂ P)
 
+-- A convenient notation for referring to the relation of a poset.
+syntax rel P x y = x ⊑[ P ] y
+
 ≡⇒⊑ : (P : Poset ℓ ℓ′) → {x y : ∣ P ∣ₚ} → x ≡ y → rel P x y holds
 ≡⇒⊑ P {x = x} refl = PosetStr.⊑-refl (strₚ P) x
 
