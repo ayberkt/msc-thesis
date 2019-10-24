@@ -18,13 +18,12 @@ private
 
 -- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
-IsNuclear L j = N₀ × N₁ × N₂ × N₃
+IsNuclear L j = N₀ × N₁ × N₂
   where
     open Frame L using (P; _⊓_; _⊑_)
     N₀ = (a b : ∣ L ∣F) → j (a ⊓ b) ≡ (j a) ⊓ (j b)
     N₁ = (a   : ∣ L ∣F) → a ⊑ (j a) holds
     N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a holds
-    N₃ = (a b : ∣ L ∣F) → a ⊑ b holds → j a ⊑ j b holds
 
 -- The type of nuclei.
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
@@ -33,14 +32,14 @@ Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
      → (N : Nucleus L)
      → let j = proj₁ N in (x : ∣ L ∣F) → j (j x) ≡ j x
-idem L (j , n₀ , n₁ , n₂ , n₃) x = ⊑-antisym (j (j x)) (j x) (n₂ x) (n₁ (j x))
+idem L (j , n₀ , n₁ , n₂) x = ⊑-antisym (j (j x)) (j x) (n₂ x) (n₁ (j x))
   where
     open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym)
 
 mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L)
      → let j = proj₁ N
        in (x y : ∣ L ∣F) → x ⊑[ pos L ] y holds → (j x) ⊑[ pos L ] (j y) holds
-mono L (j , n₀ , n₁ , n₂ , _) x y x⊑y =
+mono L (j , n₀ , n₁ , n₂) x y x⊑y =
   j x         ⊑⟨ ≡⇒⊑ (pos L) (cong j x≡x⊓y) ⟩
   j (x ⊓ y)   ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y) ⟩
   j x ⊓ j y   ⊑⟨ ⊓-lower₁ (j x) (j y) ⟩
@@ -61,7 +60,7 @@ nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
               → IsNuclear L j
               → (Σ[ b ∈ ∣L∣ ] ∥ Σ[ a ∈ ∣L∣ ] (b ≡ j a) ∥) ≡ (Σ[ a ∈ ∣L∣ ] (j a ≡ a))
-nuclear-image L j N@(n₀ , n₁ , n₂ , n₃) = equivtoid (invertibility→≃ f (g , lc , rc))
+nuclear-image L j N@(n₀ , n₁ , n₂) = equivtoid (invertibility→≃ f (g , lc , rc))
   where
     open Frame L            using (P)
     open PosetStr (proj₂ P) using (A-set; ⊑-antisym; ⊑-refl)
@@ -117,7 +116,7 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
 -- The set of fixed points of a nucleus `j` forms a frame.
 -- The join of this frame is define as ⊔ᵢ ℱᵢ := j (⊔′ᵢ ℱᵢ) where ⊔′ denotes the join of L.
 nuclear-fixed-point-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
-nuclear-fixed-point-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) =
+nuclear-fixed-point-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
   record
     { P          =  nuclear-fixed-point-poset L N
     ; 𝟏          =  𝟏L , 𝟏-fixed
@@ -196,7 +195,7 @@ nuclear-fixed-point-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂ , n₃) 
         ϑ o o∈𝒢@(i , eq′) rewrite sym eq′ = ℱ⊑p (𝒢 € i , proj₂ (ℱ € i)) (i , refl)
 
         ψ : j (⊔L 𝒢) ⊑ (j p′) holds
-        ψ = n₃ (⊔L 𝒢) p′ (⊔L-least 𝒢 p′ ϑ)
+        ψ = mono L N (⊔L 𝒢) p′ (⊔L-least 𝒢 p′ ϑ)
 
         φ : j (⊔L 𝒢) ⊑ p′ holds
         φ = transport (λ k → (j (⊔L 𝒢) ⊑ k) holds) eq ψ
