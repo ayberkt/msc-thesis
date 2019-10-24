@@ -21,37 +21,40 @@
 
 
 ** <2019-10-23 Wed>
-   - Given a in some poset, BCov(a) and S ∈ BCov(a) implies S ⊑ a↓.
+   - Given a in some poset and BCov(a), S ∈ BCov(a) implies S ⊑ a↓.
 
    - _Locality condition_: if b ≤ a and S ∈ Cov(a) then
 
           ∃ T ∈ Cov(b). ∀ t ∈ T. ∃ s ∈ S. t ≤ s.
 
-          ↑ This is Dragalin's condition from a paper Thierry did not remember during the
+          ⇑ The idea is to require this condition instead of Johstone's meet stability.
+
+          ⇑ This is Dragalin's condition from a paper Thierry did not remember during the
             meeting. He will find it by the meeting on <2019-10-25 Fri>.
 
    - Sambin's definition starts with semilattices which is not the case in Dragalin's
      definition. When viewed categorically, this corresponds to not requiring the category
      to have pullbacks or something like that.
-     |
-     | -->  Check out Sketches of An Elephant regarding this.
+
+     | Check out Sketches of An Elephant regarding this. |
 
    - Start with a coverage that satisfies locality and define the nucleus from that.
 
-   - I will have to truncate the inductively defined coverage relation `j_C(V)`.
+   - I will have to truncate the inductively defined coverage relation j_C(V).
 
-   - `j_C(V)` will be downward-closed.
+   - j_C(V) will be downward-closed.
 
    - If a ◀ V and a ◀ W then a ◀ (V ∩ W), since it will be truncated:
 
-         if ∥ a ◀ V ∥ and ∥ a ◀ W ∥ then ∥ a ◀ (V ∩ W) ∥.
+         | if ∥ a ◀ V ∥ and ∥ a ◀ W ∥ then ∥ a ◀ (V ∩ W) ∥ |
 
-     The fact that the conclusion is a proposition without the truncation means that I can
-     get rid of all the truncations.
+     The fact that the conclusion is a proposition without the truncation means that we
+     can get rid of the truncations.
 
    - A lemma will be required for this: if a ◀ W and a ε V then a ◀ (V ∩ W).
 
    - V sieve, a ◀ V.
 
    - "Sieve": categorical notion of downward-closed subset.
-     | -> Check out Mac Lane and Moerdijk for this sort of thing.
+
+     | Check out Mac Lane and Moerdijk for this sort of thing. |
