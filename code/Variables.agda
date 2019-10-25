@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 module Variables where
 
 open import Level public

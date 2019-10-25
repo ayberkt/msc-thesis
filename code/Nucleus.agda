@@ -5,6 +5,7 @@ open import Truncation
 module Nucleus (pt : TruncationExists) where
 
 open import Common
+open import Family
 open import Homotopy
 open import Poset
 open import Frame pt
