@@ -7,6 +7,7 @@ import FormalTopologySambin
 import Poset
 import Frame
 import Nucleus
+import Coverage
 
 -- Proof that the set of downward-closed subsets of a poset forms a frame:
 _ = Frame.downward-subset-frame

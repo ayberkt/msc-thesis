@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 module Coverage where
 
 open import Variables
