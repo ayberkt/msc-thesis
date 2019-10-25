@@ -23,5 +23,6 @@ IsLocal : (S : Site ℓ₀ ℓ₁ ℓ₂) → Set (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ
 IsLocal {ℓ₂ = ℓ₂} (P , Cov) =
   (a b : ∣ P ∣ₚ) → b ⊑[ P ] a holds →
     (S : Covering ℓ₂ P a) → S ε Cov a →
-      Σ[ T ∈ Covering ℓ₂ P b ] (T ε Cov b → (t : ↓[ P ] b) → t ε T →
-        Σ[ s ∈ ↓[ P ] a ] (s ε S → (proj₁ t) ⊑[ P ] (proj₁ s) holds))
+      Σ[ T ∈ Covering ℓ₂ P b ] (T ε Cov b →
+        (t : ↓[ P ] b) → t ε T →
+          Σ[ s ∈ ↓[ P ] a ] (s ε S → (proj₁ t) ⊑[ P ] (proj₁ s) holds))
