@@ -5,6 +5,7 @@ open import Truncation
 module Nucleus (pt : TruncationExists) where
 
 open import Common
+open import Family
 open import Homotopy
 open import Poset
 open import Frame pt
@@ -223,8 +224,3 @@ nuclear-fixed-point-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
           j (o′ ⊓L (⊔L 𝒢))                    ≡⟨ cong j (distL o′ 𝒢)                      ⟩
           j (⊔L (I , (λ i → o′ ⊓L (𝒢 € i))))  ≡⟨ refl                                     ⟩
           proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i)))) ∎
-
-cover : (P : Poset ℓ₀ ℓ₁)
-      → let 𝔻 = downward-subset-frame P in Nucleus (downward-subset-frame P)
-      → ∣ 𝔻 ∣F → Sub ℓ₂ ∣ 𝔻 ∣F → Set (suc ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
-cover {ℓ₀ = ℓ₀} {ℓ₁} P N@(j , _) D ℱ = D ε (j ⊚ ℱ)

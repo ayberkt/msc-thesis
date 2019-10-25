@@ -79,6 +79,9 @@ _≃m≃_ P Q =
   Σ[ m₁ ∈ (P ─m→ Q) ]
   Σ[ m₂ ∈ (Q ─m→ P) ] ((proj₁ m₁ ∘ proj₁ m₂) ~ id) × ((proj₁ m₂ ∘ proj₁ m₁) ~ id)
 
+↓[_]_ : (P : Poset ℓ ℓ′) → ∣ P ∣ₚ → Set (ℓ ⊔ ℓ′)
+↓[ P ] a = Σ[ b ∈ ∣ P ∣ₚ ] b ⊑[ P ] a holds
+
 IsDownwardClosed : (P : Poset ℓ ℓ′) → (𝒫 ∣ P ∣ₚ) → Ω (ℓ ⊔ ℓ′)
 IsDownwardClosed (X , P) D = ((x y : X) → x ∈ D holds → (y ⊑ x) holds → y ∈ D holds) , prop
   where

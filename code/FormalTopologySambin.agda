@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K #-}
+
 open import Truncation
 
 module FormalTopologySambin (pt : TruncationExists) where
