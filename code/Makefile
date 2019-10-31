@@ -1,13 +1,13 @@
-all: html/Coverage.html
+all: html/Coverage.html html/TreeType.html
 
-html/Coverage.md: Coverage.lagda.md Agda.css
-	agda --html --html-highlight=code Coverage.lagda.md
+html/%.md: %.lagda.md Agda.css
+	agda --html --html-highlight=code $<
 	cp Agda.css html/Agda.css
 
 .ONESHELL:
-html/Coverage.html: html/Coverage.md
+html/%.html: html/%.md
 	cd html
-	pandoc Coverage.md --css Agda.css -o Coverage.html
+	pandoc $*.md --css Agda.css -o $*.html
 
 .PHONY:
 clean:
