@@ -1,5 +1,7 @@
 <!--
 ```
+{-# OPTIONS --without-K #-}
+
 module TreeType where
 
 open import Variables
