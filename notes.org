@@ -61,3 +61,9 @@
    - "Sieve": categorical notion of downward-closed subset.
 
      | Check out Mac Lane and Moerdijk for this sort of thing. |
+
+** <2019-11-01 Fri>
+   - The second condition is like the reproducibility of experiments. It says something
+     along the lines of: when we have more knowledge, we can do at least as many
+     experiments as before.
+   - `outcome` and `next`, together, define an enumeration of the stages.
