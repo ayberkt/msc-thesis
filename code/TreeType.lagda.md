@@ -9,115 +9,101 @@ open import Data.Empty  using (⊥; ⊥-elim)
 open import Data.Unit   using (⊤; tt)
 open import Data.Bool   using (Bool; true; false)
 open import Data.List   using (List; _∷_; [])
+open import Data.Nat    using (ℕ) renaming (zero to nzero; suc to nsuc)
 open import Common
 open import Poset
+open import Family
 open import Homotopy
 ```
 -->
 
 # Introduction
 
-We would like to start by defining a predicate on some type `A` expressing what it means
-for `A` to behave like a type of _stages of knowledge_ which are connected via a notion of
-_experimentation_. We call such a type a _discipline_ in the sense of a _discipline of
-knowledge_.
-
 ```
-record IsADiscipline (A : Set ℓ) : Set (suc ℓ) where
-  constructor disc
+IsADiscipline : (A : Set ℓ) → Set (suc ℓ)
+IsADiscipline {ℓ = ℓ} A =
+  Σ[ B ∈ (A → Set ℓ) ]
+  Σ[ C ∈ ((x : A) → B x → Set ℓ) ]
+  Σ[ d ∈ ((x : A) → (y : B x) → C x y → A)] A
 
-  field
-```
-
-1. An `A`-indexed family of types `B` which can be interpreted as representing _the set of
-   possible experiments one can conduct at stage `x`_.
-
-```
-    B : A → Set ℓ
-```
-
-2. Given a stage of knowledge `x : A` and experiment `y : B x`, `C x y` is the type of
-   _possible outcomes of the experiment `x`_.
-
-```
-    C : (x : A) → B x → Set ℓ
-```
-
-3. After performing the experiment, the state of knowledge is _updated_ in light of the
-   obtained data. `d` takes a state of knowledge `x`, an experiment `y`, and and outcome
-   `z` of the experiment and yields a new knowledge state.
-
-```
-    d : {x : A} {y : B x} → (z : C x y) → A
-```
-
-4. Finally, we require an initial knowledge state to serve as a start node.
-
-```
-    a : A
-```
-
-We collect disciplines in the type `Discipline`.
-
-```
 Discipline : (ℓ : Level) → Set (suc ℓ)
 Discipline ℓ = Σ[ A ∈ (Set ℓ) ] (IsADiscipline A)
+
+stage : Discipline ℓ → Set ℓ
+stage (A , _) = A
+
+exp : (D : Discipline ℓ) → stage D → Set ℓ
+exp (_ , B , _) = B
+
+outcome : (D : Discipline ℓ) → (x : stage D) → exp D x → Set ℓ
+outcome (_ , _ , C , _) = C
+
+next : (D : Discipline ℓ) → (x : stage D) → (y : exp D x) → outcome D x y → stage D
+next (_ , _ , _ , d , _) = d
+
+start : (D : Discipline ℓ) → stage D
+start (_ , _ , _ , _ , s) = s
 ```
 
-We will be interested in those disciplines in which experiments are well-designed in the
-sense that conducting an experiment lands us in a _superior_ state of knowledge. We call
-this condition _progressiveness_ in the sense that the experiments help us advance the
-discipline of knowledge. Therefore we require a partial ordering on the knowledge stages
-expressing whether one contains more information than the other.
-
-We define the predicate expressing that a discipline on a poset is progressive as follows:
-
 ```
-IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
-IsProgressive P (disc B C d _) = (x : ∣ P ∣ₚ) (y : B x) (z : C x y) → (d z) ⊑[ P ] x holds 
-```
+record Tree (D : Discipline ℓ) : Set (suc ℓ) where
+  constructor tree
+  inductive
 
-We collect progressive disciplines in the following type, that we call `Science`.
+  𝒯 = λ x → Tree (stage D , exp D , outcome D , next D , x)
 
-```
-PreScience : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
-PreScience ℓ₀ ℓ₁ =
-  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsADiscipline ∣ P ∣ₚ) ] IsProgressive P P-disc
+  field
+    a : stage D
+    b : exp D a
+    c : (z : outcome D a b) → 𝒯 (next D a b z)
 ```
 
 # Elimination
 
-# Examples
-
 ```
-data EvenOddA : Set where
-  Even Odd : EvenOddA
-
-data OddB : Set where
-  sO : OddB
-
-data EvenB : Set where
-  zeroE sE : EvenB
-
-EvenOdd : Discipline zero
-EvenOdd = EvenOddA , disc B C d Even
-  where
-    B : EvenOddA → Set zero
-    B Even = EvenB
-    B Odd  = OddB
-
-    C : (x : EvenOddA) → B x → Set zero
-    C Even zeroE = ⊥
-    C Even sE    = ⊤
-    C Odd  sO    = ⊤
-
-    d : {x : EvenOddA} {y : B x} → C x y → EvenOddA
-    d {Even} {sE} tt = Odd
-    d {Odd}  {sO} tt = Even
+{--
+treerec : (A : Set ℓ)
+          (B : A → Set ℓ)
+          (C : (x : A) → B x → Set ℓ)
+          (d : (x : A) → (y : B x) → C x y → A)
+        → (D : (x : A) → Tree A B C d x → Set ℓ)
+        → (a : A)
+        → (t : Tree A B C d a)
+        → (f : (x : A)
+             → (y : B x)
+             → (z : (v : C x y) → Tree A B C d (d x y v))
+             → (u : (v : C x y) → D (d x y v) (z v))
+             → D x (tree x y z))
+        → D a t
+treerec A B C d D a′ (tree a b c) f = {!!}
+--}
 ```
 
+# Stump
+
 ```
--- --}
--- --}
--- --}
+data Stump (D : Discipline ℓ) (a : stage D) : Set ℓ where
+  leaf   : Stump D a
+  branch : (b : exp D a) → ((c : outcome D a b) → Stump D (next D a b c)) → Stump D a
+```
+
+# Progressiveness
+
+```
+IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+IsProgressive P (B , C , d , s) =
+  (x : ∣ P ∣ₚ) (y : B x) (z : C x y) → d x y z ⊑[ P ] x holds
+
+Discipline⁺ : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
+Discipline⁺ ℓ₀ ℓ₁ =
+  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsADiscipline ∣ P ∣ₚ) ] IsProgressive P P-disc
+
+stage⁺ : Discipline⁺ ℓ₀ ℓ₁ → Set ℓ₀
+stage⁺ (P , _) = ∣ P ∣ₚ
+
+exp⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → stage⁺ D → Set ℓ₀
+exp⁺ (P , D , _) = exp (∣ P ∣ₚ , D)
+
+outcome⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → (x : stage⁺ D) → exp⁺ D x → Set ℓ₀
+outcome⁺ (P , D , _) = outcome (∣ P ∣ₚ , D)
 ```
