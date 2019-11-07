@@ -14,7 +14,7 @@ open import Data.List   using (List; _∷_; [])
 open import Data.Nat    using (ℕ) renaming (zero to nzero; suc to nsuc)
 open import Common
 open import Poset
-open import Family     hiding (_⊆_)
+open import Family
 open import Homotopy
 
 open TruncationExists pt
@@ -127,7 +127,8 @@ syntax down P ℱ a = ℱ ↓[ P ] a
 
 IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
-  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds → (b : exp⁺ D a) → (b′ : exp⁺ D a′) → (x : stage⁺ D) →
-    (outcome⁺ D a′ b′ , next⁺ D a′ b′) ↓[ P ]  x holds →
-      (outcome⁺ D a b , next⁺ D a b) ↓[ P ] x holds
+  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds →
+    (b : exp⁺ D a) → (b′ : exp⁺ D a′) →
+      (x : stage⁺ D) → (outcome⁺ D a′ b′ , next⁺ D a′ b′) ↓[ P ]  x holds →
+        (outcome⁺ D a b , next⁺ D a b) ↓[ P ] x holds
 ```
