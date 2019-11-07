@@ -119,12 +119,18 @@ next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
 
 # Simulation
 
+Restriction of a set of stages to those above some stage `a`.
+
 ```
 down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
 down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
 
 syntax down P ℱ a = ℱ ↓[ P ] a
+```
 
+The notion of simulation.
+
+```
 IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
   (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds →
