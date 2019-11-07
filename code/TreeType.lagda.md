@@ -117,19 +117,17 @@ next⁺ : (D : Discipline⁺ ℓ₀ ℓ₁)
 next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
 ```
 
-# Bisimulation
+# Simulation
 
 ```
-less : (P : Poset ℓ ℓ′) → (∣ P ∣ₚ → Set ℓ₀) → (∣ P ∣ₚ → Set ℓ₁) → Set (ℓ ⊔ ℓ′ ⊔ ℓ₀ ⊔ ℓ₁)
-less P T S = (t : ∣ P ∣ₚ) → T t → Σ[ s ∈ ∣ P ∣ₚ ](S s × t ⊑[ P ] s holds)
+down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
+down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
 
-syntax less P T S = T <<<[ P ] S
+syntax down P ℱ a = ℱ ↓[ P ] a
 
-_⇓_ : {P : Poset ℓ₀ ℓ₁} → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
-_⇓_ {P = P} ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
-
-Bisim : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
-Bisim D@(P , _) =
-  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds → (b : exp⁺ D a) → (b′ : exp⁺ D a′) →
-    (x : stage⁺ D) → ((_⇓_ {P = P} ((outcome⁺ D a′ b′) , next⁺ D a′ b′)) x) holds → ((_⇓_ {P = P} ((outcome⁺ D a b) , (next⁺ D a b))) x) holds
+IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation D@(P , _) =
+  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds → (b : exp⁺ D a) → (b′ : exp⁺ D a′) → (x : stage⁺ D) →
+    (outcome⁺ D a′ b′ , next⁺ D a′ b′) ↓[ P ]  x holds →
+      (outcome⁺ D a b , next⁺ D a b) ↓[ P ] x holds
 ```
