@@ -136,8 +136,8 @@ down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-pro
 syntax down P ℱ a = ℱ ↓[ P ] a
 ```
 
-Ad-hoc notion of subset since there are some universe problems with `𝒫`. This should be
-replaced with `𝒫` once it is properly generalised.
+Ad-hoc notion of subset since there are some universe problems with `𝒫`. _This should be
+replaced with `𝒫` once it is properly generalised._
 
 ```
 _⊆_ : {X : Set ℓ} → (X → Ω ℓ′) → (X → Ω ℓ′) → Set (ℓ ⊔ ℓ′)
@@ -157,3 +157,6 @@ IsSimulation D@(P , _) =
 ```
 
 # Formal Topology
+
+A _formal topology_ is a **(1) progressive discipline** whose relation **(2) is a
+simulation**, that is equipped with a **(3) cover relation**.
