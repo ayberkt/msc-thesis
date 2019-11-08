@@ -78,18 +78,26 @@ treerec ds D (tree a b c) f = {!f a′ !}
 
 ```
 data Experiment⋆ (D : Discipline ℓ) : stage D → Set ℓ where
-  leaf   : (a : stage D) → Experiment⋆ D a
-  branch : (a : stage D) (b : exp D a)
+  Leaf   : (a : stage D) → Experiment⋆ D a
+  Branch : (a : stage D) (b : exp D a)
          → ((c : outcome D a b) → Experiment⋆ D (next D a b c))
          → Experiment⋆ D a
 
 ind : (D : Discipline ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
-ind {ℓ} D s (leaf   s) = ⊤ {ℓ}
-ind D s (branch s b f) = Σ[ o ∈ (outcome D s b) ] ind D (next D s b o) (f o)
+ind {ℓ} D s (Leaf   s) = ⊤ {ℓ}
+ind D s (Branch s b f) = Σ[ o ∈ (outcome D s b) ] ind D (next D s b o) (f o)
 
 enum : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → ind D s t → stage D
-enum D s (leaf   s)     i       = s
-enum D s (branch s b f) (c , y) = enum D (next D s b c) (f c) y
+enum D s (Leaf   s)     i       = s
+enum D s (Branch s b f) (c , y) = enum D (next D s b c) (f c) y
+
+branch : (D : Discipline ℓ) → (a : stage D)
+       → (t : Experiment⋆ D a)
+       → (g : (e : ind D a t) → Experiment⋆ D (enum D a t e))
+       → Experiment⋆ D a
+branch D a (Leaf   a)     g = g tt
+branch D a (Branch a b f) g =
+  Branch a b λ c → branch D (next D a b c) (f c) (λ - → g (c , -))
 ```
 
 # Progressiveness
