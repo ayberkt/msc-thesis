@@ -15,7 +15,7 @@ open import Data.Nat    using (ℕ) renaming (zero to nzero; suc to nsuc)
 open import Common
 open import Poset
 open import Family
-open import Homotopy
+open import Homotopy    hiding (_⊆_)
 
 open TruncationExists pt
 ```
@@ -119,7 +119,7 @@ next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
 
 # Simulation
 
-Restriction of a set of stages to those above some stage `a`.
+`down P ℱ a` denotes the restriction of family `ℱ` of stages to those above the stage `a`.
 
 ```
 down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
@@ -128,13 +128,24 @@ down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-pro
 syntax down P ℱ a = ℱ ↓[ P ] a
 ```
 
+Ad-hoc notion of subset since there are some universe problems with `𝒫`. This should be
+replaced with `𝒫` once it is properly generalised.
+
+```
+_⊆_ : {X : Set ℓ} → (X → Ω ℓ′) → (X → Ω ℓ′) → Set (ℓ ⊔ ℓ′)
+_⊆_ {X = X} U V = (x : X) → U x holds → V x holds
+```
+
 The notion of simulation.
 
 ```
 IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
-  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds →
-    (b : exp⁺ D a) → (b′ : exp⁺ D a′) →
-      (x : stage⁺ D) → (outcome⁺ D a′ b′ , next⁺ D a′ b′) ↓[ P ]  x holds →
-        (outcome⁺ D a b , next⁺ D a b) ↓[ P ] x holds
+  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds → (b : exp⁺ D a) → (b′ : exp⁺ D a′) →
+      (λ - → (out a′ b′ , a′ ν b′) ↓[ P ] -) ⊆ (λ - → (out a b , a ν b) ↓[ P ] -)
+  where
+    out  = outcome⁺ D
+    _ν_  = next⁺ D
 ```
+
+# Formal Topology
