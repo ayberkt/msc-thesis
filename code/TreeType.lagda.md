@@ -129,8 +129,8 @@ next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
 pos : Discipline⁺ ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
 
-disc : (D : Discipline⁺ ℓ₀ ℓ₁) → IsADiscipline (stage⁺ D)
-disc (_ , (_ , P-disc) , _) = {!!}
+raw : (D : Discipline⁺ ℓ₀ ℓ₁) → Discipline ℓ₀
+raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
 ```
 
 # Simulation
@@ -152,9 +152,20 @@ _⊆_ : {X : Set ℓ} → (X → Ω ℓ′) → (X → Ω ℓ′) → Set (ℓ �
 _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 ```
 
-The notion of simulation.
+The refinement relation.
 
-At any point, we can simulate what we could do before.
+```
+refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
+        → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
+refines D@(P , _) {s} {s′} e d = (λ - → ℱ ↓[ P ] -) ⊆ (λ - → 𝒢 ↓[ P ] -)
+  where
+    ℱ = outcome⋆ (raw D) s  d , next⋆ (raw D) s d
+    𝒢 = outcome⋆ (raw D) s′ e , next⋆ (raw D) s′ e
+
+syntax refines D e d = e ℛ[ D ] d
+```
+
+The notion of simulation. It says: at any point, we can simulate what we could do before.
 
 ```
 IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
@@ -164,21 +175,22 @@ IsSimulation D@(P , _) =
   where
     out  = outcome⁺ D
 
-_refines_ : {D : Discipline⁺ ℓ₀ ℓ₁} → {s : stage⁺ D}
-          → Experiment⋆ (stage⁺ D , disc D) s → Experiment⋆ (stage⁺ D , disc D) s → Set {!!}
-_refines_ {D = D@(P , _)} e d = {!(λ - → (outcome⁺ D d , next⁺ D d) ↓[ P ] -) ⊆ (λ - → (outcome⁺  D e , next⁺ D e) ↓[ P ] -)!}
-
 -- We can localise any covering.
 IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
-IsSimulation⋆ D@(P , P-disc , _) =
-  (a a′ : stage⁺ D) → a′ ⊑[ P ] a holds → (b : Experiment⋆ D′ a) →
-    Σ[ b′ ∈ (Experiment⋆ D′ a′) ](λ - → (outcome⋆ D′ a′ b′ , next⋆ D′ a′ b′) ↓[ P ] -) ⊆ (λ - → (outcome⋆  D′ a b , next⋆ D′ a b) ↓[ P ] -)
-  where
-    D′   = (∣ P ∣ₚ , P-disc)
-    out  = outcome⁺ D
+IsSimulation⋆ D@(P , _) =
+  (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds →
+    (E : Experiment⋆ (raw D) a₀) → Σ[ E′ ∈ (Experiment⋆ (raw D) a₁) ] (E ℛ[ D ] E′)
 ```
 
 # Formal Topology
 
 A _formal topology_ is a **(1) progressive discipline** whose relation **(2) is a
 simulation**, that is equipped with a **(3) cover relation**.
+
+```
+-- IsFormalTopology : Discipline⁺ ℓ₀ ℓ₁ → Set {!!}
+-- IsFormalTopology D@(P , P-disc , _) = IsSimulation D × ∥ {!!} ∥
+  -- where
+    -- _◀_ : stage⁺ D → Sub ℓ′ (stage⁺ D) → Set {!!}
+    -- a ◀ U = ∥ (Σ[ t ∈ (Experiment⋆ (stage⁺ D , P-disc) a) ] {!!}) ∥
+```
