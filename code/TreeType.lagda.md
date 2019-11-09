@@ -83,17 +83,19 @@ data Experiment⋆ (D : Discipline ℓ) : stage D → Set ℓ where
          → ((c : outcome D a b) → Experiment⋆ D (next D a b c))
          → Experiment⋆ D a
 
-ind : (D : Discipline ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
-ind {ℓ} D s (Leaf   s) = ⊤ {ℓ}
-ind D s (Branch s b f) = Σ[ o ∈ (outcome D s b) ] ind D (next D s b o) (f o)
+outcome⋆ : (D : Discipline ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
+outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
+outcome⋆ D s (Branch s b f) = Σ[ o ∈ (outcome D s b) ] outcome⋆ D (next D s b o) (f o)
 
-enum : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → ind D s t → stage D
-enum D s (Leaf   s)     i       = s
-enum D s (Branch s b f) (c , y) = enum D (next D s b c) (f c) y
+-- Arbitrary covering.
+
+next⋆ : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
+next⋆ D s (Leaf   s)     i       = s
+next⋆ D s (Branch s b f) (c , y) = next⋆ D (next D s b c) (f c) y
 
 branch : (D : Discipline ℓ) → (a : stage D)
        → (t : Experiment⋆ D a)
-       → (g : (e : ind D a t) → Experiment⋆ D (enum D a t e))
+       → (g : (e : outcome⋆ D a t) → Experiment⋆ D (next⋆ D a t e))
        → Experiment⋆ D a
 branch D a (Leaf   a)     g = g tt
 branch D a (Branch a b f) g =
@@ -123,6 +125,12 @@ outcome⁺ (P , D , _) = outcome (∣ P ∣ₚ , D)
 next⁺ : (D : Discipline⁺ ℓ₀ ℓ₁)
       → (a : stage⁺ D) → (b : exp⁺ D a) → outcome⁺ D a b → stage⁺ D
 next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
+
+pos : Discipline⁺ ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
+pos (P , _) = P
+
+disc : (D : Discipline⁺ ℓ₀ ℓ₁) → IsADiscipline (stage⁺ D)
+disc (_ , (_ , P-disc) , _) = {!!}
 ```
 
 # Simulation
@@ -146,14 +154,28 @@ _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 
 The notion of simulation.
 
+At any point, we can simulate what we could do before.
+
 ```
 IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
-  (a a′ : stage⁺ D) → a ⊑[ P ] a′ holds → (b : exp⁺ D a) → (b′ : exp⁺ D a′) →
-      (λ - → (out a′ b′ , a′ ν b′) ↓[ P ] -) ⊆ (λ - → (out a b , a ν b) ↓[ P ] -)
+  (a a′ : stage⁺ D) → a′ ⊑[ P ] a holds → (b : exp⁺ D a) →
+    Σ[ b′ ∈ (exp⁺ D a′) ](λ - → (out a′ b′ , next⁺ D a′ b′) ↓[ P ] -) ⊆ (λ - → (out a b , next⁺ D a b) ↓[ P ] -)
   where
     out  = outcome⁺ D
-    _ν_  = next⁺ D
+
+_refines_ : {D : Discipline⁺ ℓ₀ ℓ₁} → {s : stage⁺ D}
+          → Experiment⋆ (stage⁺ D , disc D) s → Experiment⋆ (stage⁺ D , disc D) s → Set {!!}
+_refines_ {D = D@(P , _)} e d = {!(λ - → (outcome⁺ D d , next⁺ D d) ↓[ P ] -) ⊆ (λ - → (outcome⁺  D e , next⁺ D e) ↓[ P ] -)!}
+
+-- We can localise any covering.
+IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation⋆ D@(P , P-disc , _) =
+  (a a′ : stage⁺ D) → a′ ⊑[ P ] a holds → (b : Experiment⋆ D′ a) →
+    Σ[ b′ ∈ (Experiment⋆ D′ a′) ](λ - → (outcome⋆ D′ a′ b′ , next⋆ D′ a′ b′) ↓[ P ] -) ⊆ (λ - → (outcome⋆  D′ a b , next⋆ D′ a b) ↓[ P ] -)
+  where
+    D′   = (∣ P ∣ₚ , P-disc)
+    out  = outcome⁺ D
 ```
 
 # Formal Topology
