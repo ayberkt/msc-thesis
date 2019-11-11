@@ -90,7 +90,7 @@ outcome⋆ D s (Branch s b f) = Σ[ o ∈ (outcome D s b) ] outcome⋆ D (next D
 -- Arbitrary covering.
 
 next⋆ : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
-next⋆ D s (Leaf   s)     i       = s
+next⋆ D s (Leaf   s)     _       = s
 next⋆ D s (Branch s b f) (c , y) = next⋆ D (next D s b c) (f c) y
 
 branch : (D : Discipline ℓ) → (a : stage D)
@@ -157,10 +157,10 @@ The refinement relation.
 ```
 refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
-refines D@(P , _) {s} {s′} e d = (λ - → ℱ ↓[ P ] -) ⊆ (λ - → 𝒢 ↓[ P ] -)
+refines D@(P , _) {s₀} {s₁} e d = (λ - → ℱ ↓[ P ] -) ⊆ (λ - → 𝒢 ↓[ P ] -)
   where
-    ℱ = outcome⋆ (raw D) s  d , next⋆ (raw D) s d
-    𝒢 = outcome⋆ (raw D) s′ e , next⋆ (raw D) s′ e
+    𝒢 = outcome⋆ (raw D) s₀ d , next⋆ (raw D) s₀ d
+    ℱ = outcome⋆ (raw D) s₁ e , next⋆ (raw D) s₁ e
 
 syntax refines D e d = e ℛ[ D ] d
 ```
@@ -175,11 +175,46 @@ IsSimulation D@(P , _) =
   where
     out  = outcome⁺ D
 
--- We can localise any covering.
 IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
   (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds →
-    (E : Experiment⋆ (raw D) a₀) → Σ[ E′ ∈ (Experiment⋆ (raw D) a₁) ] (E ℛ[ D ] E′)
+    (E : Experiment⋆ (raw D) a₀) → Σ[ E′ ∈ (Experiment⋆ (raw D) a₁) ] (E′ ℛ[ D ] E)
+```
+
+Lemma
+
+```
+singleton : (D : Discipline⁺ ℓ₀ ℓ₁) (s : stage⁺ D) → exp⁺ D s → Experiment⋆ (raw D) s
+singleton D s e = Branch s e (Leaf ∘ next⁺ D s e)
+
+sim⇒sim⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
+sim⇒sim⋆ ((∣P∣ , P-str) , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , foo
+  where
+    open PosetStr P-str using (_⊑_; ⊑-refl; ⊑-trans)
+
+    bar : (a : ∣P∣) → Σ ⊤ (λ _ → a ⊑ a₁ holds) → ∥ Σ ⊤ (λ _ → a ⊑ a₀ holds) ∥
+    bar a (tt , a⊑a₁) = ∣ tt , ⊑-trans a a₁ a₀ a⊑a₁ a₁⊑a₀ ∣
+
+    foo : (a : ∣P∣) → ∥ Σ ⊤ (λ _ → a ⊑ a₁ holds) ∥ → ∥ Σ ⊤ (λ _ → a ⊑ a₀ holds) ∥
+    foo a k = ∥∥-rec (∥∥-prop _) (bar a) k
+
+-- We can localise any covering.
+sim⇒sim⋆ D@(P , _) D-sim a₀ a₁ a₀⊒a₁ (Branch a₀ b₀ f) =
+  (singleton D a₁ b₁) , foo
+  where
+    open PosetStr (proj₂ P) using (_⊑_)
+
+    𝒮 : Σ[ b₁ ∈ (exp⁺ D a₁) ](λ - → (outcome⁺ D a₁ b₁ , next⁺ D a₁ b₁) ↓[ P ] -) ⊆ (λ - → (outcome⁺ D a₀ b₀ , next⁺ D a₀ b₀) ↓[ P ] -)
+    𝒮 = D-sim a₀ a₁ a₀⊒a₁ b₀
+
+    b₁ = proj₁ 𝒮
+
+    foo : singleton D a₁ b₁ ℛ[ D ] (Branch a₀ b₀ f)
+    foo a a∈ℱ = ∥∥-rec (∥∥-prop _) bar a∈ℱ
+      where
+        bar : Σ[ i ∈ outcome⋆ (raw D) a₁ (singleton D a₁ b₁) ] a ⊑ next⁺ D a₁ b₁ (proj₁ i) holds
+            → ∥ (Σ[ i ∈ outcome⋆ (raw D) a₀ (Branch a₀ b₀ f) ] a ⊑ next⋆ (raw D) a₀ (Branch a₀ b₀ f) i holds) ∥
+        bar ((o , tt) , a⊑next) = {!proj₂ 𝒮 a₀!}
 ```
 
 # Formal Topology
