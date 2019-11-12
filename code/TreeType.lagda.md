@@ -106,8 +106,11 @@ branch D a (Branch a b f) g =
 
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
-IsProgressive P (B , C , d) =
-  (x : ∣ P ∣ₚ) (y : B x) (z : C x y) → d x y z ⊑[ P ] x holds
+IsProgressive {ℓ₀} P P-disc =
+  (x : stage D) (y : exp D x) (z : outcome D x y) → next D x y z ⊑[ P ] x holds
+  where
+    D : Discipline ℓ₀
+    D = (∣ P ∣ₚ , P-disc)
 
 Discipline⁺ : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 Discipline⁺ ℓ₀ ℓ₁ =
