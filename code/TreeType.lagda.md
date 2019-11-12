@@ -162,8 +162,8 @@ refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
 refines D@(P , _) {s₀} {s₁} e d = (λ - → ℱ ↓[ P ] -) ⊆ (λ - → 𝒢 ↓[ P ] -)
   where
-    𝒢 = outcome⋆ (raw D) s₀ d , next⋆ (raw D) s₀ d
     ℱ = outcome⋆ (raw D) s₁ e , next⋆ (raw D) s₁ e
+    𝒢 = outcome⋆ (raw D) s₀ d , next⋆ (raw D) s₀ d
 
 syntax refines D e d = e ℛ[ D ] d
 ```
@@ -176,7 +176,7 @@ IsSimulation D@(P , _) =
   (a a′ : stage⁺ D) → a′ ⊑[ P ] a holds → (b : exp⁺ D a) →
     Σ[ b′ ∈ (exp⁺ D a′) ](λ - → (out a′ b′ , next⁺ D a′ b′) ↓[ P ] -) ⊆ (λ - → (out a b , next⁺ D a b) ↓[ P ] -)
   where
-    out  = outcome⁺ D
+    out = outcome⁺ D
 
 IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
