@@ -226,9 +226,16 @@ A _formal topology_ is a **(1) progressive discipline** whose relation **(2) is 
 simulation**, that is equipped with a **(3) cover relation**.
 
 ```
--- IsFormalTopology : Discipline⁺ ℓ₀ ℓ₁ → Set {!!}
--- IsFormalTopology D@(P , P-disc , _) = IsSimulation D × ∥ {!!} ∥
-  -- where
-    -- _◀_ : stage⁺ D → Sub ℓ′ (stage⁺ D) → Set {!!}
-    -- a ◀ U = ∥ (Σ[ t ∈ (Experiment⋆ (stage⁺ D , P-disc) a) ] {!!}) ∥
+record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) : Set (ℓ₀ ⊔ ℓ₁) where
+  field
+    D-sim : IsSimulation D
+
+  _◀_ : stage⁺ D → Sub ℓ′ (stage⁺ D) → Set (ℓ₀ ⊔ ℓ′)
+  a ◀ U =
+    ∥ Σ[ t ∈ (Experiment⋆ (raw D) a) ]
+      ((o : outcome⋆ (raw D) a t) → (next⋆ (raw D) a t o) ε U) ∥
+```
+
+```
+-- --}
 ```
