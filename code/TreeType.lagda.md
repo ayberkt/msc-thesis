@@ -290,16 +290,23 @@ lemma₁ 𝒯@(D@((A , _) , (B , C , d) , prog) , topo) U a₀ a₁ a₀⊒a₁ 
       where
         open PosetStr (proj₂ (pos D)) using (⊑-trans)
 
-        l0 : (λ - → down (pos D) (conclusions⋆ D  (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀)))) -) ⊆ U
-        l0 x x₁ = conc-D↓⊆U x ∣ tt , l1 ∣
+        t₁ : Experiment⋆ (raw D) a₁
+        t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀))
+
+        l0 : (a₁′ : A)
+           → ∥ Σ (outcome⋆ (raw D) a₁ t₁) (λ i → a₁′ ⊑[ pos D ] (next⋆ (raw D) a₁ t₁ i) holds) ∥
+           → (U a₁′) holds
+        l0 a₁′ a₁′⊑conc-t₁ = conc-D↓⊆U a₁′ ∣ tt , l1 ∣
           where
-            l1 : x ⊑[ pos D ] (proj₂ (conclusions⋆ D (Leaf a₀)) tt) holds
-            l1 = ∥∥-rec (proj₂ (x ⊑[ pos D ] (proj₂ (conclusions⋆ D (Leaf a₀)) tt)))  l2 x₁
+            l1 : a₁′ ⊑[ pos D ] (proj₂ (conclusions⋆ D (Leaf a₀)) tt) holds
+            l1 = ∥∥-rec (proj₂ (a₁′ ⊑[ pos D ] (proj₂ (conclusions⋆ D (Leaf a₀)) tt))) l2 a₁′⊑conc-t₁
               where
-                l2 : Σ (index (conclusions⋆ D (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀)))))
-                       (λ o → x ⊑[ pos D ] (proj₂ (conclusions⋆ D  (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀)))) o) holds)
-                   → (x ⊑[ pos D ] (conclusions⋆ D (Leaf a₀) € tt)) holds
-                l2 (i , q) = ⊑-trans x a₁ _ (⊑-trans x (next⋆ (raw D) a₁ (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀))) i) a₁ q {!!}) a₀⊒a₁
+                l2 : Σ (index (conclusions⋆ D t₁)) (λ o → a₁′ ⊑[ pos D ] (proj₂ (conclusions⋆ D  t₁) o) holds)
+                   → (a₁′ ⊑[ pos D ] (conclusions⋆ D (Leaf a₀) € tt)) holds
+                l2 (i , q) = ⊑-trans a₁′ a₁ _ (⊑-trans a₁′ (next⋆ (raw D) a₁ t₁ i) a₁ q l3) a₀⊒a₁
+                  where
+                    l3 : next⋆ (raw D) a₁ t₁ i ⊑[ pos D ] a₁ holds
+                    l3 = prog⇒prog⋆ (pos D) (proj₁ (proj₂ D)) prog a₁ t₁ i
     foo (Branch b x , conc-D↓⊆U) = ∣ proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Branch b x)) , {!!} ∣
 ```
 
