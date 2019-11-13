@@ -79,27 +79,27 @@ treerec ds D (tree a b c) f = {!f a′ !}
 ```
 data Experiment⋆ (D : Discipline ℓ) : stage D → Set ℓ where
   Leaf   : (a : stage D) → Experiment⋆ D a
-  Branch : (a : stage D) (b : exp D a)
+  Branch : {a : stage D} (b : exp D a)
          → ((c : outcome D b) → Experiment⋆ D (next D c))
          → Experiment⋆ D a
 
 outcome⋆ : (D : Discipline ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
 outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
-outcome⋆ D s (Branch s b f) = Σ[ o ∈ (outcome D b) ] outcome⋆ D (next D o) (f o)
+outcome⋆ D s (Branch b f) = Σ[ o ∈ (outcome D b) ] outcome⋆ D (next D o) (f o)
 
 -- Arbitrary covering.
 
 next⋆ : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
 next⋆ D s (Leaf   s)     _       = s
-next⋆ D s (Branch s b f) (c , y) = next⋆ D (next D c) (f c) y
+next⋆ D s (Branch b f) (c , y) = next⋆ D (next D c) (f c) y
 
 branch : (D : Discipline ℓ) → (a : stage D)
        → (t : Experiment⋆ D a)
        → (g : (e : outcome⋆ D a t) → Experiment⋆ D (next⋆ D a t e))
        → Experiment⋆ D a
 branch D a (Leaf   a)     g = g tt
-branch D a (Branch a b f) g =
-  Branch a b λ c → branch D (next D c) (f c) (λ - → g (c , -))
+branch D a (Branch b f) g =
+  Branch b λ c → branch D (next D c) (f c) (λ - → g (c , -))
 ```
 
 # Progressiveness
@@ -158,16 +158,16 @@ _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 The refinement relation.
 
 ```
-conclusions : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D}
+conclusions⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D}
              → Experiment⋆ (raw D) s → Sub ℓ₀ (stage⁺ D)
-conclusions D {s} e = outcome⋆ (raw D) s e , next⋆ (raw D) s e
+conclusions⋆ D {s} e = outcome⋆ (raw D) s e , next⋆ (raw D) s e
 
 refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
-refines D@(P , _) e d =
-  (λ - → conclusions D e ↓[ P ] -) ⊆ (λ - → conclusions D d ↓[ P ] -)
+refines D@(P , _) e f =
+  (λ - → conclusions⋆ D e ↓[ P ] -) ⊆ (λ - → conclusions⋆ D f ↓[ P ] -)
 
-syntax refines D e d = e ℛ[ D ] d
+syntax refines D e f = e ℛ[ D ] f
 ```
 
 The notion of simulation. It says: at any point, we can simulate what we could do before.
@@ -176,22 +176,20 @@ The notion of simulation. It says: at any point, we can simulate what we could d
 IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
   (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp⁺ D a₀) →
-    Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (out b₁ , next⁺ D) ↓[ P ] -)
-                         ⊆ (λ - → (out b₀ , next⁺ D) ↓[ P ] -)
-  where
-    out = outcome⁺ D
+    Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
+                         ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
 
 IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
   (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds →
-    (E : Experiment⋆ (raw D) a₀) → Σ[ E′ ∈ (Experiment⋆ (raw D) a₁) ] (E′ ℛ[ D ] E)
+    (e : Experiment⋆ (raw D) a₀) → Σ[ f ∈ (Experiment⋆ (raw D) a₁) ] (e ℛ[ D ] f)
 ```
 
 Lemma
 
 ```
-singleton : (D : Discipline⁺ ℓ₀ ℓ₁) (s : stage⁺ D) → exp⁺ D s → Experiment⋆ (raw D) s
-singleton D s e = Branch s e (Leaf ∘ next⁺ D s e)
+singleton : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D} → exp⁺ D s → Experiment⋆ (raw D) s
+singleton D e = Branch e (Leaf ∘ next⁺ D)
 
 sim⇒sim⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
 sim⇒sim⋆ ((∣P∣ , P-str) , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , foo
