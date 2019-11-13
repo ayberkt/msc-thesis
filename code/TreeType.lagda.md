@@ -248,5 +248,21 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
 
 ```
+lemma₁ : (𝒯@(D , _) : FormalTopology ℓ₀ ℓ₁ ℓ₂) (U : stage⁺ D → Ω (ℓ₀ ⊔ ℓ₁))
+       → (a₀ a₁ : stage⁺ D) → a₁ ⊑[ pos D ] a₀ holds → a₀ ◀[ 𝒯 ] U
+       → a₁ ◀[ 𝒯 ] U
+lemma₁ 𝒯@(D , _) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) foo a₀◀U
+  where
+    foo : Σ (Experiment⋆ (raw D) a₀)
+          (λ t → down (pos D) (conclusions⋆ (proj₁ 𝒯) t) ⊆ U)
+        → ∥ Σ[ t ∈ (Experiment⋆ (raw D) a₁) ]
+            (down (pos D) (conclusions⋆ (proj₁ 𝒯) t) ⊆ U) ∥
+    foo (Leaf   a₁   , snd) = {!!}
+    foo (Branch b₁ f , snd) = {!!}
+```
+
+```
+-- --}
+-- --}
 -- --}
 ```
