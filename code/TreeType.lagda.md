@@ -112,6 +112,29 @@ IsProgressive {ℓ₀} P P-disc =
     D : Discipline ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 
+IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+IsProgressive⋆ {ℓ₀} P P-disc =
+  (a : stage D) (t : Experiment⋆ D a) (o : outcome⋆ D a t) → next⋆ D a t o ⊑[ P ] a holds
+  where
+    D : Discipline ℓ₀
+    D = (∣ P ∣ₚ , P-disc)
+
+prog⇒prog⋆ : (P : Poset ℓ₀ ℓ₁) → (disc : IsADiscipline ∣ P ∣ₚ) → IsProgressive P disc → IsProgressive⋆ P disc
+prog⇒prog⋆ P disc prog a (Leaf   a)   o = ⊑-refl a
+  where
+    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
+prog⇒prog⋆ P disc prog a (Branch b f) (o , os) = foo
+  where
+    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
+
+    D = ∣ P ∣ₚ , disc
+
+    IH : next⋆ D (next D o) (f o) os ⊑[ P ] next D o holds
+    IH = prog⇒prog⋆ P disc prog (next (∣ P ∣ₚ , disc) o) (f o) os
+
+    foo : next⋆ D a (Branch b f) (o , os) ⊑[ P ] a holds
+    foo = next⋆ D a (Branch b f) (o , os) ⊑⟨ IH ⟩ next D o ⊑⟨ prog a b o ⟩ a ■
+
 Discipline⁺ : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 Discipline⁺ ℓ₀ ℓ₁ =
   Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsADiscipline ∣ P ∣ₚ) ] IsProgressive P P-disc
