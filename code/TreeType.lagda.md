@@ -191,34 +191,37 @@ Lemma
 singleton : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D} → exp⁺ D s → Experiment⋆ (raw D) s
 singleton D e = Branch e (Leaf ∘ next⁺ D)
 
+{--
 sim⇒sim⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
-sim⇒sim⋆ ((∣P∣ , P-str) , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , foo
+sim⇒sim⋆ D@(P@(∣P∣ , P-str) , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
   where
     open PosetStr P-str using (_⊑_; ⊑-refl; ⊑-trans)
 
-    bar : (a : ∣P∣) → Σ ⊤ (λ _ → a ⊑ a₁ holds) → ∥ Σ ⊤ (λ _ → a ⊑ a₀ holds) ∥
-    bar a (tt , a⊑a₁) = ∣ tt , ⊑-trans a a₁ a₀ a⊑a₁ a₁⊑a₀ ∣
+    -- φ : (a : ∣P∣) → Σ ⊤ (λ _ → a ⊑ a₁ holds) → ∥ Σ ⊤ (λ _ → a ⊑ a₀ holds) ∥
+    -- φ a (tt , a⊑a₁) = ∣ tt , ⊑-trans a a₁ a₀ a⊑a₁ a₁⊑a₀ ∣
 
-    foo : (a : ∣P∣) → ∥ Σ ⊤ (λ _ → a ⊑ a₁ holds) ∥ → ∥ Σ ⊤ (λ _ → a ⊑ a₀ holds) ∥
-    foo a k = ∥∥-rec (∥∥-prop _) (bar a) k
+    ψ : (x : ∣P∣)
+      → down P (conclusions⋆ D (Leaf a₀)) x holds
+      → down P (conclusions⋆ D (Leaf a₁)) x holds
+    ψ a conc-a₀↓a = ∥∥-rec (∥∥-prop _) φ conc-a₀↓a
+      where
+        φ : Σ (proj₁ (conclusions⋆ D (Leaf a₀)))
+              (λ i → (a ⊑ proj₂ (conclusions⋆ D (Leaf a₀)) i) holds)
+          → ∥ Σ (proj₁ (conclusions⋆ D (Leaf a₁)))
+              (λ i → (a ⊑ proj₂ (conclusions⋆ D (Leaf a₁)) i) holds) ∥
+        φ (tt , snd) = {!!}
 
 -- We can localise any covering.
-sim⇒sim⋆ D@(P , _) D-sim a₀ a₁ a₀⊒a₁ (Branch a₀ b₀ f) =
-  (singleton D a₁ b₁) , foo
+sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
+  Branch b₁ {!!} , {!!}
   where
     open PosetStr (proj₂ P) using (_⊑_)
 
-    𝒮 : Σ[ b₁ ∈ (exp⁺ D a₁) ](λ - → (outcome⁺ D a₁ b₁ , next⁺ D a₁ b₁) ↓[ P ] -) ⊆ (λ - → (outcome⁺ D a₀ b₀ , next⁺ D a₀ b₀) ↓[ P ] -)
+    𝒮 : Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
+                             ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
     𝒮 = D-sim a₀ a₁ a₀⊒a₁ b₀
-
     b₁ = proj₁ 𝒮
-
-    foo : singleton D a₁ b₁ ℛ[ D ] (Branch a₀ b₀ f)
-    foo a a∈ℱ = ∥∥-rec (∥∥-prop _) bar a∈ℱ
-      where
-        bar : Σ[ i ∈ outcome⋆ (raw D) a₁ (singleton D a₁ b₁) ] a ⊑ next⁺ D a₁ b₁ (proj₁ i) holds
-            → ∥ (Σ[ i ∈ outcome⋆ (raw D) a₀ (Branch a₀ b₀ f) ] a ⊑ next⋆ (raw D) a₀ (Branch a₀ b₀ f) i holds) ∥
-        bar ((o , tt) , a⊑next) = {!proj₂ 𝒮 a₀!}
+--}
 ```
 
 # Formal Topology
@@ -229,7 +232,7 @@ simulation**, that is equipped with a **(3) cover relation**.
 ```
 record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂) where
   field
-    D-sim : IsSimulation D
+    D-sim : IsSimulation⋆ D
 
   _◀_ : stage⁺ D → ((stage⁺ D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
   a ◀ U =
@@ -251,14 +254,30 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 lemma₁ : (𝒯@(D , _) : FormalTopology ℓ₀ ℓ₁ ℓ₂) (U : stage⁺ D → Ω (ℓ₀ ⊔ ℓ₁))
        → (a₀ a₁ : stage⁺ D) → a₁ ⊑[ pos D ] a₀ holds → a₀ ◀[ 𝒯 ] U
        → a₁ ◀[ 𝒯 ] U
-lemma₁ 𝒯@(D , _) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) foo a₀◀U
+lemma₁ 𝒯@(D@((A , _) , (B , C , d) , prog) , topo) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) foo a₀◀U
   where
-    foo : Σ (Experiment⋆ (raw D) a₀)
-          (λ t → down (pos D) (conclusions⋆ (proj₁ 𝒯) t) ⊆ U)
-        → ∥ Σ[ t ∈ (Experiment⋆ (raw D) a₁) ]
-            (down (pos D) (conclusions⋆ (proj₁ 𝒯) t) ⊆ U) ∥
-    foo (Leaf   a₁   , snd) = {!!}
-    foo (Branch b₁ f , snd) = {!!}
+    open IsFormalTopology topo using (D-sim)
+
+    sim : IsSimulation⋆ D
+    sim = D-sim
+
+    foo : Σ[ t ∈ (Experiment⋆ (raw D) a₀) ] ((λ - →  (conclusions⋆ D t) ↓[ pos D ] -) ⊆ U)
+        → ∥ Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U ∥
+    foo (Leaf   a   , conc-D↓⊆U) = ∣ proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a))     , l0 ∣
+      where
+        open PosetStr (proj₂ (pos D)) using (⊑-trans)
+
+        l0 : (λ - → down (pos D) (conclusions⋆ D  (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀)))) -) ⊆ U
+        l0 x x₁ = conc-D↓⊆U x ∣ tt , l1 ∣
+          where
+            l1 : x ⊑[ pos D ] (proj₂ (conclusions⋆ D (Leaf a₀)) tt) holds
+            l1 = ∥∥-rec (proj₂ (x ⊑[ pos D ] (proj₂ (conclusions⋆ D (Leaf a₀)) tt)))  l2 x₁
+              where
+                l2 : Σ (index (conclusions⋆ D (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀)))))
+                       (λ o → x ⊑[ pos D ] (proj₂ (conclusions⋆ D  (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀)))) o) holds)
+                   → (x ⊑[ pos D ] (conclusions⋆ D (Leaf a₀) € tt)) holds
+                l2 (i , q) = ⊑-trans x a₁ _ (⊑-trans x (next⋆ (raw D) a₁ (proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Leaf a₀))) i) a₁ q {!!}) a₀⊒a₁
+    foo (Branch b x , conc-D↓⊆U) = ∣ proj₁ (D-sim a₀ a₁ a₀⊒a₁ (Branch b x)) , {!!} ∣
 ```
 
 ```
