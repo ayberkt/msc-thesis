@@ -158,12 +158,14 @@ _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 The refinement relation.
 
 ```
+conclusions : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D}
+             → Experiment⋆ (raw D) s → Sub ℓ₀ (stage⁺ D)
+conclusions D {s} e = outcome⋆ (raw D) s e , next⋆ (raw D) s e
+
 refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
-refines D@(P , _) {s₀} {s₁} e d = (λ - → ℱ ↓[ P ] -) ⊆ (λ - → 𝒢 ↓[ P ] -)
-  where
-    ℱ = outcome⋆ (raw D) s₁ e , next⋆ (raw D) s₁ e
-    𝒢 = outcome⋆ (raw D) s₀ d , next⋆ (raw D) s₀ d
+refines D@(P , _) e d =
+  (λ - → conclusions D e ↓[ P ] -) ⊆ (λ - → conclusions D d ↓[ P ] -)
 
 syntax refines D e d = e ℛ[ D ] d
 ```
