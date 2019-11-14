@@ -40,10 +40,9 @@ alternative (_ , B , _) = B
 position : (D : PostSystem ℓ) → {x : nonterminal D} → alternative D x → Set ℓ
 position (_ , _ , C , _) = C
 
--- outcome and next together define an enumeration on the stages.
-
-next : (D : PostSystem ℓ) → {x : nonterminal D} → {y : alternative D x} → position D y → nonterminal D
-next (_ , _ , _ , d) = d
+proceed : (D : PostSystem ℓ)
+        → {x : nonterminal D} → {y : alternative D x} → position D y → nonterminal D
+proceed (_ , _ , _ , d) = d
 ```
 
 ```
@@ -54,7 +53,7 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
   field
     a : nonterminal D
     b : alternative D a
-    c : (z : position D b) → Tree D (next D z)
+    c : (z : position D b) → Tree D (proceed D z)
 ```
 
 # Elimination
@@ -80,18 +79,18 @@ treerec ds D (tree a b c) f = {!f a′ !}
 data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
   Leaf   : (a : nonterminal D) → Experiment⋆ D a
   Branch : {a : nonterminal D} (b : alternative D a)
-         → ((c : position D b) → Experiment⋆ D (next D c))
+         → ((c : position D b) → Experiment⋆ D (proceed D c))
          → Experiment⋆ D a
 
 outcome⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → Experiment⋆ D s → Set ℓ
 outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
-outcome⋆ D s (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ D (next D o) (f o)
+outcome⋆ D s (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ D (proceed D o) (f o)
 
 -- Arbitrary covering.
 
 next⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → (t : Experiment⋆ D s) → outcome⋆ D s t → nonterminal D
 next⋆ D s (Leaf   s)     _       = s
-next⋆ D s (Branch b f) (c , y) = next⋆ D (next D c) (f c) y
+next⋆ D s (Branch b f) (c , y) = next⋆ D (proceed D c) (f c) y
 
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Experiment⋆ D a)
@@ -99,7 +98,7 @@ branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → Experiment⋆ D a
 branch D a (Leaf   a)     g = g tt
 branch D a (Branch b f) g =
-  Branch b λ c → branch D (next D c) (f c) (λ - → g (c , -))
+  Branch b λ c → branch D (proceed D c) (f c) (λ - → g (c , -))
 ```
 
 # Progressiveness
@@ -107,7 +106,7 @@ branch D a (Branch b f) g =
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
-  (x : nonterminal D) (y : alternative D x) (z : position D y) → next D z ⊑[ P ] x holds
+  (x : nonterminal D) (y : alternative D x) (z : position D y) → (proceed D z) ⊑[ P ] x holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -134,7 +133,7 @@ outcome⁺ (P , D , _) = position (∣ P ∣ₚ , D)
 
 next⁺ : (D : Discipline⁺ ℓ₀ ℓ₁)
       → {a : stage⁺ D} → {b : exp⁺ D a} → outcome⁺ D b → stage⁺ D
-next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
+next⁺ (P , D , _) = proceed (∣ P ∣ₚ , D)
 
 pos : Discipline⁺ ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
@@ -151,10 +150,10 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
    IH : next⋆ (raw D) (next⁺ D o) (f o) os ⊑[ P ] next⁺ D o holds
-   IH = prog⇒prog⋆ D (next (∣ P ∣ₚ , disc) o) (f o) os
+   IH = prog⇒prog⋆ D (proceed (∣ P ∣ₚ , disc) o) (f o) os
 
    foo : next⋆ (raw D) a (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = next⋆ (raw D) a (Branch b f) (o , os) ⊑⟨ IH ⟩ next (raw D) o ⊑⟨ IS a b o ⟩ a ■
+   foo = next⋆ (raw D) a (Branch b f) (o , os) ⊑⟨ IH ⟩ (proceed (raw D) o) ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
