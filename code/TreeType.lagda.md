@@ -106,14 +106,14 @@ Discipline ℓ₀ ℓ₁ =
 stage : Discipline ℓ₀ ℓ₁ → Set ℓ₀
 stage (P , _) = ∣ P ∣ₚ
 
-exp⁺ : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
-exp⁺ (P , D , _) = alternative (∣ P ∣ₚ , D)
+exp : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
+exp (P , D , _) = alternative (∣ P ∣ₚ , D)
 
-outcome⁺ : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp⁺ D x → Set ℓ₀
+outcome⁺ : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
 outcome⁺ (P , D , _) = position (∣ P ∣ₚ , D)
 
 next⁺ : (D : Discipline ℓ₀ ℓ₁)
-      → {a : stage D} → {b : exp⁺ D a} → outcome⁺ D b → stage D
+      → {a : stage D} → {b : exp D a} → outcome⁺ D b → stage D
 next⁺ (P , D , _) = proceed (∣ P ∣ₚ , D)
 
 pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
@@ -176,8 +176,8 @@ The notion of simulation. It says: at any point, we can simulate what we could d
 ```
 IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
-  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp⁺ D a₀) →
-    Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
+  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
+    Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
                          ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
 
 IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
@@ -189,7 +189,7 @@ IsSimulation⋆ D@(P , _) =
 Lemma
 
 ```
-singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp⁺ D s → Experiment⋆ (raw D) s
+singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Experiment⋆ (raw D) s
 singleton D e = Branch e (Leaf ∘ next⁺ D)
 
 {--
@@ -218,7 +218,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
   where
     open PosetStr (proj₂ P) using (_⊑_)
 
-    𝒮 : Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
+    𝒮 : Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
                              ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
     𝒮 = D-sim a₀ a₁ a₀⊒a₁ b₀
     b₁ = proj₁ 𝒮
