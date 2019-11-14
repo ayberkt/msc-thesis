@@ -180,6 +180,9 @@ revise : (D : Discipline ℓ₀ ℓ₁)
 revise (P , D , _) = choose (∣ P ∣ₚ , D)
 ```
 
+In other words, we revise our knowledge state in light of an experiments outcome
+which yields a new knowledge state.
+
 ```
 pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
