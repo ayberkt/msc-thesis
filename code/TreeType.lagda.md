@@ -43,6 +43,10 @@ location    (_ , _ , C , _) = C
 choose      (_ , _ , _ , d) = d
 ```
 
+Given a Post system `D`, which describes the structure of a tree, the type of inhabitants
+of a specific tree satisfying `D` and starting with nonterminal `s` is given by the type
+`Tree D s`.
+
 ```
 record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
   constructor tree
@@ -57,27 +61,27 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
 # Stump
 
 ```
-data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
-  Leaf   : (a : nonterminal D) → Experiment⋆ D a
+data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
+  Leaf   : (a : nonterminal D) → Production⋆ D a
   Branch : {a : nonterminal D} (b : production D a)
-         → ((c : location D b) → Experiment⋆ D (choose D c))
-         → Experiment⋆ D a
+         → ((c : location D b) → Production⋆ D (choose D c))
+         → Production⋆ D a
 
-outcome⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Set ℓ
+outcome⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
 outcome⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
 outcome⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (location D b) ] outcome⋆ (f o)
 
 -- Arbitrary covering.
 
 next⋆ : {D : PostSystem ℓ} {s : nonterminal D}
-     → (t : Experiment⋆ D s) → outcome⋆ t → nonterminal D
+     → (t : Production⋆ D s) → outcome⋆ t → nonterminal D
 next⋆ (Leaf   s)   _       = s
 next⋆ (Branch b f) (c , y) = next⋆ (f c) y
 
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
-       → (t : Experiment⋆ D a)
-       → (g : (e : outcome⋆ t) → Experiment⋆ D (next⋆ t e))
-       → Experiment⋆ D a
+       → (t : Production⋆ D a)
+       → (g : (e : outcome⋆ t) → Production⋆ D (next⋆ t e))
+       → Production⋆ D a
 branch D a (Leaf   a)   g = g tt
 branch D a (Branch b f) g = Branch b λ c → branch D (choose D c) (f c) (λ - → g (c , -))
 ```
@@ -95,7 +99,7 @@ IsProgressive {ℓ₀} P P-disc =
 
 IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : nonterminal D) (t : Experiment⋆ D a) (o : outcome⋆ t) → next⋆ t o ⊑[ P ] a holds
+  (a : nonterminal D) (t : Production⋆ D a) (o : outcome⋆ t) → next⋆ t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -162,11 +166,11 @@ The refinement relation.
 
 ```
 conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D}
-             → Experiment⋆ D s → Sub ℓ (nonterminal D)
+             → Production⋆ D s → Sub ℓ (nonterminal D)
 conclusions⋆ {s = s} e = outcome⋆ e , next⋆ e
 
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
-        → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
+        → Production⋆ (raw D) s′ → Production⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
 refines D@(P , _) e f =
   (λ - → conclusions⋆ e ↓[ P ] -) ⊆ (λ - → conclusions⋆ f ↓[ P ] -)
 
@@ -185,13 +189,13 @@ IsSimulation D@(P , _) =
 IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
   (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
-    (t₀ : Experiment⋆ (raw D) a₀) → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (t₁ ℛ[ D ] t₀)
+    (t₀ : Production⋆ (raw D) a₀) → Σ[ t₁ ∈ (Production⋆ (raw D) a₁) ] (t₁ ℛ[ D ] t₀)
 ```
 
 Lemma
 
 ```
-singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Experiment⋆ (raw D) s
+singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Production⋆ (raw D) s
 singleton D e = Branch e (Leaf ∘ next⁺ D)
 
 {--
@@ -239,7 +243,7 @@ record IsFormalTopology (D : Discipline ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (�
 
   _◀_ : stage D → ((stage D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
   a ◀ U =
-    ∥ Σ[ t ∈ (Experiment⋆ (raw D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
+    ∥ Σ[ t ∈ (Production⋆ (raw D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
 
 FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
 FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
@@ -261,11 +265,11 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
   where
     open IsFormalTopology topo using (D-sim)
 
-    ψ : Σ[ t₀ ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ t₀) ↓[ pos D ] -) ⊆ U)
-      → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
+    ψ : Σ[ t₀ ∈ (Production⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ t₀) ↓[ pos D ] -) ⊆ U)
+      → Σ[ t₁ ∈ (Production⋆ (raw D) a₁) ] (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
-        t₁ : Experiment⋆ (raw D) a₁
+        t₁ : Production⋆ (raw D) a₁
         t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ t)
 
         t₁-sim : refines D t₁ t
