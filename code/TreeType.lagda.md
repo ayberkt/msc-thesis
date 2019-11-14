@@ -247,34 +247,46 @@ Given a `Production⋆` `t`, we can define a family of nonterminals it _reaches_
 i.e., the leaves of the tree.
 
 ```
-leaves : {D : PostSystem ℓ} {s : nonterminal D}
-             → Production⋆ D s → Sub ℓ (nonterminal D)
+leaves : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Sub ℓ (nonterminal D)
 leaves e = location⋆ e , choose⋆ e
+```
 
+We may hence define a notion of refinement: `t₀` refines `t₁` iff _any stage that is more
+informative than a leaf of `t₀` is more informative than a leaf of `t₁`.
+
+```
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
-        → Production⋆ (post D) s′ → Production⋆ (post D) s → Set (ℓ₀ ⊔ ℓ₁)
-refines D@(P , _) e f =
-  (λ - → leaves e ↓[ P ] -) ⊆ (λ - → leaves f ↓[ P ] -)
+        → experiment⋆ D s′ → experiment⋆ D s → Set (ℓ₀ ⊔ ℓ₁)
+refines D@(P , _) e f = (λ - → leaves e ↓[ P ] -) ⊆ (λ - → leaves f ↓[ P ] -)
 
 syntax refines D e f = e ℛ[ D ] f
 ```
 
-The notion of simulation. It says: at any point, we can simulate what we could do before.
+Using the notion of refinement, we formulate the simulation property (given in
+`IsSimulation⋆`) which says: given stages `a₁ ⊑ a₀`, for any `experiment⋆` on `a₀`, there
+exists some `experiment⋆` `t₁` that is a refinement of `t₀`. In other words: as we move
+towards more refined states of information, we maintain access to as refined sequences of
+experiments.
+
+```
+IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation⋆ D@(P , _) =
+  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
+    (t₀ : experiment⋆ D a₀) → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (t₁ ℛ[ D ] t₀)
+```
+
+The analogous property for single experiments is given in `IsSimulation` which in fact
+implies `IsSimulation⋆`.
 
 ```
 IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
   (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
-    Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome D b₁ , revise D) ↓[ P ] -)
+    Σ[ b₁ ∈ (exp D a₁) ]   (λ - → (outcome D b₁ , revise D) ↓[ P ] -)
                          ⊆ (λ - → (outcome D b₀ , revise D) ↓[ P ] -)
-
-IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
-IsSimulation⋆ D@(P , _) =
-  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
-    (t₀ : Production⋆ (post D) a₀) → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (t₁ ℛ[ D ] t₀)
 ```
 
-Lemma
+**TODO**: simulation implies simulation⋆.
 
 ```
 singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Production⋆ (post D) s
