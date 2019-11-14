@@ -34,15 +34,15 @@ PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 nonterminal : PostSystem ℓ → Set ℓ
 nonterminal (A , _) = A
 
-exp : (D : PostSystem ℓ) → nonterminal D → Set ℓ
-exp (_ , B , _) = B
+alternative : (D : PostSystem ℓ) → nonterminal D → Set ℓ
+alternative (_ , B , _) = B
 
-outcome : (D : PostSystem ℓ) → {x : nonterminal D} → exp D x → Set ℓ
-outcome (_ , _ , C , _) = C
+position : (D : PostSystem ℓ) → {x : nonterminal D} → alternative D x → Set ℓ
+position (_ , _ , C , _) = C
 
 -- outcome and next together define an enumeration on the stages.
 
-next : (D : PostSystem ℓ) → {x : nonterminal D} → {y : exp D x} → outcome D y → nonterminal D
+next : (D : PostSystem ℓ) → {x : nonterminal D} → {y : alternative D x} → position D y → nonterminal D
 next (_ , _ , _ , d) = d
 ```
 
@@ -53,8 +53,8 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
 
   field
     a : nonterminal D
-    b : exp D a
-    c : (z : outcome D b) → Tree D (next D z)
+    b : alternative D a
+    c : (z : position D b) → Tree D (next D z)
 ```
 
 # Elimination
@@ -79,13 +79,13 @@ treerec ds D (tree a b c) f = {!f a′ !}
 ```
 data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
   Leaf   : (a : nonterminal D) → Experiment⋆ D a
-  Branch : {a : nonterminal D} (b : exp D a)
-         → ((c : outcome D b) → Experiment⋆ D (next D c))
+  Branch : {a : nonterminal D} (b : alternative D a)
+         → ((c : position D b) → Experiment⋆ D (next D c))
          → Experiment⋆ D a
 
 outcome⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → Experiment⋆ D s → Set ℓ
 outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
-outcome⋆ D s (Branch b f) = Σ[ o ∈ (outcome D b) ] outcome⋆ D (next D o) (f o)
+outcome⋆ D s (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ D (next D o) (f o)
 
 -- Arbitrary covering.
 
@@ -107,7 +107,7 @@ branch D a (Branch b f) g =
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
-  (x : nonterminal D) (y : exp D x) (z : outcome D y) → next D z ⊑[ P ] x holds
+  (x : nonterminal D) (y : alternative D x) (z : position D y) → next D z ⊑[ P ] x holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -127,10 +127,10 @@ stage⁺ : Discipline⁺ ℓ₀ ℓ₁ → Set ℓ₀
 stage⁺ (P , _) = ∣ P ∣ₚ
 
 exp⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → stage⁺ D → Set ℓ₀
-exp⁺ (P , D , _) = exp (∣ P ∣ₚ , D)
+exp⁺ (P , D , _) = alternative (∣ P ∣ₚ , D)
 
 outcome⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → {x : stage⁺ D} → exp⁺ D x → Set ℓ₀
-outcome⁺ (P , D , _) = outcome (∣ P ∣ₚ , D)
+outcome⁺ (P , D , _) = position (∣ P ∣ₚ , D)
 
 next⁺ : (D : Discipline⁺ ℓ₀ ℓ₁)
       → {a : stage⁺ D} → {b : exp⁺ D a} → outcome⁺ D b → stage⁺ D
