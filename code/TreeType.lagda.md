@@ -87,7 +87,8 @@ branch D a (Branch b f) g = Branch b λ c → branch D (proceed D c) (f c) (λ -
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
-  (x : nonterminal D) (y : alternative D x) (z : position D y) → (proceed D z) ⊑[ P ] x holds
+  (x : nonterminal D) (y : alternative D x) (z : position D y) →
+    (proceed D z) ⊑[ P ] x holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -160,7 +161,8 @@ _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 The refinement relation.
 
 ```
-conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Sub ℓ (nonterminal D)
+conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D}
+             → Experiment⋆ D s → Sub ℓ (nonterminal D)
 conclusions⋆ {s = s} e = outcome⋆ e , next⋆ e
 
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
