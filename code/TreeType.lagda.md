@@ -142,7 +142,7 @@ pos (P , _) = P
 raw : (D : Discipline⁺ ℓ₀ ℓ₁) → Discipline ℓ₀
 raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
 
-prog⇒prog⋆ : (D@(P , P-disc , IS) : Discipline⁺ ℓ₀ ℓ₁) → IsProgressive⋆ P P-disc
+prog⇒prog⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsProgressive⋆ (pos D) (proj₁ (proj₂ D))
 prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
   where
     open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
