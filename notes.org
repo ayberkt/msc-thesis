@@ -67,3 +67,19 @@
      along the lines of: when we have more knowledge, we can do at least as many
      experiments as before.
    - `outcome` and `next`, together, define an enumeration of the stages.
+
+** <2019-11-08 Fri>
+   - [ ] Prove: simulation ⇒ simulation⋆
+   - [ ] Define a binary operation on `Experiment⋆` that given two `Experiment⋆`s,
+     produces a new `Experiment⋆` that is a refinement of both.
+   - [X] Define a refinement relation expressing when a stump refines another.
+   - [X] Prove lemma (1).
+   - [ ] Prove lemma (2).
+     - The main lemma towards proving that the covering relation is a nucleus.
+     - This  is the thing where the conclusion is truncated so we can remove the
+       truncations in the hypotheses.
+   - NOTE Progressiveness is a property (is propositional) whereas simulation is a
+     structure (it has non-trivial homotopy structure).
+   - Once these have been done, give an example of a discipline that is a distributive
+     bounded lattice (Stone space) (as Thierry exemplified on the board).
+   - The Fan Theorem in fact says: "the Cantor space has enough points".
