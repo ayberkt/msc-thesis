@@ -24,30 +24,30 @@ open TruncationExists pt
 # Introduction
 
 ```
-IsADiscipline : (A : Set ℓ) → Set (suc ℓ)
-IsADiscipline {ℓ = ℓ} A =
-  Σ[ B ∈ (A → Set ℓ) ] Σ[ C ∈ ({x : A} → B x → Set ℓ) ] ({x : A} → {y : B x} → C y → A)
+IsAPostSystem : (A : Set ℓ) → Set (suc ℓ)
+IsAPostSystem {ℓ = ℓ} A =
+  Σ[ B ∈ (A → Set ℓ) ] Σ[ C ∈ ({x : A} → B x → Set ℓ) ]({x : A} → {y : B x} → C y → A)
 
-Discipline : (ℓ : Level) → Set (suc ℓ)
-Discipline ℓ = Σ[ A ∈ (Set ℓ) ] (IsADiscipline A)
+PostSystem : (ℓ : Level) → Set (suc ℓ)
+PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 
-stage : Discipline ℓ → Set ℓ
+stage : PostSystem ℓ → Set ℓ
 stage (A , _) = A
 
-exp : (D : Discipline ℓ) → stage D → Set ℓ
+exp : (D : PostSystem ℓ) → stage D → Set ℓ
 exp (_ , B , _) = B
 
-outcome : (D : Discipline ℓ) → {x : stage D} → exp D x → Set ℓ
+outcome : (D : PostSystem ℓ) → {x : stage D} → exp D x → Set ℓ
 outcome (_ , _ , C , _) = C
 
 -- outcome and next together define an enumeration on the stages.
 
-next : (D : Discipline ℓ) → {x : stage D} → {y : exp D x} → outcome D y → stage D
+next : (D : PostSystem ℓ) → {x : stage D} → {y : exp D x} → outcome D y → stage D
 next (_ , _ , _ , d) = d
 ```
 
 ```
-record Tree (D : Discipline ℓ) (s : stage D) : Set (suc ℓ) where
+record Tree (D : PostSystem ℓ) (s : stage D) : Set (suc ℓ) where
   constructor tree
   inductive
 
@@ -77,23 +77,23 @@ treerec ds D (tree a b c) f = {!f a′ !}
 # Stump
 
 ```
-data Experiment⋆ (D : Discipline ℓ) : stage D → Set ℓ where
+data Experiment⋆ (D : PostSystem ℓ) : stage D → Set ℓ where
   Leaf   : (a : stage D) → Experiment⋆ D a
   Branch : {a : stage D} (b : exp D a)
          → ((c : outcome D b) → Experiment⋆ D (next D c))
          → Experiment⋆ D a
 
-outcome⋆ : (D : Discipline ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
+outcome⋆ : (D : PostSystem ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
 outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
 outcome⋆ D s (Branch b f) = Σ[ o ∈ (outcome D b) ] outcome⋆ D (next D o) (f o)
 
 -- Arbitrary covering.
 
-next⋆ : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
+next⋆ : (D : PostSystem ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
 next⋆ D s (Leaf   s)     _       = s
 next⋆ D s (Branch b f) (c , y) = next⋆ D (next D c) (f c) y
 
-branch : (D : Discipline ℓ) → (a : stage D)
+branch : (D : PostSystem ℓ) → (a : stage D)
        → (t : Experiment⋆ D a)
        → (g : (e : outcome⋆ D a t) → Experiment⋆ D (next⋆ D a t e))
        → Experiment⋆ D a
@@ -105,23 +105,23 @@ branch D a (Branch b f) g =
 # Progressiveness
 
 ```
-IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
   (x : stage D) (y : exp D x) (z : outcome D y) → next D z ⊑[ P ] x holds
   where
-    D : Discipline ℓ₀
+    D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 
-IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
   (a : stage D) (t : Experiment⋆ D a) (o : outcome⋆ D a t) → next⋆ D a t o ⊑[ P ] a holds
   where
-    D : Discipline ℓ₀
+    D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 
 Discipline⁺ : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 Discipline⁺ ℓ₀ ℓ₁ =
-  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsADiscipline ∣ P ∣ₚ) ] IsProgressive P P-disc
+  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] IsProgressive P P-disc
 
 stage⁺ : Discipline⁺ ℓ₀ ℓ₁ → Set ℓ₀
 stage⁺ (P , _) = ∣ P ∣ₚ
@@ -139,7 +139,7 @@ next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
 pos : Discipline⁺ ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
 
-raw : (D : Discipline⁺ ℓ₀ ℓ₁) → Discipline ℓ₀
+raw : (D : Discipline⁺ ℓ₀ ℓ₁) → PostSystem ℓ₀
 raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
 
 prog⇒prog⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsProgressive⋆ (pos D) (proj₁ (proj₂ D))
