@@ -65,19 +65,19 @@ data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
          → ((c : position D b) → Experiment⋆ D (proceed D c))
          → Experiment⋆ D a
 
-outcome⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → Experiment⋆ D s → Set ℓ
-outcome⋆ {ℓ} D a (Leaf   a)   = ⊤ {ℓ}
-outcome⋆     D s (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ D (proceed D o) (f o)
+outcome⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Set ℓ
+outcome⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
+outcome⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ (f o)
 
 -- Arbitrary covering.
 
-next⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → (t : Experiment⋆ D s) → outcome⋆ D s t → nonterminal D
-next⋆ D s (Leaf   s)     _       = s
-next⋆ D s (Branch b f) (c , y) = next⋆ D (proceed D c) (f c) y
+next⋆ : {D : PostSystem ℓ} → (s : nonterminal D) → (t : Experiment⋆ D s) → outcome⋆ t → nonterminal D
+next⋆ s (Leaf   s)     _       = s
+next⋆ {D = D} s (Branch b f) (c , y) = next⋆ (proceed D c) (f c) y
 
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Experiment⋆ D a)
-       → (g : (e : outcome⋆ D a t) → Experiment⋆ D (next⋆ D a t e))
+       → (g : (e : outcome⋆ t) → Experiment⋆ D (next⋆ a t e))
        → Experiment⋆ D a
 branch D a (Leaf   a)     g = g tt
 branch D a (Branch b f) g =
@@ -96,7 +96,7 @@ IsProgressive {ℓ₀} P P-disc =
 
 IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : nonterminal D) (t : Experiment⋆ D a) (o : outcome⋆ D a t) → next⋆ D a t o ⊑[ P ] a holds
+  (a : nonterminal D) (t : Experiment⋆ D a) (o : outcome⋆ t) → next⋆ a t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -132,11 +132,11 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
   where
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
-   IH : next⋆ (raw D) (next⁺ D o) (f o) os ⊑[ P ] next⁺ D o holds
+   IH : next⋆ (next⁺ D o) (f o) os ⊑[ P ] next⁺ D o holds
    IH = prog⇒prog⋆ D (proceed (∣ P ∣ₚ , disc) o) (f o) os
 
-   foo : next⋆ (raw D) a (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = next⋆ (raw D) a (Branch b f) (o , os) ⊑⟨ IH ⟩ (proceed (raw D) o) ⊑⟨ IS a b o ⟩ a ■
+   foo : next⋆ a (Branch b f) (o , os) ⊑[ P ] a holds
+   foo = next⋆ a (Branch b f) (o , os) ⊑⟨ IH ⟩ (proceed (raw D) o) ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
@@ -162,14 +162,13 @@ _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 The refinement relation.
 
 ```
-conclusions⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D}
-             → Experiment⋆ (raw D) s → Sub ℓ₀ (stage⁺ D)
-conclusions⋆ D {s} e = outcome⋆ (raw D) s e , next⋆ (raw D) s e
+conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Sub ℓ (nonterminal D)
+conclusions⋆ {s = s} e = outcome⋆ e , next⋆ s e
 
 refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
 refines D@(P , _) e f =
-  (λ - → conclusions⋆ D e ↓[ P ] -) ⊆ (λ - → conclusions⋆ D f ↓[ P ] -)
+  (λ - → conclusions⋆ e ↓[ P ] -) ⊆ (λ - → conclusions⋆ f ↓[ P ] -)
 
 syntax refines D e f = e ℛ[ D ] f
 ```
@@ -240,7 +239,7 @@ record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) (ℓ₂ : Level) : Set
 
   _◀_ : stage⁺ D → ((stage⁺ D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
   a ◀ U =
-    ∥ Σ[ t ∈ (Experiment⋆ (raw D) a) ] (λ - → (conclusions⋆ D t ) ↓[ pos D ] -) ⊆ U ∥
+    ∥ Σ[ t ∈ (Experiment⋆ (raw D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
 
 FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
 FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline⁺ ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
@@ -262,8 +261,8 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
   where
     open IsFormalTopology topo using (D-sim)
 
-    ψ : Σ[ t₀ ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ D t₀) ↓[ pos D ] -) ⊆ U)
-      → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
+    ψ : Σ[ t₀ ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ t₀) ↓[ pos D ] -) ⊆ U)
+      → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
         t₁ : Experiment⋆ (raw D) a₁
@@ -272,7 +271,7 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
         t₁-sim : refines D t₁ t
         t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
 
-        conc-t₁↓⊆U : (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
+        conc-t₁↓⊆U : (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 
