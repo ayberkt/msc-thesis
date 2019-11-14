@@ -66,21 +66,26 @@ data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
   Branch : {a : nonterminal D} (b : production D a)
          → ((c : location D b) → Production⋆ D (choose D c))
          → Production⋆ D a
+```
 
-outcome⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
-outcome⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
-outcome⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (location D b) ] outcome⋆ (f o)
+Given a `Production⋆`, say `t`, we can extract the nonterminal locations that have been
+chosen with every choice, using the function `location⋆`.
+
+```
+location⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
+location⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
+location⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (location D b) ] location⋆ (f o)
 
 -- Arbitrary covering.
 
 next⋆ : {D : PostSystem ℓ} {s : nonterminal D}
-     → (t : Production⋆ D s) → outcome⋆ t → nonterminal D
+     → (t : Production⋆ D s) → location⋆ t → nonterminal D
 next⋆ (Leaf   s)   _       = s
 next⋆ (Branch b f) (c , y) = next⋆ (f c) y
 
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Production⋆ D a)
-       → (g : (e : outcome⋆ t) → Production⋆ D (next⋆ t e))
+       → (g : (e : location⋆ t) → Production⋆ D (next⋆ t e))
        → Production⋆ D a
 branch D a (Leaf   a)   g = g tt
 branch D a (Branch b f) g = Branch b λ c → branch D (choose D c) (f c) (λ - → g (c , -))
@@ -99,7 +104,7 @@ IsProgressive {ℓ₀} P P-disc =
 
 IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : nonterminal D) (t : Production⋆ D a) (o : outcome⋆ t) → next⋆ t o ⊑[ P ] a holds
+  (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → next⋆ t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -167,7 +172,7 @@ The refinement relation.
 ```
 conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D}
              → Production⋆ D s → Sub ℓ (nonterminal D)
-conclusions⋆ {s = s} e = outcome⋆ e , next⋆ e
+conclusions⋆ {s = s} e = location⋆ e , next⋆ e
 
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
         → Production⋆ (raw D) s′ → Production⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
