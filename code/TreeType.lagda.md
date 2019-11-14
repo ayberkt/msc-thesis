@@ -171,10 +171,16 @@ outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set �
 outcome (P , D , _) = location (∣ P ∣ₚ , D)
 ```
 
-next⁺ : (D : Discipline ℓ₀ ℓ₁)
-      → {a : stage D} → {b : exp D a} → outcome D b → stage D
-next⁺ (P , D , _) = choose (∣ P ∣ₚ , D)
+The `choose` operation is now called `revise` in the sense that it is an
+operation of _revising one's knowledge state_.
 
+```
+revise : (D : Discipline ℓ₀ ℓ₁)
+      → {a : stage D} → {b : exp D a} → outcome D b → stage D
+revise (P , D , _) = choose (∣ P ∣ₚ , D)
+```
+
+```
 pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
 
@@ -189,7 +195,7 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
   where
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
-   IH : choose⋆ (f o) os ⊑[ P ] next⁺ D o holds
+   IH : choose⋆ (f o) os ⊑[ P ] revise D o holds
    IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
 
    foo : choose⋆ (Branch b f) (o , os) ⊑[ P ] a holds
@@ -237,8 +243,8 @@ The notion of simulation. It says: at any point, we can simulate what we could d
 IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
   (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
-    Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome D b₁ , next⁺ D) ↓[ P ] -)
-                         ⊆ (λ - → (outcome D b₀ , next⁺ D) ↓[ P ] -)
+    Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome D b₁ , revise D) ↓[ P ] -)
+                         ⊆ (λ - → (outcome D b₀ , revise D) ↓[ P ] -)
 
 IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
@@ -250,7 +256,7 @@ Lemma
 
 ```
 singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Production⋆ (raw D) s
-singleton D e = Branch e (Leaf ∘ next⁺ D)
+singleton D e = Branch e (Leaf ∘ revise D)
 
 {--
 sim⇒sim⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
