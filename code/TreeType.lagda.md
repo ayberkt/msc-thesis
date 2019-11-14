@@ -89,12 +89,12 @@ choose⋆ (Branch b f) (c , y) = choose⋆ (f c) y
 ```
 
 ```
-branch : (D : PostSystem ℓ) → (a : nonterminal D)
+append : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Production⋆ D a)
        → (g : (e : location⋆ t) → Production⋆ D (choose⋆ t e))
        → Production⋆ D a
-branch D a (Leaf   a)   g = g tt
-branch D a (Branch b f) g = Branch b λ c → branch D (choose D c) (f c) (λ - → g (c , -))
+append D a (Leaf   a)   g = g tt
+append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - → g (c , -))
 ```
 
 # Progressiveness
