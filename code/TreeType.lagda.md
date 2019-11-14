@@ -272,7 +272,7 @@ experiments.
 IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
   (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
-    (t₀ : experiment⋆ D a₀) → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (t₁ ℛ[ D ] t₀)
+    (t₀ : experiment⋆ D a₀) → Σ[ t₁ ∈ (experiment⋆ D a₁) ] (t₁ ℛ[ D ] t₀)
 ```
 
 The analogous property for single experiments is given in `IsSimulation` which in fact
