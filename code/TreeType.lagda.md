@@ -280,7 +280,7 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
   where
     open IsFormalTopology topo using (D-sim)
 
-    ψ : Σ[ t ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ D t) ↓[ pos D ] -) ⊆ U)
+    ψ : Σ[ t₀ ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ D t₀) ↓[ pos D ] -) ⊆ U)
       → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
