@@ -34,13 +34,13 @@ PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 nonterminal : PostSystem ℓ → Set ℓ
 production  : (D : PostSystem ℓ) → nonterminal D → Set ℓ
 location    : (D : PostSystem ℓ) → {x : nonterminal D} → production D x → Set ℓ
-proceed     : (D : PostSystem ℓ) {x : nonterminal D} {y : production D x}
+choose      : (D : PostSystem ℓ) {x : nonterminal D} {y : production D x}
             → location D y → nonterminal D
 
 nonterminal (A , _ , _ , _) = A
 production  (_ , B , _ , _) = B
 location    (_ , _ , C , _) = C
-proceed     (_ , _ , _ , d) = d
+choose      (_ , _ , _ , d) = d
 ```
 
 ```
@@ -51,7 +51,7 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
   field
     a : nonterminal D
     b : production D a
-    c : (z : location D b) → Tree D (proceed D z)
+    c : (z : location D b) → Tree D (choose D z)
 ```
 
 # Stump
@@ -60,7 +60,7 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
 data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
   Leaf   : (a : nonterminal D) → Experiment⋆ D a
   Branch : {a : nonterminal D} (b : production D a)
-         → ((c : location D b) → Experiment⋆ D (proceed D c))
+         → ((c : location D b) → Experiment⋆ D (choose D c))
          → Experiment⋆ D a
 
 outcome⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Set ℓ
@@ -79,7 +79,7 @@ branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (g : (e : outcome⋆ t) → Experiment⋆ D (next⋆ t e))
        → Experiment⋆ D a
 branch D a (Leaf   a)   g = g tt
-branch D a (Branch b f) g = Branch b λ c → branch D (proceed D c) (f c) (λ - → g (c , -))
+branch D a (Branch b f) g = Branch b λ c → branch D (choose D c) (f c) (λ - → g (c , -))
 ```
 
 # Progressiveness
@@ -88,7 +88,7 @@ branch D a (Branch b f) g = Branch b λ c → branch D (proceed D c) (f c) (λ -
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
   (x : nonterminal D) (y : production D x) (z : location D y) →
-    (proceed D z) ⊑[ P ] x holds
+    (choose D z) ⊑[ P ] x holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -115,7 +115,7 @@ outcome (P , D , _) = location (∣ P ∣ₚ , D)
 
 next⁺ : (D : Discipline ℓ₀ ℓ₁)
       → {a : stage D} → {b : exp D a} → outcome D b → stage D
-next⁺ (P , D , _) = proceed (∣ P ∣ₚ , D)
+next⁺ (P , D , _) = choose (∣ P ∣ₚ , D)
 
 pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
@@ -132,10 +132,10 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
    IH : next⋆ (f o) os ⊑[ P ] next⁺ D o holds
-   IH = prog⇒prog⋆ D (proceed (∣ P ∣ₚ , disc) o) (f o) os
+   IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
 
    foo : next⋆ (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = next⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ (proceed (raw D) o) ⊑⟨ IS a b o ⟩ a ■
+   foo = next⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (raw D) o ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
