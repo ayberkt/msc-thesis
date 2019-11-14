@@ -219,7 +219,12 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
 
 # Simulation
 
-`down P ℱ a` denotes the restriction of family `ℱ` of stages to those above the stage `a`.
+The other property we are interested in, which will define a formal topology
+when coupled with perpetuation, is **simulation**. Let us first introduce some
+notation to build up towards its definition.
+
+`down P ℱ a` denotes a predicate expressing: stage `a` has a more refined state
+of information than at least one stage in `ℱ`.
 
 ```
 down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
