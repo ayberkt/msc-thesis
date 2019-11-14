@@ -69,12 +69,12 @@
    - `outcome` and `next`, together, define an enumeration of the stages.
 
 ** <2019-11-08 Fri>
-   - TODO Prove: simulation ⇒ simulation⋆
-   - TODO Define a binary operation on `Experiment⋆` that given two `Experiment⋆`s,
+   - [ ] Prove: simulation ⇒ simulation⋆
+   - [ ] Define a binary operation on `Experiment⋆` that given two `Experiment⋆`s,
      produces a new `Experiment⋆` that is a refinement of both.
-   - TODO Define a refinement relation expressing when a stump refines another.
-   - TODO Prove lemma (1).
-   - TODO Prove lemma (2).
+   - [X] Define a refinement relation expressing when a stump refines another.
+   - [X] Prove lemma (1).
+   - [ ] Prove lemma (2).
      - The main lemma towards proving that the covering relation is a nucleus.
      - This  is the thing where the conclusion is truncated so we can remove the
        truncations in the hypotheses.
