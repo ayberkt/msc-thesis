@@ -71,13 +71,13 @@ outcome⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ (f o
 
 -- Arbitrary covering.
 
-next⋆ : {D : PostSystem ℓ} → (s : nonterminal D) → (t : Experiment⋆ D s) → outcome⋆ t → nonterminal D
-next⋆ s (Leaf   s)     _       = s
-next⋆ {D = D} s (Branch b f) (c , y) = next⋆ (proceed D c) (f c) y
+next⋆ : {D : PostSystem ℓ} {s : nonterminal D} (t : Experiment⋆ D s) → outcome⋆ t → nonterminal D
+next⋆ (Leaf   s)     _       = s
+next⋆ {D = D} (Branch b f) (c , y) = next⋆ (f c) y
 
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Experiment⋆ D a)
-       → (g : (e : outcome⋆ t) → Experiment⋆ D (next⋆ a t e))
+       → (g : (e : outcome⋆ t) → Experiment⋆ D (next⋆ t e))
        → Experiment⋆ D a
 branch D a (Leaf   a)     g = g tt
 branch D a (Branch b f) g =
@@ -96,7 +96,7 @@ IsProgressive {ℓ₀} P P-disc =
 
 IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : nonterminal D) (t : Experiment⋆ D a) (o : outcome⋆ t) → next⋆ a t o ⊑[ P ] a holds
+  (a : nonterminal D) (t : Experiment⋆ D a) (o : outcome⋆ t) → next⋆ t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -132,11 +132,11 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
   where
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
-   IH : next⋆ (next⁺ D o) (f o) os ⊑[ P ] next⁺ D o holds
+   IH : next⋆ (f o) os ⊑[ P ] next⁺ D o holds
    IH = prog⇒prog⋆ D (proceed (∣ P ∣ₚ , disc) o) (f o) os
 
-   foo : next⋆ a (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = next⋆ a (Branch b f) (o , os) ⊑⟨ IH ⟩ (proceed (raw D) o) ⊑⟨ IS a b o ⟩ a ■
+   foo : next⋆ (Branch b f) (o , os) ⊑[ P ] a holds
+   foo = next⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ (proceed (raw D) o) ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
@@ -163,7 +163,7 @@ The refinement relation.
 
 ```
 conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Sub ℓ (nonterminal D)
-conclusions⋆ {s = s} e = outcome⋆ e , next⋆ s e
+conclusions⋆ {s = s} e = outcome⋆ e , next⋆ e
 
 refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
