@@ -273,73 +273,28 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
 
 ```
-sublemma₁ : (D : Discipline⁺ ℓ₀ ℓ₁) (IS : IsSimulation⋆ D) (a₀ a₁ : stage⁺ D) (U : stage⁺ D → Ω (ℓ₀ ⊔ ℓ₁))
-          → a₁ ⊑[ pos D ] a₀ holds
-          → (t : Experiment⋆ (raw D) a₀) → ((λ - →  (conclusions⋆ D t) ↓[ pos D ] -) ⊆ U)
-          → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
-sublemma₁ D IS a₀ a₁ U a₁⊑a₀ (Leaf a₀)   φ = t₁ , bar
-  where
-    open PosetStr (proj₂ (pos D)) using (_⊑⟨_⟩_; _■)
-
-    t₁ : Experiment⋆ (raw D) a₁
-    t₁ = proj₁ (IS a₀ a₁ a₁⊑a₀ (Leaf a₀))
-
-    bar : (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
-    bar a conc-t₁↓a = ∥∥-rec (proj₂ (U a)) baz conc-t₁↓a
-      where
-        baz : Σ (index (conclusions⋆ D t₁)) (λ i → a ⊑[ pos D ] (proj₂ (conclusions⋆ D t₁) i) holds) → U a holds
-        baz (o , a⊑next-o) = φ a ∣ tt , a⊑a₀ ∣
-          where
-            a⊑a₀ : a ⊑[ pos D ] a₀ holds
-            a⊑a₀ = a                               ⊑⟨ a⊑next-o ⟩
-                   next⋆ (raw D) a₁ t₁ o           ⊑⟨ prog⇒prog⋆ D a₁ t₁ o ⟩
-                   a₁                              ⊑⟨ a₁⊑a₀ ⟩
-                   a₀                              ■
-sublemma₁ D IS a₀ a₁ U a₁⊑a₀ (Branch b₀ f) φ = t₁ , foo
-  where
-    t₁ : Experiment⋆ (raw D) a₁
-    t₁ = proj₁ (IS a₀ a₁ a₁⊑a₀ (Branch b₀ f))
-
-    t₁-sim : refines D t₁ (Branch b₀ f)
-    t₁-sim = proj₂ (IS a₀ a₁ a₁⊑a₀ (Branch b₀ f))
-
-    l0 : (x : stage⁺ D)
-       → ∥ Σ (outcome⋆ (raw D) a₁ t₁) (λ i → (x ⊑[ pos D ] (next⋆ (raw D) a₁ t₁ i)) holds) ∥
-       → ∥ Σ (Σ (outcome⁺ D b₀) (λ o → outcome⋆ (raw D) (next⁺ D o) (f o)))
-           (λ i → proj₁ (x ⊑[ pos D ] (next⋆ (raw D) (proj₂ (proj₂ (proj₁ (proj₂ D))) (proj₁ i)) (f (proj₁ i)) (proj₂ i)))) ∥
-    l0 = t₁-sim
-
-    IH : (t : Experiment⋆ (raw D) a₀) → down (pos D) (conclusions⋆ D t) ⊆ U → Σ-syntax (Experiment⋆ (raw D) a₁)
-           (λ t₁ → down (pos D) (conclusions⋆ D t₁) ⊆ U)
-    IH = sublemma₁ D IS a₀ a₁ U a₁⊑a₀
-
-    foo : (λ - → conclusions⋆ D t₁ ↓[ pos D ] -) ⊆ U
-    foo a conc-t₁↓a = ∥∥-rec (proj₂ (U a)) baz conc-t₁↓a
-      where
-        baz : Σ[ o ∈ (outcome⋆ (raw D) a₁ t₁) ] (a ⊑[ pos D ] (next⋆ (raw D) a₁ t₁ o) holds) → U a holds
-        baz (o , snd) = φ a l2′′
-          where
-
-            l2′′ : ∥ Σ (Σ (outcome⁺ D b₀) (λ o → outcome⋆ (raw D) (next⁺ D o) (f o))) (λ i → a ⊑[ pos D ] (next⋆ (raw D) (next⁺ D (proj₁ i)) (f (proj₁ i)) (proj₂ i)) holds) ∥
-            l2′′ = t₁-sim a conc-t₁↓a
-
 ```
 
 ```
 lemma₁ : (𝒯@(D , _) : FormalTopology ℓ₀ ℓ₁ ℓ₂) (U : stage⁺ D → Ω (ℓ₀ ⊔ ℓ₁))
        → (a₀ a₁ : stage⁺ D) → a₁ ⊑[ pos D ] a₀ holds → a₀ ◀[ 𝒯 ] U
        → a₁ ◀[ 𝒯 ] U
-lemma₁ 𝒯@(D@((A , _) , (B , C , d) , prog) , topo) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) quux a₀◀U
+lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ)
   where
     open IsFormalTopology topo using (D-sim)
 
-    sim : IsSimulation⋆ D
-    sim = D-sim
+    ψ : Σ[ t ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ D t) ↓[ pos D ] -) ⊆ U)
+      → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
+    ψ (t , φ) = t₁ , conc-t₁↓⊆U
+      where
+        t₁ : Experiment⋆ (raw D) a₁
+        t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ t)
 
-    quux : Σ[ t ∈ (Experiment⋆ (raw D) a₀) ] ((λ - →  (conclusions⋆ D t) ↓[ pos D ] -) ⊆ U)
-         → ∥ Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U ∥
-    quux (fst , snd) = ∣ sublemma₁ D D-sim a₀ a₁ U a₀⊒a₁ fst snd ∣
+        t₁-sim : refines D t₁ t
+        t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
 
+        conc-t₁↓⊆U : (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
+        conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 
 ```
