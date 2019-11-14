@@ -126,8 +126,8 @@ HasPerpetuation {ℓ₀} P P-disc =
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 
-IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
-IsProgressive⋆ {ℓ₀} P P-disc =
+HasPerpetuation⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+HasPerpetuation⋆ {ℓ₀} P P-disc =
   (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → choose⋆ t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
@@ -156,7 +156,7 @@ pos (P , _) = P
 raw : (D : Discipline ℓ₀ ℓ₁) → PostSystem ℓ₀
 raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
 
-prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → IsProgressive⋆ (pos D) (proj₁ (proj₂ D))
+prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → HasPerpetuation⋆ (pos D) (proj₁ (proj₂ D))
 prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
   where
     open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
