@@ -56,23 +56,6 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
     c : (z : position D b) → Tree D (proceed D z)
 ```
 
-# Elimination
-
-```
-{--
-treerec : (ds : Discipline ℓ)
-        → (D : (x : stage ds) → Tree ds x → Set ℓ)
-        → (t : Tree ds a)
-        → (f : (x : stage ds)
-             → (y : exp ds x)
-             → (z : (v : outcome ds x y) → Tree ds (next ds x y v))
-             → (u : (v : outcome ds x y) → D (next ds x y v) (z v))
-             → D x (tree x y z))
-        → D a t
-treerec ds D (tree a b c) f = {!f a′ !}
---}
-```
-
 # Stump
 
 ```
@@ -83,8 +66,8 @@ data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
          → Experiment⋆ D a
 
 outcome⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → Experiment⋆ D s → Set ℓ
-outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
-outcome⋆ D s (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ D (proceed D o) (f o)
+outcome⋆ {ℓ} D a (Leaf   a)   = ⊤ {ℓ}
+outcome⋆     D s (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ D (proceed D o) (f o)
 
 -- Arbitrary covering.
 
