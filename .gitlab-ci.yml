@@ -20,4 +20,4 @@ pages:
 
 cosmetics:
   script:
-  - ./check_cosmetics.py
+  - ./check_cosmetics.py TreeType.lagda.md
