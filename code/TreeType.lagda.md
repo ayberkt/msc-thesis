@@ -71,17 +71,17 @@ outcome⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (position D b) ] outcome⋆ (f o
 
 -- Arbitrary covering.
 
-next⋆ : {D : PostSystem ℓ} {s : nonterminal D} (t : Experiment⋆ D s) → outcome⋆ t → nonterminal D
-next⋆ (Leaf   s)     _       = s
-next⋆ {D = D} (Branch b f) (c , y) = next⋆ (f c) y
+next⋆ : {D : PostSystem ℓ} {s : nonterminal D}
+     → (t : Experiment⋆ D s) → outcome⋆ t → nonterminal D
+next⋆ (Leaf   s)   _       = s
+next⋆ (Branch b f) (c , y) = next⋆ (f c) y
 
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Experiment⋆ D a)
        → (g : (e : outcome⋆ t) → Experiment⋆ D (next⋆ t e))
        → Experiment⋆ D a
-branch D a (Leaf   a)     g = g tt
-branch D a (Branch b f) g =
-  Branch b λ c → branch D (proceed D c) (f c) (λ - → g (c , -))
+branch D a (Leaf   a)   g = g tt
+branch D a (Branch b f) g = Branch b λ c → branch D (proceed D c) (f c) (λ - → g (c , -))
 ```
 
 # Progressiveness
