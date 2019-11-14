@@ -263,8 +263,8 @@ record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) (ℓ₂ : Level) : Set
 FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
 FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline⁺ ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
 
-cover-of : (𝒯@(D , _) : FormalTopology ℓ₀ ℓ₁ ℓ₂)
-         → stage⁺ D → (stage⁺ D → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
+cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁ ℓ₂)
+         → stage⁺ (proj₁ 𝒯) → (stage⁺ (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
 cover-of 𝒯@(_ , topo) = _◀_
   where
     open IsFormalTopology topo using (_◀_)
