@@ -32,13 +32,13 @@ PostSystem : (ℓ : Level) → Set (suc ℓ)
 PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 
 nonterminal : PostSystem ℓ → Set ℓ
-alternative : (D : PostSystem ℓ) → nonterminal D → Set ℓ
-position    : (D : PostSystem ℓ) → {x : nonterminal D} → alternative D x → Set ℓ
-proceed     : (D : PostSystem ℓ) {x : nonterminal D} {y : alternative D x}
+production  : (D : PostSystem ℓ) → nonterminal D → Set ℓ
+position    : (D : PostSystem ℓ) → {x : nonterminal D} → production D x → Set ℓ
+proceed     : (D : PostSystem ℓ) {x : nonterminal D} {y : production D x}
             → position D y → nonterminal D
 
 nonterminal (A , _ , _ , _) = A
-alternative (_ , B , _ , _) = B
+production  (_ , B , _ , _) = B
 position    (_ , _ , C , _) = C
 proceed     (_ , _ , _ , d) = d
 ```
@@ -50,7 +50,7 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
 
   field
     a : nonterminal D
-    b : alternative D a
+    b : production D a
     c : (z : position D b) → Tree D (proceed D z)
 ```
 
@@ -59,7 +59,7 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
 ```
 data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
   Leaf   : (a : nonterminal D) → Experiment⋆ D a
-  Branch : {a : nonterminal D} (b : alternative D a)
+  Branch : {a : nonterminal D} (b : production D a)
          → ((c : position D b) → Experiment⋆ D (proceed D c))
          → Experiment⋆ D a
 
@@ -87,7 +87,7 @@ branch D a (Branch b f) g = Branch b λ c → branch D (proceed D c) (f c) (λ -
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
-  (x : nonterminal D) (y : alternative D x) (z : position D y) →
+  (x : nonterminal D) (y : production D x) (z : position D y) →
     (proceed D z) ⊑[ P ] x holds
   where
     D : PostSystem ℓ₀
@@ -108,7 +108,7 @@ stage : Discipline ℓ₀ ℓ₁ → Set ℓ₀
 stage (P , _) = ∣ P ∣ₚ
 
 exp : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
-exp (P , D , _) = alternative (∣ P ∣ₚ , D)
+exp (P , D , _) = production (∣ P ∣ₚ , D)
 
 outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
 outcome (P , D , _) = position (∣ P ∣ₚ , D)
