@@ -227,11 +227,13 @@ notation to build up towards its definition.
 of information than at least one stage in `ℱ`.
 
 ```
-down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
+down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ₂)
 down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
 
 syntax down P ℱ a = ℱ ↓[ P ] a
 ```
+
+We will often be dealing with the predicate `ℱ ↓[ P ] -`.
 
 Ad-hoc notion of subset since there are some universe problems with `𝒫`. _This should be
 replaced with `𝒫` once it is properly generalised._
@@ -244,14 +246,14 @@ _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 The refinement relation.
 
 ```
-conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D}
+reach⋆ : {D : PostSystem ℓ} {s : nonterminal D}
              → Production⋆ D s → Sub ℓ (nonterminal D)
-conclusions⋆ {s = s} e = location⋆ e , choose⋆ e
+reach⋆ e = location⋆ e , choose⋆ e
 
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
         → Production⋆ (post D) s′ → Production⋆ (post D) s → Set (ℓ₀ ⊔ ℓ₁)
 refines D@(P , _) e f =
-  (λ - → conclusions⋆ e ↓[ P ] -) ⊆ (λ - → conclusions⋆ f ↓[ P ] -)
+  (λ - → reach⋆ e ↓[ P ] -) ⊆ (λ - → reach⋆ f ↓[ P ] -)
 
 syntax refines D e f = e ℛ[ D ] f
 ```
@@ -322,7 +324,7 @@ record IsFormalTopology (D : Discipline ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (�
 
   _◀_ : stage D → ((stage D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
   a ◀ U =
-    ∥ Σ[ t ∈ (Production⋆ (post D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
+    ∥ Σ[ t ∈ (Production⋆ (post D) a) ] (λ - → (reach⋆ t ) ↓[ pos D ] -) ⊆ U ∥
 
 FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
 FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
@@ -344,8 +346,8 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
   where
     open IsFormalTopology topo using (D-sim)
 
-    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (conclusions⋆ t₀) ↓[ pos D ] -) ⊆ U)
-      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
+    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (reach⋆ t₀) ↓[ pos D ] -) ⊆ U)
+      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (reach⋆ t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
         t₁ : Production⋆ (post D) a₁
@@ -354,7 +356,7 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
         t₁-sim : refines D t₁ t
         t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
 
-        conc-t₁↓⊆U : (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
+        conc-t₁↓⊆U : (λ - → (reach⋆ t₁) ↓[ pos D ] -) ⊆ U
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 
