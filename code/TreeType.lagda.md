@@ -32,17 +32,15 @@ PostSystem : (ℓ : Level) → Set (suc ℓ)
 PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 
 nonterminal : PostSystem ℓ → Set ℓ
-nonterminal (A , _) = A
-
 alternative : (D : PostSystem ℓ) → nonterminal D → Set ℓ
-alternative (_ , B , _) = B
+position    : (D : PostSystem ℓ) → {x : nonterminal D} → alternative D x → Set ℓ
+proceed     : (D : PostSystem ℓ) {x : nonterminal D} {y : alternative D x}
+            → position D y → nonterminal D
 
-position : (D : PostSystem ℓ) → {x : nonterminal D} → alternative D x → Set ℓ
-position (_ , _ , C , _) = C
-
-proceed : (D : PostSystem ℓ)
-        → {x : nonterminal D} → {y : alternative D x} → position D y → nonterminal D
-proceed (_ , _ , _ , d) = d
+nonterminal (A , _ , _ , _) = A
+alternative (_ , B , _ , _) = B
+position    (_ , _ , C , _) = C
+proceed     (_ , _ , _ , d) = d
 ```
 
 ```
