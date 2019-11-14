@@ -99,30 +99,30 @@ IsProgressive⋆ {ℓ₀} P P-disc =
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 
-Discipline⁺ : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
-Discipline⁺ ℓ₀ ℓ₁ =
+Discipline : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
+Discipline ℓ₀ ℓ₁ =
   Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] IsProgressive P P-disc
 
-stage⁺ : Discipline⁺ ℓ₀ ℓ₁ → Set ℓ₀
+stage⁺ : Discipline ℓ₀ ℓ₁ → Set ℓ₀
 stage⁺ (P , _) = ∣ P ∣ₚ
 
-exp⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → stage⁺ D → Set ℓ₀
+exp⁺ : (D : Discipline ℓ₀ ℓ₁) → stage⁺ D → Set ℓ₀
 exp⁺ (P , D , _) = alternative (∣ P ∣ₚ , D)
 
-outcome⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → {x : stage⁺ D} → exp⁺ D x → Set ℓ₀
+outcome⁺ : (D : Discipline ℓ₀ ℓ₁) → {x : stage⁺ D} → exp⁺ D x → Set ℓ₀
 outcome⁺ (P , D , _) = position (∣ P ∣ₚ , D)
 
-next⁺ : (D : Discipline⁺ ℓ₀ ℓ₁)
+next⁺ : (D : Discipline ℓ₀ ℓ₁)
       → {a : stage⁺ D} → {b : exp⁺ D a} → outcome⁺ D b → stage⁺ D
 next⁺ (P , D , _) = proceed (∣ P ∣ₚ , D)
 
-pos : Discipline⁺ ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
+pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
 
-raw : (D : Discipline⁺ ℓ₀ ℓ₁) → PostSystem ℓ₀
+raw : (D : Discipline ℓ₀ ℓ₁) → PostSystem ℓ₀
 raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
 
-prog⇒prog⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsProgressive⋆ (pos D) (proj₁ (proj₂ D))
+prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → IsProgressive⋆ (pos D) (proj₁ (proj₂ D))
 prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
   where
     open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
@@ -163,7 +163,7 @@ The refinement relation.
 conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Experiment⋆ D s → Sub ℓ (nonterminal D)
 conclusions⋆ {s = s} e = outcome⋆ e , next⋆ e
 
-refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
+refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage⁺ D}
         → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
 refines D@(P , _) e f =
   (λ - → conclusions⋆ e ↓[ P ] -) ⊆ (λ - → conclusions⋆ f ↓[ P ] -)
@@ -174,13 +174,13 @@ syntax refines D e f = e ℛ[ D ] f
 The notion of simulation. It says: at any point, we can simulate what we could do before.
 
 ```
-IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
   (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp⁺ D a₀) →
     Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
                          ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
 
-IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
   (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds →
     (t₀ : Experiment⋆ (raw D) a₀) → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (t₁ ℛ[ D ] t₀)
@@ -189,7 +189,7 @@ IsSimulation⋆ D@(P , _) =
 Lemma
 
 ```
-singleton : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D} → exp⁺ D s → Experiment⋆ (raw D) s
+singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage⁺ D} → exp⁺ D s → Experiment⋆ (raw D) s
 singleton D e = Branch e (Leaf ∘ next⁺ D)
 
 {--
@@ -231,7 +231,7 @@ A _formal topology_ is a **(1) progressive discipline** whose relation **(2) is 
 simulation**, that is equipped with a **(3) cover relation**.
 
 ```
-record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂) where
+record IsFormalTopology (D : Discipline ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂) where
   field
     D-sim : IsSimulation⋆ D
 
@@ -240,7 +240,7 @@ record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) (ℓ₂ : Level) : Set
     ∥ Σ[ t ∈ (Experiment⋆ (raw D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
 
 FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
-FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline⁺ ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
+FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
 
 cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁ ℓ₂)
          → stage⁺ (proj₁ 𝒯) → (stage⁺ (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
