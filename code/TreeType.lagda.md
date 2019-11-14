@@ -31,28 +31,28 @@ IsAPostSystem {ℓ = ℓ} A =
 PostSystem : (ℓ : Level) → Set (suc ℓ)
 PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 
-stage : PostSystem ℓ → Set ℓ
-stage (A , _) = A
+nonterminal : PostSystem ℓ → Set ℓ
+nonterminal (A , _) = A
 
-exp : (D : PostSystem ℓ) → stage D → Set ℓ
+exp : (D : PostSystem ℓ) → nonterminal D → Set ℓ
 exp (_ , B , _) = B
 
-outcome : (D : PostSystem ℓ) → {x : stage D} → exp D x → Set ℓ
+outcome : (D : PostSystem ℓ) → {x : nonterminal D} → exp D x → Set ℓ
 outcome (_ , _ , C , _) = C
 
 -- outcome and next together define an enumeration on the stages.
 
-next : (D : PostSystem ℓ) → {x : stage D} → {y : exp D x} → outcome D y → stage D
+next : (D : PostSystem ℓ) → {x : nonterminal D} → {y : exp D x} → outcome D y → nonterminal D
 next (_ , _ , _ , d) = d
 ```
 
 ```
-record Tree (D : PostSystem ℓ) (s : stage D) : Set (suc ℓ) where
+record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
   constructor tree
   inductive
 
   field
-    a : stage D
+    a : nonterminal D
     b : exp D a
     c : (z : outcome D b) → Tree D (next D z)
 ```
@@ -77,23 +77,23 @@ treerec ds D (tree a b c) f = {!f a′ !}
 # Stump
 
 ```
-data Experiment⋆ (D : PostSystem ℓ) : stage D → Set ℓ where
-  Leaf   : (a : stage D) → Experiment⋆ D a
-  Branch : {a : stage D} (b : exp D a)
+data Experiment⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
+  Leaf   : (a : nonterminal D) → Experiment⋆ D a
+  Branch : {a : nonterminal D} (b : exp D a)
          → ((c : outcome D b) → Experiment⋆ D (next D c))
          → Experiment⋆ D a
 
-outcome⋆ : (D : PostSystem ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
+outcome⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → Experiment⋆ D s → Set ℓ
 outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
 outcome⋆ D s (Branch b f) = Σ[ o ∈ (outcome D b) ] outcome⋆ D (next D o) (f o)
 
 -- Arbitrary covering.
 
-next⋆ : (D : PostSystem ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
+next⋆ : (D : PostSystem ℓ) → (s : nonterminal D) → (t : Experiment⋆ D s) → outcome⋆ D s t → nonterminal D
 next⋆ D s (Leaf   s)     _       = s
 next⋆ D s (Branch b f) (c , y) = next⋆ D (next D c) (f c) y
 
-branch : (D : PostSystem ℓ) → (a : stage D)
+branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Experiment⋆ D a)
        → (g : (e : outcome⋆ D a t) → Experiment⋆ D (next⋆ D a t e))
        → Experiment⋆ D a
@@ -107,14 +107,14 @@ branch D a (Branch b f) g =
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive {ℓ₀} P P-disc =
-  (x : stage D) (y : exp D x) (z : outcome D y) → next D z ⊑[ P ] x holds
+  (x : nonterminal D) (y : exp D x) (z : outcome D y) → next D z ⊑[ P ] x holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 
 IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : stage D) (t : Experiment⋆ D a) (o : outcome⋆ D a t) → next⋆ D a t o ⊑[ P ] a holds
+  (a : nonterminal D) (t : Experiment⋆ D a) (o : outcome⋆ D a t) → next⋆ D a t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
