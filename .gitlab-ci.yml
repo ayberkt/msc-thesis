@@ -17,3 +17,7 @@ pages:
   artifacts:
     paths:
     - public
+
+cosmetics:
+  script:
+  - ./check_cosmetics.py
