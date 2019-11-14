@@ -7,6 +7,9 @@
     deliberately suggestive of proof theory.
    #+END_SRC
 
+** Ideas
+   - The thing that is to a non-deterministic pushdown automaton what a Büchi automaton
+     is to a finite automaton.
 * Meetings
 ** <2019-09-27 Fri>
 *** Given a poset, the set of downward-closed subsets forms a frame.
