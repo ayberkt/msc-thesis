@@ -68,24 +68,30 @@ data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
          → Production⋆ D a
 ```
 
-Given a `Production⋆`, say `t`, we can extract the nonterminal locations that have been
-chosen with every choice, using the function `location⋆`.
+Given a `Production⋆`, say `t`, we denote by `location⋆ t` the type of _sequences of
+locations_ in `t`. In other words, an inhabitant of `location⋆ t` is a _specific_ sequence
+of choices in the tree `t`.
 
 ```
 location⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
 location⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
 location⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (location D b) ] location⋆ (f o)
+```
 
--- Arbitrary covering.
+Finally, we can take a sequence of choices in `t : Production⋆` and then follow all the
+choices all the way to the end. This procedure is implemented in the function `choose⋆`.
 
-next⋆ : {D : PostSystem ℓ} {s : nonterminal D}
+```
+choose⋆ : {D : PostSystem ℓ} {s : nonterminal D}
      → (t : Production⋆ D s) → location⋆ t → nonterminal D
-next⋆ (Leaf   s)   _       = s
-next⋆ (Branch b f) (c , y) = next⋆ (f c) y
+choose⋆ (Leaf   s)   _       = s
+choose⋆ (Branch b f) (c , y) = choose⋆ (f c) y
+```
 
+```
 branch : (D : PostSystem ℓ) → (a : nonterminal D)
        → (t : Production⋆ D a)
-       → (g : (e : location⋆ t) → Production⋆ D (next⋆ t e))
+       → (g : (e : location⋆ t) → Production⋆ D (choose⋆ t e))
        → Production⋆ D a
 branch D a (Leaf   a)   g = g tt
 branch D a (Branch b f) g = Branch b λ c → branch D (choose D c) (f c) (λ - → g (c , -))
@@ -104,7 +110,7 @@ IsProgressive {ℓ₀} P P-disc =
 
 IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → next⋆ t o ⊑[ P ] a holds
+  (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → choose⋆ t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
@@ -140,11 +146,11 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
   where
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
-   IH : next⋆ (f o) os ⊑[ P ] next⁺ D o holds
+   IH : choose⋆ (f o) os ⊑[ P ] next⁺ D o holds
    IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
 
-   foo : next⋆ (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = next⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (raw D) o ⊑⟨ IS a b o ⟩ a ■
+   foo : choose⋆ (Branch b f) (o , os) ⊑[ P ] a holds
+   foo = choose⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (raw D) o ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
@@ -172,7 +178,7 @@ The refinement relation.
 ```
 conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D}
              → Production⋆ D s → Sub ℓ (nonterminal D)
-conclusions⋆ {s = s} e = location⋆ e , next⋆ e
+conclusions⋆ {s = s} e = location⋆ e , choose⋆ e
 
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
         → Production⋆ (raw D) s′ → Production⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
