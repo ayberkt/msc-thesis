@@ -3,7 +3,7 @@ import sys
 
 res = True
 
-with open(sys.argv[1]) as f:
+with open(sys.argv[1], encoding="utf-8") as f:
   for line in f:
     if len(line) > 91:
       print(line.strip())
