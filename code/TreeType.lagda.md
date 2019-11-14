@@ -149,18 +149,32 @@ Discipline ℓ₀ ℓ₁ =
   Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] HasPerpetuation P P-disc
 ```
 
+It will be convenient to be easily refer to the poset and the post system
+contained inside a discipline.
+
+```
+pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
+pos (P , _) = P
+
+post : (D : Discipline ℓ₀ ℓ₁) → PostSystem ℓ₀
+post (P , P-disc , _) = ∣ P ∣ₚ , P-disc
+```
+
 Non-terminals are now called **stages**.
 
 ```
 stage : Discipline ℓ₀ ℓ₁ → Set ℓ₀
-stage (P , P-disc , _) = nonterminal (∣ P ∣ₚ , P-disc)
+stage D = nonterminal (post D)
 ```
 
 Productions are now called **experiments**; `exp` for short.
 
 ```
 exp : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
-exp (P , D , _) = production (∣ P ∣ₚ , D)
+exp D = production (post D)
+
+experiment⋆ : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
+experiment⋆ D = Production⋆ (post D) 
 ```
 
 Locations are now called **outcomes** in the sense that a location for a
@@ -169,6 +183,9 @@ reference to another non-terminal is like a possible outcome of the production.
 ```
 outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
 outcome (P , D , _) = location (∣ P ∣ₚ , D)
+
+outcome⋆ : {D : Discipline ℓ₀ ℓ₁} → {a : stage D} → Production⋆ (post D) a → Set ℓ₀
+outcome⋆ = location⋆
 ```
 
 The `choose` operation is now called `revise` in the sense that it is an
@@ -177,19 +194,13 @@ operation of _revising one's knowledge state_.
 ```
 revise : (D : Discipline ℓ₀ ℓ₁)
       → {a : stage D} → {b : exp D a} → outcome D b → stage D
-revise (P , D , _) = choose (∣ P ∣ₚ , D)
+revise D = choose (post D)
 ```
 
 In other words, we revise our knowledge state in light of an experiments outcome
 which yields a new knowledge state.
 
 ```
-pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
-pos (P , _) = P
-
-raw : (D : Discipline ℓ₀ ℓ₁) → PostSystem ℓ₀
-raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
-
 prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → HasPerpetuation⋆ (pos D) (proj₁ (proj₂ D))
 prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
   where
@@ -202,7 +213,7 @@ prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
    IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
 
    foo : choose⋆ (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = choose⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (raw D) o ⊑⟨ IS a b o ⟩ a ■
+   foo = choose⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (post D) o ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
@@ -233,7 +244,7 @@ conclusions⋆ : {D : PostSystem ℓ} {s : nonterminal D}
 conclusions⋆ {s = s} e = location⋆ e , choose⋆ e
 
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
-        → Production⋆ (raw D) s′ → Production⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
+        → Production⋆ (post D) s′ → Production⋆ (post D) s → Set (ℓ₀ ⊔ ℓ₁)
 refines D@(P , _) e f =
   (λ - → conclusions⋆ e ↓[ P ] -) ⊆ (λ - → conclusions⋆ f ↓[ P ] -)
 
@@ -252,13 +263,13 @@ IsSimulation D@(P , _) =
 IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
   (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
-    (t₀ : Production⋆ (raw D) a₀) → Σ[ t₁ ∈ (Production⋆ (raw D) a₁) ] (t₁ ℛ[ D ] t₀)
+    (t₀ : Production⋆ (post D) a₀) → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (t₁ ℛ[ D ] t₀)
 ```
 
 Lemma
 
 ```
-singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Production⋆ (raw D) s
+singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Production⋆ (post D) s
 singleton D e = Branch e (Leaf ∘ revise D)
 
 {--
@@ -306,7 +317,7 @@ record IsFormalTopology (D : Discipline ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (�
 
   _◀_ : stage D → ((stage D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
   a ◀ U =
-    ∥ Σ[ t ∈ (Production⋆ (raw D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
+    ∥ Σ[ t ∈ (Production⋆ (post D) a) ] (λ - → (conclusions⋆ t ) ↓[ pos D ] -) ⊆ U ∥
 
 FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
 FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
@@ -328,11 +339,11 @@ lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (�
   where
     open IsFormalTopology topo using (D-sim)
 
-    ψ : Σ[ t₀ ∈ (Production⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ t₀) ↓[ pos D ] -) ⊆ U)
-      → Σ[ t₁ ∈ (Production⋆ (raw D) a₁) ] (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
+    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (conclusions⋆ t₀) ↓[ pos D ] -) ⊆ U)
+      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (conclusions⋆ t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
-        t₁ : Production⋆ (raw D) a₁
+        t₁ : Production⋆ (post D) a₁
         t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ t)
 
         t₁-sim : refines D t₁ t
