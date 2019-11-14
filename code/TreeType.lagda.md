@@ -83,10 +83,12 @@ choices all the way to the end. This procedure is implemented in the function `c
 
 ```
 choose⋆ : {D : PostSystem ℓ} {s : nonterminal D}
-     → (t : Production⋆ D s) → location⋆ t → nonterminal D
+        → (t : Production⋆ D s) → location⋆ t → nonterminal D
 choose⋆ (Leaf   s)   _       = s
 choose⋆ (Branch b f) (c , y) = choose⋆ (f c) y
 ```
+
+**TODO**: explain.
 
 ```
 append : (D : PostSystem ℓ) → (a : nonterminal D)
@@ -98,6 +100,20 @@ append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - 
 ```
 
 # Progressiveness
+
+Given a Post system, we will now order on the nonterminals representing whether one
+contains more information than another. The idea is that if nonterminal `a₁` contains more
+information than `a₀` then the knowledge state there is **more refined** than the one at
+`a₁`; we thus write `a₁ ⊑ a₀`.
+
+As we have already hinted, the point of this order is to view each nonterminal as a stage
+of information. In light of this view, `choose` will be analogous to learning something
+from an experiment which takes one from one stage to another (we will shortly introduce
+new terminology).
+
+In order for this to make sense, though, we must require that choosing nonterminals always
+takes us to stages that are at least as refined than the current one. The intuitive
+reading of this is: _experimentation never takes away existing knowledge_.
 
 ```
 IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
