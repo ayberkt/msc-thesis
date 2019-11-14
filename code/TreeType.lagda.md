@@ -125,26 +125,51 @@ HasPerpetuation {ℓ₀} P P-disc =
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
+```
 
+We can define the analogous property for `choose⋆`:
+
+```
 HasPerpetuation⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 HasPerpetuation⋆ {ℓ₀} P P-disc =
   (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → choose⋆ t o ⊑[ P ] a holds
   where
     D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
+```
 
+We will refer to a Post system that has the perpetutation property as a
+`Discipline`, it the sense that the stages of knowledge (i.e., the nonterminals)
+resemble a _discipline of knowledge_. Accordingly, we introduce new terminology
+for the projections.
+
+```
 Discipline : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 Discipline ℓ₀ ℓ₁ =
   Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] HasPerpetuation P P-disc
+```
 
+Non-terminals are now called **stages**.
+
+```
 stage : Discipline ℓ₀ ℓ₁ → Set ℓ₀
-stage (P , _) = ∣ P ∣ₚ
+stage (P , P-disc , _) = nonterminal (∣ P ∣ₚ , P-disc)
+```
 
+Productions are now called **experiments**; `exp` for short.
+
+```
 exp : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
 exp (P , D , _) = production (∣ P ∣ₚ , D)
+```
 
+Locations are now called **outcomes** in the sense that a location for a
+reference to another non-terminal is like a possible outcome of the production.
+
+```
 outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
 outcome (P , D , _) = location (∣ P ∣ₚ , D)
+```
 
 next⁺ : (D : Discipline ℓ₀ ℓ₁)
       → {a : stage D} → {b : exp D a} → outcome D b → stage D
