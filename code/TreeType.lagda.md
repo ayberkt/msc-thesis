@@ -99,7 +99,7 @@ append D a (Leaf   a)   g = g tt
 append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - → g (c , -))
 ```
 
-# Progressiveness
+# Perpetuation
 
 Given a Post system, we will now order on the nonterminals representing whether one
 contains more information than another. The idea is that if nonterminal `a₁` contains more
@@ -113,11 +113,13 @@ new terminology).
 
 In order for this to make sense, though, we must require that choosing nonterminals always
 takes us to stages that are at least as refined than the current one. The intuitive
-reading of this is: _experimentation never takes away existing knowledge_.
+reading of this is: _experimentation never takes away existing knowledge_. Accordingly,
+this property will be called **perpetuation**; we express it in the type family
+`HasPerpetuation`.
 
 ```
-IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
-IsProgressive {ℓ₀} P P-disc =
+HasPerpetuation : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+HasPerpetuation {ℓ₀} P P-disc =
   (x : nonterminal D) (y : production D x) (z : location D y) →
     (choose D z) ⊑[ P ] x holds
   where
@@ -133,7 +135,7 @@ IsProgressive⋆ {ℓ₀} P P-disc =
 
 Discipline : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 Discipline ℓ₀ ℓ₁ =
-  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] IsProgressive P P-disc
+  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] HasPerpetuation P P-disc
 
 stage : Discipline ℓ₀ ℓ₁ → Set ℓ₀
 stage (P , _) = ∣ P ∣ₚ
