@@ -327,8 +327,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
 
 # Formal Topology
 
-A _formal topology_ is a **(1) progressive discipline** whose relation **(2) is a
-simulation**, that is equipped with a **(3) cover relation**.
+A _formal topology_ is a discipline with the simulation property.
 
 ```
 record IsFormalTopology (D : Discipline ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂) where
