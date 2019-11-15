@@ -9,7 +9,7 @@ module TreeType (pt : TruncationExists) where
 open import Variables
 open import Data.Empty  using (⊥; ⊥-elim)
 open import Unit
-open import Data.Bool   using (Bool; true; false)
+open import Data.Bool   using (Bool; true; false; _∨_)
 open import Data.List   using (List; _∷_; [])
 open import Data.Nat    using (ℕ) renaming (zero to nzero; suc to nsuc)
 open import Common
@@ -359,6 +359,63 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (
 
         conc-t₁↓⊆U : (λ - → leaves t₁ ↓[ pos D ] -) ⊆ U
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
+```
+
+# Stone space
+
+```
+ss : FormalTopology zero zero
+ss = (P , PS , perp) , sim
+  where
+    _⊑_ : Bool → Bool → Ω zero
+    _     ⊑ true  = ⊤ , ⊤-prop
+    false ⊑ _     = ⊤ , ⊤-prop
+    true  ⊑ false = ⊥ , ⊥-prop
+
+    ⊑-refl : (x : Bool) → (x ⊑ x) holds
+    ⊑-refl false = tt
+    ⊑-refl true  = tt
+
+    ⊑-trans : (x y z : Bool) → (x ⊑ y) holds → (y ⊑ z) holds → (x ⊑ z) holds
+    ⊑-trans false false false _ _ = tt
+    ⊑-trans false false true  _ _ = tt
+    ⊑-trans false true  true  _ _ = tt
+    ⊑-trans true  true  true  _ _ = tt
+
+    ⊑-antisym : (x y : Bool) → (x ⊑ y) holds → (y ⊑ x) holds → x ≡ y
+    ⊑-antisym false false _ _ = refl
+    ⊑-antisym true true   _ _ = refl
+
+    P : Poset zero zero
+    P = Bool , posetstr _⊑_ Bool-set ⊑-refl ⊑-trans ⊑-antisym
+
+
+    PS : IsAPostSystem Bool
+    PS = expb , outb , revb
+     where
+        expb : Bool → Set
+        expb a = Σ[ b₁ ∈ Bool ] Σ[ b₂ ∈ Bool ] ((b₁ ∨ b₂) ≡ a) ⊎ a ≡ false
+
+        outb : {x : Bool} → expb x → Set
+        outb (inj₁ (b₀ , b₁ , p)) = Bool
+        outb (inj₂ refl)          = ⊥
+
+        revb : {x : Bool} {y : expb x} → outb y → Bool
+        revb {y = inj₁ (b₀ , b₁ , p)} false = b₀
+        revb {y = inj₁ (b₀ , b₁ , p)} true  = b₁
+        revb {y = inj₂ refl} ()
+
+    perp : HasPerpetuation P PS
+    perp false (inj₁ (false , false , _)) false = tt
+    perp false (inj₁ (false , false , _)) true  = tt
+    perp false (inj₂ refl) ()
+    perp true  b c = tt
+
+    sim : IsSimulation⋆ (P , PS , perp)
+    sim false false tt t₀ = t₀ , λ _ → id
+    sim true  true  tt t₀ = t₀ , (λ _ → id)
+    sim true  false tt (Leaf true) = Leaf false , λ _ _ → ∣ tt , tt ∣
+    sim true  false tt (Branch (inj₁ (b₀ , b₁ , p)) f) = {!b₀ b₁!}
 ```
 
 ```

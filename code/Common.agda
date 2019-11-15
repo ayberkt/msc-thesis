@@ -8,6 +8,8 @@ open Eq                  public using    (_≡_; refl; cong; sym)
                                 renaming (subst to transport; trans to _>>>_)
 open Eq.≡-Reasoning      public
 open import Data.Product public using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
+open import Data.Sum     public using (_⊎_; inj₁; inj₂)
+open import Data.Empty   public using (⊥)
 open import Function     public using (_∘_; id; case_of_)
 open import Level        public
 

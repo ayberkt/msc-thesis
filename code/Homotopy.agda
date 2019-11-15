@@ -4,6 +4,7 @@ module Homotopy where
 
 open import Common
 open import Unit
+open import Data.Bool using (Bool)
 open import HLevels public
 
 private
@@ -160,6 +161,9 @@ prop⇒set {A = A} A-prop x y = wconst-≡-endomap⇒set _ f x y
 -- PROPOSITIONS
 ------------------------------------------------------------------------------------------
 
+⊥-prop : IsProp ⊥
+⊥-prop () ()
+
 -- The type of propositions.
 Ω : (ℓ : Level) → Set (suc ℓ)
 Ω ℓ = Σ[ p ∈ (Set ℓ) ] (IsProp p)
@@ -231,6 +235,15 @@ P↔Q⇒P≃Q {X = X} {Y} p q f g = f , λ y → ((g y) , (q (f (g y)) y)) , bar
 ------------------------------------------------------------------------------------------
 -- SETS
 ------------------------------------------------------------------------------------------
+
+Bool-set : IsSet Bool
+Bool-set = wconst-≡-endomap⇒set Bool foo
+  where
+    foo : (x y : Bool) → wconst-endomap (x ≡ y)
+    foo Bool.false Bool.false = (λ x → refl) , (λ x x₁ → refl)
+    foo Bool.false Bool.true = (λ x → x) , (λ x ())
+    foo Bool.true Bool.false = (λ x → x) , (λ x ())
+    foo Bool.true Bool.true = (λ x → refl) , (λ x x₁ → refl)
 
 ------------------------------------------------------------------------------------------
 -- SET CLOSURE
