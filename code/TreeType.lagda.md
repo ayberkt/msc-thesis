@@ -174,7 +174,7 @@ exp : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
 exp D = production (post D)
 
 experiment⋆ : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
-experiment⋆ D = Production⋆ (post D) 
+experiment⋆ D = Production⋆ (post D)
 ```
 
 Locations are now called **outcomes** in the sense that a location for a
@@ -184,7 +184,7 @@ reference to another non-terminal is like a possible outcome of the production.
 outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
 outcome (P , D , _) = location (∣ P ∣ₚ , D)
 
-outcome⋆ : {D : Discipline ℓ₀ ℓ₁} → {a : stage D} → Production⋆ (post D) a → Set ℓ₀
+outcome⋆ : {D : Discipline ℓ₀ ℓ₁} → {a : stage D} → experiment⋆ D a → Set ℓ₀
 outcome⋆ = location⋆
 ```
 
@@ -201,19 +201,19 @@ In other words, we revise our knowledge state in light of an experiments outcome
 which yields a new knowledge state.
 
 ```
-prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → HasPerpetuation⋆ (pos D) (proj₁ (proj₂ D))
+prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → HasPerpetuation⋆ (pos D) (proj₂ (post D))
 prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
   where
     open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
-prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
+prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = φ
   where
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
    IH : choose⋆ (f o) os ⊑[ P ] revise D o holds
    IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
 
-   foo : choose⋆ (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = choose⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (post D) o ⊑⟨ IS a b o ⟩ a ■
+   φ : choose⋆ (Branch b f) (o , os) ⊑[ P ] a holds
+   φ = choose⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (post D) o ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
@@ -289,7 +289,7 @@ IsSimulation D@(P , _) =
 **TODO**: simulation implies simulation⋆.
 
 ```
-singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → Production⋆ (post D) s
+singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → experiment⋆ D s
 singleton D e = Branch e (Leaf ∘ revise D)
 
 {--
