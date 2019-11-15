@@ -24,150 +24,216 @@ open TruncationExists pt
 # Introduction
 
 ```
-IsADiscipline : (A : Set ℓ) → Set (suc ℓ)
-IsADiscipline {ℓ = ℓ} A =
-  Σ[ B ∈ (A → Set ℓ) ] Σ[ C ∈ ({x : A} → B x → Set ℓ) ] ({x : A} → {y : B x} → C y → A)
+IsAPostSystem : (A : Set ℓ) → Set (suc ℓ)
+IsAPostSystem {ℓ = ℓ} A =
+  Σ[ B ∈ (A → Set ℓ) ] Σ[ C ∈ ({x : A} → B x → Set ℓ) ]({x : A} → {y : B x} → C y → A)
 
-Discipline : (ℓ : Level) → Set (suc ℓ)
-Discipline ℓ = Σ[ A ∈ (Set ℓ) ] (IsADiscipline A)
+PostSystem : (ℓ : Level) → Set (suc ℓ)
+PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
 
-stage : Discipline ℓ → Set ℓ
-stage (A , _) = A
+nonterminal : PostSystem ℓ → Set ℓ
+production  : (D : PostSystem ℓ) → nonterminal D → Set ℓ
+location    : (D : PostSystem ℓ) → {x : nonterminal D} → production D x → Set ℓ
+choose      : (D : PostSystem ℓ) {x : nonterminal D} {y : production D x}
+            → location D y → nonterminal D
 
-exp : (D : Discipline ℓ) → stage D → Set ℓ
-exp (_ , B , _) = B
-
-outcome : (D : Discipline ℓ) → {x : stage D} → exp D x → Set ℓ
-outcome (_ , _ , C , _) = C
-
--- outcome and next together define an enumeration on the stages.
-
-next : (D : Discipline ℓ) → {x : stage D} → {y : exp D x} → outcome D y → stage D
-next (_ , _ , _ , d) = d
+nonterminal (A , _ , _ , _) = A
+production  (_ , B , _ , _) = B
+location    (_ , _ , C , _) = C
+choose      (_ , _ , _ , d) = d
 ```
 
+Given a Post system `D`, which describes the structure of a tree, the type of inhabitants
+of a specific tree satisfying `D` and starting with nonterminal `s` is given by the type
+`Tree D s`.
+
 ```
-record Tree (D : Discipline ℓ) (s : stage D) : Set (suc ℓ) where
+record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
   constructor tree
   inductive
 
   field
-    a : stage D
-    b : exp D a
-    c : (z : outcome D b) → Tree D (next D z)
-```
-
-# Elimination
-
-```
-{--
-treerec : (ds : Discipline ℓ)
-        → (D : (x : stage ds) → Tree ds x → Set ℓ)
-        → (t : Tree ds a)
-        → (f : (x : stage ds)
-             → (y : exp ds x)
-             → (z : (v : outcome ds x y) → Tree ds (next ds x y v))
-             → (u : (v : outcome ds x y) → D (next ds x y v) (z v))
-             → D x (tree x y z))
-        → D a t
-treerec ds D (tree a b c) f = {!f a′ !}
---}
+    a : nonterminal D
+    b : production D a
+    c : (z : location D b) → Tree D (choose D z)
 ```
 
 # Stump
 
 ```
-data Experiment⋆ (D : Discipline ℓ) : stage D → Set ℓ where
-  Leaf   : (a : stage D) → Experiment⋆ D a
-  Branch : {a : stage D} (b : exp D a)
-         → ((c : outcome D b) → Experiment⋆ D (next D c))
-         → Experiment⋆ D a
-
-outcome⋆ : (D : Discipline ℓ) → (s : stage D) → Experiment⋆ D s → Set ℓ
-outcome⋆ {ℓ} D s (Leaf   s) = ⊤ {ℓ}
-outcome⋆ D s (Branch b f) = Σ[ o ∈ (outcome D b) ] outcome⋆ D (next D o) (f o)
-
--- Arbitrary covering.
-
-next⋆ : (D : Discipline ℓ) → (s : stage D) → (t : Experiment⋆ D s) → outcome⋆ D s t → stage D
-next⋆ D s (Leaf   s)     _       = s
-next⋆ D s (Branch b f) (c , y) = next⋆ D (next D c) (f c) y
-
-branch : (D : Discipline ℓ) → (a : stage D)
-       → (t : Experiment⋆ D a)
-       → (g : (e : outcome⋆ D a t) → Experiment⋆ D (next⋆ D a t e))
-       → Experiment⋆ D a
-branch D a (Leaf   a)     g = g tt
-branch D a (Branch b f) g =
-  Branch b λ c → branch D (next D c) (f c) (λ - → g (c , -))
+data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
+  Leaf   : (a : nonterminal D) → Production⋆ D a
+  Branch : {a : nonterminal D} (b : production D a)
+         → ((c : location D b) → Production⋆ D (choose D c))
+         → Production⋆ D a
 ```
 
-# Progressiveness
+Given a `Production⋆`, say `t`, we denote by `location⋆ t` the type of _sequences of
+locations_ in `t`. In other words, an inhabitant of `location⋆ t` is a _specific_ sequence
+of choices in the tree `t`.
 
 ```
-IsProgressive : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
-IsProgressive {ℓ₀} P P-disc =
-  (x : stage D) (y : exp D x) (z : outcome D y) → next D z ⊑[ P ] x holds
+location⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
+location⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
+location⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (location D b) ] location⋆ (f o)
+```
+
+Finally, we can take a sequence of choices in `t : Production⋆` and then follow all the
+choices all the way to the end. This procedure is implemented in the function `choose⋆`.
+
+```
+choose⋆ : {D : PostSystem ℓ} {s : nonterminal D}
+        → (t : Production⋆ D s) → location⋆ t → nonterminal D
+choose⋆ (Leaf   s)   _       = s
+choose⋆ (Branch b f) (c , y) = choose⋆ (f c) y
+```
+
+**TODO**: explain.
+
+```
+append : (D : PostSystem ℓ) → (a : nonterminal D)
+       → (t : Production⋆ D a)
+       → (g : (e : location⋆ t) → Production⋆ D (choose⋆ t e))
+       → Production⋆ D a
+append D a (Leaf   a)   g = g tt
+append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - → g (c , -))
+```
+
+# Perpetuation
+
+Given a Post system, we will now order on the nonterminals representing whether one
+contains more information than another. The idea is that if nonterminal `a₁` contains more
+information than `a₀` then the knowledge state there is **more refined** than the one at
+`a₁`; we thus write `a₁ ⊑ a₀`.
+
+As we have already hinted, the point of this order is to view each nonterminal as a stage
+of information. In light of this view, `choose` will be analogous to learning something
+from an experiment which takes one from one stage to another (we will shortly introduce
+new terminology).
+
+In order for this to make sense, though, we must require that choosing nonterminals always
+takes us to stages that are at least as refined than the current one. The intuitive
+reading of this is: _experimentation never takes away existing knowledge_. Accordingly,
+this property will be called **perpetuation**; we express it in the type family
+`HasPerpetuation`.
+
+```
+HasPerpetuation : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+HasPerpetuation {ℓ₀} P P-disc =
+  (x : nonterminal D) (y : production D x) (z : location D y) →
+    (choose D z) ⊑[ P ] x holds
   where
-    D : Discipline ℓ₀
+    D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
+```
 
-IsProgressive⋆ : (P : Poset ℓ₀ ℓ₁) → IsADiscipline ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
-IsProgressive⋆ {ℓ₀} P P-disc =
-  (a : stage D) (t : Experiment⋆ D a) (o : outcome⋆ D a t) → next⋆ D a t o ⊑[ P ] a holds
+We can define the analogous property for `choose⋆`:
+
+```
+HasPerpetuation⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+HasPerpetuation⋆ {ℓ₀} P P-disc =
+  (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → choose⋆ t o ⊑[ P ] a holds
   where
-    D : Discipline ℓ₀
+    D : PostSystem ℓ₀
     D = (∣ P ∣ₚ , P-disc)
+```
 
-Discipline⁺ : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
-Discipline⁺ ℓ₀ ℓ₁ =
-  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsADiscipline ∣ P ∣ₚ) ] IsProgressive P P-disc
+We will refer to a Post system that has the perpetutation property as a
+`Discipline`, it the sense that the stages of knowledge (i.e., the nonterminals)
+resemble a _discipline of knowledge_. Accordingly, we introduce new terminology
+for the projections.
 
-stage⁺ : Discipline⁺ ℓ₀ ℓ₁ → Set ℓ₀
-stage⁺ (P , _) = ∣ P ∣ₚ
+```
+Discipline : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
+Discipline ℓ₀ ℓ₁ =
+  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] HasPerpetuation P P-disc
+```
 
-exp⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → stage⁺ D → Set ℓ₀
-exp⁺ (P , D , _) = exp (∣ P ∣ₚ , D)
+It will be convenient to be easily refer to the poset and the post system
+contained inside a discipline.
 
-outcome⁺ : (D : Discipline⁺ ℓ₀ ℓ₁) → {x : stage⁺ D} → exp⁺ D x → Set ℓ₀
-outcome⁺ (P , D , _) = outcome (∣ P ∣ₚ , D)
-
-next⁺ : (D : Discipline⁺ ℓ₀ ℓ₁)
-      → {a : stage⁺ D} → {b : exp⁺ D a} → outcome⁺ D b → stage⁺ D
-next⁺ (P , D , _) = next (∣ P ∣ₚ , D)
-
-pos : Discipline⁺ ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
+```
+pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
 
-raw : (D : Discipline⁺ ℓ₀ ℓ₁) → Discipline ℓ₀
-raw (P , P-disc , _) = ∣ P ∣ₚ , P-disc
+post : (D : Discipline ℓ₀ ℓ₁) → PostSystem ℓ₀
+post (P , P-disc , _) = ∣ P ∣ₚ , P-disc
+```
 
-prog⇒prog⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsProgressive⋆ (pos D) (proj₁ (proj₂ D))
+Non-terminals are now called **stages**.
+
+```
+stage : Discipline ℓ₀ ℓ₁ → Set ℓ₀
+stage D = nonterminal (post D)
+```
+
+Productions are now called **experiments**; `exp` for short.
+
+```
+exp : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
+exp D = production (post D)
+
+experiment⋆ : (D : Discipline ℓ₀ ℓ₁) → stage D → Set ℓ₀
+experiment⋆ D = Production⋆ (post D)
+```
+
+Locations are now called **outcomes** in the sense that a location for a
+reference to another non-terminal is like a possible outcome of the production.
+
+```
+outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
+outcome (P , D , _) = location (∣ P ∣ₚ , D)
+
+outcome⋆ : {D : Discipline ℓ₀ ℓ₁} → {a : stage D} → experiment⋆ D a → Set ℓ₀
+outcome⋆ = location⋆
+```
+
+The `choose` operation is now called `revise` in the sense that it is an
+operation of _revising one's knowledge state_.
+
+```
+revise : (D : Discipline ℓ₀ ℓ₁)
+      → {a : stage D} → {b : exp D a} → outcome D b → stage D
+revise D = choose (post D)
+```
+
+In other words, we revise our knowledge state in light of an experiments outcome
+which yields a new knowledge state.
+
+```
+prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → HasPerpetuation⋆ (pos D) (proj₂ (post D))
 prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
   where
     open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
-prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = foo
+prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = φ
   where
    open PosetStr (proj₂ P) using (⊑-refl; _⊑⟨_⟩_; _■)
 
-   IH : next⋆ (raw D) (next⁺ D o) (f o) os ⊑[ P ] next⁺ D o holds
-   IH = prog⇒prog⋆ D (next (∣ P ∣ₚ , disc) o) (f o) os
+   IH : choose⋆ (f o) os ⊑[ P ] revise D o holds
+   IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
 
-   foo : next⋆ (raw D) a (Branch b f) (o , os) ⊑[ P ] a holds
-   foo = next⋆ (raw D) a (Branch b f) (o , os) ⊑⟨ IH ⟩ next (raw D) o ⊑⟨ IS a b o ⟩ a ■
+   φ : choose⋆ (Branch b f) (o , os) ⊑[ P ] a holds
+   φ = choose⋆ (Branch b f) (o , os) ⊑⟨ IH ⟩ choose (post D) o ⊑⟨ IS a b o ⟩ a ■
 
 ```
 
 # Simulation
 
-`down P ℱ a` denotes the restriction of family `ℱ` of stages to those above the stage `a`.
+The other property we are interested in, which will define a formal topology
+when coupled with perpetuation, is **simulation**. Let us first introduce some
+notation to build up towards its definition.
+
+`down P ℱ a` denotes a predicate expressing: stage `a` has a more refined state
+of information than at least one stage in `ℱ`.
 
 ```
-down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ)
+down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ₂)
 down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
 
 syntax down P ℱ a = ℱ ↓[ P ] a
 ```
+
+We will often be dealing with the predicate `ℱ ↓[ P ] -`.
 
 Ad-hoc notion of subset since there are some universe problems with `𝒫`. _This should be
 replaced with `𝒫` once it is properly generalised._
@@ -177,41 +243,54 @@ _⊆_ : {X : Set ℓ} → (X → Ω ℓ′) → (X → Ω ℓ′) → Set (ℓ �
 _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 ```
 
-The refinement relation.
+Given a `Production⋆` `t`, we can define a family of nonterminals it _reaches_
+i.e., the leaves of the tree.
 
 ```
-conclusions⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D}
-             → Experiment⋆ (raw D) s → Sub ℓ₀ (stage⁺ D)
-conclusions⋆ D {s} e = outcome⋆ (raw D) s e , next⋆ (raw D) s e
+leaves : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Sub ℓ (nonterminal D)
+leaves e = location⋆ e , choose⋆ e
+```
 
-refines : (D : Discipline⁺ ℓ₀ ℓ₁) {s s′ : stage⁺ D}
-        → Experiment⋆ (raw D) s′ → Experiment⋆ (raw D) s → Set (ℓ₀ ⊔ ℓ₁)
-refines D@(P , _) e f =
-  (λ - → conclusions⋆ D e ↓[ P ] -) ⊆ (λ - → conclusions⋆ D f ↓[ P ] -)
+We may hence define a notion of refinement: `t₀` refines `t₁` iff _any stage that is more
+informative than a leaf of `t₀` is more informative than a leaf of `t₁`.
+
+```
+refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
+        → experiment⋆ D s′ → experiment⋆ D s → Set (ℓ₀ ⊔ ℓ₁)
+refines D@(P , _) e f = (λ - → leaves e ↓[ P ] -) ⊆ (λ - → leaves f ↓[ P ] -)
 
 syntax refines D e f = e ℛ[ D ] f
 ```
 
-The notion of simulation. It says: at any point, we can simulate what we could do before.
+Using the notion of refinement, we formulate the simulation property (given in
+`IsSimulation⋆`) which says: given stages `a₁ ⊑ a₀`, for any `experiment⋆` on `a₀`, there
+exists some `experiment⋆` `t₁` that is a refinement of `t₀`. In other words: as we move
+towards more refined states of information, we maintain access to as refined sequences of
+experiments.
 
 ```
-IsSimulation : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
-IsSimulation D@(P , _) =
-  (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp⁺ D a₀) →
-    Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
-                         ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
-
-IsSimulation⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation⋆ D@(P , _) =
-  (a₀ a₁ : stage⁺ D) → a₁ ⊑[ P ] a₀ holds →
-    (t₀ : Experiment⋆ (raw D) a₀) → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (t₁ ℛ[ D ] t₀)
+  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
+    (t₀ : experiment⋆ D a₀) → Σ[ t₁ ∈ (experiment⋆ D a₁) ] (t₁ ℛ[ D ] t₀)
 ```
 
-Lemma
+The analogous property for single experiments is given in `IsSimulation` which in fact
+implies `IsSimulation⋆`.
 
 ```
-singleton : (D : Discipline⁺ ℓ₀ ℓ₁) {s : stage⁺ D} → exp⁺ D s → Experiment⋆ (raw D) s
-singleton D e = Branch e (Leaf ∘ next⁺ D)
+IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
+IsSimulation D@(P , _) =
+  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
+    Σ[ b₁ ∈ (exp D a₁) ]   (λ - → (outcome D b₁ , revise D) ↓[ P ] -)
+                         ⊆ (λ - → (outcome D b₀ , revise D) ↓[ P ] -)
+```
+
+**TODO**: simulation implies simulation⋆.
+
+```
+singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → experiment⋆ D s
+singleton D e = Branch e (Leaf ∘ revise D)
 
 {--
 sim⇒sim⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
@@ -239,8 +318,8 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
   where
     open PosetStr (proj₂ P) using (_⊑_)
 
-    𝒮 : Σ[ b₁ ∈ (exp⁺ D a₁) ]  (λ - → (outcome⁺ D b₁ , next⁺ D) ↓[ P ] -)
-                             ⊆ (λ - → (outcome⁺ D b₀ , next⁺ D) ↓[ P ] -)
+    𝒮 : Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome D b₁ , next⁺ D) ↓[ P ] -)
+                             ⊆ (λ - → (outcome D b₀ , next⁺ D) ↓[ P ] -)
     𝒮 = D-sim a₀ a₁ a₀⊒a₁ b₀
     b₁ = proj₁ 𝒮
 --}
@@ -248,49 +327,37 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
 
 # Formal Topology
 
-A _formal topology_ is a **(1) progressive discipline** whose relation **(2) is a
-simulation**, that is equipped with a **(3) cover relation**.
+A _formal topology_ is a discipline with the simulation property.
 
 ```
-record IsFormalTopology (D : Discipline⁺ ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂) where
-  field
-    D-sim : IsSimulation⋆ D
+FormalTopology : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
+FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulation⋆ D)
 
-  _◀_ : stage⁺ D → ((stage⁺ D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
-  a ◀ U =
-    ∥ Σ[ t ∈ (Experiment⋆ (raw D) a) ] (λ - → (conclusions⋆ D t ) ↓[ pos D ] -) ⊆ U ∥
-
-FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
-FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline⁺ ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
-
-cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁ ℓ₂)
-         → stage⁺ (proj₁ 𝒯) → (stage⁺ (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
-cover-of 𝒯@(_ , topo) = _◀_
-  where
-    open IsFormalTopology topo using (_◀_)
+cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
+         → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
+cover-of 𝒯@(D , topo) a U =
+  ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → leaves t ↓[ pos D ] -) ⊆ U ∥
 
 syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
 
 ```
-lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁ ℓ₂) (U : stage⁺ (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
-       → (a₀ a₁ : stage⁺ (proj₁ 𝒯)) → a₁ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₀ ◀[ 𝒯 ] U
+lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
+       → (a₀ a₁ : stage (proj₁ 𝒯)) → a₁ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₀ ◀[ 𝒯 ] U
        → a₁ ◀[ 𝒯 ] U
-lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ)
+lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ)
   where
-    open IsFormalTopology topo using (D-sim)
-
-    ψ : Σ[ t ∈ (Experiment⋆ (raw D) a₀) ]((λ - →  (conclusions⋆ D t) ↓[ pos D ] -) ⊆ U)
-      → Σ[ t₁ ∈ (Experiment⋆ (raw D) a₁) ] (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
+    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (leaves t₀) ↓[ pos D ] -) ⊆ U)
+      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (leaves t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
-        t₁ : Experiment⋆ (raw D) a₁
+        t₁ : Production⋆ (post D) a₁
         t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ t)
 
         t₁-sim : refines D t₁ t
         t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
 
-        conc-t₁↓⊆U : (λ - → (conclusions⋆ D t₁) ↓[ pos D ] -) ⊆ U
+        conc-t₁↓⊆U : (λ - → leaves t₁ ↓[ pos D ] -) ⊆ U
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 

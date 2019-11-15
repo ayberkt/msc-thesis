@@ -17,3 +17,8 @@ pages:
   artifacts:
     paths:
     - public
+
+cosmetics:
+  script:
+  - export LC_ALL=C.UTF-8
+  - ./check_cosmetics.py TreeType.lagda.md
