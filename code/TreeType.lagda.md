@@ -330,34 +330,23 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
 A _formal topology_ is a discipline with the simulation property.
 
 ```
-record IsFormalTopology (D : Discipline ℓ₀ ℓ₁) (ℓ₂ : Level) : Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂) where
-  field
-    D-sim : IsSimulation⋆ D
+FormalTopology : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
+FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulation⋆ D)
 
-  _◀_ : stage D → ((stage D) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
-  a ◀ U =
-    ∥ Σ[ t ∈ (Production⋆ (post D) a) ] (λ - → (leaves t ) ↓[ pos D ] -) ⊆ U ∥
-
-FormalTopology : (ℓ₀ ℓ₁ ℓ₂ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁ ⊔ ℓ₂)
-FormalTopology ℓ₀ ℓ₁ ℓ₂ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] IsFormalTopology D ℓ₂
-
-cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁ ℓ₂)
+cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
          → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
-cover-of 𝒯@(_ , topo) = _◀_
-  where
-    open IsFormalTopology topo using (_◀_)
+cover-of 𝒯@(D , topo) a U =
+  ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → leaves t ↓[ pos D ] -) ⊆ U ∥
 
 syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
 
 ```
-lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁ ℓ₂) (U : stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
+lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
        → (a₀ a₁ : stage (proj₁ 𝒯)) → a₁ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₀ ◀[ 𝒯 ] U
        → a₁ ◀[ 𝒯 ] U
-lemma₁ 𝒯@(D , topo) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ)
+lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ)
   where
-    open IsFormalTopology topo using (D-sim)
-
     ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (leaves t₀) ↓[ pos D ] -) ⊆ U)
       → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (leaves t₁) ↓[ pos D ] -) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
