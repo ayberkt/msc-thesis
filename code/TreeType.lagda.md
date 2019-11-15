@@ -292,37 +292,53 @@ IsSimulation D@(P , _) =
 singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → experiment⋆ D s
 singleton D e = Branch e (Leaf ∘ revise D)
 
-{--
-sim⇒sim⋆ : (D : Discipline⁺ ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
-sim⇒sim⋆ D@(P@(∣P∣ , P-str) , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
+sim⇒sim⋆ : (D : Discipline ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
+sim⇒sim⋆ D@(PS , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
   where
-    open PosetStr P-str using (_⊑_; ⊑-refl; ⊑-trans)
+    open PosetStr (proj₂ PS) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
 
-    -- φ : (a : ∣P∣) → Σ ⊤ (λ _ → a ⊑ a₁ holds) → ∥ Σ ⊤ (λ _ → a ⊑ a₀ holds) ∥
-    -- φ a (tt , a⊑a₁) = ∣ tt , ⊑-trans a a₁ a₀ a⊑a₁ a₁⊑a₀ ∣
-
-    ψ : (x : ∣P∣)
-      → down P (conclusions⋆ D (Leaf a₀)) x holds
-      → down P (conclusions⋆ D (Leaf a₁)) x holds
+    ψ : (x : stage D)
+      → down (pos D) (leaves {D = post D} (Leaf a₁)) x holds
+      → down (pos D) (leaves {D = post D} (Leaf a₀)) x holds
     ψ a conc-a₀↓a = ∥∥-rec (∥∥-prop _) φ conc-a₀↓a
       where
-        φ : Σ (proj₁ (conclusions⋆ D (Leaf a₀)))
-              (λ i → (a ⊑ proj₂ (conclusions⋆ D (Leaf a₀)) i) holds)
-          → ∥ Σ (proj₁ (conclusions⋆ D (Leaf a₁)))
-              (λ i → (a ⊑ proj₂ (conclusions⋆ D (Leaf a₁)) i) holds) ∥
-        φ (tt , snd) = {!!}
+        φ : Σ (proj₁ (leaves {D = post D} (Leaf a₁))) (λ i → a ⊑[ pos D ] (proj₂ (leaves {D = post D} (Leaf a₁)) i) holds)
+          → ∥ Σ (proj₁ (leaves {D = post D} (Leaf a₀))) (λ i → a ⊑[ pos D ] (proj₂ (leaves {D = post D} (Leaf a₀)) i) holds) ∥
+        φ (tt , a⊑a₁) = ∣ tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ proj₂ (leaves {D = post D }(Leaf a₀)) tt ■) ∣
 
--- We can localise any covering.
 sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
-  Branch b₁ {!!} , {!!}
+  Branch b₁ (Leaf ∘ revise D {b = b₁}) , φ
   where
-    open PosetStr (proj₂ P) using (_⊑_)
+    b₁ : exp D a₁
+    b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    𝒮 : Σ[ b₁ ∈ (exp D a₁) ]  (λ - → (outcome D b₁ , next⁺ D) ↓[ P ] -)
-                             ⊆ (λ - → (outcome D b₀ , next⁺ D) ↓[ P ] -)
-    𝒮 = D-sim a₀ a₁ a₀⊒a₁ b₀
-    b₁ = proj₁ 𝒮
---}
+    t₁ : experiment⋆ D a₁
+    t₁ = Branch b₁ (Leaf ∘ revise D {b = b₁})
+
+    b₁-sim : down P (outcome D b₁ , revise D) ⊆ down P (outcome D b₀ , revise D)
+    b₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
+
+    φ : down P (leaves {D = post D} t₁) ⊆ down P (leaves (Branch b₀ f))
+    φ a leaves↓a = ∥∥-rec (∥∥-prop _) main leaves↓a
+      where
+        main : Σ[ i ∈ (outcome⋆ {D = D} t₁) ] a ⊑[ pos D ] choose⋆ t₁ i holds
+             → ∥ Σ[ i ∈ (outcome⋆ {D = D} (Branch b₀ f)) ] a ⊑[ pos D ] choose⋆ (Branch b₀ f) i holds ∥
+        main ((i , tt) , a⊑leaves-t₁) = ∥∥-rec (∥∥-prop _) second (b₁-sim a ∣ i , a⊑leaves-t₁ ∣)
+          where
+            second : Σ[ o ∈ (outcome D b₀) ] a ⊑[ pos D ] revise D o holds
+                   → ∥ Σ[ o ∈ outcome⋆ {D = D} (Branch b₀ f) ] a ⊑[ pos D ] (choose⋆ (Branch b₀ f) o) holds ∥
+            second (o , a⊑revise-o) = ∥∥-rec (∥∥-prop _) third (proj₂ IH a t₂↓a)
+              where
+                third : Σ[ ox ∈ (outcome⋆ {D = D} (f o)) ] a ⊑[ pos D ] (proj₂ (leaves (f o)) ox) holds
+                      → ∥ Σ[ oy ∈ (outcome⋆ {D = D} (Branch b₀ f)) ]
+                           (a ⊑[ pos D ] choose⋆ (Branch b₀ f) oy holds) ∥
+                third (leaf-fo , snd) = ∣ (o , leaf-fo) , snd ∣
+
+                IH : Σ[ t₂ ∈ experiment⋆ D a ] refines D t₂ (f o)
+                IH = sim⇒sim⋆ D D-sim (choose (post D) o) a a⊑revise-o (f o)
+
+                t₂↓a : leaves (proj₁ IH) ↓[ pos D ] a holds
+                t₂↓a = {!!}
 ```
 
 # Formal Topology
@@ -345,7 +361,7 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
        → (a₀ a₁ : stage (proj₁ 𝒯)) → a₁ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₀ ◀[ 𝒯 ] U
        → a₁ ◀[ 𝒯 ] U
-lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ)
+lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
   where
     ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (leaves t₀) ↓[ pos D ] -) ⊆ U)
       → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (leaves t₁) ↓[ pos D ] -) ⊆ U
@@ -364,6 +380,8 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ = ∥∥-rec (∥∥-prop _) (
 # Stone space
 
 ```
+-- Do this for any distributive lattice.
+{--
 ss : FormalTopology zero zero
 ss = (P , PS , perp) , sim
   where
@@ -372,51 +390,53 @@ ss = (P , PS , perp) , sim
     false ⊑ _     = ⊤ , ⊤-prop
     true  ⊑ false = ⊥ , ⊥-prop
 
-    ⊑-refl : (x : Bool) → (x ⊑ x) holds
+    ⊑-refl : (x : bool) → (x ⊑ x) holds
     ⊑-refl false = tt
     ⊑-refl true  = tt
 
-    ⊑-trans : (x y z : Bool) → (x ⊑ y) holds → (y ⊑ z) holds → (x ⊑ z) holds
+    ⊑-trans : (x y z : bool) → (x ⊑ y) holds → (y ⊑ z) holds → (x ⊑ z) holds
     ⊑-trans false false false _ _ = tt
     ⊑-trans false false true  _ _ = tt
     ⊑-trans false true  true  _ _ = tt
     ⊑-trans true  true  true  _ _ = tt
 
-    ⊑-antisym : (x y : Bool) → (x ⊑ y) holds → (y ⊑ x) holds → x ≡ y
+    ⊑-antisym : (x y : bool) → (x ⊑ y) holds → (y ⊑ x) holds → x ≡ y
     ⊑-antisym false false _ _ = refl
     ⊑-antisym true true   _ _ = refl
 
-    P : Poset zero zero
-    P = Bool , posetstr _⊑_ Bool-set ⊑-refl ⊑-trans ⊑-antisym
+    p : poset zero zero
+    p = bool , posetstr _⊑_ bool-set ⊑-refl ⊑-trans ⊑-antisym
 
-
-    PS : IsAPostSystem Bool
-    PS = expb , outb , revb
+    ps : isapostsystem bool
+    ps = expb , outb , revb
      where
-        expb : Bool → Set
-        expb a = Σ[ b₁ ∈ Bool ] Σ[ b₂ ∈ Bool ] ((b₁ ∨ b₂) ≡ a) ⊎ a ≡ false
+        expb : bool → set
+        expb a = σ[ b₁ ∈ bool ] σ[ b₂ ∈ bool ] ((b₁ ∨ b₂) ≡ a) ⊎ a ≡ false
 
-        outb : {x : Bool} → expb x → Set
-        outb (inj₁ (b₀ , b₁ , p)) = Bool
+        outb : {x : bool} → expb x → set
+        outb (inj₁ (b₀ , b₁ , p)) = bool
         outb (inj₂ refl)          = ⊥
 
-        revb : {x : Bool} {y : expb x} → outb y → Bool
+        revb : {x : bool} {y : expb x} → outb y → bool
         revb {y = inj₁ (b₀ , b₁ , p)} false = b₀
         revb {y = inj₁ (b₀ , b₁ , p)} true  = b₁
         revb {y = inj₂ refl} ()
 
-    perp : HasPerpetuation P PS
+    perp : hasperpetuation p ps
     perp false (inj₁ (false , false , _)) false = tt
     perp false (inj₁ (false , false , _)) true  = tt
     perp false (inj₂ refl) ()
     perp true  b c = tt
 
-    sim : IsSimulation⋆ (P , PS , perp)
+    sim : issimulation⋆ (p , ps , perp)
     sim false false tt t₀ = t₀ , λ _ → id
     sim true  true  tt t₀ = t₀ , (λ _ → id)
-    sim true  false tt (Leaf true) = Leaf false , λ _ _ → ∣ tt , tt ∣
-    sim true  false tt (Branch (inj₁ (b₀ , b₁ , p)) f) = {!b₀ b₁!}
+    sim true  false tt (leaf true) = leaf false , λ _ _ → ∣ tt , tt ∣
+    sim true  false tt (branch (inj₁ (b₀ , b₁ , p)) f) = {!branch!} , {!!}
+--}
 ```
+
+Another example: trying to define Baire space.
 
 ```
 -- --}
