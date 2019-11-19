@@ -60,6 +60,9 @@ record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
 
 # Stump
 
+Given a Post system `D` and a start stage `s`, we denote by `Production⋆ D s` the type
+of experimentation sequences that start from `s`.
+
 ```
 data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
   Leaf   : (a : nonterminal D) → Production⋆ D a
@@ -70,7 +73,7 @@ data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
 
 Given a `Production⋆`, say `t`, we denote by `location⋆ t` the type of _sequences of
 locations_ in `t`. In other words, an inhabitant of `location⋆ t` is a _specific_ sequence
-of choices in the tree `t`.
+of choices of experiments in the tree `t`.
 
 ```
 location⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
@@ -101,10 +104,10 @@ append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - 
 
 # Perpetuation
 
-Given a Post system, we will now order on the nonterminals representing whether one
-contains more information than another. The idea is that if nonterminal `a₁` contains more
-information than `a₀` then the knowledge state there is **more refined** than the one at
-`a₁`; we thus write `a₁ ⊑ a₀`.
+Given a Post system, we will now require an order on the nonterminals representing whether
+one contains more information than another. The idea is that if nonterminal `a₁` contains
+more information than `a₀` then the knowledge state there is **more refined** than the one
+at `a₁`; we thus write `a₁ ⊑ a₀`.
 
 As we have already hinted, the point of this order is to view each nonterminal as a stage
 of information. In light of this view, `choose` will be analogous to learning something
@@ -112,9 +115,9 @@ from an experiment which takes one from one stage to another (we will shortly in
 new terminology).
 
 In order for this to make sense, though, we must require that choosing nonterminals always
-takes us to stages that are at least as refined than the current one. The intuitive
-reading of this is: _experimentation never takes away existing knowledge_. Accordingly,
-this property will be called **perpetuation**; we express it in the type family
+takes us to stages that are at least as refined as the current one. The intuitive reading
+of this is: _experimentation never takes away existing knowledge_. Accordingly, this
+property will be called **perpetuation**; we express it in the type family
 `HasPerpetuation`.
 
 ```
@@ -197,7 +200,7 @@ revise : (D : Discipline ℓ₀ ℓ₁)
 revise D = choose (post D)
 ```
 
-In other words, we revise our knowledge state in light of an experiments outcome
+In other words, we revise our knowledge state in light of an experiment's outcome
 which yields a new knowledge state.
 
 ```
@@ -243,8 +246,8 @@ _⊆_ : {X : Set ℓ} → (X → Ω ℓ′) → (X → Ω ℓ′) → Set (ℓ �
 _⊆_ {X = X} U V = (x : X) → U x holds → V x holds
 ```
 
-Given a `Production⋆` `t`, we can define a family of nonterminals it _reaches_
-i.e., the leaves of the tree.
+Given a `Production⋆` `t`, we can define a family of nonterminals it _reaches_ i.e., the
+leaves of the tree.
 
 ```
 leaves : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Sub ℓ (nonterminal D)
