@@ -354,7 +354,7 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
       → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → - ≤[ pos D ] (leaves t₁)) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
-        t₁ : Production⋆ (post D) a₁
+        t₁ : experiment⋆ D a₁
         t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ t)
 
         t₁-sim : refines D t₁ t
