@@ -230,7 +230,7 @@ of information than at least one stage in `ℱ`.
 down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ₂)
 down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
 
-syntax down P ℱ a = ℱ ↓[ P ] a
+syntax down P ℱ a = a ≤[ P ] ℱ
 ```
 
 We will often be dealing with the predicate `ℱ ↓[ P ] -`.
@@ -257,7 +257,7 @@ informative than a leaf of `t₀` is more informative than a leaf of `t₁`.
 ```
 refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
         → experiment⋆ D s′ → experiment⋆ D s → Set (ℓ₀ ⊔ ℓ₁)
-refines D@(P , _) e f = (λ - → leaves e ↓[ P ] -) ⊆ (λ - → leaves f ↓[ P ] -)
+refines D@(P , _) e f = (λ - → - ≤[ P ] leaves e) ⊆ (λ - → - ≤[ P ] leaves f)
 
 syntax refines D e f = e ℛ[ D ] f
 ```
@@ -282,8 +282,8 @@ implies `IsSimulation⋆`.
 IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
 IsSimulation D@(P , _) =
   (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
-    Σ[ b₁ ∈ (exp D a₁) ]   (λ - → (outcome D b₁ , revise D) ↓[ P ] -)
-                         ⊆ (λ - → (outcome D b₀ , revise D) ↓[ P ] -)
+    Σ[ b₁ ∈ (exp D a₁) ]   (λ - →  - ≤[ P ] (outcome D b₁ , revise D))
+                         ⊆ (λ - →  - ≤[ P ] (outcome D b₀ , revise D))
 ```
 
 **TODO**: simulation implies simulation⋆.
@@ -293,7 +293,7 @@ singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → experim
 singleton D e = Branch e (Leaf ∘ revise D)
 
 sim⇒sim⋆ : (D : Discipline ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
-sim⇒sim⋆ D@(PS , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
+sim⇒sim⋆ D@(PS , prog) _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
   where
     open PosetStr (proj₂ PS) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
 
@@ -307,38 +307,22 @@ sim⇒sim⋆ D@(PS , prog) D-sim a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁)
         φ (tt , a⊑a₁) = ∣ tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ proj₂ (leaves {D = post D }(Leaf a₀)) tt ■) ∣
 
 sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
-  Branch b₁ (Leaf ∘ revise D {b = b₁}) , φ
+  Branch b₁ g , {!!}
   where
+    open PosetStr (proj₂ P) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
+
     b₁ : exp D a₁
     b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    t₁ : experiment⋆ D a₁
-    t₁ = Branch b₁ (Leaf ∘ revise D {b = b₁})
+    φ : (a : stage D) → a ≤[ P ] (outcome D b₁ , revise D) holds → a ≤[ P ] (outcome D b₀ , revise D) holds
+    φ = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    b₁-sim : down P (outcome D b₁ , revise D) ⊆ down P (outcome D b₀ , revise D)
-    b₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
-
-    φ : down P (leaves {D = post D} t₁) ⊆ down P (leaves (Branch b₀ f))
-    φ a leaves↓a = ∥∥-rec (∥∥-prop _) main leaves↓a
+    g : (o₁ : location (post D) b₁) → experiment⋆ D (revise D o₁)
+    g o₁ = proj₁ (IH {!!})
       where
-        main : Σ[ i ∈ (outcome⋆ {D = D} t₁) ] a ⊑[ pos D ] choose⋆ t₁ i holds
-             → ∥ Σ[ i ∈ (outcome⋆ {D = D} (Branch b₀ f)) ] a ⊑[ pos D ] choose⋆ (Branch b₀ f) i holds ∥
-        main ((i , tt) , a⊑leaves-t₁) = ∥∥-rec (∥∥-prop _) second (b₁-sim a ∣ i , a⊑leaves-t₁ ∣)
-          where
-            second : Σ[ o ∈ (outcome D b₀) ] a ⊑[ pos D ] revise D o holds
-                   → ∥ Σ[ o ∈ outcome⋆ {D = D} (Branch b₀ f) ] a ⊑[ pos D ] (choose⋆ (Branch b₀ f) o) holds ∥
-            second (o , a⊑revise-o) = ∥∥-rec (∥∥-prop _) third (proj₂ IH a t₂↓a)
-              where
-                third : Σ[ ox ∈ (outcome⋆ {D = D} (f o)) ] a ⊑[ pos D ] (proj₂ (leaves (f o)) ox) holds
-                      → ∥ Σ[ oy ∈ (outcome⋆ {D = D} (Branch b₀ f)) ]
-                           (a ⊑[ pos D ] choose⋆ (Branch b₀ f) oy holds) ∥
-                third (leaf-fo , snd) = ∣ (o , leaf-fo) , snd ∣
+        IH : (o₀ : outcome D b₀) → Σ[ t′ ∈ (experiment⋆ D (revise D o₁)) ] refines D t′ (f o₀)
+        IH o₀ = sim⇒sim⋆ D D-sim (revise D o₀) (revise D o₁) {!!} (f o₀)
 
-                IH : Σ[ t₂ ∈ experiment⋆ D a ] refines D t₂ (f o)
-                IH = sim⇒sim⋆ D D-sim (choose (post D) o) a a⊑revise-o (f o)
-
-                t₂↓a : leaves (proj₁ IH) ↓[ pos D ] a holds
-                t₂↓a = {!!}
 ```
 
 # Formal Topology
@@ -352,7 +336,7 @@ FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulat
 cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
          → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
 cover-of 𝒯@(D , topo) a U =
-  ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → leaves t ↓[ pos D ] -) ⊆ U ∥
+  ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → - ≤[ pos D ] leaves t) ⊆ U ∥
 
 syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
@@ -363,8 +347,8 @@ lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → �
        → a₁ ◀[ 𝒯 ] U
 lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
   where
-    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  (leaves t₀) ↓[ pos D ] -) ⊆ U)
-      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → (leaves t₁) ↓[ pos D ] -) ⊆ U
+    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  - ≤[ pos D ] (leaves t₀)) ⊆ U)
+      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → - ≤[ pos D ] (leaves t₁)) ⊆ U
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
         t₁ : Production⋆ (post D) a₁
@@ -373,7 +357,7 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
         t₁-sim : refines D t₁ t
         t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
 
-        conc-t₁↓⊆U : (λ - → leaves t₁ ↓[ pos D ] -) ⊆ U
+        conc-t₁↓⊆U : (λ - → - ≤[ pos D ] leaves t₁) ⊆ U
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 
