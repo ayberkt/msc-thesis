@@ -10,10 +10,8 @@ test:
 
 pages:
   script:
-  - ./mark_version.sh Main.agda
-  - agda --html Main.agda
-  - mv html/Main.html html/index.html
-  - mv html ../public
+  - make
+  - mv html/TreeType.html html/index.html
   artifacts:
     paths:
     - public
