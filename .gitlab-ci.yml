@@ -12,7 +12,7 @@ pages:
   script:
   - make
   - mv html/TreeType.html html/index.html
-  - mv html public
+  - mv html ../public
   artifacts:
     paths:
     - public
