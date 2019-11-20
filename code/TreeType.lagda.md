@@ -230,8 +230,8 @@ notation to build up towards its definition.
 of information than at least one stage in `ℱ`.
 
 ```
-down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Ω (ℓ₁ ⊔ ℓ₂)
-down P ℱ@(I , F) a = ∥ (Σ[ i ∈ I ] a ⊑[ P ] F i holds) ∥ , ∥∥-prop _
+down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Set (ℓ₁ ⊔ ℓ₂)
+down P ℱ@(I , F) a = Σ[ i ∈ I ] a ⊑[ P ] F i holds
 
 syntax down P ℱ a = a ≤[ P ] ℱ
 ```
@@ -242,8 +242,8 @@ Ad-hoc notion of subset since there are some universe problems with `𝒫`. _Thi
 replaced with `𝒫` once it is properly generalised._
 
 ```
-_⊆_ : {X : Set ℓ} → (X → Ω ℓ′) → (X → Ω ℓ′) → Set (ℓ ⊔ ℓ′)
-_⊆_ {X = X} U V = (x : X) → U x holds → V x holds
+_⊆_ : {X : Set ℓ} → (X → Set ℓ′) → (X → Set ℓ′) → Set (ℓ ⊔ ℓ′)
+_⊆_ {X = X} U V = (x : X) → U x → V x
 ```
 
 Given a `Production⋆` `t`, we can define a family of nonterminals it _reaches_ i.e., the
@@ -301,13 +301,9 @@ sim⇒sim⋆ D@(PS , prog) _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , �
     open PosetStr (proj₂ PS) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
 
     ψ : (x : stage D)
-      → down (pos D) (leaves {D = post D} (Leaf a₁)) x holds
-      → down (pos D) (leaves {D = post D} (Leaf a₀)) x holds
-    ψ a conc-a₀↓a = ∥∥-rec (∥∥-prop _) φ conc-a₀↓a
-      where
-        φ : Σ (proj₁ (leaves {D = post D} (Leaf a₁))) (λ i → a ⊑[ pos D ] (proj₂ (leaves {D = post D} (Leaf a₁)) i) holds)
-          → ∥ Σ (proj₁ (leaves {D = post D} (Leaf a₀))) (λ i → a ⊑[ pos D ] (proj₂ (leaves {D = post D} (Leaf a₀)) i) holds) ∥
-        φ (tt , a⊑a₁) = ∣ tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ proj₂ (leaves {D = post D }(Leaf a₀)) tt ■) ∣
+      → down (pos D) (leaves {D = post D} (Leaf a₁)) x
+      → down (pos D) (leaves {D = post D} (Leaf a₀)) x
+    ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ proj₂ (leaves {D = post D } (Leaf a₀)) tt ■)
 
 sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
   Branch b₁ g , {!!}
@@ -339,7 +335,7 @@ FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulat
 cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
          → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
 cover-of 𝒯@(D , topo) a U =
-  ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → - ≤[ pos D ] leaves t) ⊆ U ∥
+  ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → - ≤[ pos D ] leaves t) ⊆ (_holds ∘ U) ∥
 
 syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
@@ -350,8 +346,8 @@ lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → �
        → a₁ ◀[ 𝒯 ] U
 lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
   where
-    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  - ≤[ pos D ] (leaves t₀)) ⊆ U)
-      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → - ≤[ pos D ] (leaves t₁)) ⊆ U
+    ψ : Σ[ t₀ ∈ (Production⋆ (post D) a₀) ]((λ - →  - ≤[ pos D ] (leaves t₀)) ⊆ (_holds ∘ U))
+      → Σ[ t₁ ∈ (Production⋆ (post D) a₁) ] (λ - → - ≤[ pos D ] (leaves t₁)) ⊆ (_holds ∘ U)
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
         t₁ : experiment⋆ D a₁
@@ -360,7 +356,7 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
         t₁-sim : refines D t₁ t
         t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
 
-        conc-t₁↓⊆U : (λ - → - ≤[ pos D ] leaves t₁) ⊆ U
+        conc-t₁↓⊆U : (λ - → - ≤[ pos D ] leaves t₁) ⊆ (_holds ∘ U)
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 
