@@ -289,8 +289,6 @@ IsSimulation D@(P , _) =
                          ⊆ (λ - →  - ≤[ P ] (outcome D b₀ , revise D))
 ```
 
-**TODO**: simulation implies simulation⋆.
-
 ```
 singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → experiment⋆ D s
 singleton D e = Branch e (Leaf ∘ revise D)
