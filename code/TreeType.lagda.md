@@ -313,7 +313,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
     b₁ : exp D a₁
     b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    φ : (a : stage D) → a ≤[ P ] (outcome D b₁ , revise D) holds → a ≤[ P ] (outcome D b₀ , revise D) holds
+    φ : (a : stage D) → a ≤[ P ] (outcome D b₁ , revise D) → a ≤[ P ] (outcome D b₀ , revise D)
     φ = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
     g : (o₁ : location (post D) b₁) → experiment⋆ D (revise D o₁)
