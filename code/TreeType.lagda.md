@@ -334,7 +334,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
     t₁ = Branch b₁ g
 
     t₁-refines-t₀ : (a : stage D) → a ≤[ P ] leaves t₁ → down P (leaves t₀) a
-    t₁-refines-t₀ a κ@((o , os′) , a≤leaves-t₁-os) = (o⋆ , os⋆) , a⊑leaf-t₀-at-o⋆-os⋆
+    t₁-refines-t₀ a ((o , os′) , a≤leaves-t₁-os) = (o⋆ , os⋆) , a⊑leaf-t₀-at-o⋆-os⋆
       where
         o⋆ : outcome D b₀
         o⋆ = proj₁ (φ (revise D o) (o , ⊑-refl _))
