@@ -303,7 +303,7 @@ sim⇒sim⋆ D@(PS , prog) _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , �
     ψ : (x : stage D)
       → down (pos D) (leaves {D = post D} (Leaf a₁)) x
       → down (pos D) (leaves {D = post D} (Leaf a₀)) x
-    ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ proj₂ (leaves {D = post D } (Leaf a₀)) tt ■)
+    ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ a₀ ■)
 
 sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
   t₁ , t₁-refines-t₀
@@ -313,7 +313,8 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
     b₁ : exp D a₁
     b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    φ : (a : stage D) → a ≤[ P ] (outcome D b₁ , revise D) → a ≤[ P ] (outcome D b₀ , revise D)
+    φ : (a : stage D)
+      → a ≤[ P ] (outcome D b₁ , revise D) → a ≤[ P ] (outcome D b₀ , revise D)
     φ = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
     g : (o₁ : location (post D) b₁) → experiment⋆ D (revise D o₁)
