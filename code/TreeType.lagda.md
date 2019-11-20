@@ -305,10 +305,10 @@ sim⇒sim⋆ D@(PS , prog) _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , �
       → down (pos D) (leaves {D = post D} (Leaf a₀)) x
     ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ proj₂ (leaves {D = post D } (Leaf a₀)) tt ■)
 
-sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
-  Branch b₁ g , ξ
+sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
+  t₁ , t₁-refines-t₀
   where
-    open PosetStr (proj₂ P) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
+    open PosetStr (proj₂ P) using (_⊑_; ⊑-refl)
 
     b₁ : exp D a₁
     b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
@@ -331,19 +331,22 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ (Branch b₀ f) =
         IH : Σ[ t′ ∈ (experiment⋆ D (revise D o₁)) ] refines D t′ (f o⋆)
         IH = sim⇒sim⋆ D D-sim (revise D o⋆) (revise D o₁) foo (f o⋆)
 
-    ξ : (a : stage D) → a ≤[ P ] (leaves (Branch b₁ g)) → down P (leaves (Branch b₀ f)) a
-    ξ a κ@(os@(o , os′) , a≤leaves-t₁-os) = (o⋆ , os⋆) , lemma
+    t₁ = Branch b₁ g
+
+    t₁-refines-t₀ : (a : stage D) → a ≤[ P ] leaves t₁ → down P (leaves t₀) a
+    t₁-refines-t₀ a κ@((o , os′) , a≤leaves-t₁-os) = (o⋆ , os⋆) , a⊑leaf-t₀-at-o⋆-os⋆
       where
+        o⋆ : outcome D b₀
         o⋆ = proj₁ (φ (revise D o) (o , ⊑-refl _))
 
-        IH : Σ[ t′ ∈ (experiment⋆ D (revise D o)) ] refines D t′ (f o⋆)
-        IH = sim⇒sim⋆ D D-sim (revise D o⋆) (revise D o) (proj₂ (φ (revise D o) (o , ⊑-refl _))) (f o⋆)
+        IH : Σ[ t′ ∈ experiment⋆ D (revise D o) ] refines D t′ (f o⋆)
+        IH = sim⇒sim⋆ D D-sim (revise D o⋆) _ (proj₂ (φ _ (o , ⊑-refl _))) (f o⋆)
 
         os⋆ : location⋆ (f o⋆)
         os⋆ = proj₁ (proj₂ IH a (os′ , a≤leaves-t₁-os))
 
-        lemma : a ⊑ ((leaves (Branch b₀ f)) € (o⋆ , os⋆)) holds
-        lemma = a ⊑⟨ proj₂ ((proj₂ IH) a (os′ , a≤leaves-t₁-os)) ⟩ leaves (Branch b₀ f) € (o⋆ , os⋆) ■
+        a⊑leaf-t₀-at-o⋆-os⋆ : a ⊑ (leaves t₀ € (o⋆ , os⋆)) holds
+        a⊑leaf-t₀-at-o⋆-os⋆ = proj₂ ((proj₂ IH) a (os′ , a≤leaves-t₁-os))
 ```
 
 # Formal Topology
