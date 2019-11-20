@@ -10,6 +10,7 @@
 ** Ideas
    - The thing that is to a non-deterministic pushdown automaton what a Büchi automaton
      is to a finite automaton.
+** These lectures by André Joyal: https://www.youtube.com/watch?v=Ro8KoFFdtS4&t=891s
 * Meetings
 ** <2019-09-27 Fri>
 *** Given a poset, the set of downward-closed subsets forms a frame.
