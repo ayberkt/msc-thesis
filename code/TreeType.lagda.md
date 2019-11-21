@@ -332,7 +332,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
 
     t₁ = Branch b₁ g
 
-    t₁-refines-t₀ : (a : stage D) → a ≤[ P ] leaves t₁ → down P (leaves t₀) a
+    t₁-refines-t₀ : (a : stage D) → a ≤[ P ] leaves t₁ → a ≤[ P ] leaves t₀
     t₁-refines-t₀ a ((o , os′) , a≤leaves-t₁-os) = (o₀ , os₀) , a⊑leaf-t₀-at-o₀-os₀
       where
         rev-o₀≤sat-b₀ : revise D o ≤[ P ] (outcome D b₀ , revise D)
