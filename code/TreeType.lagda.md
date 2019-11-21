@@ -290,9 +290,6 @@ IsSimulation D@(P , _) =
 ```
 
 ```
-singleton : (D : Discipline ℓ₀ ℓ₁) {s : stage D} → exp D s → experiment⋆ D s
-singleton D e = Branch e (Leaf ∘ revise D)
-
 sim⇒sim⋆ : (D : Discipline ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
 sim⇒sim⋆ D@(PS , prog) _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
   where
