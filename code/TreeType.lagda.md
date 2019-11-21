@@ -321,14 +321,14 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
         rev-o₀≤sat-b₀ : revise D o₁ ≤[ P ] (outcome D b₀ , revise D)
         rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , (⊑-refl _))
 
-        o⋆ : outcome D b₀
-        o⋆ = proj₁ rev-o₀≤sat-b₀
+        o₀ : outcome D b₀
+        o₀ = proj₁ rev-o₀≤sat-b₀
 
-        foo : revise D o₁ ⊑ revise D o⋆ holds
+        foo : revise D o₁ ⊑ revise D o₀ holds
         foo = proj₂ rev-o₀≤sat-b₀
 
-        IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o⋆)
-        IH = sim⇒sim⋆ D D-sim (revise D o⋆) (revise D o₁) foo (f o⋆)
+        IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
+        IH = sim⇒sim⋆ D D-sim (revise D o₀) (revise D o₁) foo (f o₀)
 
     t₁ = Branch b₁ g
 
