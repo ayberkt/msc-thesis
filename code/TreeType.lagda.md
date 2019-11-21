@@ -333,22 +333,22 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
     t₁ = Branch b₁ g
 
     t₁-refines-t₀ : (a : stage D) → a ≤[ P ] leaves t₁ → a ≤[ P ] leaves t₀
-    t₁-refines-t₀ a ((o , os′) , a≤leaves-t₁-os) = (o₀ , os₀) , a⊑leaf-t₀-at-o₀-os₀
+    t₁-refines-t₀ a ((o₁ , os₁) , a≤leaves-t₁-os) = (o₀ , os₀) , a⊑leaf-t₀-at-o₀-os₀
       where
-        rev-o₀≤sat-b₀ : revise D o ≤[ P ] (outcome D b₀ , revise D)
-        rev-o₀≤sat-b₀ = φ (revise D o) (o , ⊑-refl _)
+        rev-o₀≤sat-b₀ : revise D o₁ ≤[ P ] (outcome D b₀ , revise D)
+        rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , ⊑-refl _)
 
         o₀ : outcome D b₀
         o₀ = proj₁ rev-o₀≤sat-b₀
 
-        IH : Σ[ t′ ∈ experiment⋆ D (revise D o) ] refines D t′ (f o₀)
-        IH = sim⇒sim⋆ D D-sim (revise D o₀) _ (proj₂ (φ _ (o , ⊑-refl _))) (f o₀)
+        IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
+        IH = sim⇒sim⋆ D D-sim (revise D o₀) _ (proj₂ (φ _ (o₁ , ⊑-refl _))) (f o₀)
 
         os₀ : location⋆ (f o₀)
-        os₀ = proj₁ (proj₂ IH a (os′ , a≤leaves-t₁-os))
+        os₀ = proj₁ (proj₂ IH a (os₁ , a≤leaves-t₁-os))
 
         a⊑leaf-t₀-at-o₀-os₀ : a ⊑ (leaves t₀ € (o₀ , os₀)) holds
-        a⊑leaf-t₀-at-o₀-os₀ = proj₂ ((proj₂ IH) a (os′ , a≤leaves-t₁-os))
+        a⊑leaf-t₀-at-o₀-os₀ = proj₂ ((proj₂ IH) a (os₁ , a≤leaves-t₁-os))
 ```
 
 # Formal Topology
