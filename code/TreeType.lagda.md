@@ -318,7 +318,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
     g : (o₁ : location (post D) b₁) → experiment⋆ D (revise D o₁)
     g o₁ = proj₁ IH
       where
-        rev-o₀≤sat-b₀ : (revise D o₁) ≤[ P ] (outcome D b₀ , revise D)
+        rev-o₀≤sat-b₀ : revise D o₁ ≤[ P ] (outcome D b₀ , revise D)
         rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , (⊑-refl _))
 
         o⋆ : outcome D b₀
@@ -327,7 +327,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
         foo : revise D o₁ ⊑ revise D o⋆ holds
         foo = proj₂ rev-o₀≤sat-b₀
 
-        IH : Σ[ t′ ∈ (experiment⋆ D (revise D o₁)) ] refines D t′ (f o⋆)
+        IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o⋆)
         IH = sim⇒sim⋆ D D-sim (revise D o⋆) (revise D o₁) foo (f o⋆)
 
     t₁ = Branch b₁ g
