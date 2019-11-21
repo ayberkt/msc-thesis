@@ -315,7 +315,7 @@ sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
       → a ≤[ P ] (outcome D b₁ , revise D) → a ≤[ P ] (outcome D b₀ , revise D)
     φ = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    g : (o₁ : location (post D) b₁) → experiment⋆ D (revise D o₁)
+    g : (o₁ : outcome D b₁) → experiment⋆ D (revise D o₁)
     g o₁ = proj₁ IH
       where
         rev-o₀≤sat-b₀ : revise D o₁ ≤[ P ] (outcome D b₀ , revise D)
