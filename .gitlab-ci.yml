@@ -6,7 +6,7 @@ before_script:
 test:
   script:
   - agda --version
-  - agda Report.lagda.md
+  - ./check.sh
 
 pages:
   script:
