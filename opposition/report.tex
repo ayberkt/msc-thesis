@@ -1,19 +1,11 @@
 \documentclass[a4paper, 11pt]{article}
-%\usepackage{simplemargins}
 
-%\usepackage[square]{natbib}
 \usepackage[margin=1in]{geometry}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{\baselineskip}
 
 \usepackage{fontspec}
-\setmainfont{Linux Libertine}
-\setsansfont{Linux Biolinum}
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\usepackage{newtxtext,newtxmath}
 
 \begin{document}
 \pagenumbering{gobble}
@@ -24,13 +16,14 @@
 \vspace{5pt}
 
 \large Ayberk Tosun (MPALG)\\
+\texttt{ayberk@student.chalmers.se}
 \end{center}
 
 \normalsize
 
-Thesis: \textbf{A Reflexive Graph Model of Sized Types}.
+\noindent Thesis: \textbf{A Reflexive Graph Model of Sized Types}.
 
-Author of Thesis: \textbf{Jannis Limperg}.
+\noindent Author of Thesis: \textbf{Jannis Limperg}.
 
 \section{Summary}
 
@@ -38,18 +31,98 @@ Author of Thesis: \textbf{Jannis Limperg}.
 %% What is the topic?
 %% What is the type of research done?
 %% What is the main result?
-The author develops a \emph{rational reconstruction} of the sized types technique that has
-been widely used in the world of dependently typed programming. As pointed out justly by
-the author, the sized types technique has not had a sound theoretical foundation which has
-led to bugs in proof assistants that use this technique. Attempting to provide a more
-well-principled foundation for sized type, the author studies sized types through a
-minimal \emph{calculus of sized types} that he terms \textsf{λST}.
+The author develops a \emph{rational reconstruction} of the sized types technique used in
+the Agda proof assistant for ensuring that no unbounded recursion takes place. Upon
+pointing out that the complexity of sized types has resulted in bugs and inconsistencies
+in Agda, the author goes on to study sized types by introducing a small calculus of sized
+types that he calls $\lambda$ST and focuses on the question of \emph{size irrelevance} for it:
+the requirement that sizes in types should not affect the runtime behaviour of programs.
+The main result is the construction of a parametric denotational model for $\lambda$ST which
+stands as evidence for size irrelevance.
 
 %% One small paragraph on what you liked about the thesis.
 %% What was well done in your point of view?
+The thesis, in general, provides a clear exposition of the subject matter that is precise
+yet easy to follow. Taking into account that it is not an easy task to ``informalise''
+mathematics developed in the \emph{extremely} rigorous setting of a formal proof
+assistant, the author accomplishes this task of presenting his denotational model
+concisely yet precisely. Furthermore, the focus on the denotational study of size
+irrelevance is a noteworthy contribution that will certainly be useful for showing size
+irrelevance (with respect to operational semantics) in more realistic languages.
 
-\section{Points of Critique}
+\section{Points of Critique}\label{sec:critique}
+
+Our main point of critique in the thesis is the lack of proofs about syntactically
+formulated properties of $\lambda$ST which is acknowledged by the author in Section 7.2,
+``future work''. Of course, it is a significant contribution to construct such a model of
+sized types but it was among our expectations to see the model connected back to syntactic
+notions. For any denotational model, we believe that questions of \emph{computational
+  adequacy}, for instance, should be considered to at least clarify the nature of the
+model that helps one investigate other properties (in this case: size irrelevance). As the
+author notes, the ideal accomplishment would be to connect the model back to an
+operational notion of size irrelevance but even without this, some connections to the
+operational behaviour could have been worked out.
+
+One may also expect to see a better account of the the inconsistencies sized types have
+led to in Agda. For instance, the author writes (in pg. 6)
+\begin{quote}
+  The culprit seems to be the highly dubious rule $n < \infty$, in particular $\infty < \infty$.
+  This rule makes the $<$ relation obviously non-well-founded (\ldots) but Agda assumes that
+  $<$ is well-founded.
+\end{quote}
+To the reader not familiar with the practical implementations of sized types, this remark
+sounds bizarre: how can Agda assume something that is clearly false? What is even more
+confusing is the phrasing of ``the culprit seems to be'': is it really not well-understood
+what these problems were caused by?
+
+Again in pg. 10, the author writes:
+\begin{quote}
+  This deviation is probably necessary considering that $\infty < \infty$ seems to be the root cause
+  of multiple inconsistencies in Agda (see Sec. 2.2).
+\end{quote}
+Again, it is striking to us that there is no certainty regarding what exactly \emph{is}
+the root cause of the problem and what exactly it is that needs to be done (rather than
+``probably'') to prevent them.
+
+If it was really caused by $\infty < \infty$ then why is it still in Agda? How was it permitted in
+the first place? Is it the case that it is harmless in a different setting and does not
+play well with something in Agda? If yes, what is that thing? We think all these questions
+are confusing to readers not familiar with the history of sized types in Agda and they
+should be answered a bit more explicitly.
+
+On a related note: it would have been a nice experiment to remove $\star$ from $\lambda$ST and add
+the rule $∞ < ∞$ instead and then show precisely what goes wrong by exhibiting a $\lambda$ST
+program that does not terminate. In this way, $\lambda$ST would also serve the task of
+clarifying what exactly goes wrong after we add the rule $\infty < \infty$ and how it is remedied by
+making the $<$ relation well-founded.
 
 \section{List of Questions}
+
+The points of critique mentioned in Sec. \ref{sec:critique} will be brought up as
+questions. We enumerate below some additional questions.
+
+\begin{enumerate}
+  \item The fact that $\uparrow \infty$ and $\uparrow \star$ are not less than any other size (pg. 10) seems a
+    bit strange. The author remarks (again, in pg. 10): ``we could alternatively disallow
+    them via the size typing rules, but would add much tedious code to the
+    formalisation''. Does the author think that these might be problematic in other
+    contexts? Might there be a system that naturally rules these out?
+  \item Following the previous question, the author writes: ``our definition of $<$
+    renders sizes of the form $\uparrow \ldots \uparrow \infty$ essentially useless: they are not less than any
+    other size and therefore cannot be used in most situations'' (pg. 10). It seems to us
+    that they cannot be used not in ``most situations'' but really in all situations. Can
+    the author provide an example of a situation where such a size is useful?
+  \item The author notes in pg. 13 that ``size quantification works essentially like
+    quantification in System F''. Is this an analogy that goes deep? For instance, would
+    it have been possible to define $\lambda$ST as a special case of System F.
+  \item It might also be interesting to prove that $\lambda$ST is equivalent to
+    $\lambda$-calculus (\emph{without} any kind of fixed point operator) augmented with the
+    corresponding induction/coinduction principles. Strong normalisation, which the author
+    mentions he did not have the time for, could be a corollary of this.
+  \item In pg. 25, the author notes that he can prove isomorphic PRGraph families to be
+    propositionally equal using univalence. Is univalence used elsewhere? In general, in
+    what other ways does the development benefit from being carried out in a univalent
+    setting.
+\end{enumerate}
 
 \end{document}
