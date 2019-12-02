@@ -302,6 +302,19 @@ pair⁼ {x = (x₀ , y₀)} {x₁ , y₁} (refl , refl) = refl
 postulate
   Σ-set : {A : Set ℓ} {B : A → Set ℓ′} → IsSet A → ((x : A) → IsSet (B x)) → IsSet (Σ A B)
 
+IsDecidable : (A : Set ℓ) → Set ℓ
+IsDecidable A = A ⊎ (A → ⊥)
+
+HasDecidableEquality : (A : Set ℓ) → Set ℓ
+HasDecidableEquality A = (x y : A) → IsDecidable (x ≡ y)
+
+decidable-≡⇒wconst-≡ : (A : Set ℓ) → HasDecidableEquality A → wconst-≡-endomaps A
+decidable-≡⇒wconst-≡ A _=A=_ x y with x =A= y
+decidable-≡⇒wconst-≡ A _=A=_ x y | inj₁ p = (λ _ → p) , λ _ _ → refl
+decidable-≡⇒wconst-≡ A _=A=_ x y | inj₂ p = id , (λ x=y _ → explode (p x=y))
+
+hedberg-theorem : (A : Set ℓ) → HasDecidableEquality A → IsSet A
+hedberg-theorem A _=A=_ = wconst-≡-endomap⇒set A (decidable-≡⇒wconst-≡ A _=A=_)
 ------------------------------------------------------------------------------------------
 -- POWERSETS
 ------------------------------------------------------------------------------------------

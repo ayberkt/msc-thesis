@@ -9,7 +9,8 @@ open Eq                  public using    (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning      public
 open import Data.Product public using (Σ; Σ-syntax; _,_; _×_; proj₁; proj₂)
 open import Data.Sum     public using (_⊎_; inj₁; inj₂)
-open import Data.Empty   public using (⊥)
+open import Data.Empty   public using    (⊥)
+                                renaming (⊥-elim to explode)
 open import Function     public using (_∘_; id; case_of_)
 open import Level        public
 
