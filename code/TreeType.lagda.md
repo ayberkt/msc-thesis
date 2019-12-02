@@ -354,7 +354,7 @@ A _formal topology_ is a discipline with the simulation property.
 
 ```
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
-FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulation⋆ D)
+FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulation D)
 
 cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
          → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
@@ -375,10 +375,10 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
     ψ (t , φ) = t₁ , conc-t₁↓⊆U
       where
         t₁ : experiment⋆ D a₁
-        t₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ t)
+        t₁ = proj₁ (sim⇒sim⋆ D D-sim a₀ a₁ a₀⊒a₁ t)
 
         t₁-sim : refines D t₁ t
-        t₁-sim = proj₂ (D-sim a₀ a₁ a₀⊒a₁ t)
+        t₁-sim = proj₂ (sim⇒sim⋆ D D-sim a₀ a₁ a₀⊒a₁ t)
 
         conc-t₁↓⊆U : (λ - → - ≤[ pos D ] leaves t₁) ⊆ (_holds ∘ U)
         conc-t₁↓⊆U a = φ a ∘ t₁-sim a
