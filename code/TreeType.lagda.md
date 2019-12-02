@@ -242,7 +242,7 @@ Ad-hoc notion of subset since there are some universe problems with `𝒫`. _Thi
 replaced with `𝒫` once it is properly generalised._
 
 ```
-_⊆_ : {X : Set ℓ} → (X → Set ℓ′) → (X → Set ℓ′) → Set (ℓ ⊔ ℓ′)
+_⊆_ : {X : Set ℓ} → (X → Set ℓ₀) → (X → Set ℓ₁) → Set (ℓ ⊔ ℓ₀ ⊔ ℓ₁)
 _⊆_ {X = X} U V = (x : X) → U x → V x
 ```
 
@@ -357,7 +357,7 @@ FormalTopology : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulation D)
 
 cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
-         → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁)) → Set (ℓ₀ ⊔ ℓ₁)
+         → stage (proj₁ 𝒯) → (stage (proj₁ 𝒯) → Ω ℓ₂) → Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
 cover-of 𝒯@(D , topo) a U =
   ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → - ≤[ pos D ] leaves t) ⊆ (_holds ∘ U) ∥
 
