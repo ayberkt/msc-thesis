@@ -5,6 +5,7 @@ module Homotopy where
 open import Common
 open import Unit
 open import Data.Bool using (Bool)
+open import Data.List using (List; _∷_; [])
 open import HLevels public
 
 private
@@ -315,6 +316,34 @@ decidable-≡⇒wconst-≡ A _=A=_ x y | inj₂ p = id , (λ x=y _ → explode (
 
 hedberg-theorem : (A : Set ℓ) → HasDecidableEquality A → IsSet A
 hedberg-theorem A _=A=_ = wconst-≡-endomap⇒set A (decidable-≡⇒wconst-≡ A _=A=_)
+
+List-set : {A : Set ℓ} → IsSet A → IsSet (List A)
+List-set {A = A} A-set = wconst-≡-endomap⇒set (List A) NTS
+  where
+    A-const-≡-endomap : wconst-≡-endomaps A
+    A-const-≡-endomap = set⇒wconst-≡-endomap A A-set
+
+    split₀ : {x y : A} {xs ys : List A} → (x ∷ xs) ≡ (y ∷ ys) → x ≡ y
+    split₀ refl = refl
+
+    split₁ : {x y : A} {xs ys : List A} → (x ∷ xs) ≡ (y ∷ ys) → xs ≡ ys
+    split₁ refl = refl
+
+    merge : {x y : A} {xs ys : List A} → x ≡ y → xs ≡ ys → (x ∷ xs) ≡ (y ∷ ys)
+    merge refl refl = refl
+
+    NTS : wconst-≡-endomaps (List A)
+    NTS []       []       = (λ x → refl) , (λ x x₁ → refl)
+    NTS []       (_ ∷ _)  = (λ x → x) , (λ x ())
+    NTS (x ∷ xs) []       = (λ x → x) , (λ x ())
+    NTS (x ∷ xs) (y ∷ ys) =
+      (λ eq → merge (proj₁ (A-const-≡-endomap x y) (split₀ eq) ) (proj₁ (NTS xs ys) (split₁ eq))) , φ
+      where
+        φ : (p q : x ∷ xs ≡ y ∷ ys) → merge (split₀ p) (proj₁ (NTS xs ys) (split₁ p))
+                                    ≡ merge (split₀ q) (proj₁ (NTS xs ys) (split₁ q))
+        φ p q rewrite proj₂ (A-const-≡-endomap x y) (split₀ p) (split₀ q)
+                    | proj₂ (NTS xs ys) (split₁ p) (split₁ q) = refl
+
 ------------------------------------------------------------------------------------------
 -- POWERSETS
 ------------------------------------------------------------------------------------------
