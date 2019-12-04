@@ -112,7 +112,7 @@ at `a₁`; we thus write `a₁ ⊑ a₀`.
 As we have already hinted, the point of this order is to view each nonterminal as a stage
 of information. In light of this view, `choose` will be analogous to learning something
 from an experiment which takes one from one stage to another (we will shortly introduce
-new terminology).
+more suggestive terminology).
 
 In order for this to make sense, though, we must require that choosing nonterminals always
 takes us to stages that are at least as refined as the current one. The intuitive reading
