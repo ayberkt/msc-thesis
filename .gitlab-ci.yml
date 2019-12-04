@@ -11,7 +11,7 @@ test:
 pages:
   script:
   - make
-  - mv html/TreeType.html html/index.html
+  - cp html/TreeType.html html/index.html
   - mv html ../public
   artifacts:
     paths:
