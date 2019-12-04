@@ -14,6 +14,9 @@ foo: html/TreeType.html
 	mv tmp/Main.html html
 	mv tmp/Frame.html html
 	mv tmp/Nucleus.html html
+	mv tmp/Homotopy.html html
+	mv tmp/Poset.html html
+	mv tmp/FormalTopologySambin.html html
 
 .PHONY:
 clean:
