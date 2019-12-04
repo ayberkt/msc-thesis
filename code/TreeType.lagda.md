@@ -471,123 +471,14 @@ lemma₂ {ℓ₀} {ℓ₁} 𝒯@(D , D-sim) U V a₀ a₁ a₂ a₂⊑a₀ a₂�
 # Baire space
 
 ```
-baire : (A : Set zero) → IsSet A → FormalTopology zero zero
-baire A A-set = ((List A , baire-pos) , post-system , perp) , sim
-  where
-    baire-pos : PosetStr zero zero (List A)
-    baire-pos = posetstr _⊑_  (List-set A-set) ⊑-refl ⊑-trans ⊑-antisym
-      where
-        _⊑_ : List A → List A → Ω zero
-        xs       ⊑ []       = ⊤ , ⊤-prop
-        []       ⊑ (_ ∷ _)  = ⊥ , ⊥-prop
-        (x ∷ xs) ⊑ (y ∷ ys) = (x ≡ y × xs ⊑ ys holds) , is-prop
-          where
-            is-prop : IsProp (x ≡ y × (xs ⊑ ys) holds)
-            is-prop = ×-resp-prop (x ≡ y) (xs ⊑ ys holds) (A-set x y ) (holds-prop (xs ⊑ ys))
-
-        ⊑-refl : (x : List A) → (x ⊑ x) holds
-        ⊑-refl []       = tt
-        ⊑-refl (x ∷ xs) = refl , ⊑-refl xs
-
-        ⊑-trans : (x y z : List A) → (x ⊑ y) holds → (y ⊑ z) holds → (x ⊑ z) holds
-        ⊑-trans x y [] x⊑y y⊑z = tt
-        ⊑-trans (x ∷ xs) (y ∷ ys) (z ∷ zs) x⊑y y⊑z =
-          (proj₁ x⊑y >>> proj₁ y⊑z) , ⊑-trans xs ys zs (proj₂ x⊑y) (proj₂ y⊑z)
-
-        ⊑-antisym : (x y : List A) → x ⊑ y holds → y ⊑ x holds → x ≡ y
-        ⊑-antisym []       []       _   _   = refl
-        ⊑-antisym (x ∷ xs) (.x ∷ ys) (refl , xs⊑ys) (_ , ys⊑xs) =
-          cong (λ - → x ∷ -) (⊑-antisym xs ys xs⊑ys ys⊑xs)
-
-    𝔭 : Poset zero zero
-    𝔭 = List A , baire-pos
-
-    post-system : IsAPostSystem (List A)
-    post-system = (λ _ → ⊤) , (λ _ → ⊤) , λ {xs} {_} _ → xs
-
-    perp : HasPerpetuation 𝔭 post-system
-    perp []       b c = tt
-    perp (x ∷ xs) b c = refl , (perp xs b c)
-
-    sim : IsSimulation (𝔭 , post-system , perp)
-    sim [] [] a₁⊑a₀ b₀ = tt , (λ x _ → tt , tt)
-    sim [] (x ∷ a₁) a₁⊑a₀ b₀ = tt , (λ x _ → tt , tt)
-    sim (x ∷ xs) (y ∷ ys) (x=y , ys⊑xs) b₀ = tt ,  NTS
-      where
-        open PosetStr baire-pos using (_⊑_; ⊑-trans)
-
-        NTS : down 𝔭 (⊤ , (λ tt → y ∷ ys)) ⊆ down 𝔭 (⊤ , (λ tt → x ∷ xs))
-        NTS (z ∷ zs) (tt , z=y , zs⊑ys) =
-          tt , (φ , ψ)
-          where
-            φ : z ≡ x
-            φ = begin z ≡⟨ z=y ⟩ y ≡⟨ x=y ⟩ x ∎
-
-            ψ : zs ⊑ xs holds
-            ψ = ⊑-trans zs ys xs zs⊑ys ys⊑xs
-
+-- TODO.
 ```
 
-# Stone space
+# Stone space from a Boolean algebra
 
 ```
--- Do this for any distributive lattice.
-{--
-ss : FormalTopology zero zero
-ss = (P , PS , perp) , sim
-  where
-    _⊑_ : Bool → Bool → Ω zero
-    _     ⊑ true  = ⊤ , ⊤-prop
-    false ⊑ _     = ⊤ , ⊤-prop
-    true  ⊑ false = ⊥ , ⊥-prop
-
-    ⊑-refl : (x : bool) → (x ⊑ x) holds
-    ⊑-refl false = tt
-    ⊑-refl true  = tt
-
-    ⊑-trans : (x y z : bool) → (x ⊑ y) holds → (y ⊑ z) holds → (x ⊑ z) holds
-    ⊑-trans false false false _ _ = tt
-    ⊑-trans false false true  _ _ = tt
-    ⊑-trans false true  true  _ _ = tt
-    ⊑-trans true  true  true  _ _ = tt
-
-    ⊑-antisym : (x y : bool) → (x ⊑ y) holds → (y ⊑ x) holds → x ≡ y
-    ⊑-antisym false false _ _ = refl
-    ⊑-antisym true true   _ _ = refl
-
-    p : poset zero zero
-    p = bool , posetstr _⊑_ bool-set ⊑-refl ⊑-trans ⊑-antisym
-
-    ps : isapostsystem bool
-    ps = expb , outb , revb
-     where
-        expb : bool → set
-        expb a = σ[ b₁ ∈ bool ] σ[ b₂ ∈ bool ] ((b₁ ∨ b₂) ≡ a) ⊎ a ≡ false
-
-        outb : {x : bool} → expb x → set
-        outb (inj₁ (b₀ , b₁ , p)) = bool
-        outb (inj₂ refl)          = ⊥
-
-        revb : {x : bool} {y : expb x} → outb y → bool
-        revb {y = inj₁ (b₀ , b₁ , p)} false = b₀
-        revb {y = inj₁ (b₀ , b₁ , p)} true  = b₁
-        revb {y = inj₂ refl} ()
-
-    perp : hasperpetuation p ps
-    perp false (inj₁ (false , false , _)) false = tt
-    perp false (inj₁ (false , false , _)) true  = tt
-    perp false (inj₂ refl) ()
-    perp true  b c = tt
-
-    sim : issimulation⋆ (p , ps , perp)
-    sim false false tt t₀ = t₀ , λ _ → id
-    sim true  true  tt t₀ = t₀ , (λ _ → id)
-    sim true  false tt (leaf true) = leaf false , λ _ _ → ∣ tt , tt ∣
-    sim true  false tt (branch (inj₁ (b₀ , b₁ , p)) f) = {!branch!} , {!!}
---}
+-- TODO.
 ```
-
-Another example: trying to define Baire space.
 
 ```
 -- --}
