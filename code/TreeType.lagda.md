@@ -411,7 +411,7 @@ merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-
         a⊑a₁ = a ⊑⟨ a⊑a₂ ⟩ a₂ ⊑⟨ a₂⊑a₁ ⟩ a₁ ■
 
 ψ-lemma 𝒯@(D@(P , (_ , perp)) , D-sim) U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ (t₀ , p) (Branch b₁ g , q) =
-  Branch b₂ h , {!!}
+  Branch b₂ h , NTS
   where
   open PosetStr (proj₂ (pos D)) using (_⊑⟨_⟩_; _■; ⊑-refl)
 
@@ -436,7 +436,7 @@ merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-
       rev-o₂⊑rev-o₁ = proj₂ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , ⊑-refl _))
 
   NTS : (λ - → - ≤[ pos D ](leaves (Branch b₂ h))) ⊆ (_holds ∘ (U ∩ V))
-  NTS a′ a′≤leaves-t₂@((o₂ , os₂) , cut) =  p a′ α  , q a′ β
+  NTS a′ a′≤leaves-t₂@((o₂ , os₂) , cut) = p a′ α  , q a′ β
     where
       o₁ : outcome D b₁
       o₁ = proj₁ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , (⊑-refl (revise D o₂))))
@@ -445,20 +445,17 @@ merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-
       rev-o₂⊑rev-o₁ = proj₂ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , ⊑-refl _))
 
       α : a′ ≤[ pos D ] (leaves t₀)
-      α = os-t₀ , {!!}
-        where
-          os-t₀ : outcome⋆ {D = D} t₀
-          os-t₀ = proj₁ (proj₂ (sim⇒sim⋆ D D-sim a₀ a₂ a₂⊑a₀ t₀) {!!} ({!!} , {!!}))
+      α = {!!} , {!!}
 
       β : a′ ≤[ pos D ] (leaves (Branch b₁ g))
-      β = (o₁ , os-on-g-o₁) , foo
+      β = (o₁ , os-on-g-o₁) , a⊑leaves-t₁€o₁-os-on-g-o₁
         where
 
           os-on-g-o₁ : outcome⋆ {D = D} (g o₁)
           os-on-g-o₁ = proj₁ (proj₂ (sim⇒sim⋆ D D-sim (revise D o₁) (revise D o₂) rev-o₂⊑rev-o₁ (g o₁)) a′ (os₂ , cut))
 
-          foo : a′ ⊑[ pos D ] (leaves (Branch b₁ g) € (o₁ , os-on-g-o₁)) holds
-          foo = proj₂ (proj₂ (sim⇒sim⋆ D D-sim (revise D o₁) (revise D o₂) rev-o₂⊑rev-o₁ (g o₁)) a′ (os₂ , cut))
+          a⊑leaves-t₁€o₁-os-on-g-o₁ : a′ ⊑[ pos D ] (leaves (Branch b₁ g) € (o₁ , os-on-g-o₁)) holds
+          a⊑leaves-t₁€o₁-os-on-g-o₁ = proj₂ (proj₂ (sim⇒sim⋆ D D-sim (revise D o₁) (revise D o₂) rev-o₂⊑rev-o₁ (g o₁)) a′ (os₂ , cut))
 
 ψ-lemma 𝒯@(D , D-sim) U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ (Branch b₀ f , p) t₁ = {!!}
 
