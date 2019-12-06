@@ -388,95 +388,27 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
 merge : {A : Set ℓ} {B : Set ℓ′} → ∥ A ∥ → ∥ B ∥ → ∥ A × B ∥
 merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-prop _) (λ b → ∣ a , b ∣) ∣b∣) ∣a∣
 
-ψ-lemma : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
-        → let D = proj₁ 𝒯 in (a₀ a₁ a₂ : stage (proj₁ 𝒯))
-        → a₂ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₂ ⊑[ pos (proj₁ 𝒯) ] a₁ holds
-        → Σ (experiment⋆ D a₀) (λ - → down (pos D) (leaves -) ⊆ (_holds ∘ U))
-        → Σ (experiment⋆ D a₁) (λ - → down (pos D) (leaves -) ⊆ (_holds ∘ V))
-        → Σ (experiment⋆ D a₂) (λ - → down (pos D) (leaves -) ⊆ (_holds ∘ (U ∩ V)))
-
-ψ-lemma 𝒯 U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ (Leaf a₀   , p) (Leaf a₁   , q) = Leaf a₂ , ⊑a₂⇒∈V
+new-lemma : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
+          → let D = proj₁ 𝒯 in (a : stage (proj₁ 𝒯))
+          → Σ[ t₀ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
+             (λ - → - ≤[ pos D ] (leaves {D = post D} t₀)) ⊆ (_holds ∘ U)
+          → Σ[ t₁ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
+             (λ - → - ≤[ pos D ] (leaves {D = post D} t₁)) ⊆ (_holds ∘ V)
+          → Σ[ t₂ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
+             (λ - → - ≤[ pos D ] (leaves {D = post D} t₂)) ⊆ (_holds ∘ (U ∩ V))
+new-lemma 𝒯@(D , _) U V a (Leaf   a₀   , p) (Leaf   a₁   , q) = {!!}
+new-lemma 𝒯@(D , _) U V a (Leaf   a₀   , p) (Branch b₁ g , q) = {!!} , {!!}
+new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Leaf   a₁   , q) = {!!} , {!!}
+new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Branch b₁ g , q) = {!!} , {!!}
   where
-    D = proj₁ 𝒯
-    open PosetStr (proj₂ (pos D)) using (_⊑⟨_⟩_; _■)
+    b₂ : exp D a
+    b₂ = {!!}
 
-    ⊑a₂⇒∈V : (a : ∣ pos D ∣ₚ)
-        → a ≤[ pos D ] leaves {D = post D} (Leaf a₂) → (U ∩ V) a holds
-    ⊑a₂⇒∈V a (tt , a⊑a₂) = p a (tt , a⊑a₀) , q a (tt , a⊑a₁)
-      where
-        a⊑a₀ : a ⊑[ pos D ] a₀ holds
-        a⊑a₀ = a ⊑⟨ a⊑a₂ ⟩ a₂ ⊑⟨ a₂⊑a₀ ⟩ a₀  ■
-
-        a⊑a₁ : a ⊑[ pos D ] a₁ holds
-        a⊑a₁ = a ⊑⟨ a⊑a₂ ⟩ a₂ ⊑⟨ a₂⊑a₁ ⟩ a₁ ■
-
-ψ-lemma 𝒯@(D@(P , (_ , perp)) , D-sim) U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ (t₀ , p) (Branch b₁ g , q) =
-  Branch b₂ h , NTS
-  where
-  open PosetStr (proj₂ (pos D)) using (_⊑⟨_⟩_; _■; ⊑-refl)
-
-  simres : Σ[ b₂ ∈ (exp D a₂) ]  (λ - → - ≤[ pos D ] (outcome D b₂ , revise D))
-                               ⊆ (λ - → - ≤[ pos D ] (outcome D b₁ , revise D))
-  simres = D-sim a₁ a₂ a₂⊑a₁ b₁
-
-  b₂ : exp D a₂
-  b₂ = proj₁ simres
-
-  ≤-out-b₂⇒≤-out-b₁ : (λ - → - ≤[ pos D ] (outcome D b₂ , revise D))
-                    ⊆ (λ - → - ≤[ pos D ] (outcome D b₁ , revise D))
-  ≤-out-b₂⇒≤-out-b₁ = proj₂ simres
-
-  h : (o₂ : outcome D b₂) → experiment⋆ D (revise D o₂)
-  h o₂ = proj₁ (sim⇒sim⋆ D D-sim (revise D o₁) (revise D o₂) rev-o₂⊑rev-o₁ (g o₁))
-    where
-      o₁ : outcome D b₁
-      o₁ = proj₁ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , (⊑-refl (revise D o₂))))
-
-      rev-o₂⊑rev-o₁ : revise D o₂ ⊑[ pos D ] revise D o₁ holds
-      rev-o₂⊑rev-o₁ = proj₂ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , ⊑-refl _))
-
-  NTS : (λ - → - ≤[ pos D ](leaves (Branch b₂ h))) ⊆ (_holds ∘ (U ∩ V))
-  NTS a′ a′≤leaves-t₂@((o₂ , os₂) , cut) = p a′ α  , q a′ β
-    where
-      o₁ : outcome D b₁
-      o₁ = proj₁ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , (⊑-refl (revise D o₂))))
-
-      rev-o₂⊑rev-o₁ : revise D o₂ ⊑[ pos D ] revise D o₁ holds
-      rev-o₂⊑rev-o₁ = proj₂ (≤-out-b₂⇒≤-out-b₁ (revise D o₂) (o₂ , ⊑-refl _))
-
-      α : a′ ≤[ pos D ] (leaves t₀)
-      α = {!!} , {!!}
-
-      β : a′ ≤[ pos D ] (leaves (Branch b₁ g))
-      β = (o₁ , os-on-g-o₁) , a⊑leaves-t₁€o₁-os-on-g-o₁
-        where
-
-          os-on-g-o₁ : outcome⋆ {D = D} (g o₁)
-          os-on-g-o₁ = proj₁ (proj₂ (sim⇒sim⋆ D D-sim (revise D o₁) (revise D o₂) rev-o₂⊑rev-o₁ (g o₁)) a′ (os₂ , cut))
-
-          a⊑leaves-t₁€o₁-os-on-g-o₁ : a′ ⊑[ pos D ] (leaves (Branch b₁ g) € (o₁ , os-on-g-o₁)) holds
-          a⊑leaves-t₁€o₁-os-on-g-o₁ = proj₂ (proj₂ (sim⇒sim⋆ D D-sim (revise D o₁) (revise D o₂) rev-o₂⊑rev-o₁ (g o₁)) a′ (os₂ , cut))
-
-ψ-lemma 𝒯@(D , D-sim) U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ (Branch b₀ f , p) t₁ = {!!}
-
-lemma₂ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
-       → (a₀ a₁ a₂ : stage (proj₁ 𝒯))
-       → a₂ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₂ ⊑[ pos (proj₁ 𝒯) ] a₁ holds
-       → a₀ ◀[ 𝒯 ] U → a₁ ◀[ 𝒯 ] V → a₂ ◀[ 𝒯 ] (U ∩ V)
-lemma₂ {ℓ₀} {ℓ₁} 𝒯@(D , D-sim) U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ a₀◀U a₁◀V =
-  ∥∥-rec (∥∥-prop _) φ (merge a₀◀U a₁◀V)
-  where
-    open PosetStr (proj₂ (pos D)) using (_⊑⟨_⟩_; _■; ⊑-refl)
-
-    D-prog : HasPerpetuation (pos D) (proj₁ (proj₂ D))
-    D-prog = proj₂ (proj₂ D)
-
-    _◀_ : stage D → (stage D → Ω ℓ₀) → Set (ℓ₀ ⊔ ℓ₁)
-    _◀_ =  λ a U → a ◀[ 𝒯 ] U
-
-    φ : Σ-syntax (experiment⋆ D a₀) (λ t → down (pos D) (leaves t) ⊆ (λ x → U x holds)) × Σ-syntax (experiment⋆ D a₁) (λ t → down (pos D) (leaves t) ⊆ (λ x → V x holds))
-      → ∥ Σ-syntax (experiment⋆ D a₂) (λ t → down (pos D) (leaves t) ⊆ (λ x → (U ∩ V) x holds)) ∥
-    φ x = ∣ ψ-lemma 𝒯 U V a₀ a₁ a₂ a₂⊑a₀ a₂⊑a₁ (proj₁ x) (proj₂ x) ∣
+hauptsatz : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
+          → let D = proj₁ 𝒯 in (a : stage (proj₁ 𝒯))
+          → a ◀[ 𝒯 ] U → a ◀[ 𝒯 ] V → a ◀[ 𝒯 ] (U ∩ V)
+hauptsatz 𝒯 U V a a◀U a◀V =
+  ∥∥-rec (∥∥-prop _) (λ p → ∥∥-rec (∥∥-prop _) (λ q → ∣ new-lemma 𝒯 U V a p q ∣) a◀V) a◀U
 ```
 
 # Baire space
