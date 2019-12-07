@@ -396,13 +396,18 @@ new-lemma : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ �
              (λ - → - ≤[ pos D ] (leaves {D = post D} t₁)) ⊆ (_holds ∘ V)
           → Σ[ t₂ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
              (λ - → - ≤[ pos D ] (leaves {D = post D} t₂)) ⊆ (_holds ∘ (U ∩ V))
-new-lemma 𝒯@(D , _) U V a (Leaf   a₀   , p) (Leaf   a₁   , q) = {!!}
+new-lemma 𝒯@(D , _) U V a (Leaf   a    , p) (Leaf   a    , q) = (Leaf a) , NTS
+  where
+    NTS : (x : stage D) → down (pos D) (leaves {D = post D} (Leaf a)) x → (((U ∩ V) x) holds)
+    NTS x (os , x⊑leaves-Leaf-a€os) = (p x (tt , x⊑leaves-Leaf-a€os)) , q x (tt , x⊑leaves-Leaf-a€os)
 new-lemma 𝒯@(D , _) U V a (Leaf   a₀   , p) (Branch b₁ g , q) = {!!} , {!!}
 new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Leaf   a₁   , q) = {!!} , {!!}
-new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Branch b₁ g , q) = {!!} , {!!}
+new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Branch b₁ g , q) =
+  append (post D) a (Branch b₀ f) h , {!!}
   where
-    b₂ : exp D a
-    b₂ = {!!}
+    h : (o : outcome⋆ {D = D} (Branch b₀ f))
+      → experiment⋆ D (choose⋆ (Branch b₀ f) o)
+    h o = {!g!}
 
 hauptsatz : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
           → let D = proj₁ 𝒯 in (a : stage (proj₁ 𝒯))
