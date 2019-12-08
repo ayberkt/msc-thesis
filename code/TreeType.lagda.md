@@ -388,6 +388,25 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
 merge : {A : Set ℓ} {B : Set ℓ′} → ∥ A ∥ → ∥ B ∥ → ∥ A × B ∥
 merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-prop _) (λ b → ∣ a , b ∣) ∣b∣) ∣a∣
 
+append-lemma₀ : (D : Discipline ℓ₀ ℓ₁)
+              → (a a′ : stage D)
+              → (t : experiment⋆ D a)
+              → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+              → a′ ≤[ pos D ] (leaves (append (post D) a t f))
+              → a′ ≤[ pos D ] (leaves t)
+append-lemma₀ D a a′ (Leaf   a)   f (os , snd) =
+  tt , (a′ ⊑⟨ snd ⟩ leaves (append (post D) a (Leaf a) f) € os ⊑⟨ prog⇒prog⋆ D a (f tt) os ⟩ a ■)
+  where
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+append-lemma₀ D a a′ (Branch b g) f ((o , os) , snd) =
+  (o , proj₁ IH) , proj₂ IH
+  where
+    IH : down (pos D) (leaves (g o)) a′
+    IH = append-lemma₀ D (revise D o) a′ (g o) f′ (os , snd)
+      where
+        f′ : (os₁ : outcome⋆ {D = D} (g o)) → experiment⋆ D (choose⋆ (g o) os₁)
+        f′ os′ = f (o , os′)
+
 new-lemma : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
           → let D = proj₁ 𝒯 in (a : stage (proj₁ 𝒯))
           → Σ[ t₀ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
@@ -399,15 +418,55 @@ new-lemma : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ �
 new-lemma 𝒯@(D , _) U V a (Leaf   a    , p) (Leaf   a    , q) = (Leaf a) , NTS
   where
     NTS : (x : stage D) → down (pos D) (leaves {D = post D} (Leaf a)) x → (((U ∩ V) x) holds)
-    NTS x (os , x⊑leaves-Leaf-a€os) = (p x (tt , x⊑leaves-Leaf-a€os)) , q x (tt , x⊑leaves-Leaf-a€os)
-new-lemma 𝒯@(D , _) U V a (Leaf   a₀   , p) (Branch b₁ g , q) = {!!} , {!!}
-new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Leaf   a₁   , q) = {!!} , {!!}
-new-lemma 𝒯@(D , _) U V a (Branch b₀ f , p) (Branch b₁ g , q) =
-  append (post D) a (Branch b₀ f) h , {!!}
+    NTS x (os , γ) = (p x (tt , γ)) , q x (tt , γ)
+new-lemma 𝒯@(D@(_ , (_ , prog)) , _) U V a (Leaf   a    , p) (Branch b₁ g , q) = Branch b₁ g , NTS
   where
-    h : (o : outcome⋆ {D = D} (Branch b₀ f))
-      → experiment⋆ D (choose⋆ (Branch b₀ f) o)
-    h o = {!g!}
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+
+    NTS : (x : stage D) → down (pos D) (leaves (Branch b₁ g)) x → (_holds ∘ (U ∩ V)) x
+    NTS a′ ((o , os) , γ) = p a′ α , q a′ β
+      where
+        α : Σ (outcome⋆ {D = D} (Leaf a)) (λ os → a′ ⊑[ pos D ] ((leaves {D = post D} (Leaf a)) € os) holds)
+        α = tt , (a′ ⊑⟨ γ ⟩ (leaves (Branch b₁ g)) € (o , os) ⊑⟨ prog⇒prog⋆ D (revise D  o) (g o) os ⟩ choose (post D) o ⊑⟨ prog a b₁ o ⟩ a ■)
+
+        β : Σ (outcome⋆ {D = D} (Branch b₁ g)) (λ os → a′ ⊑[ pos D ] ((leaves {D = post D} (Branch b₁ g)) € os) holds)
+        β = (o , os) , γ
+
+new-lemma 𝒯@(D@(_ , (_ , prog)) , _) U V a (Branch b₀ f , p) (Leaf   a₁   , q) = Branch b₀ f , NTS
+  where
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+
+    NTS : (x : stage D) → down (pos D) (leaves (Branch b₀ f)) x → ((U ∩ V) x) holds
+    NTS a′ ((o , os) , γ) = p a′ α , q a′ β
+      where
+        α : Σ (outcome⋆ {D = D} (Branch b₀ f)) (λ i → a′ ⊑[ pos D ] ((leaves (Branch b₀ f)) € i) holds)
+        α = (o , os) , γ
+
+        β : Σ (outcome⋆ {D = D} (Leaf a)) (λ i → a′ ⊑[ pos D ] (proj₂ (leaves {D = post D} (Leaf a)) i) holds)
+        β = tt , (a′ ⊑⟨ γ ⟩ leaves (Branch b₀ f) € (o , os) ⊑⟨ prog⇒prog⋆ D (revise D o) (f o) os ⟩ revise D o ⊑⟨ prog a b₀ o ⟩ a ■)
+
+new-lemma 𝒯@(D@(_ , (_ , prog)) , D-sim) U V a (t@(Branch b₀ f) , p) (t′@(Branch b₁ g) , q) =
+  append (post D) a t h , NTS
+  where
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■; ⊑-refl)
+
+    sim⋆ : (os : outcome⋆ {D = D} t) → Σ (experiment⋆ D (choose⋆ t os)) (λ t₁ → t₁ ℛ[ D ] t′)
+    sim⋆ os = sim⇒sim⋆ D D-sim a (choose⋆ t os) (prog⇒prog⋆ D a t os) t′
+
+    h : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os)
+    NTS : (x : stage D)
+        → x ≤[ pos D ] leaves (append (post D) a t h)
+        → (_holds ∘ (U ∩ V)) x
+
+    h os = proj₁ (sim⋆ os)
+
+    NTS a′ (os@(o , os′) , a′≤leaves-t) = (p a′ α) , (q a′ β)
+      where
+        α : a′ ≤[ pos D ] (leaves t)
+        α = append-lemma₀ D a a′ (Branch b₀ f) h (os , a′≤leaves-t)
+
+        β : a′ ≤[ pos D ] (leaves t′)
+        β = {!!}
 
 hauptsatz : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
           → let D = proj₁ 𝒯 in (a : stage (proj₁ 𝒯))
