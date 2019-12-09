@@ -433,12 +433,6 @@ bisect₁-lemma D@(_ , _ , prog) a a′ (Branch b f) g ((o , os) , q) = NTS
         quux = a′                                                      ⊑⟨ q ⟩
                leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os ■
 
-    -- NTS : a′ ≤[ pos D ] (leaves (g (o , bisect₀ D (revise D o) (f o) (λ os′ → g (o , os′)) os)))
-    -- NTS = bisect₁-lemma D (revise D o) a′ (f o) (λ v → g (o , v)) (os , quux) os
-      -- where
-        -- quux : a′ ⊑[ pos D ] (leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os) holds
-        -- quux = a′ ⊑⟨ q ⟩ leaves (append (post D) a (Branch b f) g) € os′ ⊑⟨ {!!} ⟩ leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os ■
-
 append-lemma₀ : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
               → (t : experiment⋆ D a)
