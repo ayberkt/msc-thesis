@@ -129,6 +129,7 @@ bisect₁ D a (Leaf a)     g os       = os
 bisect₁ D a (Branch b f) g (o , os) = bisect₁ D (choose D o) (f o) (λ os′ → g (o , os′)) os
 ```
 
+
 # Perpetuation
 
 Given a Post system, we will now require an order on the nonterminals representing whether
@@ -415,24 +416,6 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
 merge : {A : Set ℓ} {B : Set ℓ′} → ∥ A ∥ → ∥ B ∥ → ∥ A × B ∥
 merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-prop _) (λ b → ∣ a , b ∣) ∣b∣) ∣a∣
 
-bisect₁-lemma : (D : Discipline ℓ₀ ℓ₁)
-              → (a a′ : stage D)
-              → (t : experiment⋆ D a)
-              → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-              → (γ : a′ ≤[ pos D ] leaves (append (post D) a t f))
-              → a′ ≤[ pos D ] leaves (f (bisect₀ (post D) a t f (proj₁ γ)))
-bisect₁-lemma D a a′ (Leaf .a)    g p = p
-bisect₁-lemma D@(_ , _ , prog) a a′ (Branch b f) g ((o , os) , q) = NTS
-  where
-    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
-
-    NTS : a′ ≤[ pos D ] (leaves (g (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → g (o , os′)) os)))
-    NTS = bisect₁-lemma D (revise D o) a′ (f o) (λ os⋆ → g (o , os⋆)) (os , quux)
-      where
-        quux : a′ ⊑[ pos D ] (leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os) holds
-        quux = a′                                                      ⊑⟨ q ⟩
-               leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os ■
-
 append-lemma₀ : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
               → (t : experiment⋆ D a)
@@ -483,6 +466,16 @@ is-prefix-of D a (Branch b x) f (o , os) (o′ , os′) =
 
     NTS : o ≡ o′ → outcome⋆ {D = D} (x o′)
     NTS refl = os
+
+bisect₁-lemma : (D : Discipline ℓ₀ ℓ₁)
+              → (a a′ : stage D)
+              → (t : experiment⋆ D a)
+              → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+              → (γ : a′ ≤[ pos D ] leaves (append (post D) a t f))
+              → a′ ≤[ pos D ] leaves (f (bisect₀ (post D) a t f (proj₁ γ)))
+bisect₁-lemma D a a′ (Leaf   a)   g p              = p
+bisect₁-lemma D a a′ (Branch b f) g ((o , os) , q) =
+  bisect₁-lemma D (revise D o) a′ (f o) (λ os′ → g (o , os′)) (os , q)
 
 append-lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁)
               → (a a′ : stage (proj₁ 𝒯))
