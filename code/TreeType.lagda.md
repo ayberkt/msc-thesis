@@ -102,6 +102,33 @@ append D a (Leaf   a)   g = g tt
 append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - → g (c , -))
 ```
 
+If we have a `Production⋆` constructed using `append`, we can take a sequence of outcomes
+on it and then **bisect** these outcomes to obtain two different sequences of outcomes:
+(1) one for the `Production⋆` we are appending onto, and (2) one for every `Production⋆`
+appended under the one in (1). We give these in `bisect₀` and `bisect₁` respectively.
+
+```
+bisect₀ : (D : PostSystem ℓ)
+        → (a : nonterminal D)
+        → (t : Production⋆ D a)
+        → (f : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
+        → location⋆ {D = D} (append D a t f)
+        → location⋆ {D = D} t
+bisect₀ D a (Leaf   a)   g os       = tt
+bisect₀ D a (Branch b f) g (o , os) = o , bisect₀ D (choose D o) (f o) (λ - → g (o , -)) os
+```
+
+```
+bisect₁ : (D : PostSystem ℓ)
+        → (a : nonterminal D)
+        → (t : Production⋆ D a)
+        → (g : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
+        → (os : location⋆ {D = D} (append D a t g))
+        → location⋆ {D = D} (g (bisect₀ D a t g os))
+bisect₁ D a (Leaf a)     g os       = os
+bisect₁ D a (Branch b f) g (o , os) = bisect₁ D (choose D o) (f o) (λ os′ → g (o , os′)) os
+```
+
 # Perpetuation
 
 Given a Post system, we will now require an order on the nonterminals representing whether
@@ -388,37 +415,18 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
 merge : {A : Set ℓ} {B : Set ℓ′} → ∥ A ∥ → ∥ B ∥ → ∥ A × B ∥
 merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-prop _) (λ b → ∣ a , b ∣) ∣b∣) ∣a∣
 
-bisect₀ : (D : Discipline ℓ₀ ℓ₁)
-        → (a : stage D)
-        → (t : experiment⋆ D a)
-        → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-        → outcome⋆ {D = D} (append (post D) a t f)
-        → outcome⋆ {D = D} t
-bisect₀ D a (Leaf   a)   g os       = tt
-bisect₀ D a (Branch b f) g (o , os) =
-  o , bisect₀ D (revise D o) (f o) (λ os′ → g (o , os′)) os
-
-bisect₁ : (D : Discipline ℓ₀ ℓ₁)
-        → (a : stage D)
-        → (t : experiment⋆ D a)
-        → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-        → (os : outcome⋆ {D = D} (append (post D) a t f))
-        → outcome⋆ {D = D} (f (bisect₀ D a t f os))
-bisect₁ D a (Leaf .a)    g os       = os
-bisect₁ D a (Branch b f) g (o , os) = bisect₁ D (revise D o) (f o) (λ os′ → g (o , os′)) os
-
 bisect₁-lemma : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
               → (t : experiment⋆ D a)
               → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
               → (γ : a′ ≤[ pos D ] leaves (append (post D) a t f))
-              → a′ ≤[ pos D ] leaves (f (bisect₀ D a t f (proj₁ γ)))
+              → a′ ≤[ pos D ] leaves (f (bisect₀ (post D) a t f (proj₁ γ)))
 bisect₁-lemma D a a′ (Leaf .a)    g p = p
 bisect₁-lemma D@(_ , _ , prog) a a′ (Branch b f) g ((o , os) , q) = NTS
   where
     open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
 
-    NTS : a′ ≤[ pos D ] (leaves (g (o , bisect₀ D (revise D o) (f o) (λ os′ → g (o , os′)) os)))
+    NTS : a′ ≤[ pos D ] (leaves (g (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → g (o , os′)) os)))
     NTS = bisect₁-lemma D (revise D o) a′ (f o) (λ os⋆ → g (o , os⋆)) (os , quux)
       where
         quux : a′ ⊑[ pos D ] (leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os) holds
@@ -497,7 +505,7 @@ append-lemma₁ 𝒯@(D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) ((o 
     open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
 
     NTS : a′ ≤[ pos D ] (leaves t′) 
-    NTS = proj₂ (sim⇒sim⋆ D D-sim a (choose⋆ t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)) L1 (Branch b′ (λ c → g c))) a′ final
+    NTS = proj₂ (sim⇒sim⋆ D D-sim a (choose⋆ t (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → h (o , os′)) os)) L1 (Branch b′ (λ c → g c))) a′ final
       where
         h : (os₁ : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os₁)
         h os⋆ = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os⋆) L0 t′)
@@ -506,13 +514,13 @@ append-lemma₁ 𝒯@(D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) ((o 
             L0 = prog⇒prog⋆ D a t os⋆
 
         OS : outcome⋆ {D = D} t
-        OS = (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)
+        OS = (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
         L1 : choose⋆ (Branch b f) OS ⊑[ pos D ] a holds
-        L1 = prog⇒prog⋆ D a t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)
+        L1 = prog⇒prog⋆ D a t (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
-        foo : outcome⋆ {D = D} (h (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os))
-        foo = bisect₁ D a t h (o , os) 
+        foo : outcome⋆ {D = D} (h (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → h (o , os′)) os))
+        foo = bisect₁ (post D) a t h (o , os) 
 
         final : a′ ≤[ pos D ] leaves (proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t OS) L1 t′))
         final = bisect₁-lemma D a a′ t h ((o , os) , γ)
