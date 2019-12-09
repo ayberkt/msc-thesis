@@ -411,10 +411,25 @@ bisect₁-lemma : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
               → (t : experiment⋆ D a)
               → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-              → a′ ≤[ pos D ] leaves (append (post D) a t f)
-              → (os : outcome⋆ {D = D} (append (post D) a t f))
-              → a′ ≤[ pos D ] leaves (f (bisect₀ D a t f os))
-bisect₁-lemma = {!!}
+              → (γ : a′ ≤[ pos D ] leaves (append (post D) a t f))
+              → a′ ≤[ pos D ] leaves (f (bisect₀ D a t f (proj₁ γ)))
+bisect₁-lemma D a a′ (Leaf .a)    g p = p
+bisect₁-lemma D@(_ , _ , prog) a a′ (Branch b f) g ((o , os) , q) = NTS
+  where
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+
+    NTS : a′ ≤[ pos D ] (leaves (g (o , bisect₀ D (revise D o) (f o) (λ os′ → g (o , os′)) os)))
+    NTS = bisect₁-lemma D (revise D o) a′ (f o) (λ os⋆ → g (o , os⋆)) (os , quux)
+      where
+        quux : a′ ⊑[ pos D ] (leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os) holds
+        quux = a′                                                      ⊑⟨ q ⟩
+               leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os ■
+
+    -- NTS : a′ ≤[ pos D ] (leaves (g (o , bisect₀ D (revise D o) (f o) (λ os′ → g (o , os′)) os)))
+    -- NTS = bisect₁-lemma D (revise D o) a′ (f o) (λ v → g (o , v)) (os , quux) os
+      -- where
+        -- quux : a′ ⊑[ pos D ] (leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os) holds
+        -- quux = a′ ⊑⟨ q ⟩ leaves (append (post D) a (Branch b f) g) € os′ ⊑⟨ {!!} ⟩ leaves (append (post D) (revise D o) (f o) (λ v → g (o , v))) € os ■
 
 append-lemma₀ : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
@@ -482,7 +497,7 @@ append-lemma₁ 𝒯@(D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) ((o 
     open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
 
     NTS : a′ ≤[ pos D ] (leaves t′) 
-    NTS = proj₂ (sim⇒sim⋆ D D-sim a (choose⋆ t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)) L1 (Branch b′ (λ c → g c))) a′ (foo , final)
+    NTS = proj₂ (sim⇒sim⋆ D D-sim a (choose⋆ t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)) L1 (Branch b′ (λ c → g c))) a′ final
       where
         h : (os₁ : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os₁)
         h os⋆ = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os⋆) L0 t′)
@@ -497,10 +512,13 @@ append-lemma₁ 𝒯@(D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) ((o 
         L1 = prog⇒prog⋆ D a t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
         foo : outcome⋆ {D = D} (h (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os))
-        foo =  bisect₁ D a t h (o , os) 
+        foo = bisect₁ D a t h (o , os) 
 
-        final : a′ ⊑[ pos D ] (leaves (proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ (Branch b f) OS) L1 (Branch b′ (λ c → g c)))) € foo) holds
-        final = {!append-lemma₁!}
+        final : a′ ≤[ pos D ] leaves (proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t OS) L1 t′))
+        final = bisect₁-lemma D a a′ t h ((o , os) , γ)
+
+        -- final : a′ ⊑[ pos D ] (leaves (proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ (Branch b f) OS) L1 (Branch b′ (λ c → g c)))) € foo) holds
+        -- final = {!append-lemma₁!}
 
     a′⊑a : a′ ⊑[ pos D ] a holds
     a′⊑a = a′ ⊑⟨ γ ⟩ leaves (concat 𝒯 a (Branch b f) (Branch b′ g)) € (o , os) ⊑⟨ prog⇒prog⋆ D a (concat 𝒯 a t t′) (o , os) ⟩ a ■
