@@ -416,25 +416,6 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
 merge : {A : Set ℓ} {B : Set ℓ′} → ∥ A ∥ → ∥ B ∥ → ∥ A × B ∥
 merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-prop _) (λ b → ∣ a , b ∣) ∣b∣) ∣a∣
 
-append-lemma₀ : (D : Discipline ℓ₀ ℓ₁)
-              → (a a′ : stage D)
-              → (t : experiment⋆ D a)
-              → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-              → a′ ≤[ pos D ] (leaves (append (post D) a t f))
-              → a′ ≤[ pos D ] (leaves t)
-append-lemma₀ D a a′ (Leaf   a)   f (os , snd) =
-  tt , (a′ ⊑⟨ snd ⟩ leaves (append (post D) a (Leaf a) f) € os ⊑⟨ prog⇒prog⋆ D a (f tt) os ⟩ a ■)
-  where
-    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
-append-lemma₀ D a a′ (Branch b g) f ((o , os) , snd) =
-  (o , proj₁ IH) , proj₂ IH
-  where
-    IH : down (pos D) (leaves (g o)) a′
-    IH = append-lemma₀ D (revise D o) a′ (g o) f′ (os , snd)
-      where
-        f′ : (os₁ : outcome⋆ {D = D} (g o)) → experiment⋆ D (choose⋆ (g o) os₁)
-        f′ os′ = f (o , os′)
-
 concat : (𝒯 : FormalTopology ℓ₀ ℓ₁)
        → (a : stage (proj₁ 𝒯))
        → (t t′ : experiment⋆ (proj₁ 𝒯) a)
