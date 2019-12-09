@@ -523,10 +523,8 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
               → Σ[ t⋆ ∈ experiment⋆ D (choose⋆ t os) ] t⋆ ℛ[ D ] t′
           sim⋆ os = sim⇒sim⋆ D D-sim a (choose⋆ t os) (prog⇒prog⋆ D a t os) t′
 
-          NTS : (a′ : stage D)
-              → a′ ≁ leaves (t ⊗ t′) → (U ∩ V) a′ holds
-          NTS a′ (os , γ) = p a′ (⊗-lemma₀ a a′ t t′ (os , γ))
-                          , q a′ (⊗-lemma₁ a a′ t t′ (os , γ))
+          NTS : (a′ : stage D) → a′ ≁ leaves (t ⊗ t′) → (U ∩ V) a′ holds
+          NTS a′ γ = p a′ (⊗-lemma₀ a a′ t t′ γ) , q a′ (⊗-lemma₁ a a′ t t′ γ)
 ```
 
 # Baire space
