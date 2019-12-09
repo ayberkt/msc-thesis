@@ -445,12 +445,12 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
                 → a′ ⊑ (leaves (append (post D) a t f) € os) holds
                 → a′ ⊑ (leaves t € bisect₀ (post D) a t f os) holds
   bisect₀-lemma a a′ (Leaf a) g os a′⊑leaves-append-etc =
-    a′                                         ⊑⟨ a′⊑leaves-append-etc     ⟩
-    leaves (append (post D) a (Leaf a) g) € os ⊑⟨ prog⇒prog⋆ D a (g tt) os ⟩
-    a                                          ■
+    a′                                           ⊑⟨ a′⊑leaves-append-etc     ⟩
+    leaves (append (post D) a (Leaf a) g) € os   ⊑⟨ prog⇒prog⋆ D a (g tt) os ⟩
+    a                                            ■
   bisect₀-lemma a a′ t@(Branch b f) g (o , os) a′⊑leaves-append-etc =
-    a′                                           ⊑⟨ a′⊑leaves-append-etc ⟩
-    leaves (append (post D) a t g) € (o , os)    ⊑⟨ φ                    ⟩
+    a′                                           ⊑⟨ a′⊑leaves-append-etc     ⟩
+    leaves (append (post D) a t g) € (o , os)    ⊑⟨ φ                        ⟩
     leaves t € (bisect₀ (post D) a t g (o , os)) ■
     where
       φ : (leaves (append (post D) a t g) € (o , os))
@@ -460,8 +460,8 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   bisect₁-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
                 → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-                → (γ : a′ ≁[ pos D ] leaves (append (post D) a t f))
-                → a′ ≁[ pos D ] leaves (f (bisect₀ (post D) a t f (proj₁ γ)))
+                → (γ : a′ ≁ leaves (append (post D) a t f))
+                → a′ ≁ leaves (f (bisect₀ (post D) a t f (proj₁ γ)))
   bisect₁-lemma a a′ (Leaf   a)   g p              = p
   bisect₁-lemma a a′ (Branch b f) g ((o , os) , q) =
     bisect₁-lemma (revise D o) a′ (f o) (λ os′ → g (o , os′)) (os , q)
@@ -471,7 +471,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   ⊗-lemma₀ a a′ t@(Leaf a) t′@(Leaf   a) a′≤leaves-t⊗t′ = a′≤leaves-t⊗t′
   ⊗-lemma₀ a a′ t@(Leaf a) t′@(Branch b′ g) (os , γ) = tt , a′⊑a
     where
-      a′⊑a : a′ ⊑[ pos D ] a holds
+      a′⊑a : a′ ⊑ a holds
       a′⊑a = a′ ⊑⟨ γ ⟩ _ ⊑⟨ prog⇒prog⋆ D a t′ os ⟩ a ■
   ⊗-lemma₀ a a′ t@(Branch b x) t′@(Leaf   a)    (os , γ) = os , γ
   ⊗-lemma₀ a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
@@ -480,13 +480,11 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
       h os = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
         where
-          a⊑choose⋆-t-os : choose⋆ t os ⊑[ pos D ] a holds
+          a⊑choose⋆-t-os : choose⋆ t os ⊑ a holds
           a⊑choose⋆-t-os = prog⇒prog⋆ D a t os
 
-  ⊗-lemma₁ : (a a′ : stage D)
-                → (t t′ : experiment⋆ D a)
-                → a′ ≁[ pos D ] (leaves (t ⊗ t′))
-                → a′ ≁[ pos D ] (leaves t′)
+  ⊗-lemma₁ : (a a′ : stage D) (t t′ : experiment⋆ D a)
+           → a′ ≁ leaves (t ⊗ t′) → a′ ≁ leaves t′
   ⊗-lemma₁ a a′ t t′@(Leaf a) (os , γ) =
     tt , (a′ ⊑⟨ γ ⟩ leaves (t ⊗ t′) € os ⊑⟨ prog⇒prog⋆ D a (t ⊗ t′) os ⟩ a ■) 
   ⊗-lemma₁ a a′ t@(Leaf   a)   t′@(Branch b′ g) (os       , γ) = os , γ
@@ -498,13 +496,13 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
           h : (os′ : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os′)
           h os′ = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os′) choose⋆-t-os′⊑a t′)
             where
-              choose⋆-t-os′⊑a : choose⋆ t os′ ⊑[ pos D ] a holds
+              choose⋆-t-os′⊑a : choose⋆ t os′ ⊑ a holds
               choose⋆-t-os′⊑a = prog⇒prog⋆ D a t os′
 
           OS : outcome⋆ {D = D} t
           OS = (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
-          choose⋆-t-OS⊑a : choose⋆ t OS ⊑[ pos D ] a holds
+          choose⋆-t-OS⊑a : choose⋆ t OS ⊑ a holds
           choose⋆-t-OS⊑a = prog⇒prog⋆ D a t OS
 
           sim⋆ = sim⇒sim⋆ D D-sim a (choose⋆ t OS) choose⋆-t-OS⊑a t′ 
@@ -526,7 +524,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
           sim⋆ os = sim⇒sim⋆ D D-sim a (choose⋆ t os) (prog⇒prog⋆ D a t os) t′
 
           NTS : (a′ : stage D)
-              → a′ ≁[ pos D ] leaves (t ⊗ t′) → (U ∩ V) a′ holds
+              → a′ ≁ leaves (t ⊗ t′) → (U ∩ V) a′ holds
           NTS a′ (os , γ) = p a′ (⊗-lemma₀ a a′ t t′ (os , γ))
                           , q a′ (⊗-lemma₁ a a′ t t′ (os , γ))
 ```
