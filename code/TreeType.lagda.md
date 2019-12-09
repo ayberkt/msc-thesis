@@ -388,6 +388,34 @@ lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-
 merge : {A : Set ℓ} {B : Set ℓ′} → ∥ A ∥ → ∥ B ∥ → ∥ A × B ∥
 merge ∣a∣ ∣b∣ = ∥∥-rec (∥∥-prop _) (λ a → ∥∥-rec (∥∥-prop _) (λ b → ∣ a , b ∣) ∣b∣) ∣a∣
 
+bisect₀ : (D : Discipline ℓ₀ ℓ₁)
+        → (a : stage D)
+        → (t : experiment⋆ D a)
+        → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+        → outcome⋆ {D = D} (append (post D) a t f)
+        → outcome⋆ {D = D} t
+bisect₀ D a (Leaf   a)   g os       = tt
+bisect₀ D a (Branch b f) g (o , os) =
+  o , bisect₀ D (revise D o) (f o) (λ os′ → g (o , os′)) os
+
+bisect₁ : (D : Discipline ℓ₀ ℓ₁)
+        → (a : stage D)
+        → (t : experiment⋆ D a)
+        → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+        → (os : outcome⋆ {D = D} (append (post D) a t f))
+        → outcome⋆ {D = D} (f (bisect₀ D a t f os))
+bisect₁ D a (Leaf .a)    g os       = os
+bisect₁ D a (Branch b f) g (o , os) = bisect₁ D (revise D o) (f o) (λ os′ → g (o , os′)) os
+
+bisect₁-lemma : (D : Discipline ℓ₀ ℓ₁)
+              → (a a′ : stage D)
+              → (t : experiment⋆ D a)
+              → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+              → a′ ≤[ pos D ] leaves (append (post D) a t f)
+              → (os : outcome⋆ {D = D} (append (post D) a t f))
+              → a′ ≤[ pos D ] leaves (f (bisect₀ D a t f os))
+bisect₁-lemma = {!!}
+
 append-lemma₀ : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
               → (t : experiment⋆ D a)
@@ -422,12 +450,60 @@ concat 𝒯@(D , D-sim) a (Branch b f) (Branch b′ g) = append (post D) a (Bran
         a⊑choose⋆-t-os : choose⋆ (Branch b f) os ⊑[ pos D ] a holds
         a⊑choose⋆-t-os = prog⇒prog⋆ D a (Branch b f) os
 
+is-prefix-of : (D : Discipline ℓ₀ ℓ₁)
+             → (a : stage D)
+             → (t : experiment⋆ D a)
+             → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+             → outcome⋆ {D = D} t
+             → outcome⋆ {D = D} (append (post D) a t f)
+             → Set (ℓ₀ ⊔ ℓ₁)
+is-prefix-of D a (Leaf   a)   f os       os′ = ⊤
+is-prefix-of D a (Branch b x) f (o , os) (o′ , os′) =
+  Σ[ p ∈ (o ≡ o′) ] is-prefix-of D (revise D o′) (x o′) f′ (NTS p) os′
+  where
+    f′ : (os₁ : outcome⋆ {D = D} (x o′)) → experiment⋆ D (choose⋆ (x o′) os₁)
+    f′ os₁ = f (o′ , os₁)
+
+    NTS : o ≡ o′ → outcome⋆ {D = D} (x o′)
+    NTS refl = os
+
 append-lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁)
               → (a a′ : stage (proj₁ 𝒯))
               → (t t′ : experiment⋆ (proj₁ 𝒯) a)
               → a′ ≤[ pos (proj₁ 𝒯) ] (leaves (concat 𝒯 a t t′))
               → a′ ≤[ pos (proj₁ 𝒯) ] (leaves t′)
-append-lemma₁ = {!!}
+append-lemma₁ 𝒯@(D , D-sim) a a′ t t′@(Leaf .a) (os , γ) =
+  tt , (a′ ⊑⟨ γ ⟩ leaves (concat (D , D-sim) a t t′) € os ⊑⟨ prog⇒prog⋆ D a (concat 𝒯 a t t′) os ⟩ a ■)
+  where
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+append-lemma₁ 𝒯@(D , D-sim) a a′ (Leaf   a)   (Branch b′ g) (os       , γ) = os , γ
+append-lemma₁ 𝒯@(D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) ((o , os) , γ) = NTS
+  where
+    open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+
+    NTS : a′ ≤[ pos D ] (leaves t′) 
+    NTS = proj₂ (sim⇒sim⋆ D D-sim a (choose⋆ t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)) L1 (Branch b′ (λ c → g c))) a′ (foo , final)
+      where
+        h : (os₁ : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os₁)
+        h os⋆ = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os⋆) L0 t′)
+          where
+            L0 : choose⋆ t os⋆ ⊑[ pos D ] a holds
+            L0 = prog⇒prog⋆ D a t os⋆
+
+        OS : outcome⋆ {D = D} t
+        OS = (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)
+
+        L1 : choose⋆ (Branch b f) OS ⊑[ pos D ] a holds
+        L1 = prog⇒prog⋆ D a t (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os)
+
+        foo : outcome⋆ {D = D} (h (o , bisect₀ D (revise D o) (f o) (λ os′ → h (o , os′)) os))
+        foo =  bisect₁ D a t h (o , os) 
+
+        final : a′ ⊑[ pos D ] (leaves (proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ (Branch b f) OS) L1 (Branch b′ (λ c → g c)))) € foo) holds
+        final = {!append-lemma₁!}
+
+    a′⊑a : a′ ⊑[ pos D ] a holds
+    a′⊑a = a′ ⊑⟨ γ ⟩ leaves (concat 𝒯 a (Branch b f) (Branch b′ g)) € (o , os) ⊑⟨ prog⇒prog⋆ D a (concat 𝒯 a t t′) (o , os) ⟩ a ■
 
 new-lemma : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U V : 𝒫 (stage (proj₁ 𝒯)))
           → let D = proj₁ 𝒯 in (a : stage (proj₁ 𝒯))
