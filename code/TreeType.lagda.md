@@ -450,23 +450,6 @@ concat 𝒯@(D , D-sim) a (Branch b f) (Branch b′ g) = append (post D) a (Bran
         a⊑choose⋆-t-os : choose⋆ (Branch b f) os ⊑[ pos D ] a holds
         a⊑choose⋆-t-os = prog⇒prog⋆ D a (Branch b f) os
 
-is-prefix-of : (D : Discipline ℓ₀ ℓ₁)
-             → (a : stage D)
-             → (t : experiment⋆ D a)
-             → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-             → outcome⋆ {D = D} t
-             → outcome⋆ {D = D} (append (post D) a t f)
-             → Set (ℓ₀ ⊔ ℓ₁)
-is-prefix-of D a (Leaf   a)   f os       os′ = ⊤
-is-prefix-of D a (Branch b x) f (o , os) (o′ , os′) =
-  Σ[ p ∈ (o ≡ o′) ] is-prefix-of D (revise D o′) (x o′) f′ (NTS p) os′
-  where
-    f′ : (os₁ : outcome⋆ {D = D} (x o′)) → experiment⋆ D (choose⋆ (x o′) os₁)
-    f′ os₁ = f (o′ , os₁)
-
-    NTS : o ≡ o′ → outcome⋆ {D = D} (x o′)
-    NTS refl = os
-
 bisect₁-lemma : (D : Discipline ℓ₀ ℓ₁)
               → (a a′ : stage D)
               → (t : experiment⋆ D a)
