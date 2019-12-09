@@ -108,25 +108,27 @@ on it and then **bisect** these outcomes to obtain two different sequences of ou
 appended under the one in (1). We give these in `bisect₀` and `bisect₁` respectively.
 
 ```
-bisect₀ : (D : PostSystem ℓ)
-        → (a : nonterminal D)
-        → (t : Production⋆ D a)
-        → (f : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
-        → location⋆ {D = D} (append D a t f)
-        → location⋆ {D = D} t
-bisect₀ D a (Leaf   a)   g os       = tt
-bisect₀ D a (Branch b f) g (o , os) = o , bisect₀ D (choose D o) (f o) (λ - → g (o , -)) os
+module _ (D : PostSystem ℓ) where
 ```
 
 ```
-bisect₁ : (D : PostSystem ℓ)
-        → (a : nonterminal D)
-        → (t : Production⋆ D a)
-        → (g : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
-        → (os : location⋆ {D = D} (append D a t g))
-        → location⋆ {D = D} (g (bisect₀ D a t g os))
-bisect₁ D a (Leaf a)     g os       = os
-bisect₁ D a (Branch b f) g (o , os) = bisect₁ D (choose D o) (f o) (λ os′ → g (o , os′)) os
+  bisect₀ : (a : nonterminal D)
+          → (t : Production⋆ D a)
+          → (f : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
+          → location⋆ {D = D} (append D a t f)
+          → location⋆ {D = D} t
+  bisect₀ a (Leaf   a)   g os       = tt
+  bisect₀ a (Branch b f) g (o , os) = o , bisect₀ (choose D o) (f o) (λ - → g (o , -)) os
+```
+
+```
+  bisect₁ : (a : nonterminal D)
+          → (t : Production⋆ D a)
+          → (g : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
+          → (os : location⋆ {D = D} (append D a t g))
+          → location⋆ {D = D} (g (bisect₀ a t g os))
+  bisect₁ a (Leaf a)     g os       = os
+  bisect₁ a (Branch b f) g (o , os) = bisect₁ (choose D o) (f o) (λ os′ → g (o , os′)) os
 ```
 
 
