@@ -421,7 +421,10 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   D     = proj₁ 𝒯
   D-sim = proj₂ 𝒯
 
-  open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
+  _≁_ : ∣ pos D ∣ₚ → Sub ℓ₂ ∣ pos D ∣ₚ → Set (ℓ₁ ⊔ ℓ₂)
+  _≁_ = λ a ℱ → a ≁[ pos D ] ℱ
+
+  open PosetStr (proj₂ (proj₁ D)) using (_⊑_; _⊑⟨_⟩_; _■)
 
   _⊗_ : {a : stage D} → experiment⋆ D a → experiment⋆ D a → experiment⋆ D a
   _⊗_ {a = a} t@(Leaf a)     t′@(Leaf a)      = Leaf a
@@ -432,15 +435,15 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
       h os = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
         where
-          a⊑choose⋆-t-os : choose⋆ t os ⊑[ pos D ] a holds
+          a⊑choose⋆-t-os : choose⋆ t os ⊑ a holds
           a⊑choose⋆-t-os = prog⇒prog⋆ D a t os
 
   bisect₀-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
                 → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
                 → (os : outcome⋆ {D = D} (append (post D) a t f))
-                → a′ ⊑[ pos D ] (leaves (append (post D) a t f) € os) holds
-                → a′ ⊑[ pos D ] (leaves t € bisect₀ (post D) a t f os) holds
+                → a′ ⊑ (leaves (append (post D) a t f) € os) holds
+                → a′ ⊑ (leaves t € bisect₀ (post D) a t f os) holds
   bisect₀-lemma a a′ (Leaf a) g os a′⊑leaves-append-etc =
     a′                                         ⊑⟨ a′⊑leaves-append-etc     ⟩
     leaves (append (post D) a (Leaf a) g) € os ⊑⟨ prog⇒prog⋆ D a (g tt) os ⟩
@@ -450,8 +453,9 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
     leaves (append (post D) a t g) € (o , os)    ⊑⟨ φ                    ⟩
     leaves t € (bisect₀ (post D) a t g (o , os)) ■
     where
-      φ : (leaves (append (post D) a t g) € (o , os)) ⊑[ pos D ] (leaves t € (bisect₀ (post D) a t g (o , os))) holds
-      φ = bisect₀-lemma (revise D o) (leaves (append (post D) a t g) € (o , os)) (f o) (λ - → g (o , -)) os (≡⇒⊑ (pos D) refl)
+      φ : (leaves (append (post D) a t g) € (o , os))
+        ⊑ (leaves t € (bisect₀ (post D) a t g (o , os))) holds
+      φ = bisect₀-lemma (revise D o) _ (f o) (λ - → g (o , -)) os (≡⇒⊑ (pos D) refl)
 
   bisect₁-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
@@ -462,17 +466,15 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   bisect₁-lemma a a′ (Branch b f) g ((o , os) , q) =
     bisect₁-lemma (revise D o) a′ (f o) (λ os′ → g (o , os′)) (os , q)
 
-  concat-lemma₀ : (a a′ : stage (proj₁ 𝒯))
-                → (t t′ : experiment⋆ (proj₁ 𝒯) a)
-                → a′ ≁[ pos (proj₁ 𝒯) ] (leaves (t ⊗ t′))
-                → a′ ≁[ pos (proj₁ 𝒯) ] (leaves t)
-  concat-lemma₀ a a′ t@(Leaf a) t′@(Leaf   a) a′≤leaves-t⊗t′ = a′≤leaves-t⊗t′
-  concat-lemma₀ a a′ t@(Leaf a) t′@(Branch b′ g) (os , γ) = tt , a′⊑a
+  ⊗-lemma₀ : (a a′ : stage D) (t t′ : experiment⋆ D a)
+           → a′ ≁ leaves (t ⊗ t′) → a′ ≁ leaves t
+  ⊗-lemma₀ a a′ t@(Leaf a) t′@(Leaf   a) a′≤leaves-t⊗t′ = a′≤leaves-t⊗t′
+  ⊗-lemma₀ a a′ t@(Leaf a) t′@(Branch b′ g) (os , γ) = tt , a′⊑a
     where
       a′⊑a : a′ ⊑[ pos D ] a holds
       a′⊑a = a′ ⊑⟨ γ ⟩ _ ⊑⟨ prog⇒prog⋆ D a t′ os ⟩ a ■
-  concat-lemma₀ a a′ t@(Branch b x) t′@(Leaf   a)    (os , γ) = os , γ
-  concat-lemma₀ a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
+  ⊗-lemma₀ a a′ t@(Branch b x) t′@(Leaf   a)    (os , γ) = os , γ
+  ⊗-lemma₀ a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
     bisect₀ (post D) a t h os , bisect₀-lemma a a′ t h os γ
     where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
@@ -481,16 +483,16 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
           a⊑choose⋆-t-os : choose⋆ t os ⊑[ pos D ] a holds
           a⊑choose⋆-t-os = prog⇒prog⋆ D a t os
 
-  concat-lemma₁ : (a a′ : stage D)
+  ⊗-lemma₁ : (a a′ : stage D)
                 → (t t′ : experiment⋆ D a)
                 → a′ ≁[ pos D ] (leaves (t ⊗ t′))
                 → a′ ≁[ pos D ] (leaves t′)
-  concat-lemma₁ a a′ t t′@(Leaf a) (os , γ) =
+  ⊗-lemma₁ a a′ t t′@(Leaf a) (os , γ) =
     tt , (a′ ⊑⟨ γ ⟩ leaves (t ⊗ t′) € os ⊑⟨ prog⇒prog⋆ D a (t ⊗ t′) os ⟩ a ■) 
-  concat-lemma₁ a a′ t@(Leaf   a)   t′@(Branch b′ g) (os       , γ) = os , γ
-  concat-lemma₁ a a′ t@(Branch b f) t′@(Branch b′ g) ((o , os) , γ) = a′≤leaves-t
+  ⊗-lemma₁ a a′ t@(Leaf   a)   t′@(Branch b′ g) (os       , γ) = os , γ
+  ⊗-lemma₁ a a′ t@(Branch b f) t′@(Branch b′ g) ((o , os) , γ) = a′≤leaves-t
     where
-      a′≤leaves-t : a′ ≁[ pos D ] (leaves t′)
+      a′≤leaves-t : a′ ≁ (leaves t′)
       a′≤leaves-t = proj₂ sim⋆ a′ (bisect₁-lemma a a′ t h ((o , os) , γ))
         where
           h : (os′ : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os′)
@@ -513,14 +515,10 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   a◀U∧a◀V⇒a◀U∩V U V a a◀U a◀V =
     ∥∥-rec (∥∥-prop _) (λ p → ∥∥-rec (∥∥-prop _) (λ q → ∣ φ U V a p q ∣) a◀V) a◀U
     where
-      φ : (U V : 𝒫 (stage D))
-                → (a : stage D)
-                → Σ[ t₀ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
-                  (λ - → - ≁[ pos D ] (leaves {D = post D} t₀)) ⊆ (_holds ∘ U)
-                → Σ[ t₁ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
-                  (λ - → - ≁[ pos D ] (leaves {D = post D} t₁)) ⊆ (_holds ∘ V)
-                → Σ[ t₂ ∈ (experiment⋆ (proj₁ 𝒯) a) ]
-                  (λ - → - ≁[ pos D ] (leaves {D = post D} t₂)) ⊆ (_holds ∘ (U ∩ V))
+      φ : (U V : 𝒫 (stage D)) (a : stage D)
+        → Σ[ t₀ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₀)) ⊆ (_holds ∘ U)
+        → Σ[ t₁ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₁)) ⊆ (_holds ∘ V)
+        → Σ[ t₂ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₂)) ⊆ (_holds ∘ (U ∩ V))
       φ U V a (t , p) (t′ , q) = t ⊗ t′ , NTS 
         where
           sim⋆ : (os : outcome⋆ {D = D} t)
@@ -529,8 +527,8 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
 
           NTS : (a′ : stage D)
               → a′ ≁[ pos D ] leaves (t ⊗ t′) → (U ∩ V) a′ holds
-          NTS a′ (os , γ) = p a′ (concat-lemma₀ a a′ t t′ (os , γ))
-                          , q a′ (concat-lemma₁ a a′ t t′ (os , γ))
+          NTS a′ (os , γ) = p a′ (⊗-lemma₀ a a′ t t′ (os , γ))
+                          , q a′ (⊗-lemma₁ a a′ t t′ (os , γ))
 ```
 
 # Baire space
