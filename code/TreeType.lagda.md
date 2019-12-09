@@ -491,22 +491,22 @@ concat-lemma₀ : (𝒯 : FormalTopology ℓ₀ ℓ₁)
               → (t t′ : experiment⋆ (proj₁ 𝒯) a)
               → a′ ≤[ pos (proj₁ 𝒯) ] (leaves (concat 𝒯 a t t′))
               → a′ ≤[ pos (proj₁ 𝒯) ] (leaves t)
-concat-lemma₀ 𝒯@(D , _) a a′ (Leaf .a) (Leaf .a) foo = foo
-concat-lemma₀ 𝒯@(D , _) a a′ (Leaf .a) (Branch b x) (os , γ) = tt , a′⊑a
+concat-lemma₀ 𝒯@(D , _) a a′ t@(Leaf a) t′@(Leaf   a) foo = foo
+concat-lemma₀ 𝒯@(D , _) a a′ t@(Leaf a) t′@(Branch b′ g) (os , γ) = tt , a′⊑a
   where
     open PosetStr (proj₂ (proj₁ D)) using (_⊑⟨_⟩_; _■)
 
     a′⊑a : a′ ⊑[ pos D ] a holds
-    a′⊑a = a′ ⊑⟨ γ ⟩ _ ⊑⟨ prog⇒prog⋆ D a (Branch b x) os ⟩ a ■
-concat-lemma₀ 𝒯@(D , _) a a′ (Branch b x) (Leaf   a)    (os , γ) = os , γ
-concat-lemma₀ 𝒯@(D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
-  (bisect₀ (post D) a t h os) , bisect₀-lemma D a a′ t h os γ
+    a′⊑a = a′ ⊑⟨ γ ⟩ _ ⊑⟨ prog⇒prog⋆ D a t′ os ⟩ a ■
+concat-lemma₀ (D , _)     a a′ t@(Branch b x) t′@(Leaf   a)    (os , γ) = os , γ
+concat-lemma₀ (D , D-sim) a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
+  bisect₀ (post D) a t h os , bisect₀-lemma D a a′ t h os γ
   where
-    h : (os : location⋆ (Branch b f)) → experiment⋆ D (choose⋆ (Branch b f) os)
-    h os = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ (Branch b f) os) a⊑choose⋆-t-os (Branch b′ g))
+    h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
+    h os = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
       where
-        a⊑choose⋆-t-os : choose⋆ (Branch b f) os ⊑[ pos D ] a holds
-        a⊑choose⋆-t-os = prog⇒prog⋆ D a (Branch b f) os
+        a⊑choose⋆-t-os : choose⋆ t os ⊑[ pos D ] a holds
+        a⊑choose⋆-t-os = prog⇒prog⋆ D a t os
 
 concat-lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁)
               → (a a′ : stage (proj₁ 𝒯))
