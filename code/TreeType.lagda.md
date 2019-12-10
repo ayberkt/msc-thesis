@@ -324,80 +324,85 @@ towards more refined states of information, we maintain access to as refined seq
 experiments.
 
 ```
-IsSimulation⋆ : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
-IsSimulation⋆ D@(P , _) =
-  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
-    (t₀ : experiment⋆ D a₀) → Σ[ t₁ ∈ (experiment⋆ D a₁) ] (t₁ ℛ[ D ] t₀)
+module _ (D : Discipline ℓ₀ ℓ₁) where
+
+  P    = pos   D
+  G    = post  D
+  prog = proj₂ D
+
+  open PosetStr (proj₂ P) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
+
+  IsSimulation⋆ : Set (ℓ₀ ⊔ ℓ₁)
+  IsSimulation⋆ =
+    (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds →
+      (t₀ : experiment⋆ D a₀) → Σ[ t₁ ∈ (experiment⋆ D a₁) ] (t₁ ℛ[ D ] t₀)
 ```
 
 The analogous property for single experiments is given in `IsSimulation` which in fact
 implies `IsSimulation⋆`.
 
 ```
-IsSimulation : (D : Discipline ℓ₀ ℓ₁) → Set (ℓ₀ ⊔ ℓ₁)
-IsSimulation D@(P , _) =
-  (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
-    Σ[ b₁ ∈ (exp D a₁) ]   (λ - →  - ≁[ P ] (outcome D b₁ , revise D))
-                         ⊆ (λ - →  - ≁[ P ] (outcome D b₀ , revise D))
+  IsSimulation : Set (ℓ₀ ⊔ ℓ₁)
+  IsSimulation =
+    (a₀ a₁ : stage D) → a₁ ⊑[ P ] a₀ holds → (b₀ : exp D a₀) →
+      Σ[ b₁ ∈ (exp D a₁) ]  (λ - →  - ≁[ P ] (outcome D b₁ , revise D))
+                          ⊆ (λ - →  - ≁[ P ] (outcome D b₀ , revise D))
 ```
 
 ```
-sim⇒sim⋆ : (D : Discipline ℓ₀ ℓ₁) → IsSimulation D → IsSimulation⋆ D
-sim⇒sim⋆ D@(PS , prog) _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
-  where
-    open PosetStr (proj₂ PS) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
+  sim⇒sim⋆ : IsSimulation → IsSimulation⋆
 
-    ψ : (x : stage D)
-      → down (pos D) (leaves {D = post D} (Leaf a₁)) x
-      → down (pos D) (leaves {D = post D} (Leaf a₀)) x
-    ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ a₀ ■)
+  sim⇒sim⋆ _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
+    where
+      ψ : (x : stage D)
+        → down (pos D) (leaves {D = post D} (Leaf a₁)) x
+        → down (pos D) (leaves {D = post D} (Leaf a₀)) x
+      ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ a₀ ■)
 
-sim⇒sim⋆ D@(P , _ , prog) D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
-  t₁ , t₁-refines-t₀
-  where
-    open PosetStr (proj₂ P) using (_⊑_; ⊑-refl)
+  sim⇒sim⋆ D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
+    t₁ , t₁-refines-t₀
+    where
+      b₁ : exp D a₁
+      b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    b₁ : exp D a₁
-    b₁ = proj₁ (D-sim a₀ a₁ a₀⊒a₁ b₀)
+      φ : (a : stage D)
+        → a ≁[ P ] (outcome D b₁ , revise D) → a ≁[ P ] (outcome D b₀ , revise D)
+      φ = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
 
-    φ : (a : stage D)
-      → a ≁[ P ] (outcome D b₁ , revise D) → a ≁[ P ] (outcome D b₀ , revise D)
-    φ = proj₂ (D-sim a₀ a₁ a₀⊒a₁ b₀)
+      g : (o₁ : outcome D b₁) → experiment⋆ D (revise D o₁)
+      g o₁ = proj₁ IH
+        where
+          rev-o₀≤sat-b₀ : revise D o₁ ≁[ P ] (outcome D b₀ , revise D)
+          rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , (⊑-refl _))
 
-    g : (o₁ : outcome D b₁) → experiment⋆ D (revise D o₁)
-    g o₁ = proj₁ IH
-      where
-        rev-o₀≤sat-b₀ : revise D o₁ ≁[ P ] (outcome D b₀ , revise D)
-        rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , (⊑-refl _))
+          o₀ : outcome D b₀
+          o₀ = proj₁ rev-o₀≤sat-b₀
 
-        o₀ : outcome D b₀
-        o₀ = proj₁ rev-o₀≤sat-b₀
+          rev-o₁⊑rev-o₀ : revise D o₁ ⊑ revise D o₀ holds
+          rev-o₁⊑rev-o₀ = proj₂ rev-o₀≤sat-b₀
 
-        rev-o₁⊑rev-o₀ : revise D o₁ ⊑ revise D o₀ holds
-        rev-o₁⊑rev-o₀ = proj₂ rev-o₀≤sat-b₀
+          IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
+          IH = sim⇒sim⋆ D-sim (revise D o₀) (revise D o₁) rev-o₁⊑rev-o₀ (f o₀)
 
-        IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
-        IH = sim⇒sim⋆ D D-sim (revise D o₀) (revise D o₁) rev-o₁⊑rev-o₀ (f o₀)
+      t₁ = Branch b₁ g
 
-    t₁ = Branch b₁ g
+      t₁-refines-t₀ : (a : stage D) → a ≁[ P ] leaves t₁ → a ≁[ P ] leaves t₀
+      t₁-refines-t₀ a ((o₁ , os₁) , a≤leaves-t₁-os) = (o₀ , os₀) , a⊑leaf-t₀-at-o₀-os₀
+        where
+          rev-o₀≤sat-b₀ : revise D o₁ ≁[ P ] (outcome D b₀ , revise D)
+          rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , ⊑-refl _)
 
-    t₁-refines-t₀ : (a : stage D) → a ≁[ P ] leaves t₁ → a ≁[ P ] leaves t₀
-    t₁-refines-t₀ a ((o₁ , os₁) , a≤leaves-t₁-os) = (o₀ , os₀) , a⊑leaf-t₀-at-o₀-os₀
-      where
-        rev-o₀≤sat-b₀ : revise D o₁ ≁[ P ] (outcome D b₀ , revise D)
-        rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , ⊑-refl _)
+          o₀ : outcome D b₀
+          o₀ = proj₁ rev-o₀≤sat-b₀
 
-        o₀ : outcome D b₀
-        o₀ = proj₁ rev-o₀≤sat-b₀
+          IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
+          IH = sim⇒sim⋆ D-sim (revise D o₀) _ (proj₂ (φ _ (o₁ , ⊑-refl _))) (f o₀)
 
-        IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
-        IH = sim⇒sim⋆ D D-sim (revise D o₀) _ (proj₂ (φ _ (o₁ , ⊑-refl _))) (f o₀)
+          os₀ : location⋆ (f o₀)
+          os₀ = proj₁ (proj₂ IH a (os₁ , a≤leaves-t₁-os))
 
-        os₀ : location⋆ (f o₀)
-        os₀ = proj₁ (proj₂ IH a (os₁ , a≤leaves-t₁-os))
-
-        a⊑leaf-t₀-at-o₀-os₀ : a ⊑ (leaves t₀ € (o₀ , os₀)) holds
-        a⊑leaf-t₀-at-o₀-os₀ = proj₂ ((proj₂ IH) a (os₁ , a≤leaves-t₁-os))
+          a⊑leaf-t₀-at-o₀-os₀ : a ⊑ (leaves t₀ € (o₀ , os₀)) holds
+          a⊑leaf-t₀-at-o₀-os₀ = proj₂ ((proj₂ IH) a (os₁ , a≤leaves-t₁-os))
 ```
 
 # Formal Topology
