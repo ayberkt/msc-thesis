@@ -23,18 +23,41 @@ open TruncationExists pt
 
 # Introduction
 
+The idea of this development is to define a [formal
+topology](https://ncatlab.org/nlab/show/formal+topology) using the tree type
+(sometimes called indexed containers or [interaction
+systems](http://www.dcs.ed.ac.uk/home/pgh/interactive_systems.html)).
+
+A _grammar_ on a type `A` consists of
+
+1. A family of types `B : A → Type`
+2. A family of types `C : (x : A) → B(x) → Type`
+3. A function: `d : (x : A) → (y : B(x)) → (z : C(x, y)) → A`
+
 ```
-IsAPostSystem : (A : Set ℓ) → Set (suc ℓ)
-IsAPostSystem {ℓ = ℓ} A =
+GrammarStr : (A : Set ℓ) → Set (suc ℓ)
+GrammarStr {ℓ = ℓ} A =
   Σ[ B ∈ (A → Set ℓ) ] Σ[ C ∈ ({x : A} → B x → Set ℓ) ]({x : A} → {y : B x} → C y → A)
+```
 
-PostSystem : (ℓ : Level) → Set (suc ℓ)
-PostSystem ℓ = Σ (Set ℓ) IsAPostSystem
+The idea is that we view
 
-nonterminal : PostSystem ℓ → Set ℓ
-production  : (D : PostSystem ℓ) → nonterminal D → Set ℓ
-location    : (D : PostSystem ℓ) → {x : nonterminal D} → production D x → Set ℓ
-choose      : (D : PostSystem ℓ) {x : nonterminal D} {y : production D x}
+1. `A` as a set of non-terminals; accordingly, we will call it `nonterminal`.
+2. `B` as the type of productions for a given non-terminal; accordingly, we will call it
+   `production`.
+3. `C` as the type of locations/selectors of other non-terminals in a given production;
+   accordingly, we will call it `location`.
+4. `d` as a function that choose a given location in a production, therefore yielding
+   a new non-terminal; accordingly, we will call it `choose`.
+
+```
+Grammar : (ℓ : Level) → Set (suc ℓ)
+Grammar ℓ = Σ (Set ℓ) GrammarStr
+
+nonterminal : Grammar ℓ → Set ℓ
+production  : (D : Grammar ℓ) → nonterminal D → Set ℓ
+location    : (D : Grammar ℓ) → {x : nonterminal D} → production D x → Set ℓ
+choose      : (D : Grammar ℓ) {x : nonterminal D} {y : production D x}
             → location D y → nonterminal D
 
 nonterminal (A , _ , _ , _) = A
@@ -43,32 +66,33 @@ location    (_ , _ , C , _) = C
 choose      (_ , _ , _ , d) = d
 ```
 
-Given a Post system `D`, which describes the structure of a tree, the type of inhabitants
-of a specific tree satisfying `D` and starting with nonterminal `s` is given by the type
-`Tree D s`.
+Given a grammar `G`, which describes the structure of a tree, the type of inhabitants of a
+specific tree satisfying `G` that starts with nonterminal `s` is given by the type `Tree D
+s`.
 
 ```
-record Tree (D : PostSystem ℓ) (s : nonterminal D) : Set (suc ℓ) where
+record Tree (G : Grammar ℓ) (s : nonterminal G) : Set (suc ℓ) where
   constructor tree
   inductive
 
   field
-    a : nonterminal D
-    b : production D a
-    c : (z : location D b) → Tree D (choose D z)
+    a : nonterminal G
+    b : production G a
+    c : (z : location G b) → Tree G (choose G z)
 ```
 
-# Stump
+# Production⋆
 
-Given a Post system `D` and a start stage `s`, we denote by `Production⋆ D s` the type
-of experimentation sequences that start from `s`.
+Given a grammar `G` and a start nonterminal `s`, we denote by `Production⋆ D s` the type
+of inhabited by repeated choices of productions, starting at `s`. One can think of this
+as the reflexive-transitive closure of the choosing relation.
 
 ```
-data Production⋆ (D : PostSystem ℓ) : nonterminal D → Set ℓ where
-  Leaf   : (a : nonterminal D) → Production⋆ D a
-  Branch : {a : nonterminal D} (b : production D a)
-         → ((c : location D b) → Production⋆ D (choose D c))
-         → Production⋆ D a
+data Production⋆ (G : Grammar ℓ) : nonterminal G → Set ℓ where
+  Leaf   : (a : nonterminal G) → Production⋆ G a
+  Branch : {a : nonterminal G} (b : production G a)
+         → ((c : location G b) → Production⋆ G (choose G c))
+         → Production⋆ G a
 ```
 
 Given a `Production⋆`, say `t`, we denote by `location⋆ t` the type of _sequences of
@@ -76,30 +100,32 @@ locations_ in `t`. In other words, an inhabitant of `location⋆ t` is a _specif
 of choices of experiments in the tree `t`.
 
 ```
-location⋆ : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Set ℓ
-location⋆ {ℓ} (Leaf   a)   = ⊤ {ℓ}
-location⋆ {_} {D = D} (Branch b f) = Σ[ o ∈ (location D b) ] location⋆ (f o)
+module _ {G : Grammar ℓ} where
+
+  location⋆ : {s : nonterminal G} → Production⋆ G s → Set ℓ
+  location⋆ (Leaf   a)   = ⊤ {ℓ}
+  location⋆ (Branch b f) = Σ[ o ∈ (location G b) ] location⋆ (f o)
 ```
 
 Finally, we can take a sequence of choices in `t : Production⋆` and then follow all the
 choices all the way to the end. This procedure is implemented in the function `choose⋆`.
 
 ```
-choose⋆ : {D : PostSystem ℓ} {s : nonterminal D}
-        → (t : Production⋆ D s) → location⋆ t → nonterminal D
-choose⋆ (Leaf   s)   _       = s
-choose⋆ (Branch b f) (c , y) = choose⋆ (f c) y
+  choose⋆ : {s : nonterminal G}
+          → (t : Production⋆ G s) → location⋆ t → nonterminal G
+  choose⋆ (Leaf   s)   _       = s
+  choose⋆ (Branch b f) (c , y) = choose⋆ (f c) y
 ```
 
 **TODO**: explain.
 
 ```
-append : (D : PostSystem ℓ) → (a : nonterminal D)
-       → (t : Production⋆ D a)
-       → (g : (e : location⋆ t) → Production⋆ D (choose⋆ t e))
-       → Production⋆ D a
-append D a (Leaf   a)   g = g tt
-append D a (Branch b f) g = Branch b λ c → append D (choose D c) (f c) (λ - → g (c , -))
+  append : (a : nonterminal G)
+         → (t : Production⋆ G a)
+         → (g : (e : location⋆ t) → Production⋆ G (choose⋆ t e))
+         → Production⋆ G a
+  append a (Leaf   a)   g = g tt
+  append a (Branch b f) g = Branch b λ c → append (choose G c) (f c) (λ - → g (c , -))
 ```
 
 If we have a `Production⋆` constructed using `append`, we can take a sequence of outcomes
@@ -108,27 +134,26 @@ on it and then **bisect** these outcomes to obtain two different sequences of ou
 appended under the one in (1). We give these in `bisect₀` and `bisect₁` respectively.
 
 ```
-module _ (D : PostSystem ℓ) where
 ```
 
 ```
-  bisect₀ : (a : nonterminal D)
-          → (t : Production⋆ D a)
-          → (f : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
-          → location⋆ {D = D} (append D a t f)
-          → location⋆ {D = D} t
+  bisect₀ : (a : nonterminal G)
+          → (t : Production⋆ G a)
+          → (f : (os : location⋆ t) → Production⋆ G (choose⋆ t os))
+          → location⋆ (append a t f)
+          → location⋆ t
   bisect₀ a (Leaf   a)   g os       = tt
-  bisect₀ a (Branch b f) g (o , os) = o , bisect₀ (choose D o) (f o) (λ - → g (o , -)) os
+  bisect₀ a (Branch b f) g (o , os) = o , bisect₀ (choose G o) (f o) (λ - → g (o , -)) os
 ```
 
 ```
-  bisect₁ : (a : nonterminal D)
-          → (t : Production⋆ D a)
-          → (g : (os : location⋆ {D = D} t) → Production⋆ D (choose⋆ t os))
-          → (os : location⋆ {D = D} (append D a t g))
-          → location⋆ {D = D} (g (bisect₀ a t g os))
+  bisect₁ : (a : nonterminal G)
+          → (t : Production⋆ G a)
+          → (g : (os : location⋆ t) → Production⋆ G (choose⋆ t os))
+          → (os : location⋆ (append a t g))
+          → location⋆ (g (bisect₀ a t g os))
   bisect₁ a (Leaf a)     g os       = os
-  bisect₁ a (Branch b f) g (o , os) = bisect₁ (choose D o) (f o) (λ os′ → g (o , os′)) os
+  bisect₁ a (Branch b f) g (o , os) = bisect₁ (choose G o) (f o) (λ os′ → g (o , os′)) os
 ```
 
 
@@ -151,23 +176,23 @@ property will be called **perpetuation**; we express it in the type family
 `HasPerpetuation`.
 
 ```
-HasPerpetuation : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+HasPerpetuation : (P : Poset ℓ₀ ℓ₁) → GrammarStr ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 HasPerpetuation {ℓ₀} P P-disc =
   (x : nonterminal D) (y : production D x) (z : location D y) →
     (choose D z) ⊑[ P ] x holds
   where
-    D : PostSystem ℓ₀
+    D : Grammar ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 ```
 
 We can define the analogous property for `choose⋆`:
 
 ```
-HasPerpetuation⋆ : (P : Poset ℓ₀ ℓ₁) → IsAPostSystem ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+HasPerpetuation⋆ : (P : Poset ℓ₀ ℓ₁) → GrammarStr ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 HasPerpetuation⋆ {ℓ₀} P P-disc =
   (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → choose⋆ t o ⊑[ P ] a holds
   where
-    D : PostSystem ℓ₀
+    D : Grammar ℓ₀
     D = (∣ P ∣ₚ , P-disc)
 ```
 
@@ -179,7 +204,7 @@ for the projections.
 ```
 Discipline : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 Discipline ℓ₀ ℓ₁ =
-  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (IsAPostSystem ∣ P ∣ₚ) ] HasPerpetuation P P-disc
+  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ P-disc ∈ (GrammarStr ∣ P ∣ₚ) ] HasPerpetuation P P-disc
 ```
 
 It will be convenient to be easily refer to the poset and the post system
@@ -189,7 +214,7 @@ contained inside a discipline.
 pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
 
-post : (D : Discipline ℓ₀ ℓ₁) → PostSystem ℓ₀
+post : (D : Discipline ℓ₀ ℓ₁) → Grammar ℓ₀
 post (P , P-disc , _) = ∣ P ∣ₚ , P-disc
 ```
 
@@ -280,7 +305,7 @@ Given a `Production⋆` `t`, we can define a family of nonterminals it _reaches_
 leaves of the tree.
 
 ```
-leaves : {D : PostSystem ℓ} {s : nonterminal D} → Production⋆ D s → Sub ℓ (nonterminal D)
+leaves : {D : Grammar ℓ} {s : nonterminal D} → Production⋆ D s → Sub ℓ (nonterminal D)
 leaves e = location⋆ e , choose⋆ e
 ```
 
@@ -432,7 +457,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   _⊗_ {a = a} t@(Leaf a)     t′@(Leaf a)      = Leaf a
   _⊗_ {a = a} t@(Leaf a)     t′@(Branch b′ g) = Branch b′ g
   _⊗_ {a = a} t@(Branch b f) t′@(Leaf a)      = Branch b f
-  _⊗_ {a = a} t@(Branch b f) t′@(Branch b′ g) = append (post D) a t h
+  _⊗_ {a = a} t@(Branch b f) t′@(Branch b′ g) = append a t h
     where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
       h os = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
@@ -443,27 +468,27 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   bisect₀-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
                 → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-                → (os : outcome⋆ {D = D} (append (post D) a t f))
-                → a′ ⊑ (leaves (append (post D) a t f) € os) holds
-                → a′ ⊑ (leaves t € bisect₀ (post D) a t f os) holds
+                → (os : outcome⋆ {D = D} (append a t f))
+                → a′ ⊑ (leaves (append a t f) € os) holds
+                → a′ ⊑ (leaves t € bisect₀ a t f os) holds
   bisect₀-lemma a a′ (Leaf a) g os a′⊑leaves-append-etc =
-    a′                                           ⊑⟨ a′⊑leaves-append-etc     ⟩
-    leaves (append (post D) a (Leaf a) g) € os   ⊑⟨ prog⇒prog⋆ D a (g tt) os ⟩
-    a                                            ■
+    a′                                  ⊑⟨ a′⊑leaves-append-etc     ⟩
+    leaves (append a (Leaf a) g) € os   ⊑⟨ prog⇒prog⋆ D a (g tt) os ⟩
+    a                                   ■
   bisect₀-lemma a a′ t@(Branch b f) g (o , os) a′⊑leaves-append-etc =
-    a′                                           ⊑⟨ a′⊑leaves-append-etc     ⟩
-    leaves (append (post D) a t g) € (o , os)    ⊑⟨ φ                        ⟩
-    leaves t € (bisect₀ (post D) a t g (o , os)) ■
+    a′                                  ⊑⟨ a′⊑leaves-append-etc     ⟩
+    leaves (append a t g) € (o , os)    ⊑⟨ φ                        ⟩
+    leaves t € (bisect₀ a t g (o , os)) ■
     where
-      φ : (leaves (append (post D) a t g) € (o , os))
-        ⊑ (leaves t € (bisect₀ (post D) a t g (o , os))) holds
+      φ : (leaves (append a t g) € (o , os))
+        ⊑ (leaves t € (bisect₀ a t g (o , os))) holds
       φ = bisect₀-lemma (revise D o) _ (f o) (λ - → g (o , -)) os (≡⇒⊑ (pos D) refl)
 
   bisect₁-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
                 → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-                → (γ : a′ ≁ leaves (append (post D) a t f))
-                → a′ ≁ leaves (f (bisect₀ (post D) a t f (proj₁ γ)))
+                → (γ : a′ ≁ leaves (append a t f))
+                → a′ ≁ leaves (f (bisect₀ a t f (proj₁ γ)))
   bisect₁-lemma a a′ (Leaf   a)   g p              = p
   bisect₁-lemma a a′ (Branch b f) g ((o , os) , q) =
     bisect₁-lemma (revise D o) a′ (f o) (λ os′ → g (o , os′)) (os , q)
@@ -477,7 +502,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
       a′⊑a = a′ ⊑⟨ γ ⟩ _ ⊑⟨ prog⇒prog⋆ D a t′ os ⟩ a ■
   ⊗-lemma₀ a a′ t@(Branch b x) t′@(Leaf   a)    (os , γ) = os , γ
   ⊗-lemma₀ a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
-    bisect₀ (post D) a t h os , bisect₀-lemma a a′ t h os γ
+    bisect₀ a t h os , bisect₀-lemma a a′ t h os γ
     where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
       h os = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
@@ -502,7 +527,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
               choose⋆-t-os′⊑a = prog⇒prog⋆ D a t os′
 
           OS : outcome⋆ {D = D} t
-          OS = (o , bisect₀ (post D) (revise D o) (f o) (λ os′ → h (o , os′)) os)
+          OS = (o , bisect₀ (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
           choose⋆-t-OS⊑a : choose⋆ t OS ⊑ a holds
           choose⋆-t-OS⊑a = prog⇒prog⋆ D a t OS
