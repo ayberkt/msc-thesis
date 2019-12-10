@@ -239,8 +239,8 @@ reference to another non-terminal is like a possible outcome of the production.
 outcome : (D : Discipline ℓ₀ ℓ₁) → {x : stage D} → exp D x → Set ℓ₀
 outcome (P , D , _) = location (∣ P ∣ₚ , D)
 
-outcome⋆ : {D : Discipline ℓ₀ ℓ₁} → {a : stage D} → experiment⋆ D a → Set ℓ₀
-outcome⋆ = location⋆
+outcome⋆ : (D : Discipline ℓ₀ ℓ₁) → {a : stage D} → experiment⋆ D a → Set ℓ₀
+outcome⋆ D = location⋆ {G = post D}
 ```
 
 The `choose` operation is now called `revise` in the sense that it is an
@@ -464,8 +464,8 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
 
   bisect₀-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
-                → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
-                → (os : outcome⋆ {D = D} (append a t f))
+                → (f : (os : outcome⋆ D t) → experiment⋆ D (choose⋆ t os))
+                → (os : outcome⋆ D (append a t f))
                 → a′ ⊑ (leaves (append a t f) € os) holds
                 → a′ ⊑ (leaves t € bisect₀ a t f os) holds
   bisect₀-lemma a a′ (Leaf a) g os a′⊑leaves-append-etc =
@@ -483,7 +483,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
 
   bisect₁-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
-                → (f : (os : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os))
+                → (f : (os : outcome⋆ D t) → experiment⋆ D (choose⋆ t os))
                 → (γ : a′ ≁ leaves (append a t f))
                 → a′ ≁ leaves (f (bisect₀ a t f (proj₁ γ)))
   bisect₁-lemma a a′ (Leaf   a)   g p              = p
@@ -517,13 +517,13 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
       a′≤leaves-t : a′ ≁ (leaves t′)
       a′≤leaves-t = proj₂ sim⋆ a′ (bisect₁-lemma a a′ t h ((o , os) , γ))
         where
-          h : (os′ : outcome⋆ {D = D} t) → experiment⋆ D (choose⋆ t os′)
+          h : (os′ : outcome⋆ D t) → experiment⋆ D (choose⋆ t os′)
           h os′ = proj₁ (sim⇒sim⋆ D D-sim a (choose⋆ t os′) choose⋆-t-os′⊑a t′)
             where
               choose⋆-t-os′⊑a : choose⋆ t os′ ⊑ a holds
               choose⋆-t-os′⊑a = prog⇒prog⋆ D a t os′
 
-          OS : outcome⋆ {D = D} t
+          OS : outcome⋆ D t
           OS = (o , bisect₀ (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
           choose⋆-t-OS⊑a : choose⋆ t OS ⊑ a holds
@@ -543,7 +543,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
         → Σ[ t₂ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₂)) ⊆ (_holds ∘ (U ∩ V))
       φ U V a (t , p) (t′ , q) = t ⊗ t′ , NTS 
         where
-          sim⋆ : (os : outcome⋆ {D = D} t)
+          sim⋆ : (os : outcome⋆ D t)
               → Σ[ t⋆ ∈ experiment⋆ D (choose⋆ t os) ] t⋆ ℛ[ D ] t′
           sim⋆ os = sim⇒sim⋆ D D-sim a (choose⋆ t os) (prog⇒prog⋆ D a t os) t′
 
