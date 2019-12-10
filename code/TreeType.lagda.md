@@ -134,9 +134,6 @@ on it and then **bisect** these outcomes to obtain two different sequences of ou
 appended under the one in (1). We give these in `bisect₀` and `bisect₁` respectively.
 
 ```
-```
-
-```
   bisect₀ : (a : nonterminal G)
           → (t : Production⋆ G a)
           → (f : (os : location⋆ t) → Production⋆ G (choose⋆ t os))
