@@ -248,7 +248,7 @@ operation of _revising one's knowledge state_.
 
 ```
 revise : (D : Discipline ℓ₀ ℓ₁)
-      → {a : stage D} → {b : exp D a} → outcome D b → stage D
+       → {a : stage D} → {b : exp D a} → outcome D b → stage D
 revise D = choose (post D)
 ```
 
