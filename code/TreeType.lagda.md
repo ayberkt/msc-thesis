@@ -460,8 +460,8 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
 
   _⊗_ : {a : stage D} → experiment⋆ D a → experiment⋆ D a → experiment⋆ D a
   _⊗_ {a = a} t@(Leaf a)     t′@(Leaf a)      = Leaf a
-  _⊗_ {a = a} t@(Leaf a)     t′@(Branch b′ g) = Branch b′ g
-  _⊗_ {a = a} t@(Branch b f) t′@(Leaf a)      = Branch b f
+  _⊗_ {a = a} t@(Leaf a)     t′               = t′
+  _⊗_ {a = a} t              t′@(Leaf a)      = t
   _⊗_ {a = a} t@(Branch b f) t′@(Branch b′ g) = append a t h
     where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
