@@ -515,7 +515,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   ⊗-lemma₁ : (a a′ : stage D) (t t′ : experiment⋆ D a)
            → a′ ≁ leaves (t ⊗ t′) → a′ ≁ leaves t′
   ⊗-lemma₁ a a′ t t′@(Leaf a) (os , γ) =
-    tt , (a′ ⊑⟨ γ ⟩ leaves (t ⊗ t′) € os ⊑⟨ prog⇒prog⋆ D a (t ⊗ t′) os ⟩ a ■) 
+    tt , (a′ ⊑⟨ γ ⟩ leaves (t ⊗ t′) € os ⊑⟨ prog⇒prog⋆ D a (t ⊗ t′) os ⟩ a ■)
   ⊗-lemma₁ a a′ t@(Leaf   a)   t′@(Branch b′ g) (os       , γ) = os , γ
   ⊗-lemma₁ a a′ t@(Branch b f) t′@(Branch b′ g) ((o , os) , γ) = a′≤leaves-t
     where
