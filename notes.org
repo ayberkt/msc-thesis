@@ -11,6 +11,13 @@
    - The thing that is to a non-deterministic pushdown automaton what a Büchi automaton
      is to a finite automaton.
 ** These lectures by André Joyal: https://www.youtube.com/watch?v=Ro8KoFFdtS4&t=891s
+** Disciplines themselves form a discipline
+   - For instance, for the discipline of communication theory, there was some sort of
+     problematic experiments which led to the link between thermodynamics (the outcome).
+     Applying the next function on this outcome gave us information theory. For
+     information theory, there were some other problems (i.e., the experiments, what were
+     they?), the outcome of which was the linking with computer science applying `next` on
+     which gave us algorithmic information theory.
 * Meetings
 ** <2019-09-27 Fri>
 *** Given a poset, the set of downward-closed subsets forms a frame.
