@@ -293,8 +293,9 @@ syntax down P ℱ a = a ↓[ P ] ℱ
 
 We will often be dealing with the predicate `ℱ ↓[ P ] -`.
 
-Ad-hoc notion of subset since there are some universe problems with `𝒫`. _This should be
-replaced with `𝒫` once it is properly generalised._
+Ad-hoc notion of subset (TODO: call this something else) since there are some
+universe problems with `𝒫`. _This should be replaced with `𝒫` once it is
+properly generalised._
 
 ```
 _⊆_ : {X : Set ℓ} → (X → Set ℓ₀) → (X → Set ℓ₁) → Set (ℓ ⊔ ℓ₀ ⊔ ℓ₁)
