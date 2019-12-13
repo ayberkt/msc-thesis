@@ -278,6 +278,9 @@ The other property we are interested in, which will define a formal topology
 when coupled with perpetuation, is **simulation**. Let us first introduce some
 notation to build up towards its definition.
 
+TODO: explain the fact that we tried to truncate this and could not.
+TODO: do not call this a predicate.
+
 `down P ℱ a` denotes a predicate expressing: stage `a` has a more refined state
 of information than at least one stage in `ℱ`.
 
