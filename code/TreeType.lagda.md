@@ -519,7 +519,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   ⊗-lemma₁ a a′ t@(Leaf   a)   t′@(Branch b′ g) (os       , γ) = os , γ
   ⊗-lemma₁ a a′ t@(Branch b f) t′@(Branch b′ g) ((o , os) , γ) = a′≤leaves-t
     where
-      a′≤leaves-t : a′ ≁ (leaves t′)
+      a′≤leaves-t : a′ ≁ leaves t′
       a′≤leaves-t = proj₂ sim⋆ a′ (bisect₁-lemma a a′ t h ((o , os) , γ))
         where
           h : (os′ : outcome⋆ D t) → experiment⋆ D (choose⋆ t os′)
