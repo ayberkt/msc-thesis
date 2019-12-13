@@ -87,3 +87,49 @@
    - Once these have been done, give an example of a discipline that is a distributive
      bounded lattice (Stone space) (as Thierry exemplified on the board).
    - The Fan Theorem in fact says: "the Cantor space has enough points".
+
+** <2019-12-13 Fri>
+*** Most importantly: formal topology cannot be done in univalent foundations
+    - It was realised by Thierry, upon a question I asked regarding how to show that the
+      coverage relation is a nucleus, that it is actually not possible to do this. We
+      need _◀_ to not have a truncated Σ but then it results in a situation where it is
+      not a poset; it's something like an ∞-poset the meaning which is not clear. It is
+      not clear what I will do about this but it seems that the main plan of my thesis
+      is shattered.
+    - However, the situation is not as tragic as I made it sound since disciplines are
+      sufficient for presenting Stone spaces (in the non-standard sense of Sambin) which
+      I can still use for developing domain theory and getting other applications.
+*** Regarding the _⊗_ operation
+    - This is like a sup of two partitions.
+    - The lattice of partitions is important.
+    - Further reading: Gian-Carlo Rota, look up the lattice of partitions.
+    - It may be the case that this _⊗_ operation is not only a lower bound but actually
+      the _greatest_ lower bound for the refinement preorder.
+    - TODO: try to prove associativity of _⊗_.
+*** Regarding the refinement operation
+    - The definition of `refines` looks like
+        #+BEGIN_SRC agda
+          refines : (D : Discipline ℓ₀ ℓ₁) {s s′ : stage D}
+                  → experiment⋆ D s′ → experiment⋆ D s → Set (ℓ₀ ⊔ ℓ₁)
+          refines D@(P , _) e f = (λ - → - ↓[ P ] leaves e) ⊆ (λ - → - ↓[ P ] leaves f)
+        #+END_SRC
+      It might be a good idea to introduce better notation for this relation between
+      enumerated subsets.
+        #+BEGIN_SRC agda
+          (λ - → - ↓[ P ] leaves e) ⊆ (λ - → - ↓[ P ] leaves f)
+        #+END_SRC
+    - Perhaps, there is in fact a better, more standard symbol for the refinement
+      relation.
+    - The notion of a refinement cover is standard in point-set topology:
+        https://en.wikipedia.org/wiki/Cover_(topology)#Refinement.
+      It might make sense to talk about things in a more standard way using this notion.
+    - Consider refactoring the statement of `⊗-lemma`s using the notion of refinement
+      (_ℛ_). It should look something like this
+       #+BEGIN_SRC agda
+         ⊗-lemma₀ : (a : stage D) (t t′ : experiment⋆ D a) → (t ⊗ t′) ℛ[ D ] t
+       #+END_SRC
+
+
+*** Regarding the `cover-of` relation
+    - TODO: The subset `U`, in `a ◀ U`, will be downward-closed when I use it so it must
+      suffice to talk about just the leaves not things below the leaves.
