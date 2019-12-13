@@ -534,7 +534,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
           choose⋆-t-OS⊑a : choose⋆ t OS ⊑ a holds
           choose⋆-t-OS⊑a = prog⇒prog⋆ D a t OS
 
-          sim⋆ = sim⇒sim⋆ D D-sim a (choose⋆ t OS) choose⋆-t-OS⊑a t′ 
+          sim⋆ = sim⇒sim⋆ D D-sim a (choose⋆ t OS) choose⋆-t-OS⊑a t′
 
   a◀U∧a◀V⇒a◀U∩V : (U V : 𝒫 (stage (proj₁ 𝒯)))
             → (a : stage (proj₁ 𝒯))
@@ -546,7 +546,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
         → Σ[ t₀ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₀)) ⊆ (_holds ∘ U)
         → Σ[ t₁ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₁)) ⊆ (_holds ∘ V)
         → Σ[ t₂ ∈ (experiment⋆ D a) ] (λ - → - ≁ (leaves t₂)) ⊆ (_holds ∘ (U ∩ V))
-      φ U V a (t , p) (t′ , q) = t ⊗ t′ , NTS 
+      φ U V a (t , p) (t′ , q) = t ⊗ t′ , NTS
         where
           sim⋆ : (os : outcome⋆ D t)
               → Σ[ t⋆ ∈ experiment⋆ D (choose⋆ t os) ] t⋆ ℛ[ D ] t′
