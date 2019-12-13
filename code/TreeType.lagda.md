@@ -422,10 +422,12 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
 
 ```
-lemma₁ : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
-       → (a₀ a₁ : stage (proj₁ 𝒯)) → a₁ ⊑[ pos (proj₁ 𝒯) ] a₀ holds → a₀ ◀[ 𝒯 ] U
-       → a₁ ◀[ 𝒯 ] U
-lemma₁ 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
+down-closure : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (proj₁ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
+             → (a₀ a₁ : stage (proj₁ 𝒯))
+             → a₁ ⊑[ pos (proj₁ 𝒯) ] a₀ holds
+             → a₀ ◀[ 𝒯 ] U
+             → a₁ ◀[ 𝒯 ] U
+down-closure 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
   where
     ψ : Σ[ t₀ ∈ experiment⋆ D a₀ ] (λ - → - ≁[ pos D ] leaves t₀) ⊆ (_holds ∘ U)
       → Σ[ t₁ ∈ experiment⋆ D a₁ ] (λ - → - ≁[ pos D ] leaves t₁) ⊆ (_holds ∘ U)
