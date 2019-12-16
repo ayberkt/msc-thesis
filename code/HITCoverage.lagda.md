@@ -32,24 +32,44 @@ record IsPreOrder (P : Type ℓ) : Type (suc ℓ) where
     -- Laws.
     refl  : (a        : P) → a ⊑ a
     trans : (a₀ a₁ a₂ : P) → a₀ ⊑ a₁ → a₁ ⊑ a₂ → a₀ ⊑ a₂
+```
 
--- Pre-ordered set.
+Pre-ordered set:
+
+```
 Proset : (ℓ : Level) → Type (suc ℓ)
 Proset ℓ = Σ (Type ℓ) IsPreOrder
+```
 
+Projection of the carrier set.
+
+```
 ∣_∣ : Proset ℓ → Type ℓ
 ∣ P , _ ∣ = P
+```
 
+Let $PR$ be an arbitrary proset
+
+```
 variable
   PR : Proset ℓ
 
+```
+
+Projection of the relation of the proset:
+
+```
 rel-of : ∣ PR ∣ → ∣ PR ∣ → Type _
 rel-of {PR = PR} a₀ a₁ = a₀ ⊑ a₁
   where
     open IsPreOrder (π₁ PR) using (_⊑_)
 
 syntax rel-of {PR = PR} a₀ a₁ = a₀ ⊑[ PR ] a₁
+```
 
+Here goes the test:
+
+```
 module Test (PR : Proset ℓ)
             (exp  : ∣ PR ∣ → Type ℓ′)
             (out  : (a : ∣ PR ∣) → exp a → Type ℓ′)
@@ -70,5 +90,4 @@ module Test (PR : Proset ℓ)
     dir    : U a → a <| U
     branch : (b : exp a) → (f : (c : out a b) → rev a b c <| U) → a <| U
     squash : (p₀ p₁ : a <| U) → p₀ ≡ p₁
-
 ```
