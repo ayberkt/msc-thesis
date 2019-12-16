@@ -41,14 +41,14 @@ Proset : (ℓ : Level) → Type (suc ℓ)
 Proset ℓ = Σ (Type ℓ) IsPreOrder
 ```
 
-Projection of the carrier set.
+Projection of the carrier set:
 
 ```
 ∣_∣ : Proset ℓ → Type ℓ
 ∣ P , _ ∣ = P
 ```
 
-Let $PR$ be an arbitrary proset
+Let $PR$ be a variable ranging over prosets:
 
 ```
 variable
