@@ -37,14 +37,14 @@ record IsPreOrder (P : Type ℓ) : Type (suc ℓ) where
 Pre-ordered set:
 
 ```
-Proset : (ℓ : Level) → Type (suc ℓ)
-Proset ℓ = Σ (Type ℓ) IsPreOrder
+Protype : (ℓ : Level) → Type (suc ℓ)
+Protype ℓ = Σ (Type ℓ) IsPreOrder
 ```
 
 Projection of the carrier set:
 
 ```
-∣_∣ : Proset ℓ → Type ℓ
+∣_∣ : Protype ℓ → Type ℓ
 ∣ P , _ ∣ = P
 ```
 
@@ -52,7 +52,7 @@ Let $PR$ be a variable ranging over prosets:
 
 ```
 variable
-  PR : Proset ℓ
+  PR : Protype ℓ
 
 ```
 
@@ -70,7 +70,7 @@ syntax rel-of {PR = PR} a₀ a₁ = a₀ ⊑[ PR ] a₁
 Here goes the test:
 
 ```
-module Test (PR : Proset ℓ)
+module Test (PR : Protype ℓ)
             (exp  : ∣ PR ∣ → Type ℓ′)
             (out  : (a : ∣ PR ∣) → exp a → Type ℓ′)
             (rev  : (a : ∣ PR ∣) → (b : exp a) → out a b → ∣ PR ∣)
