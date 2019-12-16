@@ -154,7 +154,7 @@ appended under the one in (1). We give these in `bisect₀` and `bisect₁` resp
 ```
 
 
-# Perpetuation
+# Perpetuation ("Progressiveness", "Monotonicity")
 
 Given a Post system, we will now require an order on the nonterminals representing whether
 one contains more information than another. The idea is that if nonterminal `a₁` contains
