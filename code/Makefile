@@ -9,7 +9,7 @@ html/%.html: html/%.md
 	cd html
 	pandoc $*.md --css Agda.css -o $*.html
 
-foo: html/TreeType.html
+foo: html/TreeType.html html/HITCoverage.html
 	agda --html --html-dir=tmp Main.agda
 	mv tmp/Main.html html
 	mv tmp/Frame.html html
@@ -17,6 +17,7 @@ foo: html/TreeType.html
 	mv tmp/Homotopy.html html
 	mv tmp/Poset.html html
 	mv tmp/FormalTopologySambin.html html
+	rm -rf tmp
 
 .PHONY:
 clean:
