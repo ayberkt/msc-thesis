@@ -90,4 +90,7 @@ module Test (PR : Protype ℓ)
     dir    : U a → a <| U
     branch : (b : exp a) → (f : (c : out a b) → rev a b c <| U) → a <| U
     squash : (p₀ p₁ : a <| U) → p₀ ≡ p₁
+
+  <|-prop : (a : P) (U : P → Type ℓ′) → IsProposition (a <| U)
+  <|-prop a U = squash
 ```
