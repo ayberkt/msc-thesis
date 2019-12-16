@@ -34,7 +34,7 @@ record IsPreOrder (P : Type ℓ) : Type (suc ℓ) where
     trans : (a₀ a₁ a₂ : P) → a₀ ⊑ a₁ → a₁ ⊑ a₂ → a₀ ⊑ a₂
 ```
 
-Pre-ordered set:
+Pre-ordered type:
 
 ```
 Protype : (ℓ : Level) → Type (suc ℓ)
