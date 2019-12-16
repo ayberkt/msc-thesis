@@ -29,7 +29,7 @@ record IsPreOrder (P : Type ℓ) : Type (suc ℓ) where
   field
     _⊑_   : P → P → Type ℓ
 
-    -- Laws
+    -- Laws.
     refl  : (a        : P) → a ⊑ a
     trans : (a₀ a₁ a₂ : P) → a₀ ⊑ a₁ → a₁ ⊑ a₂ → a₀ ⊑ a₂
 
