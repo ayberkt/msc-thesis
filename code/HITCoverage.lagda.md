@@ -38,7 +38,9 @@ module Test (P     : Type ℓ)
             (sim   : (a₀ a : P)
                    → a₀ ⊑ a
                    → (b : exp a)
-                   → Σ (exp a₀) (λ b₀ → (c₀ : out a₀ b₀) → Σ (out a b) (λ c → (rev a₀ b₀ c₀) ⊑ (rev a b c))))
+                   → Σ (exp a₀)
+                       (λ b₀ → (c₀ : out a₀ b₀) →
+                         Σ (out a b) (λ c → (rev a₀ b₀ c₀) ⊑ (rev a b c))))
             where
 
   IsDownwardClosed : (P → Type ℓ₀) → Type (ℓ ⊔ ℓ′ ⊔ ℓ₀)
