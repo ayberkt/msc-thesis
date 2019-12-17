@@ -1,5 +1,5 @@
 ```
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --safe #-}
 
 module HITCoverage where
 
