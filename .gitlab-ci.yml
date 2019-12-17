@@ -7,6 +7,7 @@ test:
   script:
   - agda --version
   - ./check.sh
+  - agda HITCoverage.lagda.md
 
 pages:
   script:
@@ -21,3 +22,4 @@ cosmetics:
   script:
   - export LC_ALL=C.UTF-8
   - ./check_cosmetics.py TreeType.lagda.md
+  - ./check_cosmetics.py HITCoverage.lagda.md
