@@ -6,8 +6,8 @@ module HITCoverage where
 open import Level
 open import Agda.Primitive.Cubical
 open import Agda.Builtin.Cubical.Path
-open import Data.Empty   using (⊥) renaming (⊥-elim to explode)
-open import Data.Product using (Σ; _,_; _×_) renaming (proj₁ to π₀; proj₂ to π₁)
+open import Data.Product              using    (Σ; _,_; _×_)
+                                      renaming (proj₁ to π₀; proj₂ to π₁)
 
 Type₀  = Set zero
 
