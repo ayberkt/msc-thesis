@@ -99,3 +99,11 @@ module Test (P     : Type ℓ)
   lem3 a a′ U V U-down V-down h (squash p₀ p₁ i) q =
     squash (lem3 a a′ U V U-down V-down h p₀ q) (lem3 a a′ U V U-down V-down h p₁ q) i
 ```
+
+```
+  lem4 : (a : P) (U : P → Type ℓ₀) (V : P → Type ℓ₁)
+       → a <| U → ((u : P) → U u → u <| V) → a <| V
+  lem4 a U V (dir p)          h = h a p
+  lem4 a U V (branch b f)     h = branch b (λ c → lem4 (rev a b c) U V (f c) h)
+  lem4 a U V (squash p₀ p₁ i) h = squash (lem4 a U V p₀ h) (lem4 a U V p₁ h) i
+```
