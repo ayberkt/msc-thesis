@@ -46,11 +46,13 @@ infix 5 _is-true
 ```
 
 ```
-IsSet : Type ℓ → Type ℓ
-IsSet A = (x y : A) → IsProp (x ≡ y)
-```
-
-```
 ∏-prop : ((x : A) → IsProp (B x)) → IsProp ((x : A) → B x)
 ∏-prop B-prop x y = fn-ext x y λ x′ → B-prop x′ (x x′) (y x′)
+```
+
+## Sets
+
+```
+IsSet : Type ℓ → Type ℓ
+IsSet A = (x y : A) → IsProp (x ≡ y)
 ```
