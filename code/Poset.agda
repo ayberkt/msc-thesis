@@ -18,9 +18,9 @@ record PosetStr (ℓ ℓ′ : Level) (A : Set ℓ) : Set ((suc ℓ) ⊔ (suc ℓ
 
   -- Laws.
   field
-    ⊑-refl    : (x     : A) → (x ⊑ x) is-true
-    ⊑-trans   : (x y z : A) → (x ⊑ y) is-true → (y ⊑ z) is-true → (x ⊑ z) is-true
-    ⊑-antisym : (x y   : A) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y
+    ⊑-refl    : (x     : A) → x ⊑ x is-true
+    ⊑-trans   : (x y z : A) → x ⊑ y is-true → y ⊑ z is-true → x ⊑ z is-true
+    ⊑-antisym : (x y   : A) → x ⊑ y is-true → y ⊑ x is-true → x ≡ y
 
   _⊑⟨_⟩_ : (x : A) {y z : A} → x ⊑ y is-true → y ⊑ z is-true → x ⊑ z is-true
   _ ⊑⟨ p ⟩ q = ⊑-trans _ _ _ p q
