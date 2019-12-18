@@ -3,19 +3,14 @@
 
 module Basis where
 
-open import Level public
-open import Function public using (_∘_; id)
-open import Agda.Primitive.Cubical
-open import Agda.Builtin.Cubical.Path public
-open import Data.Product public       using (Σ; _,_) renaming (proj₁ to π₀; proj₂ to π₁)
+open import Cubical.Core.Everything public  using    (_≡_; Type; Σ; _,_)
+open import Data.Product            public  using    ()
+                                            renaming (proj₁ to π₀; proj₂ to π₁)
+open import Function                public  using    (_∘_; id)
+open import Level                   public
 ```
 
 ```
-Type₀ = Set zero
-
-Type : (ℓ : Level) → Set (suc ℓ)
-Type ℓ = Set ℓ
-
 variable
   ℓ ℓ₀ ℓ₁ ℓ₂ : Level
 
