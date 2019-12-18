@@ -24,7 +24,7 @@ IsProposition : Type ℓ → Type ℓ
 IsProposition A = (a b : A) → a ≡ b
 ```
 
-Here goes the test:
+## The test
 
 ```
 module Test (P     : Type ℓ)
@@ -117,7 +117,4 @@ module Test (P     : Type ℓ)
       where
         g : (c : out a′ b) → rev a′ b c <| (U ∩ V)
         g c = lem3 a′ (rev a′ b c) (mono b c) (f c) (lem1 V-down h q)
-```
-
-```
 ```
