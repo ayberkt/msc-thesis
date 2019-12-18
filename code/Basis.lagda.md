@@ -4,8 +4,8 @@
 module Basis where
 
 open import Cubical.Core.Everything public  using    (_≡_; Type; Σ; _,_)
-open import Cubical.Foundations.Prelude public using (J; subst)
-open import Data.Product            public  using    ()
+open import Cubical.Foundations.Prelude public using (J; subst; cong)
+open import Data.Product            public  using    (_×_)
                                             renaming (proj₁ to π₀; proj₂ to π₁)
 open import Function                public  using    (_∘_; id)
 open import Level                   public
