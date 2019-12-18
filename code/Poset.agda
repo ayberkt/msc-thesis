@@ -3,6 +3,7 @@
 module Poset where
 
 open import Basis
+open import Powerset
 
 record PosetStr (ℓ ℓ′ : Level) (A : Set ℓ) : Set ((suc ℓ) ⊔ (suc ℓ′)) where
   constructor posetstr
@@ -72,15 +73,15 @@ _∘m_ : {P Q R : Poset ℓ₀ ℓ₁} → (Q ─m→ R) → (P ─m→ Q) → (
 ↓[_]_ : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 ↓[ P ] a = Σ ∣ P ∣ₚ (λ b → b ⊑[ P ] a is-true)
 
--- IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → (∣ P ∣ₚ ) → Ω (ℓ ⊔ ℓ′)
--- IsDownwardClosed (X , P) D = ((x y : X) → x ∈ D holds → (y ⊑ x) holds → y ∈ D holds) , prop
-  -- where
-    -- prop = ∏-resp-prop λ _ → ∏-resp-prop λ y → ∏-resp-prop λ _ → ∏-resp-prop λ _ →
-      -- proj₂ (D y)
-    -- open PosetStr P using (_⊑_)
+IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → (𝒫 ∣ P ∣ₚ) → Ω (ℓ₀ ⊔ ℓ₁)
+IsDownwardClosed P@(X , _) D =
+  ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true) , prop
+  where
+    prop : IsProp ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true)
+    prop = ∏-prop λ _ → ∏-prop λ x → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (D x)
 
--- DownwardClosedSubset : (P : Poset ℓ ℓ′) → Set (suc ℓ ⊔ ℓ′)
--- DownwardClosedSubset P = Σ[ S ∈ (𝒫 ∣ P ∣ₚ) ] (IsDownwardClosed P S holds)
+DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Set (suc ℓ₀ ⊔ ℓ₁)
+DownwardClosedSubset P = Σ (𝒫 ∣ P ∣ₚ) (λ S → IsDownwardClosed P S is-true)
 
 -- DownwardClosedSubset-set : (P : Poset ℓ ℓ′) → IsSet (DownwardClosedSubset P)
 -- DownwardClosedSubset-set P = Σ-set 𝒫-set (prop⇒set ∘ proj₂ ∘ IsDownwardClosed P)
