@@ -1,31 +1,25 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --cubical --safe #-}
 
 open import Truncation
 
 module Frame (pt : TruncationExists) where
 
-open import Common
+open import Basis
 open import Family
 open import Truncation
-open import Homotopy
-open import Unit        using (tt)
 open import Poset
 
 import AlgebraicProperties
 
 open TruncationExists pt
 
-private
-  variable
-    ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
-
 record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)) where
 
   field
     P   : Poset ℓ₀ ℓ₁
 
-  O   = proj₁ P
-  _⊑_ = PosetStr._⊑_ (proj₂ P)
+  O   = ∣ P ∣ₚ
+  _⊑_ = PosetStr._⊑_ (strₚ P)
 
   field
     𝟏   : O
@@ -38,27 +32,28 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
     -- Consider merging the following three requirements and prove that equivalent to
     -- this. Thanks to univalence, one can alternate between the two styles if one happens
     -- to be more preferable than the other in certain cases.
-    top         : (o     : O) → o ⊑ 𝟏 holds
-    ⊓-lower₀    : (o p   : O) → (o ⊓ p) ⊑ o holds
-    ⊓-lower₁    : (o p   : O) → (o ⊓ p) ⊑ p holds
-    ⊓-greatest  : (o p q : O) → q ⊑ o holds → q ⊑ p holds → q ⊑ (o ⊓ p) holds
+    top         : (o     : O) → o ⊑ 𝟏 is-true
+    ⊓-lower₀    : (o p   : O) → (o ⊓ p) ⊑ o is-true
+    ⊓-lower₁    : (o p   : O) → (o ⊓ p) ⊑ p is-true
+    ⊓-greatest  : (o p q : O) → q ⊑ o is-true → q ⊑ p is-true → q ⊑ (o ⊓ p) is-true
 
     -- Least upper bound.
-    ⊔-upper : (ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⊔ ℱ) holds
-    ⊔-least : (ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p holds) → (⊔ ℱ) ⊑ p holds
+    ⊔-upper : (ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⊔ ℱ) is-true
+    ⊔-least : (ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p is-true) → (⊔ ℱ) ⊑ p is-true
 
     -- Binary meety distribute over arbitrary joins.
     dist : (o : O) (ℱ : Sub ℓ₂ O) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → o ⊓ (ℱ € i))
 
 -- Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Set ℓ₀
-∣_∣F = proj₁ ∘ Frame.P
+∣_∣F = {!!}
 
 -- The underlying frame of a poset.
 pos : Frame ℓ₀ ℓ₁ ℓ₂ → Poset ℓ₀ ℓ₁
 pos F = Frame.P F
 
 record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ suc ℓ₂) where
+  constructor frame-homo
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
   open Frame F₁ using () renaming (P to P₁; _⊓_ to _⊓₁_; ⊔_ to ⊔₁_; 𝟏 to 𝟏₁)
 
@@ -68,18 +63,20 @@ record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ F₁ : Frame ℓ ℓ′ ℓ�
   field
      resp-id : m $ₘ 𝟏₀ ≡ 𝟏₁
      resp-⊓  : (x y : ∣ P₀ ∣ₚ) → m $ₘ (x ⊓₀ y) ≡ (m $ₘ x) ⊓₁ (m $ₘ y)
-     resp-⊔  : (ℱ : Sub ℓ₂ ∣ P₀ ∣ₚ) → m $ₘ (⊔₀ ℱ) ≡ (⊔₁ (proj₁ ℱ , λ i → m $ₘ (ℱ € i)))
+     resp-⊔  : (ℱ : Sub ℓ₂ ∣ P₀ ∣ₚ) → m $ₘ (⊔₀ ℱ) ≡ (⊔₁ (index ℱ , λ i → m $ₘ (ℱ € i)))
 
 -- Convenient notation for frame homomorphism application.
-_$f_ : {F₀ : Frame ℓ ℓ′ ℓ₂} {F₁ : Frame ℓ ℓ′ ℓ₂}
-     → (F₀ ─f→ F₁) → (proj₁ (Frame.P F₀)) → (proj₁ (Frame.P F₁))
-_$f_ = proj₁ ∘ _─f→_.m
+_$f_ : {F₀ : Frame ℓ₀ ℓ₁ ℓ₂} {F₁ : Frame ℓ₀ ℓ₁ ℓ₂}
+     → (F₀ ─f→ F₁) → ∣ Frame.P F₀ ∣ₚ → ∣ Frame.P F₁ ∣ₚ
+(frame-homo m _ _ _) $f k = m $ₘ k
 
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
+{--
+
 -- The set of downward-closed subsets of a poset forms a frame.
-downward-subset-poset : (P : Poset ℓ ℓ′) → Poset (suc ℓ ⊔ ℓ′) ℓ
+downward-subset-poset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
 downward-subset-poset {ℓ = ℓ} {ℓ′} (X , P) =
   𝔻 , posetstr _<<_ A-set <<-refl <<-trans <<-antisym
   where
