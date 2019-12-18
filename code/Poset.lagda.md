@@ -1,16 +1,19 @@
+```
 {-# OPTIONS --without-K --cubical --safe #-}
 
 module Poset where
 
 open import Basis
 open import Powerset
+```
 
-record PosetStr (ℓ ℓ′ : Level) (A : Set ℓ) : Set ((suc ℓ) ⊔ (suc ℓ′)) where
+```
+record PosetStr (ℓ₁ : Level) (A : Set ℓ₀) : Set (ℓ₀ ⊔ suc ℓ₁) where
   constructor posetstr
 
   -- Data.
   field
-    _⊑_  : A → A → Ω ℓ′
+    _⊑_  : A → A → Ω ℓ₁
 
   -- Homotopy structure.
   field
@@ -32,20 +35,23 @@ record PosetStr (ℓ ℓ′ : Level) (A : Set ℓ) : Set ((suc ℓ) ⊔ (suc ℓ
   infix  1 _■
 
 Poset : (ℓ ℓ′ : Level) → Set (suc ℓ ⊔ suc ℓ′)
-Poset ℓ ℓ′ = Σ (Set ℓ) (PosetStr ℓ ℓ′)
+Poset ℓ ℓ′ = Σ (Set ℓ) (PosetStr ℓ′)
 
 ∣_∣ₚ : {ℓ ℓ′ : Level} → Poset ℓ ℓ′ → Set ℓ
 ∣ X , _ ∣ₚ = X
 
-strₚ : {ℓ ℓ′ : Level} → (P : Poset ℓ ℓ′) → PosetStr ℓ ℓ′ ∣ P ∣ₚ
+strₚ : {ℓ ℓ′ : Level} → (P : Poset ℓ ℓ′) → PosetStr ℓ′ ∣ P ∣ₚ
 strₚ (_ , s) = s
+```
 
+```
 rel : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω ℓ₁
 rel P = PosetStr._⊑_ (π₁ P)
 
--- A convenient notation for referring to the relation of a poset.
 syntax rel P x y = x ⊑[ P ] y
+```
 
+```
 ≡⇒⊑ : (P : Poset ℓ₀ ℓ₁) → {x y : ∣ P ∣ₚ} → x ≡ y → rel P x y is-true
 ≡⇒⊑ P {x = x} p = subst (λ z → rel P x z is-true) p (⊑-refl x)
   where
@@ -54,16 +60,25 @@ syntax rel P x y = x ⊑[ P ] y
 IsMonotonic : (P Q : Poset ℓ₀ ℓ₁) → (∣ P ∣ₚ → ∣ Q ∣ₚ) → Set (ℓ₀ ⊔ ℓ₁)
 IsMonotonic (X , posetstr _⊑₀_ _ _ _ _) (Y , posetstr _⊑₁_ _ _ _ _) f =
   (x y : X) → x ⊑₀ y is-true → (f x) ⊑₁ (f y) is-true
+```
 
--- Monotonic functions.
+## Monotonic functions
+
+```
 -- TODO: levels might have to generalised.
 _─m→_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Set (ℓ₀ ⊔ ℓ₁)
 _─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (IsMonotonic P Q)
+```
 
--- Projection for the underlying function of a monotonic map.
+Projection for the underlying function of a monotonic map.
+
+```
 _$ₘ_ = π₀
+```
 
--- Monotonic function composition.
+Monotonic function composition.
+
+```
 _∘m_ : {P Q R : Poset ℓ₀ ℓ₁} → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
 (g , pg) ∘m (f , pf) = g ∘ f , λ x y p → pg (f x) (f y) (pf x y p)
 
