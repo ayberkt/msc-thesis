@@ -1,21 +1,16 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --cubical #-}
 
 open import Truncation
 
 module Nucleus (pt : TruncationExists) where
 
-open import Common
+open import Basis
 open import Family
-open import Homotopy
 open import Poset
 open import Frame pt
 import AlgebraicProperties
 
 open TruncationExists pt
-
-private
-  variable
-    ℓ₀ ℓ₁ ℓ₂ : Level
 
 -- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
@@ -23,8 +18,8 @@ IsNuclear L j = N₀ × N₁ × N₂
   where
     open Frame L using (P; _⊓_; _⊑_)
     N₀ = (a b : ∣ L ∣F) → j (a ⊓ b) ≡ (j a) ⊓ (j b)
-    N₁ = (a   : ∣ L ∣F) → a ⊑ (j a) holds
-    N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a holds
+    N₁ = (a   : ∣ L ∣F) → a ⊑ (j a) is-true
+    N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a is-true
 
 -- The type of nuclei.
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
@@ -32,28 +27,30 @@ Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
      → (N : Nucleus L)
-     → let j = proj₁ N in (x : ∣ L ∣F) → j (j x) ≡ j x
+     → let j = π₀ N in (x : ∣ L ∣F) → j (j x) ≡ j x
 idem L (j , n₀ , n₁ , n₂) x = ⊑-antisym (j (j x)) (j x) (n₂ x) (n₁ (j x))
   where
-    open PosetStr (proj₂ (Frame.P L)) using (_⊑_; ⊑-antisym)
+    open PosetStr (strₚ (Frame.P L)) using (_⊑_; ⊑-antisym)
 
 mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L)
-     → let j = proj₁ N
-       in (x y : ∣ L ∣F) → x ⊑[ pos L ] y holds → (j x) ⊑[ pos L ] (j y) holds
+     → let j = π₀ N
+       in (x y : ∣ L ∣F) → x ⊑[ pos L ] y is-true → (j x) ⊑[ pos L ] (j y) is-true
 mono L (j , n₀ , n₁ , n₂) x y x⊑y =
   j x         ⊑⟨ ≡⇒⊑ (pos L) (cong j x≡x⊓y) ⟩
   j (x ⊓ y)   ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y) ⟩
   j x ⊓ j y   ⊑⟨ ⊓-lower₁ (j x) (j y) ⟩
   j y         ■
   where
-    open PosetStr (proj₂ (pos L)) using (_⊑_; ⊑-trans; ⊑-refl; ⊑-antisym; _⊑⟨_⟩_; _■)
+    open PosetStr (strₚ (pos L))  using (_⊑_; ⊑-trans; ⊑-refl; ⊑-antisym; _⊑⟨_⟩_; _■)
     open Frame    L               using (𝟏; _⊓_; ⊓-greatest; ⊓-lower₀; ⊓-lower₁; top)
 
-    x⊑x⊓y : x ⊑ (x ⊓ y) holds
+    x⊑x⊓y : x ⊑ (x ⊓ y) is-true
     x⊑x⊓y = ⊓-greatest x y x (⊑-refl x) x⊑y
 
     x≡x⊓y : x ≡ (x ⊓ y)
     x≡x⊓y = ⊑-antisym x (x ⊓ y) x⊑x⊓y (⊓-lower₀ x y)
+
+{--
 
 -- The set of fixed points for nucleus `j` is equivalent hence equal to its image.
 -- This is essentially due to the fact that j (j ())
@@ -224,3 +221,7 @@ nuclear-fixed-point-frame {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
           j (o′ ⊓L (⊔L 𝒢))                    ≡⟨ cong j (distL o′ 𝒢)                      ⟩
           j (⊔L (I , (λ i → o′ ⊓L (𝒢 € i))))  ≡⟨ refl                                     ⟩
           proj₁ (⊔ (I , (λ i → o ⊓ (ℱ € i)))) ∎
+
+-- --}
+-- --}
+-- --}
