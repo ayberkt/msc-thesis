@@ -2,7 +2,6 @@
 
 module Truncation where
 
-open import Common
 open import Basis
 
 record TruncationExists : Setω where
