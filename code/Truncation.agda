@@ -9,4 +9,4 @@ record TruncationExists : Setω where
     ∥_∥     : Set ℓ → Set ℓ
     ∥∥-prop : (X : Set ℓ) → IsProp ∥ X ∥
     ∣_∣     : A → ∥ A ∥
-    ∥∥-rec  : {P : Set ℓ₁} → IsProp P → (A → P) → ∥ A ∥ → P
+    ∥∥-rec  : {A A₀ : Type ℓ} → IsProp A₀ → (A → A₀) → ∥ A ∥ → A₀
