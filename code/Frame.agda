@@ -14,6 +14,7 @@ import AlgebraicProperties
 open TruncationExists pt
 
 record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)) where
+  constructor frame
 
   field
     P   : Poset ℓ₀ ℓ₁
@@ -46,7 +47,7 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
 
 -- Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Set ℓ₀
-∣_∣F = {!!}
+∣ frame P _ _ _ _ _ _ _ _ _ _ ∣F = ∣ P ∣ₚ
 
 -- The underlying frame of a poset.
 pos : Frame ℓ₀ ℓ₁ ℓ₂ → Poset ℓ₀ ℓ₁
