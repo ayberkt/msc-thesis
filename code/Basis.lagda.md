@@ -4,8 +4,12 @@
 module Basis where
 
 open import Cubical.Core.Everything         public using    (_≡_; Type; Σ; _,_)
-open import Cubical.Foundations.Prelude     public using    (J; subst; cong; refl)
+open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl)
+                                                   renaming ( isProp       to IsProp
+                                                            ; isSet        to IsSet
+                                                            ; isProp→isSet to prop⇒set)
 open import Cubical.Foundations.Univalence  public using    (ua)
+open import Cubical.Foundations.HLevels     public using    (hProp; isSetHProp)
 open import Cubical.Foundations.Isomorphism public using    (isoToPath; iso; section)
 open import Data.Product                    public using    (_×_)
                                                    renaming (proj₁ to π₀; proj₂ to π₁)
@@ -33,11 +37,16 @@ fn-ext f g f~g i x = f~g x i
 ## Propositions
 
 ```
-IsProp : Type ℓ → Type ℓ
-IsProp A = (x y : A) → x ≡ y
+IsProp-prop : IsProp (IsProp A)
+IsProp-prop {A = A} A-prop₀ A-prop₁ =
+  fn-ext A-prop₀ A-prop₁ rem
+  where
+    rem : (x : A) → A-prop₀ x ≡ A-prop₁ x
+    rem = λ x → fn-ext (A-prop₀ x) (A-prop₁ x) λ y →
+            prop⇒set A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
 
 Ω : (ℓ : Level) → Set (suc ℓ)
-Ω ℓ = Σ (Type ℓ) IsProp
+Ω ℓ = hProp {ℓ = ℓ}
 
 _is-true : Ω ℓ → Type ℓ
 (P , _) is-true = P
@@ -54,11 +63,6 @@ infix 5 _is-true
 ```
 
 ## Sets
-
-```
-IsSet : Type ℓ → Type ℓ
-IsSet A = (x y : A) → IsProp (x ≡ y)
-```
 
 ```
 path-abs : A → A
