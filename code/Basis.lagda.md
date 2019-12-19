@@ -3,12 +3,14 @@
 
 module Basis where
 
-open import Cubical.Core.Everything     public using    (_≡_; Type; Σ; _,_)
-open import Cubical.Foundations.Prelude public using    (J; subst; cong)
-open import Data.Product                public using    (_×_)
-                                               renaming (proj₁ to π₀; proj₂ to π₁)
-open import Function                    public using    (_∘_; id)
-open import Level                       public
+open import Cubical.Core.Everything         public using    (_≡_; Type; Σ; _,_)
+open import Cubical.Foundations.Prelude     public using    (J; subst; cong; refl)
+open import Cubical.Foundations.Univalence  public using    (ua)
+open import Cubical.Foundations.Isomorphism public using    (isoToPath; iso; section)
+open import Data.Product                    public using    (_×_)
+                                                   renaming (proj₁ to π₀; proj₂ to π₁)
+open import Function                        public using    (_∘_; id)
+open import Level                           public
 ```
 
 ```
@@ -16,7 +18,8 @@ variable
   ℓ ℓ₀ ℓ₁ ℓ₂ : Level
 
 variable
-  A A₀ : Type ℓ₀
+  A    : Type ℓ₀
+  A₀   : Type ℓ₁
   B    : A → Type ℓ₁
 ```
 
@@ -55,4 +58,42 @@ infix 5 _is-true
 ```
 IsSet : Type ℓ → Type ℓ
 IsSet A = (x y : A) → IsProp (x ≡ y)
+```
+
+```
+path-abs : A → A
+path-abs x = x
+
+syntax path-abs (λ i → e) = ⟨ i ⟩ e
+```
+
+## Univalence
+
+## Extensional equality
+
+```
+_~_ : (f g : (x : A) → B x) → Type _
+_~_ {A = A} f g = (x : A) → f x ≡ g x
+```
+
+```
+id-∏ : (f g : (x : A) → B x) → (f ~ g) ≡ (f ≡ g)
+id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
+  where
+    F : f ~ g → f ≡ g
+    F f~g = ⟨ i ⟩ λ x → f~g x i
+
+    G : f ≡ g → f ~ g
+    G f=g = λ x → ⟨ i ⟩ f=g i x
+```
+
+```
+∏-set : ((x : A) → IsSet (B x)) → IsSet ((x : A) → B x)
+∏-set {A = A} B-set f g = NTS
+  where
+    rem1 : IsProp (f ~ g)
+    rem1 p q = ⟨ i ⟩ λ x → B-set x (f x) (g x) (p x) (q x) i
+
+    NTS : IsProp (f ≡ g)
+    NTS p q = subst IsProp (id-∏ f g) rem1 p q
 ```
