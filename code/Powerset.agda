@@ -8,7 +8,7 @@ open import Basis
 𝒫 {ℓ} A = A → Ω ℓ
 
 𝒫-set : (A : Type ℓ) → IsSet (𝒫 A)
-𝒫-set A = {!!}
+𝒫-set A = ∏-set λ _ → isSetHProp
 
 _⊆_ : 𝒫 A → 𝒫 A → Ω _
 _⊆_ {A = A} U V = ((x : A) → U x is-true → V x is-true) , prop
