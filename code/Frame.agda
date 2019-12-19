@@ -8,6 +8,7 @@ open import Basis
 open import Family
 open import Truncation
 open import Poset
+open import Powerset
 
 import AlgebraicProperties
 
@@ -74,43 +75,34 @@ _$f_ : {F₀ : Frame ℓ₀ ℓ₁ ℓ₂} {F₁ : Frame ℓ₀ ℓ₁ ℓ₂}
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
-{--
-
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-poset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
-downward-subset-poset {ℓ = ℓ} {ℓ′} (X , P) =
-  𝔻 , posetstr _<<_ A-set <<-refl <<-trans <<-antisym
+downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁} (A , P) =
+  𝔻 , posetstr _<<_ (DownwardClosedSubset-set (A , P)) <<-refl <<-trans <<-antisym
   where
     open PosetStr P using (_⊑_; ⊑-refl; ⊑-trans; ⊑-antisym)
 
-    𝔻 = DownwardClosedSubset (X , P)
+    𝔻 = DownwardClosedSubset (A , P)
 
-    A-set : IsSet (DownwardClosedSubset (X , P))
-    A-set = DownwardClosedSubset-set (X , P)
+    _<<_ : 𝔻 → 𝔻 → Ω ℓ₀
+    _<<_ (S , _) (T , _) = S ⊆ T
 
-    inc : 𝔻 → 𝔻 → Set ℓ
-    inc (S , _) (T , _) = S ⊆ T
-
-    <<-prop : (S T : 𝔻) → IsProp (inc S T)
-    <<-prop (S , _) (T , _) = ⊆-prop S T
-
-    open AlgebraicProperties A-set (λ S T → inc S T , <<-prop S T)
+    open AlgebraicProperties (DownwardClosedSubset-set (A , P)) _<<_
        renaming ( IsReflexive  to <<-IsReflexive
                 ; IsTransitive to <<-IsTransitive
                 ; IsAntisym    to <<-IsAntisym)
 
-    _<<_ : 𝔻 → 𝔻 → Ω ℓ
-    S << T = (inc S T) , (<<-prop S T)
+    <<-refl : <<-IsReflexive is-true
+    <<-refl (U , U-down) x xεU = xεU
 
-    <<-refl : <<-IsReflexive holds
-    <<-refl = ⊆-refl ∘ proj₁
+    <<-trans : <<-IsTransitive is-true
+    <<-trans (S , _) (T , _) (U , _) S<<T T<<U x xεS = T<<U x (S<<T x xεS)
 
-    <<-trans : <<-IsTransitive holds
-    <<-trans (S , _) (T , _) (U , _) = ⊆-trans S T U
+    <<-antisym : <<-IsAntisym is-true
+    <<-antisym X Y S⊆T T⊆S =
+      to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S) 
 
-    <<-antisym : <<-IsAntisym holds
-    <<-antisym (S , _) (T , _) S⊆T T⊆S =
-      to-subtype-≡ (holds-prop ∘ IsDownwardClosed (X , P)) (⊆-antisym S⊆T T⊆S)
+{--
 
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ

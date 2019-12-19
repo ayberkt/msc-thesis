@@ -10,8 +10,14 @@ open import Basis
 𝒫-set : (A : Type ℓ) → IsSet (𝒫 A)
 𝒫-set A = ∏-set λ _ → isSetHProp
 
+variable
+  U V : 𝒫 A
+
 _⊆_ : 𝒫 A → 𝒫 A → Ω _
 _⊆_ {A = A} U V = ((x : A) → U x is-true → V x is-true) , prop
   where
     prop : IsProp ((x : A) → U x is-true → V x is-true)
     prop = ∏-prop λ x → ∏-prop λ _ → is-true-prop (V x)
+
+⊆-antisym : U ⊆ V is-true → V ⊆ U is-true → U ≡ V
+⊆-antisym {U = U} {V} U⊆V V⊆V = fn-ext U V (λ x → ⇔toPath (U⊆V x) (V⊆V x))

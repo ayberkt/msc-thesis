@@ -3,18 +3,21 @@
 
 module Basis where
 
-open import Cubical.Core.Everything         public using    (_≡_; Type; Σ; _,_)
-open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl)
+open import Cubical.Core.Everything         public using    ( _≡_; Type; Σ; _,_ )
+open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl )
                                                    renaming ( isProp       to IsProp
                                                             ; isSet        to IsSet
-                                                            ; isProp→isSet to prop⇒set)
-open import Cubical.Foundations.Univalence  public using    (ua)
-open import Cubical.Foundations.HLevels     public using    (hProp
+                                                            ; isProp→isSet to prop⇒set )
+open import Cubical.Foundations.Univalence  public using    ( ua )
+open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
-                                                            ; isOfHLevelΣ)
-open import Cubical.Foundations.Isomorphism public using    (isoToPath; iso; section)
-open import Data.Product                    public using    (_×_)
-                                                   renaming (proj₁ to π₀; proj₂ to π₁)
+                                                            ; isOfHLevelΣ
+                                                            ; ΣProp≡)
+open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section )
+open import Cubical.Foundations.Logic       public using    ( ⇔toPath )
+open import Data.Product                    public using    ( _×_)
+                                                   renaming ( proj₁ to π₀
+                                                            ; proj₂ to π₁)
 open import Function                        public using    (_∘_; id)
 open import Level                           public
 ```
@@ -107,4 +110,11 @@ id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
 ```
 Σ-set : IsSet A → ((x : A) → IsSet (B x)) → IsSet (Σ A B)
 Σ-set = isOfHLevelΣ 2
+```
+
+```
+to-subtype-≡ : (p q : Σ A B)
+             → ((x : A) → IsProp (B x))
+             → π₀ p ≡ π₀ q → p ≡ q
+to-subtype-≡ _ _ B-prop eq = ΣProp≡ B-prop eq
 ```
