@@ -9,7 +9,9 @@ open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; re
                                                             ; isSet        to IsSet
                                                             ; isProp→isSet to prop⇒set)
 open import Cubical.Foundations.Univalence  public using    (ua)
-open import Cubical.Foundations.HLevels     public using    (hProp; isSetHProp)
+open import Cubical.Foundations.HLevels     public using    (hProp
+                                                            ; isSetHProp
+                                                            ; isOfHLevelΣ)
 open import Cubical.Foundations.Isomorphism public using    (isoToPath; iso; section)
 open import Data.Product                    public using    (_×_)
                                                    renaming (proj₁ to π₀; proj₂ to π₁)
@@ -23,8 +25,8 @@ variable
 
 variable
   A    : Type ℓ₀
+  B    : A → Type ℓ₀
   A₀   : Type ℓ₁
-  B    : A → Type ℓ₁
 ```
 
 ## Function extensionality
@@ -100,4 +102,9 @@ id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
 
     NTS : IsProp (f ≡ g)
     NTS p q = subst IsProp (id-∏ f g) rem1 p q
+```
+
+```
+Σ-set : IsSet A → ((x : A) → IsSet (B x)) → IsSet (Σ A B)
+Σ-set = isOfHLevelΣ 2
 ```
