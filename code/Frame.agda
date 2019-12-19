@@ -104,8 +104,8 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁} (A , P) =
       to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S) 
 
 -- The set of downward-closed subsets of a poset forms a frame.
-downward-subset-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ
-downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
+downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
+downward-subset-frame {ℓ₀ = ℓ} {ℓ′} (X , P) =
   record
     { P           =  𝔻ₚ
     ; 𝟏           =  𝟏
