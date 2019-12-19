@@ -9,6 +9,7 @@ open import Family
 open import Truncation
 open import Poset
 open import Powerset
+open import Unit
 
 import AlgebraicProperties
 
@@ -102,8 +103,6 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁} (A , P) =
     <<-antisym X Y S⊆T T⊆S =
       to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S) 
 
-{--
-
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : {ℓ ℓ′ : Level} (P : Poset ℓ ℓ′) → Frame (suc ℓ ⊔ ℓ′) ℓ ℓ
 downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
@@ -127,56 +126,56 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
 
-    open PosetStr (proj₂ 𝔻ₚ) using    ()
-                             renaming ( _⊑_       to  _<<_
-                                      ; ⊑-refl    to  <<-refl
-                                      ; ⊑-antisym to  <<-antisym)
-    open PosetStr P          using    (_⊑_)
+    open PosetStr (strₚ 𝔻ₚ) using    ()
+                            renaming ( _⊑_       to  _<<_
+                                     ; ⊑-refl    to  <<-refl
+                                     ; ⊑-antisym to  <<-antisym)
+    open PosetStr P          using   (_⊑_)
 
-    𝟏 = entirety , λ _ _ _ _ → tt
+    𝟏 = (λ _ → N₁ , N₁-prop) , λ _ _ _ _ → tt
 
     ∩-down : (S T : 𝒫 X)
-           → IsDownwardClosed (X , P) S holds
-           → IsDownwardClosed (X , P) T holds
-           → IsDownwardClosed (X , P) (S ∩ T) holds
-    ∩-down S T S↓ T↓ x y x∈S∩T y⊑x = S↓ x y (proj₁ x∈S∩T) y⊑x , T↓ x y (proj₂ x∈S∩T) y⊑x
+           → IsDownwardClosed (X , P) S is-true
+           → IsDownwardClosed (X , P) T is-true
+           → IsDownwardClosed (X , P) (S ∩ T) is-true
+    ∩-down S T S↓ T↓ x y x∈S∩T y⊑x = S↓ x y (π₀ x∈S∩T) y⊑x , T↓ x y (π₁ x∈S∩T) y⊑x
 
     _⊓_ : 𝔻 → 𝔻 → 𝔻
     (S , S-dc) ⊓ (T , T-dc) = (S ∩ T) , ∩-down S T S-dc T-dc
 
-    𝟏-top : (D : 𝔻) → (D << 𝟏) holds
+    𝟏-top : (D : 𝔻) → (D << 𝟏) is-true
     𝟏-top D _ _ = tt
 
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
     in-some-set-of : (ℱ : Sub ℓ 𝔻) → X → Set ℓ
-    in-some-set-of ℱ x = Σ[ i ∈ index ℱ ] (x ∈ ∣ ℱ € i ∣𝔻) holds
+    in-some-set-of ℱ x = Σ (index ℱ) (λ i → ∣ ℱ € i ∣𝔻 x is-true)
 
     ⊔_ : Sub ℓ 𝔻 → 𝔻
     ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
       where
-        ind : (x y : X) → y ⊑ x holds → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
-        ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , proj₂ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
+        ind : (x y : X) → y ⊑ x is-true → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
+        ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , π₁ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
 
-        ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) holds
+        ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) is-true
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
 
-    ⊔-upper : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) holds
-    ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , transport (λ - → x ∈ ∣ - ∣𝔻 holds) (sym p) x∈D ∣
+    ⊔-upper : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D << (⊔ ℱ) is-true
+    ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , subst (λ V → ∣ V ∣𝔻 x is-true) (sym p) x∈D ∣
 
-    ⊔-least : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) holds) → (⊔ ℱ) << z holds
-    ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (proj₂ (∣ D ∣𝔻 x)) ind x∈⊔S
+    ⊔-least : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o << z) is-true) → (⊔ ℱ) << z is-true
+    ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (π₁ (∣ D ∣𝔻 x)) ind x∈⊔S
       where
-        ind : in-some-set-of ℱ x → x ∈ ∣ D ∣𝔻 holds
+        ind : in-some-set-of ℱ x → ∣ D ∣𝔻 x is-true
         ind (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
 
-    ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) << D holds
+    ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) << D is-true
     ⊓-lower₀ D E x (x∈D , _) = x∈D
 
-    ⊓-lower₁ : (D E : 𝔻) → (D ⊓ E) << E holds
+    ⊓-lower₁ : (D E : 𝔻) → (D ⊓ E) << E is-true
     ⊓-lower₁ D E x (_ , x∈F) = x∈F
 
-    ⊓-greatest : (D E F : 𝔻) → (F << D) holds → (F << E) holds → F << (D ⊓ E) holds
+    ⊓-greatest : (D E F : 𝔻) → (F << D) is-true → (F << E) is-true → F << (D ⊓ E) is-true
     ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
     dist : (D : 𝔻) (ℱ : Sub ℓ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
@@ -185,19 +184,18 @@ downward-subset-frame {ℓ = ℓ} {ℓ′} (X , P) =
         𝒜 = ∣ D ⊓ (⊔ ℱ) ∣𝔻
         ℬ = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
 
-        down : (x : X) → x ∈ 𝒜 holds → x ∈ ℬ holds
+        down : (x : X) → 𝒜 x is-true → ℬ x is-true
         down x x∈𝒜@(x∈D , x∈⊔ℱ) = ∥∥-rec (∥∥-prop _) ind x∈⊔ℱ
           where
             ind : in-some-set-of ℱ x → ∥ in-some-set-of (index ℱ , λ i → D ⊓ (ℱ € i)) x ∥
             ind (i , x∈ℱᵢ) = ∣ i , x∈D , x∈ℱᵢ ∣
 
-        up : (x : X) → x ∈ ℬ holds → x ∈ 𝒜 holds
+        up : (x : X) → ℬ x is-true → 𝒜 x is-true
         up x x∈ℬ =
-          ∥∥-rec (Σ-resp-prop (holds-prop (x ∈ ∣ D ∣𝔻)) λ _ →
-            holds-prop (x ∈ ∣ ⊔ ℱ ∣𝔻)) φ x∈ℬ
+          ∥∥-rec (isOfHLevelΣ 1 (is-true-prop (∣ D ∣𝔻 x)) (λ _ → is-true-prop (∣ ⊔ ℱ ∣𝔻 x))) φ x∈ℬ
           where
             φ : in-some-set-of (index ℱ , λ j → D ⊓ (ℱ € j)) x
-              → x ∈ ∣ D ∣𝔻 holds × x ∈ ∣ ⊔ ℱ ∣𝔻 holds
+              → (∣ D ∣𝔻 x is-true) × ∣ ⊔ ℱ ∣𝔻 x is-true
             φ (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
 
 -- -}
