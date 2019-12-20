@@ -2,7 +2,7 @@
 
 open import Truncation
 
-module Frame (pt : TruncationExists) where
+module Frame where
 
 open import Basis
 open import Family
@@ -12,8 +12,6 @@ open import Powerset
 open import Unit
 
 import AlgebraicProperties
-
-open TruncationExists pt
 
 record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)) where
   constructor frame

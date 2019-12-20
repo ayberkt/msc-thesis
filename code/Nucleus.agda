@@ -2,21 +2,19 @@
 
 open import Truncation
 
-module Nucleus (pt : TruncationExists) where
+module Nucleus where
 
 open import Basis
 open import Family
 open import Poset
-open import Frame pt
+open import Frame
 import AlgebraicProperties
-
-open TruncationExists pt
 
 -- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
 IsNuclear L j = N₀ × N₁ × N₂
   where
-    open Frame L using (P; _⊓_; _⊑_)
+    open Frame.Frame L using (P; _⊓_; _⊑_)
     N₀ = (a b : ∣ L ∣F) → j (a ⊓ b) ≡ (j a) ⊓ (j b)
     N₁ = (a   : ∣ L ∣F) → a ⊑ (j a) is-true
     N₂ = (a   : ∣ L ∣F) → j (j a) ⊑ j a is-true
@@ -42,7 +40,7 @@ mono L (j , n₀ , n₁ , n₂) x y x⊑y =
   j y         ■
   where
     open PosetStr (strₚ (pos L))  using (_⊑_; ⊑-trans; ⊑-refl; ⊑-antisym; _⊑⟨_⟩_; _■)
-    open Frame    L               using (𝟏; _⊓_; ⊓-greatest; ⊓-lower₀; ⊓-lower₁; top)
+    open Frame.Frame    L         using (𝟏; _⊓_; ⊓-greatest; ⊓-lower₀; ⊓-lower₁; top)
 
     x⊑x⊓y : x ⊑ (x ⊓ y) is-true
     x⊑x⊓y = ⊓-greatest x y x (⊑-refl x) x⊑y
