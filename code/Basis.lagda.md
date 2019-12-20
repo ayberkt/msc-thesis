@@ -3,7 +3,7 @@
 
 module Basis where
 
-open import Cubical.Core.Everything         public using    ( _≡_; Type; Σ; _,_)
+open import Cubical.Core.Everything         public using    ( _≡_; Type; Σ; Σ-syntax; _,_)
 open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl; sym )
                                                    renaming ( isProp       to IsProp
                                                             ; isSet        to IsSet

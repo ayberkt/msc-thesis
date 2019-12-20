@@ -16,9 +16,10 @@ Type ℓ = Set ℓ
 ```
 
 ```
-variable
-  ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
-  A B P         : Type ℓ
+private
+  variable
+    ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
+    A B P         : Type ℓ
 
 IsProposition : Type ℓ → Type ℓ
 IsProposition A = (a b : A) → a ≡ b

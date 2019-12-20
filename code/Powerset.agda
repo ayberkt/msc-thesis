@@ -13,8 +13,11 @@ open import Basis
 variable
   U V : 𝒫 A
 
+_⊆⊆_ : {A : Type ℓ} → (A → Type ℓ₀) → (A → Type ℓ₁) → Type (ℓ ⊔ ℓ₀ ⊔ ℓ₁)
+_⊆⊆_ {A = A} U V =  (x : A) → U x → V x
+
 _⊆_ : 𝒫 A → 𝒫 A → Ω _
-_⊆_ {A = A} U V = ((x : A) → U x is-true → V x is-true) , prop
+_⊆_ {A = A} U V = ((λ - → U - is-true) ⊆⊆ (λ - → V - is-true)) , prop
   where
     prop : IsProp ((x : A) → U x is-true → V x is-true)
     prop = ∏-prop λ x → ∏-prop λ _ → is-true-prop (V x)
