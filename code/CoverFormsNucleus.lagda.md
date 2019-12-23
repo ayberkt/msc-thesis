@@ -27,7 +27,7 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
   mono-D  = π₁ D
   _⊑_     = λ (x y : stage-D) → x ⊑[ pos D ] y is-true
 
-  open Frame.Frame F↓ using (_⊓_) renaming (_⊑_ to _◀_)
+  open Frame.Frame F↓ using (_⊓_) renaming (_⊑_ to _<<_)
   open PosetStr (strₚ (Frame.P F↓)) using () renaming (⊑-antisym to ◀-antisym)
 
   sim : (a₀ a : stage-D)
@@ -45,48 +45,54 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
 ```
   open Test stage-D _⊑_ exp-D out-D rev-D (π₁ mono-D) sim
 
-  cover : ∣ F↓ ∣F → ∣ F↓ ∣F
-  cover (U′ , U′-down) = U₀ , downward-closed
+  𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
+  𝕛 (U , U-down) = U₀ , λ _ _ → down-closed
     where
+      U′ = _is-true ∘ U
+
       U₀ : stage-D → Ω ℓ₀
-      U₀ = λ a → (a <| (_is-true ∘ U′)) , <|-prop a (_is-true ∘ U′)
+      U₀ = λ a → a <| U′ , <|-prop a U′
 
-      U₁ : stage-D → Type ℓ₀
-      U₁ a = a <| (_is-true ∘ U′)
+      down-closed : IsDownwardClosed (λ - → - <| U′)
+      down-closed aεU₁ a₀⊑a = lem1 (U-down _ _) a₀⊑a aεU₁
 
-      U₁-down : IsDownwardClosed U₁
-      U₁-down {a₀ = a₀} {a} aεU₁ a₀⊑a = lem1 (λ {a₀} {a} → U′-down a a₀) a₀⊑a aεU₁
-
-      downward-closed : (a₀ a₁ : stage-D)
-                      → U₀ a₀ is-true → a₁ ⊑[ pos D ] a₀ is-true → U₀ a₁ is-true
-      downward-closed a₀ a₁ a₀εU₀ a₁⊑a₀ = U₁-down a₀εU₀ a₁⊑a₀
-
-  cover-nuclear : IsNuclear F↓ cover
-  cover-nuclear = N₀ , N₁ , N₂
+  𝕛-nuclear : IsNuclear F↓ 𝕛
+  𝕛-nuclear = N₀ , N₁ , N₂
     where
-      N₀ : (a₀ a₁ : ∣ F↓ ∣F) → cover (a₀ ⊓ a₁) ≡ (cover a₀) ⊓ (cover a₁)
-      N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) = ◀-antisym (cover (𝕌 ⊓ 𝕍)) (cover 𝕌 ⊓ cover 𝕍) d u
+      -- We reason by antisymmetry and prove in (d) 𝕛 (a₀ ⊓ a₁) ⊑ (𝕛 a₀) ⊓ (𝕛 a₁) and
+      -- in (u) (𝕛 a₀) ⊓ (𝕛 a₁) ⊑ 𝕛 (a₀ ⊓ a₁).
+      N₀ : (a₀ a₁ : ∣ F↓ ∣F) → 𝕛 (a₀ ⊓ a₁) ≡ (𝕛 a₀) ⊓ (𝕛 a₁)
+      N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) = ◀-antisym (𝕛 (𝕌 ⊓ 𝕍)) (𝕛 𝕌 ⊓ 𝕛 𝕍) d u
         where
+          U′ = _is-true ∘ U
+          V′ = _is-true ∘ V
+
           U-down′ : IsDownwardClosed (_is-true ∘ U)
           U-down′ = U-down _ _
 
           V-down′ : IsDownwardClosed (_is-true ∘ V)
           V-down′ = V-down _ _
 
-          d : (a : stage-D) → π₀ (cover (𝕌 ⊓ 𝕍)) a is-true → π₀ (cover 𝕌 ⊓ cover 𝕍) a is-true
+          d : 𝕛 (𝕌 ⊓ 𝕍) << (𝕛 𝕌 ⊓ 𝕛 𝕍) is-true
           d a (dir p)        = dir (π₀ p) , dir (π₁ p)
-          d a (branch b f)   =
-            branch b (λ c → π₀ (d (rev-D c) (f c))) , branch b λ c → π₁ (d (rev-D c) (f c))
-          d a (squash p q i) =
-            squash (π₀ (d a p)) (π₀ (d a q)) i , squash (π₁ (d a p)) (π₁ (d a q)) i
+          d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
+            where
+              IH : (c : out-D b) → π₀ (𝕛 𝕌 ⊓ 𝕛 𝕍) (rev-D c) is-true
+              IH c = d (rev-D c) (f c)
+          d a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
+            where
+              IH₀ = d a p
+              IH₁ = d a q
 
-          u : (a : stage-D) → π₀ (cover 𝕌 ⊓ cover 𝕍) a is-true → π₀ (cover (𝕌 ⊓ 𝕍)) a is-true
-          u a p = lem3 (_is-true ∘ U) (_is-true ∘ V) U-down′ V-down′ a a (⊑-refl a) (π₀ p) (π₁ p)
+          u : (𝕛 𝕌 ⊓ 𝕛 𝕍) << 𝕛 (𝕌 ⊓ 𝕍) is-true
+          u a p = lem3 U′ V′ U-down′ V-down′ a a (⊑-refl a) (π₀ p) (π₁ p)
 
-      N₁ : (𝕌 : ∣ F↓ ∣F) → 𝕌 ◀ (cover 𝕌) is-true
-      N₁ 𝕌@(U , U-down) a₀ p = lem1 (U-down _ _) {a = a₀} (⊑-refl a₀) (dir p)
+      N₁ : (𝕌 : ∣ F↓ ∣F) → 𝕌 << (𝕛 𝕌) is-true
+      N₁ 𝕌@(U , U-down) a₀ p = lem1 (U-down _ _) (⊑-refl a₀) (dir p)
 
-      N₂ : (a : ∣ F↓ ∣F) → cover (cover a) ◀ (cover a) is-true
-      N₂ 𝕌@(U , U-down) a′ p =
-        lem4 a′ (λ a → π₀ (cover 𝕌) a is-true) (_is-true ∘ U) p (λ _ q → q)
+      N₂ : (a : ∣ F↓ ∣F) → 𝕛 (𝕛 a) << (𝕛 a) is-true
+      N₂ 𝕌@(U , U-down) a′ p = lem4 a′ (λ a → π₀ (𝕛 𝕌) a is-true) U′ p (λ _ q → q)
+        where
+          U′ = _is-true ∘ U
+
 ```
