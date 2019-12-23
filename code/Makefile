@@ -1,23 +1,20 @@
-all: html/Coverage.html html/TreeType.html foo
+FILES := html/Main.html html/Poset.html html/Basis.html html/Frame.html\
+         html/HITCoverage.html html/Nucleus.html html/CoverFormsNucleus.html\
+         html/Powerset.html html/TreeType.html
 
-html/%.md: %.lagda.md Agda.css
+all: main
+
+.PHONY:
+main: $(FILES)
+	cp -f Agda.css html/Agda.css
+
+html/%.md: %.lagda.md
 	agda --html --html-highlight=code $<
-	cp Agda.css html/Agda.css
 
 .ONESHELL:
 html/%.html: html/%.md
 	cd html
 	pandoc $*.md --css Agda.css -o $*.html
-
-foo: html/TreeType.html html/HITCoverage.html
-	agda --html --html-dir=tmp Main.agda
-	mv tmp/Main.html html
-	mv tmp/Frame.html html
-	mv tmp/Nucleus.html html
-	mv tmp/Homotopy.html html
-	mv tmp/Poset.html html
-	mv tmp/FormalTopologySambin.html html
-	rm -rf tmp
 
 .PHONY:
 clean:
