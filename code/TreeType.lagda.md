@@ -183,7 +183,8 @@ We can define the analogous property for `choose⋆`:
 ```
 HasPerpetuation⋆ : (P : Poset ℓ₀ ℓ₁) → GrammarStr ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
 HasPerpetuation⋆ {ℓ₀} P P-disc =
-  (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) → choose⋆ t o ⊑[ P ] a is-true
+  (a : nonterminal D) (t : Production⋆ D a) (o : location⋆ t) →
+    choose⋆ t o ⊑[ P ] a is-true
   where
     D : Grammar ℓ₀
     D = (∣ P ∣ₚ , P-disc)
