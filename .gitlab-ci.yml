@@ -8,6 +8,14 @@ test:
   - agda --version
   - agda --safe Main.lagda.md
 
+pages:
+  script:
+  - make
+  - mv html ../public
+  artifacts:
+    paths:
+    - public
+
 cosmetics:
   script:
   - export LC_ALL=C.UTF-8
