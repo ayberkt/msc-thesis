@@ -9,7 +9,7 @@ main: $(FILES)
 	cp -f Agda.css html/Agda.css
 
 html/%.md: %.lagda.md
-	agda --html --html-highlight=code $<
+	agda --html --html-highlight=auto $<
 
 .ONESHELL:
 html/%.html: html/%.md
