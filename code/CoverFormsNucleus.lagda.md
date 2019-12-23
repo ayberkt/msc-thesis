@@ -5,7 +5,7 @@ open import Basis
 open import Poset        hiding (IsDownwardClosed)
 open import Frame        hiding (pos)
 open import HITCoverage  hiding (Type)
-open import Nucleus      using  (IsNuclear)
+open import Nucleus      using  (IsNuclear; Nucleus)
 open import Powerset
 open import TreeType
 
@@ -41,6 +41,8 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
       NTS : (c₀ : out-D (π₀ (D-sim a a₀ a₀⊑a b))) → Σ (out-D b) (λ c → rev-D c₀ ⊑ rev-D c)
       NTS c₀ = π₁ (D-sim a a₀ a₀⊑a b) (rev-D c₀) (c₀ , ⊑-refl (rev-D c₀))
 ```
+
+## The nucleus
 
 ```
   open Test stage-D _⊑_ exp-D out-D rev-D (π₁ mono-D) sim
@@ -94,5 +96,9 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
       N₂ 𝕌@(U , U-down) a′ p = lem4 a′ (λ a → π₀ (𝕛 𝕌) a is-true) U′ p (λ _ q → q)
         where
           U′ = _is-true ∘ U
+```
 
+```
+  NN : Nucleus F↓
+  NN = 𝕛 , 𝕛-nuclear
 ```
