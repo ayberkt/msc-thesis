@@ -13,3 +13,4 @@ cosmetics:
   - export LC_ALL=C.UTF-8
   - ./check_cosmetics.py TreeType.lagda.md
   - ./check_cosmetics.py HITCoverage.lagda.md
+  - ./check_cosmetics.py CoverFormsNucleus.lagda.md
