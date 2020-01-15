@@ -4,16 +4,18 @@
 module Basis where
 
 open import Cubical.Core.Everything         public using    ( _≡_; Type; Σ; Σ-syntax; _,_)
-open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl; sym )
+open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl; sym
+                                                            ; _≡⟨_⟩_; _∎)
                                                    renaming ( isProp       to IsProp
                                                             ; isSet        to IsSet
-                                                            ; isProp→isSet to prop⇒set )
+                                                            ; isProp→isSet to prop⇒set)
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
                                                             ; isOfHLevelΣ
                                                             ; ΣProp≡)
-open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section )
+open import Cubical.Data.Sigma              public using    (sigmaPath→pathSigma)
+open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section; retract)
 open import Cubical.Foundations.Logic       public using    ( ⇔toPath )
 open import Data.Product                    public using    ( _×_)
                                                    renaming ( proj₁ to π₀
