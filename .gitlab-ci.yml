@@ -22,3 +22,5 @@ cosmetics:
   - ./check_cosmetics.py TreeType.lagda.md
   - ./check_cosmetics.py HITCoverage.lagda.md
   - ./check_cosmetics.py CoverFormsNucleus.lagda.md
+  - ./check_cosmetics.py Nucleus.agda
+  - ./check_cosmetics.py Poset.lagda.md
