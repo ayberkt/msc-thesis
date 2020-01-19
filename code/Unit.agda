@@ -1,12 +1,11 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --cubical --safe #-}
 
 module Unit where
 
-open import HLevels
-open import Common
+open import Basis
 
-data ⊤ {ℓ : Level} : Set ℓ where
-  tt : ⊤
+data N₁ {ℓ : Level} : Set ℓ where
+  tt : N₁
 
-⊤-prop : {ℓ : Level} → IsProp {ℓ = ℓ} ⊤
-⊤-prop tt tt = refl
+N₁-prop : {ℓ : Level} → IsProp {ℓ = ℓ} N₁
+N₁-prop tt tt = refl

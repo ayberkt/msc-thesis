@@ -1,4 +1,4 @@
-image: ayberkt/agda:v3
+image: ayberkt/agda:v4
 
 before_script:
   - cd code
@@ -6,13 +6,11 @@ before_script:
 test:
   script:
   - agda --version
-  - ./check.sh
-  - agda HITCoverage.lagda.md
+  - agda --safe Main.lagda.md
 
 pages:
   script:
   - make
-  - cp html/TreeType.html html/index.html
   - mv html ../public
   artifacts:
     paths:
@@ -23,3 +21,6 @@ cosmetics:
   - export LC_ALL=C.UTF-8
   - ./check_cosmetics.py TreeType.lagda.md
   - ./check_cosmetics.py HITCoverage.lagda.md
+  - ./check_cosmetics.py CoverFormsNucleus.lagda.md
+  - ./check_cosmetics.py Nucleus.agda
+  - ./check_cosmetics.py Poset.lagda.md

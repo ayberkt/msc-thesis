@@ -1,17 +1,17 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --cubical --safe #-}
 
 module Truncation where
 
-open import Common
-open import Homotopy
+open import Basis
 
-private
-  variable
-    ℓ ℓ′ : Level
+data ∥_∥ (A : Type ℓ) : Type ℓ where
+  ∣_∣    : A → ∥ A ∥
+  squash : (x y : ∥ A ∥) → x ≡ y
 
-record TruncationExists : Setω where
-  field
-    ∥_∥     : Set ℓ → Set ℓ
-    ∥∥-prop : (X : Set ℓ) → IsProp ∥ X ∥
-    ∣_∣     : {X : Set ℓ} → X → ∥ X ∥
-    ∥∥-rec  : {X : Set ℓ} {P : Set ℓ′} → IsProp P → (X → P) → ∥ X ∥ → P
+∥∥-prop : (A : Type ℓ) → IsProp ∥ A ∥
+∥∥-prop _ = squash
+
+∥∥-rec : {X Y : Type ℓ} → IsProp Y → (X → Y) → ∥ X ∥ → Y
+∥∥-rec Y-prop f ∣ x ∣                = f x
+∥∥-rec Y-prop f (squash ∣x∣₀ ∣x∣₁ i) =
+  Y-prop (∥∥-rec Y-prop f ∣x∣₀) (∥∥-rec Y-prop f ∣x∣₁) i
