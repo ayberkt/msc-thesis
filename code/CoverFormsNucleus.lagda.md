@@ -5,7 +5,7 @@ open import Basis
 open import Poset        hiding (IsDownwardClosed)
 open import Frame        hiding (pos)
 open import HITCoverage  hiding (Type)
-open import Nucleus      using  (IsNuclear; Nucleus)
+open import Nucleus      using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
 open import Powerset
 open import TreeType
 
@@ -101,4 +101,11 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
 ```
   NN : Nucleus F↓
   NN = 𝕛 , 𝕛-nuclear
+```
+
+## The frame of fixed points
+
+```
+  fixed-point-frame : Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
+  fixed-point-frame = nuclear-fixed-point-frame F↓ NN
 ```
