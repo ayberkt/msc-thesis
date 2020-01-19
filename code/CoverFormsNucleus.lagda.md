@@ -52,6 +52,7 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
     where
       U′ = _is-true ∘ U
 
+      -- This is not  h-propositional unless we force it to be using the HIT definition.
       U₀ : stage-D → Ω ℓ₀
       U₀ = λ a → a <| U′ , <|-prop a U′
 
