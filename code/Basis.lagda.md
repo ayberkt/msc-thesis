@@ -53,7 +53,7 @@ IsProp-prop {A = A} A-prop₀ A-prop₁ =
             prop⇒set A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
 
 Ω : (ℓ : Level) → Set (suc ℓ)
-Ω ℓ = hProp {ℓ = ℓ}
+Ω ℓ = hProp ℓ
 
 _is-true : Ω ℓ → Type ℓ
 (P , _) is-true = P
