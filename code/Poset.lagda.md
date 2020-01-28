@@ -101,3 +101,74 @@ DownwardClosedSubset P = Σ (𝒫 ∣ P ∣ₚ) (λ S → IsDownwardClosed P S i
 DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → IsSet (DownwardClosedSubset P)
 DownwardClosedSubset-set P =
   Σ-set (𝒫-set ∣ P ∣ₚ) λ x → prop⇒set (is-true-prop (IsDownwardClosed P x))
+```
+
+```
+raw-poset-str : Type ℓ → Type (suc ℓ)
+raw-poset-str {ℓ = ℓ} A = A → A → Ω ℓ
+
+raw-poset-iso : (M N : Σ (Type ℓ) raw-poset-str) → π₀ M ≃ π₀ N → Type ℓ
+raw-poset-iso (A , _⊑₀_) (B , _⊑₁_) eq = (x y : A) → ((x ⊑₀ y) ⇔ (f x ⊑₁ f y)) is-true
+  where
+    f = equivFun eq
+
+
+raw-poset-is-SNS : SNS {ℓ = ℓ} raw-poset-str raw-poset-iso
+raw-poset-is-SNS {X = X} _⊑₀_ _⊑₁_ = invEquiv (f , f-equiv)
+  where
+    f : raw-poset-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
+    f i = fn-ext _⊑₀_ _⊑₁_ (λ x → fn-ext (_⊑₀_ x) (_⊑₁_ x) (λ y → ⇔toPath (proj₁ (i x y)) (proj₂ (i x y))))
+
+    f-equiv : isEquiv f
+    f-equiv = record { equiv-proof = λ eq → (g eq , right-inv eq) , h eq }
+      where
+        g : (eq : _⊑₀_ ≡ _⊑₁_)
+          → (x y : X)
+          → (x ⊑₀ y is-true → x ⊑₁ y is-true) ×× (x ⊑₁ y is-true → x ⊑₀ y is-true)
+        g eq x y = (λ x⊑₀y → subst (λ _⊑⋆_ → x ⊑⋆ y is-true) eq x⊑₀y) , λ x⊑₁y → subst (λ _⊑⋆_ → (x ⊑⋆ y) is-true) (sym eq) x⊑₁y
+
+        rel-set : IsSet (X → X → Ω ℓ)
+        rel-set = ∏-set (λ _ → ∏-set λ _ → isSetHProp)
+
+        something-prop : IsProp ((x y : X) → ((x ⊑₀ y) is-true → (x ⊑₁ y) is-true) ×× ((x ⊑₁ y) is-true → (x ⊑₀ y) is-true))
+        something-prop = ∏-prop (λ x → ∏-prop λ y → λ a b → {!!})
+
+        right-inv : (eq : _⊑₀_ ≡ _⊑₁_) → f (g eq) ≡ eq
+        right-inv eq = rel-set _⊑₀_ _⊑₁_ (f (g eq)) eq
+
+        h : (eq : _⊑₀_ ≡ _⊑₁_) → (fib : fiber f eq) → (g eq , right-inv eq) ≡ fib
+        h eq (i , snd) = ΣProp≡ (λ i → hLevelSuc 2 (X → X → Ω _) rel-set _⊑₀_ _⊑₁_ (f i) eq) (something-prop (g eq) i)
+
+{--
+    C {X = X} _⊑₀_ _⊑₁_ = f , f-equiv
+      where
+        f : _⊑₀_ ≡ _⊑₁_ → raw-poset-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X)
+        f eq x y = NTS
+          where
+            h = equivFun (idEquiv X)
+            NTS : (x ⊑₀ y ⇔ (h x) ⊑₁ (h y)) is-true
+            NTS = {!subst (λ _⊑⋆_ → x ⊑⋆ y)!} , {!!}
+
+        f-equiv : isEquiv f
+        f-equiv = {!!}
+
+poset-axioms : (A : Type ℓ) → raw-poset-str A → Type ℓ
+poset-axioms A _⊑_ = (x : A) → x ⊑ x is-true
+                   × ((x y z : A) → x ⊑ y is-true → y ⊑ z is-true → x ⊑ z is-true)
+                   × ((x y : A) → x ⊑ y is-true → y ⊑ x is-true)
+                   × (IsSet A)
+
+poset-str : Type ℓ → Type (suc ℓ)
+poset-str = add-to-structure raw-poset-str poset-axioms
+
+poset-iso : (M N : Σ (Type ℓ) poset-str) → π₀ M ≃ π₀ N → Type ℓ
+poset-iso = add-to-iso raw-poset-str raw-poset-iso poset-axioms
+
+poset-is-SNS' : SNS' {ℓ = ℓ} poset-str poset-iso
+poset-is-SNS' =
+  add-axioms-SNS' raw-poset-str raw-poset-iso poset-axioms {!!} {!p!}
+
+-- --}
+-- --}
+-- --}
+```
