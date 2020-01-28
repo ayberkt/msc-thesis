@@ -37,6 +37,7 @@ open import Cubical.Foundations.SIP         public using    ( SNS; SNS'; join-SN
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
+                                                            ; isPropIsSet
                                                             ; isOfHLevelΣ
                                                             ; ΣProp≡
                                                             ; hLevelSuc )
