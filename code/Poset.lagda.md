@@ -185,6 +185,17 @@ poset-is-SNS' : SNS' {ℓ = ℓ} PS poset-iso
 poset-is-SNS' =
   add-axioms-SNS' RPS RP-iso poset-axioms poset-axioms-props raw-poset-is-SNS'
 
+poset-is-SNS''' : SNS''' {ℓ = ℓ} PS poset-iso
+poset-is-SNS''' = SNS''→SNS''' PS poset-iso poset-is-SNS'
+
+poset-SIP : (A : Type ℓ) → (P Q : PS A)
+          → poset-iso (A , P) (A , Q) (idEquiv A)
+          → (A , P) ≡ (A , Q)
+poset-SIP A P Q i = foo (idEquiv A , i)
+  where
+    foo : (A , P) ≃[ poset-iso ] (A , Q) → (A , P) ≡ (A , Q)
+    foo = equivFun (SIP PS poset-iso poset-is-SNS''' (A , P) (A , Q))
+
 -- --}
 -- --}
 -- --}

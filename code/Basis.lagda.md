@@ -14,10 +14,12 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             )
 open import Cubical.Data.Prod               public using    (_,_; proj₁; proj₂)
                                                    renaming (_×_ to _××_)
+open import Cubical.Data.Sigma.Properties   public using    ( Σ≡)
 open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; subst
                                                             ; cong; refl; sym
                                                             ; _≡⟨_⟩_; _∎
+                                                            ; transport
                                                             ; transportRefl
                                                             ; isContr)
                                                    renaming ( isProp       to IsProp
@@ -26,14 +28,21 @@ open import Cubical.Foundations.Prelude     public using    ( J
 open import Cubical.Foundations.Transport   public using    ( transportEquiv )
 open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; fiber )
 open import Cubical.Foundations.SIP         public using    ( SNS; SNS'; join-SNS'
+                                                            ; SNS''
+                                                            ; SNS'''
+                                                            ; SNS'≡SNS''
                                                             ; SNS→SNS'
+                                                            ; SNS''→SNS'''
                                                             ; add-to-structure
                                                             ; add-to-iso
                                                             ; add-axioms-SNS'
                                                             ; pointed-structure
                                                             ; Pointed-Type
                                                             ; pointed-iso
-                                                            ; pointed-is-SNS' )
+                                                            ; pointed-is-SNS'
+                                                            ; sip
+                                                            ; SIP
+                                                            ; _≃[_]_)
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
@@ -41,7 +50,8 @@ open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isOfHLevelΣ
                                                             ; ΣProp≡
                                                             ; hLevelSuc )
-open import Cubical.Data.Sigma              public using    (sigmaPath→pathSigma)
+open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
+                                                            ; pathSigma→sigmaPath )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section; retract)
 open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath )
 open import Data.Product                    public using    ( _×_)

@@ -196,6 +196,56 @@ downward-subset-frame {ℓ₀ = ℓ} {ℓ′} (X , P) =
               → (∣ D ∣𝔻 x is-true) × ∣ ⊔ ℱ ∣𝔻 x is-true
             φ (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
 
+-- Frames form an SNS.
+
+RFS : Type ℓ → Type (suc ℓ)
+RFS {ℓ = ℓ} A = PS A × A × (A → A → A) × (Sub ℓ A → A)
+
+RF-iso : (M N : Σ (Type ℓ) RFS) → π₀ M ≃ π₀ N → Type (suc ℓ)
+RF-iso {ℓ = ℓ} (A , (RPS-A , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (RPS-B , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
+    RP-iso (A , RPS-A) (B , RPS-B) i
+  × f 𝟏₀ ≡ 𝟏₁
+  × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
+  × ((ℱ : Sub ℓ A) → f (⋃₀ ℱ) ≡ (⋃₁ (index ℱ , λ i → f (ℱ € i))))
+  where
+    f = equivFun i
+
+lem : {A : Type ℓ} {B : A → Type ℓ} → (x : A) → (y z : B x) → _≡_ {A = Σ A B} (x , y) (x , z) → y ≡ z
+lem x y z p i = {!2Π₁bb (p i)!}
+
+RF-is-SNS : SNS {ℓ = ℓ} RFS RF-iso
+RF-is-SNS {X = A} F@(PS-A , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B , 𝟏₁ , _⊓₁_ , ⋃₁) =
+  invEquiv (f , {!!})
+  where
+    f : RF-iso (A , F) (A , G) (idEquiv A) → _≡_ {A = RFS A} F G
+    f (iₚ , eq-𝟏 , ⊓-xeq , ⋃-xeq) =
+      PS-A , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ I                                      ⟩
+      PS-A , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , 𝟏₁ , - , ⋃₀)) ⊓-eq ⟩
+      PS-A , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , 𝟏₁ , - , -))  ⋃-eq ⟩
+      PS-A , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ IV ⟩
+      PS-B , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
+      where
+        eq₀ : (A , PS-A) ≡ (A , PS-B)
+        eq₀ = poset-SIP A PS-A PS-B iₚ
+
+        eq₁ : transport (λ i → PS (π₀ (pathSigma→sigmaPath (A , PS-A) (A , PS-B) eq₀) i)) PS-A ≡ PS-B
+        eq₁ = π₁ (pathSigma→sigmaPath (A , PS-A) (A , PS-B) eq₀)
+
+        eq₂ : PS-A ≡ transport (λ i → PS (π₀ (pathSigma→sigmaPath (A , PS-A) (A , PS-B) eq₀) i)) PS-A
+        eq₂ = sym {!!}
+
+        ⊓-eq : _⊓₀_ ≡ _⊓₁_
+        ⊓-eq = fn-ext _⊓₀_ _⊓₁_ (λ x → fn-ext (_⊓₀_ x) (_⊓₁_ x) λ y → ⊓-xeq x y)
+
+        ⋃-eq : ⋃₀ ≡ ⋃₁
+        ⋃-eq = fn-ext ⋃₀ ⋃₁ λ ℱ → ⋃-xeq ℱ
+
+        I : (PS-A , 𝟏₀ , _⊓₀_ , ⋃₀) ≡ (PS-A , 𝟏₁ , _⊓₀_ , ⋃₀)
+        I = cong (λ - → (PS-A , - , _⊓₀_ , ⋃₀)) eq-𝟏
+
+        IV  : (PS-A , 𝟏₁ , _⊓₁_ , ⋃₁) ≡ (PS-B , 𝟏₁ , _⊓₁_ , ⋃₁)
+        IV = cong (λ - → (- , 𝟏₁ , _⊓₁_ , ⋃₁)) eq₂
+
 -- -}
 -- -}
 -- -}
