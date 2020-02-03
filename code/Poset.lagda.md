@@ -108,11 +108,20 @@ DownwardClosedSubset-set P =
 RPS : Type ℓ → Type (suc ℓ)
 RPS {ℓ = ℓ} A = (A → A → Ω ℓ) × IsSet A
 
+RPS-prop : IsSet (RPS A)
+RPS-prop = isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → isSetHProp)) λ _ → prop⇒set isPropIsSet
+
 RP-iso : (M N : Σ (Type ℓ) RPS) → π₀ M ≃ π₀ N → Type ℓ
 RP-iso (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) eq =
   (x y : A) → (x ⊑₀ y ⇔ f x ⊑₁ f y) is-true
   where
     f = equivFun eq
+
+RP-iso-prop : (M N : Σ (Type ℓ) RPS) → (i : π₀ M ≃ π₀ N) → IsProp (RP-iso M N i)
+RP-iso-prop (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) i =
+  ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
+  where
+    f = equivFun i
 
 ××=× : (A B : Type ℓ) → (A × B) ≡ A ×× B
 ××=× A B = isoToPath {A = A × B} {B = A ×× B} (iso f g sec ret)
@@ -132,7 +141,8 @@ RP-iso (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) eq =
 raw-poset-is-SNS : SNS {ℓ = ℓ} RPS RP-iso
 raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f , f-equiv)
   where
-    f : RP-iso (X , (_⊑₀_ , A-set)) (X , (_⊑₁_ , B-set)) (idEquiv X) → (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set)
+    f : RP-iso (X , (_⊑₀_ , A-set)) (X , (_⊑₁_ , B-set)) (idEquiv X)
+      → (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set)
     f i = ΣProp≡ (λ _ → ∏-prop λ _ → ∏-prop λ _ → IsProp-prop) (fn-ext _⊑₀_ _⊑₁_ (λ x → fn-ext (_⊑₀_ x) (_⊑₁_ x) (λ y → ⇔toPath (proj₁ (i x y)) (proj₂ (i x y)))))
 
 
@@ -141,22 +151,29 @@ raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f
       where
         g : (eq : (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set))
           → (x y : X)
-          → (x ⊑₀ y is-true → x ⊑₁ y is-true) ×× (x ⊑₁ y is-true → x ⊑₀ y is-true)
-        g eq x y = (λ x⊑₀y → subst (λ { (_⊑⋆_ , _) → x ⊑⋆ y is-true }) eq x⊑₀y) , λ x⊑₁y → subst (λ { (_⊑⋆_ , _) → (x ⊑⋆ y) is-true }) (sym eq) x⊑₁y
+          → (x ⊑₀ y is-true → x ⊑₁ y is-true)
+            ×× (x ⊑₁ y is-true → x ⊑₀ y is-true)
+        g eq x y = (λ x⊑₀y → subst (λ { (_⊑⋆_ , _) → x ⊑⋆ y is-true }) eq x⊑₀y)
+                 , λ x⊑₁y → subst (λ { (_⊑⋆_ , _) → (x ⊑⋆ y) is-true }) (sym eq) x⊑₁y
 
         rel-set : IsSet ((X → X → Ω ℓ) × IsSet X)
         rel-set = Σ-set (∏-set (λ _ → ∏-set λ _ → isSetHProp)) λ _ → prop⇒set isPropIsSet
 
-
-        something-prop : IsProp ((x y : X) → ((x ⊑₀ y) is-true → (x ⊑₁ y) is-true) ×× ((x ⊑₁ y) is-true → (x ⊑₀ y) is-true))
-        something-prop = ∏-prop (λ x → ∏-prop λ y → subst IsProp (××=× (x ⊑₀ y is-true → x ⊑₁ y is-true) (x ⊑₁ y is-true → x ⊑₀ y is-true))
+        something-prop : IsProp ((x y : X) → ((x ⊑₀ y) is-true
+                       → (x ⊑₁ y) is-true) ×× ((x ⊑₁ y) is-true → (x ⊑₀ y) is-true))
+        something-prop =
+          ∏-prop (λ x → ∏-prop λ y →
+            subst IsProp (××=× (x ⊑₀ y is-true → x ⊑₁ y is-true)
+                               (x ⊑₁ y is-true → x ⊑₀ y is-true))
                            (isOfHLevelΣ 1 (∏-prop (λ z → is-true-prop (x ⊑₁ y))) λ p → ∏-prop (λ q → is-true-prop (x ⊑₀ y))))
 
         right-inv : (eq : (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set)) → f (g eq) ≡ eq
         right-inv eq = rel-set (_⊑₀_ , A-set) (_⊑₁_ , B-set) (f (g eq)) eq
 
         h : (eq : (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set)) → (fib : fiber f eq) → (g eq , right-inv eq) ≡ fib
-        h eq (i , snd) = ΣProp≡ (λ x → hLevelSuc 2 ((X → X → Ω _) × IsSet X) rel-set P Q (f x) eq) (something-prop (g eq) i)
+        h eq (i , snd) =
+          ΣProp≡ (λ x → hLevelSuc 2 ((X → X → Ω _) × IsSet X) rel-set P Q (f x) eq)
+                 (something-prop (g eq) i)
 
 raw-poset-is-SNS' : SNS' {ℓ = ℓ} RPS RP-iso
 raw-poset-is-SNS' = SNS→SNS' RPS RP-iso raw-poset-is-SNS

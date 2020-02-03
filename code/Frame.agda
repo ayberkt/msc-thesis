@@ -210,29 +210,20 @@ RF-iso {ℓ = ℓ} (A , (RPS-A , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (RPS-B ,
   where
     f = equivFun i
 
-lem : {A : Type ℓ} {B : A → Type ℓ} → (x : A) → (y z : B x) → _≡_ {A = Σ A B} (x , y) (x , z) → y ≡ z
-lem x y z p i = {!2Π₁bb (p i)!}
-
 RF-is-SNS : SNS {ℓ = ℓ} RFS RF-iso
-RF-is-SNS {X = A} F@(PS-A , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B , 𝟏₁ , _⊓₁_ , ⋃₁) =
-  invEquiv (f , {!!})
+RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B@(RPS₁@(_⊑₁_ , A-set₁) , ax₁) , 𝟏₁ , _⊓₁_ , ⋃₁) =
+  invEquiv (f , f-equiv)
   where
     f : RF-iso (A , F) (A , G) (idEquiv A) → _≡_ {A = RFS A} F G
     f (iₚ , eq-𝟏 , ⊓-xeq , ⋃-xeq) =
-      PS-A , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ I                                      ⟩
-      PS-A , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , 𝟏₁ , - , ⋃₀)) ⊓-eq ⟩
-      PS-A , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , 𝟏₁ , - , -))  ⋃-eq ⟩
-      PS-A , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ IV ⟩
+      PS-A , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , - , _⊓₀_ , ⋃₀)) eq-𝟏               ⟩
+      PS-A , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong {B = λ _ → RFS A} (λ - → PS-A , 𝟏₁ , - , ⋃₀) ⊓-eq ⟩
+      PS-A , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong {B = λ _ → RFS A} (λ - → PS-A , 𝟏₁ , _⊓₁_ , -)  ⋃-eq ⟩
+      PS-A , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ cong {B = λ _ → RFS A} (λ - → - , 𝟏₁ , _⊓₁_ , ⋃₁) eq ⟩
       PS-B , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
       where
-        eq₀ : (A , PS-A) ≡ (A , PS-B)
-        eq₀ = poset-SIP A PS-A PS-B iₚ
-
-        eq₁ : transport (λ i → PS (π₀ (pathSigma→sigmaPath (A , PS-A) (A , PS-B) eq₀) i)) PS-A ≡ PS-B
-        eq₁ = π₁ (pathSigma→sigmaPath (A , PS-A) (A , PS-B) eq₀)
-
-        eq₂ : PS-A ≡ transport (λ i → PS (π₀ (pathSigma→sigmaPath (A , PS-A) (A , PS-B) eq₀) i)) PS-A
-        eq₂ = sym {!!}
+        eq : PS-A ≡ PS-B
+        eq = ΣProp≡ (poset-axioms-props A) (ΣProp≡ (λ _ → isPropIsSet) (fn-ext _⊑₀_ _⊑₁_ λ x → fn-ext (_⊑₀_ x) (_⊑₁_ x) λ y → ⇔toPath (proj₁ (iₚ x y)) (proj₂ (iₚ x y))))
 
         ⊓-eq : _⊓₀_ ≡ _⊓₁_
         ⊓-eq = fn-ext _⊓₀_ _⊓₁_ (λ x → fn-ext (_⊓₀_ x) (_⊓₁_ x) λ y → ⊓-xeq x y)
@@ -240,11 +231,40 @@ RF-is-SNS {X = A} F@(PS-A , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B , 𝟏₁ , _�
         ⋃-eq : ⋃₀ ≡ ⋃₁
         ⋃-eq = fn-ext ⋃₀ ⋃₁ λ ℱ → ⋃-xeq ℱ
 
-        I : (PS-A , 𝟏₀ , _⊓₀_ , ⋃₀) ≡ (PS-A , 𝟏₁ , _⊓₀_ , ⋃₀)
-        I = cong (λ - → (PS-A , - , _⊓₀_ , ⋃₀)) eq-𝟏
+    f-equiv : isEquiv f
+    f-equiv = record { equiv-proof = λ eq → (g eq , ret eq) , h eq }
+      where
+        g : (eq : F ≡ G) → RF-iso (A , F) (A , G) (idEquiv A)
+        g eq = φ , ψ , ϑ , ξ
+          where
+            𝒻  = equivFun (idEquiv A)
 
-        IV  : (PS-A , 𝟏₁ , _⊓₁_ , ⋃₁) ≡ (PS-B , 𝟏₁ , _⊓₁_ , ⋃₁)
-        IV = cong (λ - → (- , 𝟏₁ , _⊓₁_ , ⋃₁)) eq₂
+            φ : RP-iso (A , _⊑₀_ , A-set₀) (A , _⊑₁_ , A-set₁) (idEquiv A)
+            φ x y = (λ x⊑₁y → subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) eq x⊑₁y)
+                  , λ x⊑₁y → subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) (sym eq) x⊑₁y
+
+            ψ : equivFun (idEquiv A) 𝟏₀ ≡ 𝟏₁
+            ψ = subst (λ { (_ , - , _ , _) → 𝒻 - ≡ 𝟏₁ }) (sym eq) refl
+
+            ϑ : (x y : A) → 𝒻 (x ⊓₀ y) ≡ (𝒻 x) ⊓₁ (𝒻 y)
+            ϑ x y = subst (λ { (_ , _ , _-_ , _) → 𝒻 (x - y) ≡ (𝒻 x) ⊓₁ (𝒻 y) }) (sym eq) refl
+
+            ξ : (ℱ : Sub ℓ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ € i))
+            ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ (⋃₁ (index ℱ , λ i → 𝒻 (ℱ € i)))}) (sym eq) refl
+
+        str-set : IsSet (RFS A)
+        str-set = Σ-set (isOfHLevelΣ 2 RPS-prop (λ FS → prop⇒set (poset-axioms-props A FS))) λ _ → isOfHLevelΣ 2 A-set₀ λ _ →
+                  isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → A-set₀)) λ _ → ∏-set λ ℱ → A-set₀
+
+        ret : (eq : F ≡ G) → f (g eq) ≡ eq
+        ret eq = str-set F G (f (g eq)) eq
+
+        RF-iso-prop : IsProp (RF-iso (A , F) (A , G) (idEquiv A))
+        RF-iso-prop i₀ i₁ = isOfHLevelΣ 1 (RP-iso-prop (A , RPS₀) (A , RPS₁) (idEquiv A)) (λ _ → isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
+                            isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → A-set₀ _ _) λ _ → ∏-prop λ _ → A-set₀ _ _) i₀ i₁
+
+        h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
+        h eq (i , p) = ΣProp≡ (λ x → hLevelSuc 2 (RFS A) str-set F G (f x) eq) (RF-iso-prop (g eq) i)
 
 -- -}
 -- -}
