@@ -53,6 +53,15 @@ record Frame (ℓ₀ ℓ₁ ℓ₂ : Level) : Set (suc (ℓ₀ ⊔ ℓ₁ ⊔ �
 pos : Frame ℓ₀ ℓ₁ ℓ₂ → Poset ℓ₀ ℓ₁
 pos F = Frame.P F
 
+top-unique : (F : Frame ℓ₀ ℓ₁ ℓ₂)
+           → (z : ∣ F ∣F)
+           → ((o : ∣ F ∣F) → o ⊑[ pos F ] z is-true)
+           → z ≡ Frame.𝟏 F
+top-unique F z z-top = ⊑-antisym z 𝟏 (top z) (z-top 𝟏)
+  where
+    open Frame    F              using (𝟏; top)
+    open PosetStr (strₚ (pos F)) using (⊑-antisym)
+
 record _─f→_ {ℓ ℓ′ ℓ₂ : Level} (F₀ F₁ : Frame ℓ ℓ′ ℓ₂) : Set (ℓ ⊔ ℓ′ ⊔ suc ℓ₂) where
   constructor frame-homo
   open Frame F₀ using () renaming (P to P₀; _⊓_ to _⊓₀_; ⊔_ to ⊔₀_; 𝟏 to 𝟏₀)
@@ -210,6 +219,12 @@ RF-iso {ℓ = ℓ} (A , (RPS-A , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (RPS-B ,
   where
     f = equivFun i
 
+pos-of : Σ (Type ℓ) RFS → Σ (Type ℓ) RPS
+pos-of (A , ((RPS , _) , _)) = (A , RPS)
+
+top-of : (F : Σ (Type ℓ) RFS) → π₀ F
+top-of (_ , _ , 𝟏 , _) = 𝟏
+
 RF-is-SNS : SNS {ℓ = ℓ} RFS RF-iso
 RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B@(RPS₁@(_⊑₁_ , A-set₁) , ax₁) , 𝟏₁ , _⊓₁_ , ⋃₁) =
   invEquiv (f , f-equiv)
@@ -223,7 +238,10 @@ RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , �
       PS-B , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
       where
         eq : PS-A ≡ PS-B
-        eq = ΣProp≡ (poset-axioms-props A) (ΣProp≡ (λ _ → isPropIsSet) (fn-ext _⊑₀_ _⊑₁_ λ x → fn-ext (_⊑₀_ x) (_⊑₁_ x) λ y → ⇔toPath (proj₁ (iₚ x y)) (proj₂ (iₚ x y))))
+        eq = ΣProp≡ (poset-axioms-props A)
+             (ΣProp≡ (λ _ → isPropIsSet)
+                     (fn-ext _⊑₀_ _⊑₁_ λ x →
+                      fn-ext (_⊑₀_ x) (_⊑₁_ x) λ y → ⇔toPath (proj₁ (iₚ x y)) (proj₂ (iₚ x y))))
 
         ⊓-eq : _⊓₀_ ≡ _⊓₁_
         ⊓-eq = fn-ext _⊓₀_ _⊓₁_ (λ x → fn-ext (_⊓₀_ x) (_⊓₁_ x) λ y → ⊓-xeq x y)
@@ -265,6 +283,47 @@ RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , �
 
         h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
         h eq (i , p) = ΣProp≡ (λ x → hLevelSuc 2 (RFS A) str-set F G (f x) eq) (RF-iso-prop (g eq) i)
+
+RF-is-SNS' : SNS' {ℓ = ℓ} RFS RF-iso
+RF-is-SNS' = SNS→SNS' RFS RF-iso RF-is-SNS
+
+frame-axioms : (A : Type ℓ) → RFS A → Type (suc ℓ)
+frame-axioms {ℓ = ℓ} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
+    ((o : O)       → o ⊑ 𝟏 is-true)
+  × ((o p : O)     → (o ⊓ p) ⊑ o is-true)
+  × ((o p : O)     → (o ⊓ p) ⊑ p is-true)
+  × ((o p q : O)   → q ⊑ o is-true → q ⊑ p is-true → q ⊑ (o ⊓ p) is-true)
+  × ((ℱ : Sub ℓ O) → (o : O) → o ε ℱ → o ⊑ (⋃ ℱ) is-true)
+  × ((ℱ : Sub ℓ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p is-true) → (⋃ ℱ) ⊑ p is-true)
+
+FS : Type ℓ → Type (suc ℓ)
+FS = add-to-structure RFS frame-axioms
+
+frame-iso : (M N : Σ (Type ℓ) FS) → π₀ M ≃ π₀ N → Type (suc ℓ)
+frame-iso = add-to-iso RFS RF-iso frame-axioms
+
+frame-axioms-props : (A : Type ℓ) (F : RFS A) → IsProp (frame-axioms A F)
+frame-axioms-props A (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
+  isOfHLevelΣ 1 (∏-prop λ x → is-true-prop (x ⊑ 𝟏)) λ _ →
+  isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ o)) λ _ →
+  isOfHLevelΣ 1 (∏-prop (λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ p))) λ _ →
+  isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → ∏-prop λ q → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (q ⊑ (o ⊓ p))) λ _ →
+  isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ o → ∏-prop λ _ → is-true-prop (o ⊑ (⋃ ℱ))) λ _ →
+  ∏-prop λ ℱ → ∏-prop λ z → ∏-prop λ _ → is-true-prop ((⋃ ℱ) ⊑ z)
+
+frame-is-SNS' : SNS' {ℓ = ℓ} FS frame-iso
+frame-is-SNS' = add-axioms-SNS' RFS RF-iso frame-axioms frame-axioms-props RF-is-SNS'
+
+frame-is-SNS''' : SNS''' {ℓ = ℓ} FS frame-iso
+frame-is-SNS''' = SNS''→SNS''' FS frame-iso frame-is-SNS'
+
+frame-SIP : (A : Type ℓ) → (F G : FS A)
+          → frame-iso (A , F) (A , G) (idEquiv A)
+          → (A , F) ≡ (A , G)
+frame-SIP A F G i = foo (idEquiv A , i)
+  where
+    foo : (A , F) ≃[ frame-iso ] (A , G) → (A , F) ≡ (A , G)
+    foo = equivFun (SIP FS frame-iso frame-is-SNS''' (A , F) (A , G))
 
 -- -}
 -- -}
