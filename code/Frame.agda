@@ -401,6 +401,11 @@ frame-iso→frame-iso' {ℓ = ℓ} A M@((P@((_⊑₀_ , _) , ax₀) , 𝟏₀ , 
         up : ⋃₁ ℱ ⊑₀ ⋃₀ ℱ is-true
         up = proj₂ (rp-iso (⋃₁ ℱ) (⋃₀ ℱ)) (⋃₁-least ℱ (⋃₀ ℱ) λ o oεℱ → proj₁ (rp-iso o (⋃₀ ℱ)) (⋃₀-upper ℱ o oεℱ))
 
+frame-SIP' : (A : Type ℓ) → (F G : FS A)
+           → frame-iso' (A , F) (A , G) (idEquiv A) is-true
+           → (A , F) ≡ (A , G)
+frame-SIP' A F G i = frame-SIP A F G (frame-iso→frame-iso' A F G i)
+
 -- -}
 -- -}
 -- -}
