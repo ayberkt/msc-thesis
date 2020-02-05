@@ -302,6 +302,16 @@ FS = add-to-structure RFS frame-axioms
 frame-iso : (M N : Σ (Type ℓ) FS) → π₀ M ≃ π₀ N → Type (suc ℓ)
 frame-iso = add-to-iso RFS RF-iso frame-axioms
 
+frame-iso-prop : (M N : Σ (Type ℓ) FS) → (i : π₀ M ≃ π₀ N) → IsProp (frame-iso M N i)
+frame-iso-prop M@(A , (P@(RP@(_⊑₀_ , A-set) , _) , _) , _) N@(B , (Q@(RQ@(_⊑₁_ , B-set) , _) , _) , _) i =
+  isOfHLevelΣ 1 (RP-iso-prop (A , RP) (B , RQ) i) λ _ →
+  isOfHLevelΣ 1 (B-set _ _) λ _ →
+  isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → B-set _ _) λ _ →
+                ∏-prop λ _ → B-set _ _
+
+frame-iso-Ω : (M N : Σ (Type ℓ) FS) → π₀ M ≃ π₀ N → hProp (suc ℓ)
+frame-iso-Ω M N i = (frame-iso M N i) , frame-iso-prop M N i
+
 frame-axioms-props : (A : Type ℓ) (F : RFS A) → IsProp (frame-axioms A F)
 frame-axioms-props A (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
   isOfHLevelΣ 1 (∏-prop λ x → is-true-prop (x ⊑ 𝟏)) λ _ →
@@ -324,6 +334,30 @@ frame-SIP A F G i = foo (idEquiv A , i)
   where
     foo : (A , F) ≃[ frame-iso ] (A , G) → (A , F) ≡ (A , G)
     foo = equivFun (SIP FS frame-iso frame-is-SNS''' (A , F) (A , G))
+
+frame-iso' : (M N : Σ (Type ℓ) FS) → π₀ M ≃ π₀ N → hProp ℓ
+frame-iso' (A , (P@((_⊑₀_ , _) , _) , _) , _) (B , (Q@((_⊑₁_ , _) , _) , _) , _) i =
+  poset-iso (A , P) (B , Q) i , RP-iso-prop (A , π₀ P) (B , π₀ Q) i
+
+
+frame-iso'→frame-iso : (M N : Σ (Type ℓ) FS)
+                     → (i : π₀ M ≃ π₀ N)
+                     → frame-iso M N i → frame-iso' M N i is-true
+frame-iso'→frame-iso M N i (rp-iso , _)= rp-iso
+
+frame-iso→frame-iso' : (A : Type ℓ)
+                     → (F G : FS A)
+                     → frame-iso' (A , F) (A , G) (idEquiv A) is-true
+                     → frame-iso (A , F) (A , G) (idEquiv A)
+frame-iso→frame-iso' A M@((P@((_⊑₀_ , _) , ax₀) , 𝟏₀ , _⊓₀_ , _) , fax₀) N@((Q@((_⊑₁_ , _) , ax₁) , 𝟏₁ , _⊓₁_ , _) , fax₁) rp-iso =
+  rp-iso , (𝟏-eq , {!!} , {!!})
+  where
+    ⊑₁-antisym = π₁ (π₁ ax₁)
+    𝟏₀-top     = π₀ fax₀
+    𝟏₁-top     = π₀ fax₁
+
+    𝟏-eq : 𝟏₀ ≡ 𝟏₁
+    𝟏-eq = ⊑₁-antisym 𝟏₀ 𝟏₁ (𝟏₁-top 𝟏₀) (proj₁ (rp-iso 𝟏₁ 𝟏₀) (𝟏₀-top 𝟏₁))
 
 -- -}
 -- -}
