@@ -350,14 +350,42 @@ frame-iso→frame-iso' : (A : Type ℓ)
                      → frame-iso' (A , F) (A , G) (idEquiv A) is-true
                      → frame-iso (A , F) (A , G) (idEquiv A)
 frame-iso→frame-iso' A M@((P@((_⊑₀_ , _) , ax₀) , 𝟏₀ , _⊓₀_ , _) , fax₀) N@((Q@((_⊑₁_ , _) , ax₁) , 𝟏₁ , _⊓₁_ , _) , fax₁) rp-iso =
-  rp-iso , (𝟏-eq , {!!} , {!!})
+  rp-iso , (𝟏-eq , ⊓-eq , {!!})
   where
     ⊑₁-antisym = π₁ (π₁ ax₁)
     𝟏₀-top     = π₀ fax₀
     𝟏₁-top     = π₀ fax₁
+    ⊓₀-lower₀   = π₀ (π₁ fax₀)
+    ⊓₁-lower₀   = π₀ (π₁ fax₁)
+    ⊓₁-lower₁   = π₀ (π₁ (π₁ fax₁))
+    ⊓₀-lower₁   = π₀ (π₁ (π₁ fax₀))
+    ⊓-greatest = π₀ (π₁ (π₁ (π₁ fax₀)))
+    ⊓₀-greatest = π₀ (π₁ (π₁ (π₁ fax₀)))
+    ⊓₁-greatest = π₀ (π₁ (π₁ (π₁ fax₁)))
 
     𝟏-eq : 𝟏₀ ≡ 𝟏₁
     𝟏-eq = ⊑₁-antisym 𝟏₀ 𝟏₁ (𝟏₁-top 𝟏₀) (proj₁ (rp-iso 𝟏₁ 𝟏₀) (𝟏₀-top 𝟏₁))
+
+    ⊓-eq : (x y : A) → (x ⊓₀ y) ≡ (x ⊓₁ y)
+    ⊓-eq x y = ⊑₁-antisym (x ⊓₀ y) (x ⊓₁ y) down up
+      where
+        x⊓₁y⊑₀x : (x ⊓₁ y) ⊑₀ x is-true
+        x⊓₁y⊑₀x = proj₂ (rp-iso (x ⊓₁ y) x) (⊓₁-lower₀ x y)
+
+        x⊓₁y⊑₀y : (x ⊓₁ y) ⊑₀ y is-true
+        x⊓₁y⊑₀y = proj₂ (rp-iso (x ⊓₁ y) y) (⊓₁-lower₁ x y)
+
+        x⊓₀y⊑₁y : (x ⊓₀ y) ⊑₁ y is-true
+        x⊓₀y⊑₁y = proj₁ (rp-iso (x ⊓₀ y) y) (⊓₀-lower₁ x y)
+
+        x⊓₀y⊑₁x : ((x ⊓₀ y) ⊑₁ x) is-true
+        x⊓₀y⊑₁x = proj₁ (rp-iso (x ⊓₀ y) x) (⊓₀-lower₀ x y)
+
+        down : (x ⊓₀ y) ⊑₁ (x ⊓₁ y) is-true
+        down = ⊓₁-greatest x y (x ⊓₀ y) x⊓₀y⊑₁x x⊓₀y⊑₁y
+
+        up : (x ⊓₁ y) ⊑₁ (x ⊓₀ y) is-true
+        up = proj₁ (rp-iso (x ⊓₁ y) (x ⊓₀ y)) (⊓₀-greatest x y (x ⊓₁ y) x⊓₁y⊑₀x x⊓₁y⊑₀y)
 
 -- -}
 -- -}
