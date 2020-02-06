@@ -9,65 +9,74 @@ import AlgebraicProperties
 ```
 
 ```
-record PosetStr (ℓ₁ : Level) (A : Set ℓ₀) : Set (ℓ₀ ⊔ suc ℓ₁) where
-  constructor posetstr
+RawPosetStr : Type ℓ → Type (suc ℓ)
+RawPosetStr {ℓ = ℓ} A = (A → A → Ω ℓ) × IsSet A
 
-  -- Data.
-  field
-    _⊑_  : A → A → Ω ℓ₁
+SatisfiesPosetAxioms : (A : Type ℓ) → RawPosetStr A → Ω ℓ
+SatisfiesPosetAxioms A (_⊑_ , A-set) = IsReflexive ∧ IsTransitive ∧ IsAntisym
+  where
+    open AlgebraicProperties A-set _⊑_
 
-  -- Homotopy structure.
-  field
-    A-set : IsSet A
+PosetStr : Type ℓ → Type (suc ℓ)
+PosetStr = add-to-structure RawPosetStr (λ A RP → SatisfiesPosetAxioms A RP is-true)
 
-  -- Laws.
-  field
-    ⊑-refl    : (x     : A) → x ⊑ x is-true
-    ⊑-trans   : (x y z : A) → x ⊑ y is-true → y ⊑ z is-true → x ⊑ z is-true
-    ⊑-antisym : (x y   : A) → x ⊑ y is-true → y ⊑ x is-true → x ≡ y
+Poset : (ℓ : Level) → Type (suc ℓ)
+Poset ℓ = Σ (Set ℓ) PosetStr
 
-  _⊑⟨_⟩_ : (x : A) {y z : A} → x ⊑ y is-true → y ⊑ z is-true → x ⊑ z is-true
-  _ ⊑⟨ p ⟩ q = ⊑-trans _ _ _ p q
-
-  _■ : (x : A) → x ⊑ x is-true
-  _■ = ⊑-refl
-
-  infixr 0 _⊑⟨_⟩_
-  infix  1 _■
-
-Poset : (ℓ ℓ′ : Level) → Set (suc ℓ ⊔ suc ℓ′)
-Poset ℓ ℓ′ = Σ (Set ℓ) (PosetStr ℓ′)
-
-∣_∣ₚ : {ℓ ℓ′ : Level} → Poset ℓ ℓ′ → Set ℓ
+∣_∣ₚ : Poset ℓ → Type ℓ
 ∣ X , _ ∣ₚ = X
 
-strₚ : {ℓ ℓ′ : Level} → (P : Poset ℓ ℓ′) → PosetStr ℓ′ ∣ P ∣ₚ
+strₚ : (P : Poset ℓ) → PosetStr ∣ P ∣ₚ
 strₚ (_ , s) = s
 ```
 
 ```
-rel : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω ℓ₁
-rel P = PosetStr._⊑_ (π₁ P)
+rel : (P : Poset ℓ) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω ℓ
+rel (_ , (_⊑_ , _) , _) = _⊑_
 
 syntax rel P x y = x ⊑[ P ] y
 ```
 
 ```
-≡⇒⊑ : (P : Poset ℓ₀ ℓ₁) → {x y : ∣ P ∣ₚ} → x ≡ y → rel P x y is-true
-≡⇒⊑ P {x = x} p = subst (λ z → rel P x z is-true) p (⊑-refl x)
-  where
-    open PosetStr (strₚ P) using (⊑-refl)
+⊑[_]-refl : (P : Poset ℓ) → (x : ∣ P ∣ₚ) → x ⊑[ P ] x is-true
+⊑[_]-refl (_ , _ , (⊑-refl , _)) = ⊑-refl
 
-IsMonotonic : (P Q : Poset ℓ₀ ℓ₁) → (∣ P ∣ₚ → ∣ Q ∣ₚ) → Set (ℓ₀ ⊔ ℓ₁)
-IsMonotonic (X , posetstr _⊑₀_ _ _ _ _) (Y , posetstr _⊑₁_ _ _ _ _) f =
-  (x y : X) → x ⊑₀ y is-true → (f x) ⊑₁ (f y) is-true
+⊑[_]-trans : (P : Poset ℓ) (x y z : ∣ P ∣ₚ)
+           → x ⊑[ P ] y is-true → y ⊑[ P ] z is-true → x ⊑[ P ] z is-true
+⊑[_]-trans (_ , _ , (_ , ⊑-trans , _)) = ⊑-trans
+
+⊑[_]-antisym : (P : Poset ℓ) (x y : ∣ P ∣ₚ)
+             → x ⊑[ P ] y is-true → y ⊑[ P ] x is-true → x ≡ y
+⊑[_]-antisym (_ , _ , (_ , _ , ⊑-antisym)) = ⊑-antisym
+```
+
+```
+module PosetReasoning (P : Poset ℓ) where
+
+  _⊑⟨_⟩_ : (x : ∣ P ∣ₚ) {y z : ∣ P ∣ₚ}
+         → x ⊑[ P ] y is-true → y ⊑[ P ] z is-true → x ⊑[ P ] z is-true
+  _ ⊑⟨ p ⟩ q = ⊑[ P ]-trans _ _ _ p q
+
+  _■ : (x : ∣ P ∣ₚ) → x ⊑[ P ] x is-true
+  _■ = ⊑[ P ]-refl
+
+  infixr 0 _⊑⟨_⟩_
+  infix  1 _■
+```
+
+```
+≡⇒⊑ : (P : Poset ℓ) → {x y : ∣ P ∣ₚ} → x ≡ y → rel P x y is-true
+≡⇒⊑ P {x = x} p = subst (λ z → x ⊑[ P ] z is-true) p (⊑[ P ]-refl x)
+
+IsMonotonic : (P : Poset ℓ₀) (Q : Poset ℓ₁) → (∣ P ∣ₚ → ∣ Q ∣ₚ) → Set (ℓ₀ ⊔ ℓ₁)
+IsMonotonic P Q f =
+  (x y : ∣ P ∣ₚ) → x ⊑[ P ] y is-true → (f x) ⊑[ Q ] (f y) is-true
 ```
 
 ## Monotonic functions
 
 ```
--- TODO: levels might have to generalised.
-_─m→_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Set (ℓ₀ ⊔ ℓ₁)
+_─m→_ : Poset ℓ₀ → Poset ℓ₁ → Set (ℓ₀ ⊔ ℓ₁)
 _─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (IsMonotonic P Q)
 ```
 
@@ -80,44 +89,41 @@ _$ₘ_ = π₀
 Monotonic function composition.
 
 ```
-_∘m_ : {P Q R : Poset ℓ₀ ℓ₁} → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
+_∘m_ : {P Q R : Poset ℓ} → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
 (g , pg) ∘m (f , pf) = g ∘ f , λ x y p → pg (f x) (f y) (pf x y p)
 
-𝟏m : (P : Poset ℓ₀ ℓ₁) → P ─m→ P
+𝟏m : (P : Poset ℓ) → P ─m→ P
 𝟏m P = id , (λ x y x⊑y → x⊑y)
 
-↓[_]_ : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → Set (ℓ₀ ⊔ ℓ₁)
+↓[_]_ : (P : Poset ℓ) → ∣ P ∣ₚ → Set ℓ
 ↓[ P ] a = Σ ∣ P ∣ₚ (λ b → b ⊑[ P ] a is-true)
 
-IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → (𝒫 ∣ P ∣ₚ) → Ω (ℓ₀ ⊔ ℓ₁)
+IsDownwardClosed : (P : Poset ℓ) → (𝒫 ∣ P ∣ₚ) → Ω ℓ
 IsDownwardClosed P@(X , _) D =
   ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true) , prop
   where
     prop : IsProp ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true)
     prop = ∏-prop λ _ → ∏-prop λ x → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (D x)
 
-DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Set (suc ℓ₀ ⊔ ℓ₁)
+DownwardClosedSubset : (P : Poset ℓ) → Set (suc ℓ)
 DownwardClosedSubset P = Σ (𝒫 ∣ P ∣ₚ) (λ S → IsDownwardClosed P S is-true)
 
-DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → IsSet (DownwardClosedSubset P)
+DownwardClosedSubset-set : (P : Poset ℓ) → IsSet (DownwardClosedSubset P)
 DownwardClosedSubset-set P =
   Σ-set (𝒫-set ∣ P ∣ₚ) λ x → prop⇒set (is-true-prop (IsDownwardClosed P x))
 ```
 
 ```
-RPS : Type ℓ → Type (suc ℓ)
-RPS {ℓ = ℓ} A = (A → A → Ω ℓ) × IsSet A
-
-RPS-prop : IsSet (RPS A)
+RPS-prop : IsSet (RawPosetStr A)
 RPS-prop = isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → isSetHProp)) λ _ → prop⇒set isPropIsSet
 
-RP-iso : (M N : Σ (Type ℓ) RPS) → π₀ M ≃ π₀ N → Type ℓ
+RP-iso : (M N : Σ (Type ℓ) RawPosetStr) → π₀ M ≃ π₀ N → Type ℓ
 RP-iso (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) eq =
   (x y : A) → (x ⊑₀ y ⇔ f x ⊑₁ f y) is-true
   where
     f = equivFun eq
 
-RP-iso-prop : (M N : Σ (Type ℓ) RPS) → (i : π₀ M ≃ π₀ N) → IsProp (RP-iso M N i)
+RP-iso-prop : (M N : Σ (Type ℓ) RawPosetStr) → (i : π₀ M ≃ π₀ N) → IsProp (RP-iso M N i)
 RP-iso-prop (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) i =
   ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
   where
@@ -138,7 +144,7 @@ RP-iso-prop (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) i =
     ret : retract f g
     ret (x , y) = refl
 
-raw-poset-is-SNS : SNS {ℓ = ℓ} RPS RP-iso
+raw-poset-is-SNS : SNS {ℓ = ℓ} RawPosetStr RP-iso
 raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f , f-equiv)
   where
     f : RP-iso (X , (_⊑₀_ , A-set)) (X , (_⊑₁_ , B-set)) (idEquiv X)
@@ -175,43 +181,32 @@ raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f
           ΣProp≡ (λ x → hLevelSuc 2 ((X → X → Ω _) × IsSet X) rel-set P Q (f x) eq)
                  (something-prop (g eq) i)
 
-raw-poset-is-SNS' : SNS' {ℓ = ℓ} RPS RP-iso
-raw-poset-is-SNS' = SNS→SNS' RPS RP-iso raw-poset-is-SNS
+raw-poset-is-SNS' : SNS' {ℓ = ℓ} RawPosetStr RP-iso
+raw-poset-is-SNS' = SNS→SNS' RawPosetStr RP-iso raw-poset-is-SNS
 
-poset-axioms : (A : Type ℓ) → RPS A → Type ℓ
-poset-axioms A (_⊑_ , A-set) = IsReflexive is-true
-                             × IsTransitive is-true
-                             × IsAntisym is-true
-  where
-    open AlgebraicProperties A-set _⊑_
+poset-iso : (P Q : Poset ℓ) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type ℓ
+poset-iso = add-to-iso RawPosetStr RP-iso λ A str → SatisfiesPosetAxioms A str is-true
 
-PS : Type ℓ → Type (suc ℓ)
-PS = add-to-structure RPS poset-axioms
+poset-axioms-props : (A : Type ℓ) (str : RawPosetStr A) → IsProp (SatisfiesPosetAxioms A str is-true)
+poset-axioms-props A str = is-true-prop (SatisfiesPosetAxioms A str) 
 
-poset-iso : (M N : Σ (Type ℓ) PS) → π₀ M ≃ π₀ N → Type ℓ
-poset-iso = add-to-iso RPS RP-iso poset-axioms
-
-poset-axioms-props : (X : Type ℓ) (str : RPS X) → IsProp (poset-axioms X str)
-poset-axioms-props X (_⊑_ , X-set) =
-  isOfHLevelΣ 1 (is-true-prop IsReflexive)  λ _ →
-  isOfHLevelΣ 1 (is-true-prop IsTransitive) λ _ → is-true-prop IsAntisym
-  where
-    open AlgebraicProperties X-set _⊑_
-
-poset-is-SNS' : SNS' {ℓ = ℓ} PS poset-iso
+poset-is-SNS' : SNS' {ℓ = ℓ} PosetStr poset-iso
 poset-is-SNS' =
-  add-axioms-SNS' RPS RP-iso poset-axioms poset-axioms-props raw-poset-is-SNS'
+  add-axioms-SNS' RawPosetStr RP-iso (λ A str → SatisfiesPosetAxioms A str is-true) poset-axioms-props raw-poset-is-SNS'
 
-poset-is-SNS''' : SNS''' {ℓ = ℓ} PS poset-iso
-poset-is-SNS''' = SNS''→SNS''' PS poset-iso poset-is-SNS'
+poset-is-SNS''' : SNS''' {ℓ = ℓ} PosetStr poset-iso
+poset-is-SNS''' = SNS''→SNS''' PosetStr poset-iso poset-is-SNS'
 
-poset-SIP : (A : Type ℓ) → (P Q : PS A)
-          → poset-iso (A , P) (A , Q) (idEquiv A)
-          → (A , P) ≡ (A , Q)
-poset-SIP A P Q i = foo (idEquiv A , i)
+poset-SIP : (A : Type ℓ) (B : Type ℓ) (eqv : A ≃ B) (P : PosetStr A) (Q : PosetStr B)
+          → poset-iso (A , P) (B , Q) eqv
+          → (A , P) ≡ (B , Q)
+poset-SIP A B eqv P Q i = foo (eqv , i)
   where
-    foo : (A , P) ≃[ poset-iso ] (A , Q) → (A , P) ≡ (A , Q)
-    foo = equivFun (SIP PS poset-iso poset-is-SNS''' (A , P) (A , Q))
+    foo : (A , P) ≃[ poset-iso ] (B , Q) → (A , P) ≡ (B , Q)
+    foo = equivFun (SIP PosetStr poset-iso poset-is-SNS''' (A , P) (B , Q))
+
+_≃ₚ_ : Poset ℓ → Poset ℓ → Type ℓ
+_≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso P Q i
 
 -- --}
 -- --}

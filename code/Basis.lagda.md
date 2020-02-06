@@ -54,7 +54,8 @@ open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSi
                                                             ; pathSigma→sigmaPath )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section; retract)
 open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath )
-open import Data.Product                    public using    ( _×_)
+                                                   renaming ( _⊓_ to _∧_)
+open import Data.Product                    public using    ( _×_; uncurry)
                                                    renaming ( proj₁ to π₀
                                                             ; proj₂ to π₁)
 open import Function                        public using    (_∘_; id)
