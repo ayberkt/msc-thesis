@@ -295,6 +295,7 @@ frame-axioms {ℓ = ℓ} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
   × ((o p q : O)   → q ⊑ o is-true → q ⊑ p is-true → q ⊑ (o ⊓ p) is-true)
   × ((ℱ : Sub ℓ O) → (o : O) → o ε ℱ → o ⊑ (⋃ ℱ) is-true)
   × ((ℱ : Sub ℓ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p is-true) → (⋃ ℱ) ⊑ p is-true)
+  × ((o : O) (ℱ : Sub ℓ O) → o ⊓ (⋃ ℱ) ≡ ⋃ (index ℱ , λ i → o ⊓ (ℱ € i)))
 
 FS : Type ℓ → Type (suc ℓ)
 FS = add-to-structure RFS frame-axioms
@@ -313,13 +314,13 @@ frame-iso-Ω : (M N : Σ (Type ℓ) FS) → π₀ M ≃ π₀ N → hProp (suc �
 frame-iso-Ω M N i = (frame-iso M N i) , frame-iso-prop M N i
 
 frame-axioms-props : (A : Type ℓ) (F : RFS A) → IsProp (frame-axioms A F)
-frame-axioms-props A (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
+frame-axioms-props A (((_⊑_ , A-set) , _) , 𝟏 , _⊓_ , ⋃_) =
   isOfHLevelΣ 1 (∏-prop λ x → is-true-prop (x ⊑ 𝟏)) λ _ →
   isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ o)) λ _ →
   isOfHLevelΣ 1 (∏-prop (λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ p))) λ _ →
   isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → ∏-prop λ q → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (q ⊑ (o ⊓ p))) λ _ →
   isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ o → ∏-prop λ _ → is-true-prop (o ⊑ (⋃ ℱ))) λ _ →
-  ∏-prop λ ℱ → ∏-prop λ z → ∏-prop λ _ → is-true-prop ((⋃ ℱ) ⊑ z)
+  isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ z → ∏-prop λ _ → is-true-prop ((⋃ ℱ) ⊑ z)) λ _ → ∏-prop λ o → ∏-prop λ ℱ → A-set _ _
 
 frame-is-SNS' : SNS' {ℓ = ℓ} FS frame-iso
 frame-is-SNS' = add-axioms-SNS' RFS RF-iso frame-axioms frame-axioms-props RF-is-SNS'
@@ -364,9 +365,9 @@ frame-iso→frame-iso' {ℓ = ℓ} A M@((P@((_⊑₀_ , _) , ax₀) , 𝟏₀ , 
     ⊓₀-greatest  = π₀ (π₁ (π₁ (π₁ fax₀)))
     ⊓₁-greatest  = π₀ (π₁ (π₁ (π₁ fax₁)))
     ⋃₀-upper     = π₀ (π₁ (π₁ (π₁ (π₁ fax₀))))
-    ⋃₀-least     = π₁ (π₁ (π₁ (π₁ (π₁ fax₀))))
+    ⋃₀-least     = π₀ (π₁ (π₁ (π₁ (π₁ (π₁ fax₀)))))
     ⋃₁-upper     = π₀ (π₁ (π₁ (π₁ (π₁ fax₁))))
-    ⋃₁-least     = π₁ (π₁ (π₁ (π₁ (π₁ fax₁))))
+    ⋃₁-least     = π₀ (π₁ (π₁ (π₁ (π₁ (π₁ fax₁)))))
 
     𝟏-eq : 𝟏₀ ≡ 𝟏₁
     𝟏-eq = ⊑₁-antisym 𝟏₀ 𝟏₁ (𝟏₁-top 𝟏₀) (proj₁ (rp-iso 𝟏₁ 𝟏₀) (𝟏₀-top 𝟏₁))
