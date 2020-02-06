@@ -208,6 +208,9 @@ poset-SIP A B eqv P Q i = foo (eqv , i)
 _≃ₚ_ : Poset ℓ → Poset ℓ → Type ℓ
 _≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso P Q i
 
+pos-iso-to-eq : (P Q : Poset ℓ) → P ≃ₚ Q → P ≡ Q
+pos-iso-to-eq (A , A-pos) (B , B-pos) (eqv , i) = poset-SIP A B eqv A-pos B-pos i
+
 -- --}
 -- --}
 -- --}
