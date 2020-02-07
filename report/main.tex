@@ -19,6 +19,9 @@
 
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\ball}[2]{\mathfrak{A}(#1, #2)}
+\newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
+
+\newcommand{\paragraphsummary}[1]{\paragraph*{#1}}
 
 \begin{document}
 
@@ -57,7 +60,7 @@ This definition embodies the idea that, to make $f(x)$ closer than $\epsilon$ to
 suffices to make $x$ closer than $\delta$ to $y$, for some certain $\delta$. Intuitively, this
 expresses the property that the function does not involve any abrupt changes.
 
-\paragraph*{Generalise the notion of distance.}
+\paragraphsummary{Generalise the notion of distance.}
 The pinpoint the essence of continuity, we now start generalising this. First, notice that
 the function
 \begin{equation*}
@@ -79,7 +82,7 @@ any function $f : X \rightarrow Y$:
   \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta \in X.~ \forall y.~ d_X(x, y) < \epsilon \rightarrow d_Y(f(x), f(y)).
 \end{equation*}
 
-\paragraph*{Transition to balls.}
+\paragraphsummary{Transition to balls.}
 We could have written Definition~\ref{eq:cont-0} in an alternative way. Given some
 $x, \epsilon \in \reals{}$ define
 \begin{equation*}
@@ -95,7 +98,7 @@ which could even more compactly be expressed as
   \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ f(\ball{x}{\epsilon}) \subseteq \ball{f(x)}{\delta}.
 \end{equation*}
 
-\paragraph*{Approximations.}
+\paragraphsummary{Approximations.}
 What is the meaning of $\ball{x}{\epsilon}$? The key idea is that, given some $x \in X$,
 $\ball{x}{\epsilon}$ expresses the set of things that are closer than $\epsilon$ to $x$. One intuitive
 reading of this is that $\ball{x}{\epsilon}$ denotes the \emph{set of approximations of $x$ with
@@ -104,7 +107,7 @@ increasingly more accurate approximation. Consider, for instance, $\pi$ whose di
 cannot fully write down. We can, however, obtain arbitrarily precise expansions of it such
 as $\ball{\pi}{10^{-10}}$.
 
-\paragraph*{Distance is not needed.}
+\paragraphsummary{Distance is not needed.}
 To see continuity in its full generality, we now notice that the notion of distance is not
 crucial to what is expressed in Property \ref{eq:cont-5}. We have made use of the distance
 function just to be able to express the approximation sets. Instead, we can simply work
@@ -121,7 +124,9 @@ We required certain properties a distance function must satisfy so that the set 
 operates can be viewed as a space. In that case, it is guaranteed for the approximation
 sets to behave well as a result of the well-behavedness of the distance function. To be
 able to directly start with the approximation sets, we must axiomatise the precise
-behaviour of an ``approximation set''. This process has not been entirely straightforward
+behaviour of an ``approximation set''.
+
+This process has not been entirely straightforward
 in historical terms. There were many different definitions of a topological space and it
 took some time until it was realised that the full generality of continuity can be reached
 with this definition.
