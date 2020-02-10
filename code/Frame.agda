@@ -328,58 +328,9 @@ frame-SIP {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G eqv i = foo (eqv , i)
     foo : F ≃[ frame-iso ] G → F ≡ G
     foo = equivFun (SIP (FrameStr ℓ₁ ℓ₂) frame-iso frame-is-SNS''' F G)
 
-frame-iso' : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π₀ N → hProp (ℓ₀ ⊔ ℓ₁)
-frame-iso' (A , (P@((_⊑₀_ , _) , _) , _) , _) (B , (Q@((_⊑₁_ , _) , _) , _) , _) i =
-  poset-iso (A , P) (B , Q) i , RP-iso-prop (A , π₀ P) (B , π₀ Q) i
-
-frame-iso'→frame-iso : (A : Type ℓ₀)
-                     → (F G : FrameStr ℓ₁ ℓ₂ A)
-                     → frame-iso' (A , F) (A , G) (idEquiv A) is-true
-                     → frame-iso (A , F) (A , G) (idEquiv A)
-frame-iso'→frame-iso {ℓ₀ = ℓ₀} {ℓ₂ = ℓ₂} A F G rp-iso =
-  rp-iso , (𝟏-eq , ⊓-eq , ⋃-eq)
-  where
-    M = (A , F)
-    N = (A , G)
-    ⊑₀-antisym   = ⊑[ pos M ]-antisym
-    ⊑₁-antisym   = ⊑[ pos N ]-antisym
-
-    𝟏-eq : 𝟏[ M ] ≡ 𝟏[ N ]
-    𝟏-eq = ⊑₁-antisym 𝟏[ M ] 𝟏[ N ] (𝟏[ N ]-top 𝟏[ M ]) (proj₁ (rp-iso 𝟏[ N ] 𝟏[ M ]) (𝟏[ M ]-top 𝟏[ N ]))
-
-    ⊓-eq : (x y : A) → (x ⊓[ M ] y) ≡ (x ⊓[ N ] y)
-    ⊓-eq x y = ⊑₁-antisym (x ⊓[ M ] y) (x ⊓[ N ] y) down up
-      where
-        x⊓₁y⊑₀x : (x ⊓[ N ] y) ⊑[ pos M ] x is-true
-        x⊓₁y⊑₀x = proj₂ (rp-iso (x ⊓[ N ] y) x) (⊓[ N ]-lower₀ x y)
-
-        x⊓₁y⊑₀y : (x ⊓[ N ] y) ⊑[ pos M ] y is-true
-        x⊓₁y⊑₀y = proj₂ (rp-iso (x ⊓[ N ] y) y) (⊓[ N ]-lower₁ x y)
-
-        x⊓₀y⊑₁y : (x ⊓[ M ] y) ⊑[ pos N ] y is-true
-        x⊓₀y⊑₁y = proj₁ (rp-iso (x ⊓[ M ] y) y) (⊓[ M ]-lower₁ x y)
-
-        x⊓₀y⊑₁x : ((x ⊓[ M ] y) ⊑[ pos N ] x) is-true
-        x⊓₀y⊑₁x = proj₁ (rp-iso (x ⊓[ M ] y) x) (⊓[ M ]-lower₀ x y)
-
-        down : (x ⊓[ M ] y) ⊑[ pos N ] (x ⊓[ N ] y) is-true
-        down = ⊓[ N ]-greatest x y (x ⊓[ M ] y) x⊓₀y⊑₁x x⊓₀y⊑₁y
-
-        up : (x ⊓[ N ] y) ⊑[ pos N ] (x ⊓[ M ] y) is-true
-        up = proj₁ (rp-iso (x ⊓[ N ] y) (x ⊓[ M ] y)) (⊓[ M ]-greatest x y (x ⊓[ N ] y) x⊓₁y⊑₀x x⊓₁y⊑₀y)
-
-    ⋃-eq : (ℱ : Sub ℓ₂ A) → ⋃[ M ] ℱ ≡ ⋃[ N ] ℱ
-    ⋃-eq ℱ = ⊑₀-antisym (⋃[ M ] ℱ) (⋃[ N ] ℱ) down up
-      where
-        down : (⋃[ M ] ℱ) ⊑[ pos M ] (⋃[ N ] ℱ) is-true
-        down = ⋃[ M ]-least ℱ (⋃[ N ] ℱ) (λ o oεℱ → proj₂ (rp-iso o (⋃[ N ] ℱ)) (⋃[ N ]-upper ℱ o oεℱ))
-
-        up : (⋃[ N ] ℱ) ⊑[ pos M ] (⋃[ M ] ℱ) is-true
-        up = proj₂ (rp-iso (⋃[ N ] ℱ) (⋃[ M ] ℱ)) (⋃[ N ]-least ℱ (⋃[ M ] ℱ) λ o oεℱ → proj₁ (rp-iso o (⋃[ M ] ℱ)) (⋃[ M ]-upper ℱ o oεℱ))
-
-frame-iso→frame-iso'-gen : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
-                         → frame-iso' F G eqv is-true → frame-iso F G eqv
-frame-iso→frame-iso'-gen {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃-eq)
+frame-iso→frame-iso' : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
+                         → poset-iso (pos F) (pos G) eqv → frame-iso F G eqv
+frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃-eq)
   where
     f = equivFun eqv
     g = equivFun (invEquiv eqv)
@@ -475,10 +426,10 @@ frame-iso→frame-iso'-gen {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq ,
                 foεf⊚ℱ = i , (f ⊚ ℱ € i ≡⟨ refl ⟩ f (ℱ € i) ≡⟨ cong f εℱ ⟩ f o ∎)
 
 _≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
-F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] frame-iso' F G i is-true
+F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] poset-iso (pos F) (pos G) i
 
 frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
-frame-univ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso'-gen F G eqv iso-f)
+frame-univ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso' F G eqv iso-f)
 
 -- -}
 -- -}
