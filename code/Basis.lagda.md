@@ -11,6 +11,7 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             ; _≃_
                                                             ; equivFun
                                                             ; isEquiv
+                                                            ; equivProof
                                                             )
 open import Cubical.Data.Prod               public using    (_,_; proj₁; proj₂)
                                                    renaming (_×_ to _××_)
@@ -26,7 +27,7 @@ open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; isSet        to IsSet
                                                             ; isProp→isSet to prop⇒set )
 open import Cubical.Foundations.Transport   public using    ( transportEquiv )
-open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; fiber )
+open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; secEq; retEq; fiber )
 open import Cubical.Foundations.SIP         public using    ( SNS; SNS'; join-SNS'
                                                             ; SNS''
                                                             ; SNS'''
