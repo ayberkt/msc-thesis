@@ -92,6 +92,16 @@ top-unique F z z-top = ⊑[ pos F ]-antisym z 𝟏[ F ] (𝟏[ F ]-top z) (z-top
     NTS : (x ⊓[ F ] y) ⊑[ pos F ] z is-true
     NTS = greatest (x ⊓[ F ] y) (⊓[ F ]-lower₀ x y) (⊓[ F ]-lower₁ x y)
 
+⋃-unique : (F : Frame ℓ₀ ℓ₁ ℓ₂) (ℱ : Sub ℓ₂ ∣ F ∣F) (z : ∣ F ∣F)
+         → ((o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] z is-true)
+         → ((z′ : ∣ F ∣F) → ((o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] z′ is-true) → z ⊑[ pos F ] z′ is-true)
+         → z ≡ ⋃[ F ] ℱ
+⋃-unique F ℱ z upper least =
+  ⊑[ pos F ]-antisym z (⋃[ F ] ℱ) (least (⋃[ F ] ℱ) (⋃[ F ]-upper ℱ)) NTS
+  where
+    NTS : (⋃[ F ] ℱ) ⊑[ pos F ] z is-true
+    NTS = ⋃[ F ]-least ℱ z upper
+
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
@@ -447,13 +457,28 @@ frame-iso→frame-iso'-gen {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq ,
                   g (f (x ⊓[ F ] y)) ■₁
 
     ⋃-eq : (ℱ : Sub ℓ₂ ∣ F ∣F) →  f (⋃[ F ] ℱ) ≡ ⋃[ G ] (index ℱ , λ i → f (ℱ € i))
-    ⋃-eq = {!!}
+    ⋃-eq ℱ = ⋃-unique G (f ⊚ ℱ) (f (⋃[ F ] ℱ)) NTS₀ NTS₁
+      where
+        NTS₀ : (o : ∣ G ∣F) → o ε (f ⊚ ℱ) → o ⊑[ pos G ] (f (⋃[ F ] ℱ)) is-true
+        NTS₀ o (i , p) = proj₂ (bar o (f (⋃[ F ] ℱ))) (g o ⊑₁⟨ ⋃[ F ]-upper ℱ (g o) I ⟩ ⋃[ F ] ℱ ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _)) ⟩ g (f (⋃[ F ] ℱ)) ■₁)
+          where
+            I : g o ε ℱ
+            I = i , (ℱ € i ≡⟨ sym (sec _) ⟩ g (f (ℱ € i)) ≡⟨ cong g p ⟩ g o ∎)
+
+        NTS₁ : (z′ : ∣ G ∣F) → ((o : ∣ G ∣F) → o ε (f ⊚ ℱ) → rel (pos G) o z′ is-true) → f (⋃[ F ] ℱ) ⊑[ pos G ] z′ is-true
+        NTS₁ z′ p = proj₂ (bar (f (⋃[ F ] ℱ)) z′) (g (f (⋃[ F ] ℱ)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _) ⟩ ⋃[ F ] ℱ ⊑₁⟨ ⋃[ F ]-least ℱ (g z′) NTS ⟩ g z′ ■₁)
+          where
+            NTS : (o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] (g z′) is-true
+            NTS o (i , εℱ) = proj₂ (foo o (g z′)) (f o ⊑⟨ p (f o) foεf⊚ℱ ⟩ z′ ⊑⟨ ≡⇒⊑ (pos G) (sym (ret _)) ⟩ f (g z′) ■)
+              where
+                foεf⊚ℱ : f o ε (f ⊚ ℱ)
+                foεf⊚ℱ = i , (f ⊚ ℱ € i ≡⟨ refl ⟩ f (ℱ € i) ≡⟨ cong f εℱ ⟩ f o ∎)
 
 _≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] frame-iso' F G i is-true
 
--- frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
--- frame-univ F ( G) = {!frame-SIP !}
+frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
+frame-univ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso'-gen F G eqv iso-f)
 
 -- -}
 -- -}
