@@ -192,14 +192,17 @@ poset-iso {ℓ₁ = ℓ₁} =
   add-to-iso (RawPosetStr ℓ₁) RP-iso λ A str → SatisfiesPosetAxioms ℓ₁ A str is-true
 
 poset-axioms-props : (A : Type ℓ₀) (str : RawPosetStr ℓ₁ A) → IsProp (SatisfiesPosetAxioms ℓ₁ A str is-true)
-poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (SatisfiesPosetAxioms ℓ₁ A str) 
+poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (SatisfiesPosetAxioms ℓ₁ A str)
 
 poset-is-SNS' : SNS' {ℓ = ℓ} (PosetStr ℓ₁) poset-iso
 poset-is-SNS' {ℓ₁ = ℓ₁} =
   add-axioms-SNS' (RawPosetStr ℓ₁) RP-iso (λ A str → SatisfiesPosetAxioms ℓ₁ A str is-true) poset-axioms-props raw-poset-is-SNS'
 
-poset-is-SNS''' : SNS''' {ℓ = ℓ} (PosetStr ℓ₁) poset-iso
-poset-is-SNS''' {ℓ₁ = ℓ₁} = SNS''→SNS''' (PosetStr ℓ₁) poset-iso poset-is-SNS'
+poset-is-SNS'' : SNS'' {ℓ = ℓ} (PosetStr ℓ₁) poset-iso
+poset-is-SNS'' {ℓ₁ = ℓ₁} = subst id (sym (SNS'≡SNS'' (PosetStr ℓ₁) poset-iso)) poset-is-SNS'
+
+poset-is-SNS''' : SNS''' {ℓ = ℓ₀} (PosetStr ℓ₁) poset-iso
+poset-is-SNS''' {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} = SNS''→SNS''' poset-is-SNS''
 
 poset-SIP : (A : Type ℓ₀) (B : Type ℓ₀) (eqv : A ≃ B) (P : PosetStr ℓ₁ A) (Q : PosetStr ℓ₁ B)
           → poset-iso (A , P) (B , Q) eqv
