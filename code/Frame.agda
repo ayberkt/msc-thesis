@@ -13,59 +13,55 @@ open import Unit
 
 import AlgebraicProperties
 
-RawFrameStr : Type ℓ → Type (suc ℓ)
-RawFrameStr {ℓ = ℓ} A = PosetStr A × A × (A → A → A) × (Sub ℓ A → A)
+RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+RawFrameStr ℓ₁ ℓ₂ A = (PosetStr ℓ₁ A) × A × (A → A → A) × (Sub ℓ₂ A → A)
 
-frame-axioms : (A : Type ℓ) → RawFrameStr A → Type (suc ℓ)
-frame-axioms {ℓ = ℓ} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
+frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → Set (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
     ((o : O)       → o ⊑ 𝟏 is-true)
   × ((o p : O)     → (o ⊓ p) ⊑ o is-true)
   × ((o p : O)     → (o ⊓ p) ⊑ p is-true)
   × ((o p q : O)   → q ⊑ o is-true → q ⊑ p is-true → q ⊑ (o ⊓ p) is-true)
-  × ((ℱ : Sub ℓ O) → (o : O) → o ε ℱ → o ⊑ (⋃ ℱ) is-true)
-  × ((ℱ : Sub ℓ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p is-true) → (⋃ ℱ) ⊑ p is-true)
-  × ((o : O) (ℱ : Sub ℓ O) → o ⊓ (⋃ ℱ) ≡ ⋃ (index ℱ , λ i → o ⊓ (ℱ € i)))
+  × ((ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⋃ ℱ) is-true)
+  × ((ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p is-true) → (⋃ ℱ) ⊑ p is-true)
+  × ((o : O) (ℱ : Sub ℓ₂ O) → o ⊓ (⋃ ℱ) ≡ ⋃ (index ℱ , λ i → o ⊓ (ℱ € i)))
 
-FrameStr : Type ℓ → Type (suc ℓ)
-FrameStr = add-to-structure RawFrameStr frame-axioms
+FrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+FrameStr ℓ₁ ℓ₂ = add-to-structure (RawFrameStr ℓ₁ ℓ₂) frame-axioms
 
-Frame : (ℓ : Level) → Type (suc ℓ)
-Frame ℓ = Σ (Type ℓ) FrameStr
+Frame : (ℓ₀ ℓ₁ ℓ₂ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+Frame ℓ₀ ℓ₁ ℓ₂ = Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)
 
 -- Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
-∣_∣F : Frame ℓ → Set ℓ
+∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Type ℓ₀
 ∣ A , _ ∣F = A
 
 -- The underlying frame of a poset.
-pos : Frame ℓ → Poset ℓ
+pos : Frame ℓ₀ ℓ₁ ℓ₂ → Poset ℓ₀ ℓ₁
 pos (A , (P , _) , _) = A , P
 
-𝟏[_] : (F : Frame ℓ) → ∣ F ∣F
+𝟏[_] : (F : Frame ℓ₀ ℓ₁ ℓ₂) → ∣ F ∣F
 𝟏[ _ , (_ , (𝟏 , _)) , _ ] = 𝟏
 
-top[_] : (F : Frame ℓ) → (o : ∣ F ∣F) → o ⊑[ pos F ] 𝟏[ F ] is-true
+top[_] : (F : Frame ℓ₀ ℓ₁ ℓ₂) → (o : ∣ F ∣F) → o ⊑[ pos F ] 𝟏[ F ] is-true
 top[ (_ , _ , (top , _)) ] = top
 
-top-unique : (F : Frame ℓ) (z : ∣ F ∣F)
+top-unique : (F : Frame ℓ₀ ℓ₁ ℓ₂) (z : ∣ F ∣F)
            → ((o : ∣ F ∣F) → o ⊑[ pos F ] z is-true) → z ≡ 𝟏[ F ]
 top-unique F z z-top = ⊑[ pos F ]-antisym z 𝟏[ F ] (top[ F ] z) (z-top 𝟏[ F ])
-
 
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
 -- The set of downward-closed subsets of a poset forms a frame.
-downward-subset-poset : (P : Poset ℓ) → Poset (suc ℓ)
-downward-subset-poset {ℓ = ℓ} (A , P) =
+downward-subset-poset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
+downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
   𝔻 , (_<<_ , DownwardClosedSubset-set (A , P)) , <<-refl , <<-trans , <<-antisym
   where
     𝔻 = DownwardClosedSubset (A , P)
 
-    _<<_ : 𝔻 → 𝔻 → Ω (suc ℓ)
-    _<<_ (S , _) (T , _) = Lift (suc ℓ) (S ⊆ T is-true) , is-prop
-      where
-        is-prop : IsProp (Lift (suc ℓ) ((S ⊆ T) is-true))
-        is-prop (lift p) (lift q) = cong lift (is-true-prop (S ⊆ T) p q)
+    _<<_ : 𝔻 → 𝔻 → Ω ℓ₀
+    _<<_ (S , _) (T , _) = S ⊆ T
 
     open AlgebraicProperties (DownwardClosedSubset-set (A , P)) _<<_
        renaming ( IsReflexive  to <<-IsReflexive
@@ -73,33 +69,19 @@ downward-subset-poset {ℓ = ℓ} (A , P) =
                 ; IsAntisym    to <<-IsAntisym)
 
     <<-refl : <<-IsReflexive is-true
-    <<-refl (U , U-down) = lift λ x xεU → xεU
+    <<-refl (U , U-down) x xεU = xεU
 
     <<-trans : <<-IsTransitive is-true
-    <<-trans _ _ _ (lift S<<T) (lift T<<U) = lift (λ x xεS → T<<U x (S<<T x xεS))
+    <<-trans _ _ _ S<<T T<<U x xεS = T<<U x (S<<T x xεS)
 
     <<-antisym : <<-IsAntisym is-true
-    <<-antisym X Y (lift S⊆T) (lift T⊆S) =
+    <<-antisym X Y S⊆T T⊆S =
       to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
-{--
-
 -- The set of downward-closed subsets of a poset forms a frame.
-downward-subset-frame : (P : Poset ℓ) → Frame (suc ℓ)
-downward-subset-frame {ℓ = ℓ} (X , P) =
-  record
-    { P           =  𝔻ₚ
-    ; 𝟏           =  𝟏
-    ; _⊓_         =  _⊓_
-    ; ⊔_          =  ⊔_
-    ; top         =  𝟏-top
-    ; ⊓-lower₀    =  ⊓-lower₀
-    ; ⊓-lower₁    =  ⊓-lower₁
-    ; ⊓-greatest  =  ⊓-greatest
-    ; ⊔-upper     =  ⊔-upper
-    ; ⊔-least     =  ⊔-least
-    ; dist        =  dist
-    }
+downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
+downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
+  𝔻 , ((strₚ 𝔻ₚ , 𝟏 , (_⊓_ , ⊔_)) , 𝟏-top , ⊓-lower₀ , (⊓-lower₁ , (⊓-greatest , (⊔-upper , (⊔-least , dist)))))
   where
     𝔻ₚ = downward-subset-poset (X , P)
     𝔻  = ∣ 𝔻ₚ ∣ₚ
@@ -119,41 +101,41 @@ downward-subset-frame {ℓ = ℓ} (X , P) =
     (S , S-dc) ⊓ (T , T-dc) = (S ∩ T) , ∩-down S T S-dc T-dc
 
     𝟏-top : (D : 𝔻) → (D ⊑[ 𝔻ₚ ] 𝟏) is-true
-    𝟏-top D = ?
+    𝟏-top D _ _ = tt
 
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
-    in-some-set-of : (ℱ : Sub ℓ 𝔻) → X → Set ℓ
+    in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Set ℓ₀
     in-some-set-of ℱ x = Σ (index ℱ) (λ i → ∣ ℱ € i ∣𝔻 x is-true)
 
-    ⊔_ : Sub ℓ 𝔻 → 𝔻
+    ⊔_ : Sub ℓ₀ 𝔻 → 𝔻
     ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
       where
-        ind : (x y : X) → y ⊑[ P ] x is-true → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
+        ind : (x y : X) → y ⊑[ (X , P) ] x is-true → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
         ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , π₁ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
 
         ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) is-true
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
 
-    ⊔-upper : (ℱ : Sub ℓ 𝔻) (D : 𝔻) → D ε ℱ → D ⊑[ 𝔻 ] (⊔ ℱ) is-true
+    ⊔-upper : (ℱ : Sub ℓ₀ 𝔻) (D : 𝔻) → D ε ℱ → D ⊑[ 𝔻ₚ ] (⊔ ℱ) is-true
     ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , subst (λ V → ∣ V ∣𝔻 x is-true) (sym p) x∈D ∣
 
-    ⊔-least : (ℱ : Sub ℓ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o ⊑[ 𝔻 ] z) is-true) → (⊔ ℱ) ⊑[ 𝔻 ] z is-true
+    ⊔-least : (ℱ : Sub ℓ₀ 𝔻) (z : 𝔻) → ((o : 𝔻) → o ε ℱ → (o ⊑[ 𝔻ₚ ] z) is-true) → (⊔ ℱ) ⊑[ 𝔻ₚ ] z is-true
     ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (π₁ (∣ D ∣𝔻 x)) ind x∈⊔S
       where
         ind : in-some-set-of ℱ x → ∣ D ∣𝔻 x is-true
         ind (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
 
-    ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) ⊑[ 𝔻 ] D is-true
+    ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) ⊑[ 𝔻ₚ ] D is-true
     ⊓-lower₀ D E x (x∈D , _) = x∈D
 
-    ⊓-lower₁ : (D E : 𝔻) → (D ⊓ E) ⊑[ 𝔻 ] E is-true
+    ⊓-lower₁ : (D E : 𝔻) → (D ⊓ E) ⊑[ 𝔻ₚ ] E is-true
     ⊓-lower₁ D E x (_ , x∈F) = x∈F
 
-    ⊓-greatest : (D E F : 𝔻) → (F ⊑[ 𝔻 ] D) is-true → (F ⊑[ 𝔻 ] E) is-true → F ⊑[ 𝔻 ] (D ⊓ E) is-true
+    ⊓-greatest : (D E F : 𝔻) → (F ⊑[ 𝔻ₚ ] D) is-true → (F ⊑[ 𝔻ₚ ] E) is-true → F ⊑[ 𝔻ₚ ] (D ⊓ E) is-true
     ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
-    dist : (D : 𝔻) (ℱ : Sub ℓ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
+    dist : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
     dist D ℱ = ⊑[ 𝔻ₚ ]-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , λ i → D ⊓ (ℱ € i))) down up
       where
         𝒜 = ∣ D ⊓ (⊔ ℱ) ∣𝔻
@@ -173,35 +155,34 @@ downward-subset-frame {ℓ = ℓ} (X , P) =
               → (∣ D ∣𝔻 x is-true) × ∣ ⊔ ℱ ∣𝔻 x is-true
             φ (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
 
-{--
-
 -- Frames form an SNS.
 
-RF-iso : (M N : Σ (Type ℓ) RFS) → π₀ M ≃ π₀ N → Type (suc ℓ)
-RF-iso {ℓ = ℓ} (A , (RPS-A , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (RPS-B , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
+RF-iso : (ℓ₁ ℓ₂ : Level) (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
+       → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+RF-iso {ℓ₀ = ℓ₀} ℓ₁ ℓ₂ (A , (RPS-A , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (RPS-B , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
     RP-iso (A , RPS-A) (B , RPS-B) i
   × f 𝟏₀ ≡ 𝟏₁
   × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
-  × ((ℱ : Sub ℓ A) → f (⋃₀ ℱ) ≡ (⋃₁ (index ℱ , λ i → f (ℱ € i))))
+  × ((ℱ : Sub ℓ₂ A) → f (⋃₀ ℱ) ≡ (⋃₁ (index ℱ , λ i → f (ℱ € i))))
   where
     f = equivFun i
 
-pos-of : Σ (Type ℓ) RFS → Σ (Type ℓ) RPS
+pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (RawPosetStr ℓ₁)
 pos-of (A , ((RPS , _) , _)) = (A , RPS)
 
-top-of : (F : Σ (Type ℓ) RFS) → π₀ F
+top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
 top-of (_ , _ , 𝟏 , _) = 𝟏
 
-RF-is-SNS : SNS {ℓ = ℓ} RFS RF-iso
-RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B@(RPS₁@(_⊑₁_ , A-set₁) , ax₁) , 𝟏₁ , _⊓₁_ , ⋃₁) =
+RF-is-SNS : SNS {ℓ = ℓ} (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂)
+RF-is-SNS {ℓ = ℓ} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B@(RPS₁@(_⊑₁_ , A-set₁) , ax₁) , 𝟏₁ , _⊓₁_ , ⋃₁) =
   invEquiv (f , f-equiv)
   where
-    f : RF-iso (A , F) (A , G) (idEquiv A) → _≡_ {A = RFS A} F G
+    f : RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A) → _≡_ {A = RawFrameStr ℓ₁ ℓ₂ A} F G
     f (iₚ , eq-𝟏 , ⊓-xeq , ⋃-xeq) =
       PS-A , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , - , _⊓₀_ , ⋃₀)) eq-𝟏               ⟩
-      PS-A , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong {B = λ _ → RFS A} (λ - → PS-A , 𝟏₁ , - , ⋃₀) ⊓-eq ⟩
-      PS-A , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong {B = λ _ → RFS A} (λ - → PS-A , 𝟏₁ , _⊓₁_ , -)  ⋃-eq ⟩
-      PS-A , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ cong {B = λ _ → RFS A} (λ - → - , 𝟏₁ , _⊓₁_ , ⋃₁) eq ⟩
+      PS-A , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong {B = λ _ → RawFrameStr ℓ₁ ℓ₂ A} (λ - → PS-A , 𝟏₁ , - , ⋃₀) ⊓-eq ⟩
+      PS-A , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong {B = λ _ → RawFrameStr ℓ₁ ℓ₂ A} (λ - → PS-A , 𝟏₁ , _⊓₁_ , -)  ⋃-eq ⟩
+      PS-A , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ cong {B = λ _ → RawFrameStr ℓ₁ ℓ₂ A} (λ - → - , 𝟏₁ , _⊓₁_ , ⋃₁) eq ⟩
       PS-B , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
       where
         eq : PS-A ≡ PS-B
@@ -219,7 +200,7 @@ RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , �
     f-equiv : isEquiv f
     f-equiv = record { equiv-proof = λ eq → (g eq , ret eq) , h eq }
       where
-        g : (eq : F ≡ G) → RF-iso (A , F) (A , G) (idEquiv A)
+        g : (eq : F ≡ G) → RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A)
         g eq = φ , ψ , ϑ , ξ
           where
             𝒻  = equivFun (idEquiv A)
@@ -234,28 +215,30 @@ RF-is-SNS {ℓ = ℓ} {X = A} F@(PS-A@(RPS₀@(_⊑₀_ , A-set₀) , ax₀) , �
             ϑ : (x y : A) → 𝒻 (x ⊓₀ y) ≡ (𝒻 x) ⊓₁ (𝒻 y)
             ϑ x y = subst (λ { (_ , _ , _-_ , _) → 𝒻 (x - y) ≡ (𝒻 x) ⊓₁ (𝒻 y) }) (sym eq) refl
 
-            ξ : (ℱ : Sub ℓ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ € i))
+            ξ : (ℱ : Sub ℓ₂ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ € i))
             ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ (⋃₁ (index ℱ , λ i → 𝒻 (ℱ € i)))}) (sym eq) refl
 
-        str-set : IsSet (RFS A)
+        str-set : IsSet (RawFrameStr ℓ₁ ℓ₂ A)
         str-set = Σ-set (isOfHLevelΣ 2 RPS-prop (λ FS → prop⇒set (poset-axioms-props A FS))) λ _ → isOfHLevelΣ 2 A-set₀ λ _ →
                   isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → A-set₀)) λ _ → ∏-set λ ℱ → A-set₀
 
         ret : (eq : F ≡ G) → f (g eq) ≡ eq
         ret eq = str-set F G (f (g eq)) eq
 
-        RF-iso-prop : IsProp (RF-iso (A , F) (A , G) (idEquiv A))
+        RF-iso-prop : IsProp (RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A))
         RF-iso-prop i₀ i₁ = isOfHLevelΣ 1 (RP-iso-prop (A , RPS₀) (A , RPS₁) (idEquiv A)) (λ _ → isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
                             isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → A-set₀ _ _) λ _ → ∏-prop λ _ → A-set₀ _ _) i₀ i₁
 
         h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
-        h eq (i , p) = ΣProp≡ (λ x → hLevelSuc 2 (RFS A) str-set F G (f x) eq) (RF-iso-prop (g eq) i)
+        h eq (i , p) = ΣProp≡ (λ x → hLevelSuc 2 (RawFrameStr ℓ₁ ℓ₂ A) str-set F G (f x) eq) (RF-iso-prop (g eq) i)
 
-RF-is-SNS' : SNS' {ℓ = ℓ} RFS RF-iso
-RF-is-SNS' = SNS→SNS' RFS RF-iso RF-is-SNS
+RF-is-SNS' : SNS' {ℓ = ℓ} (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂)
+RF-is-SNS' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = SNS→SNS' (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂) RF-is-SNS
 
-frame-iso : (M N : Σ (Type ℓ) FS) → π₀ M ≃ π₀ N → Type (suc ℓ)
-frame-iso = add-to-iso RFS RF-iso frame-axioms
+frame-iso : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π₀ N → Type {!!}
+frame-iso {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = add-to-iso {!FrameStr {ℓ₀ = ℓ₀} ? ?!} (RF-iso {ℓ₀ = ℓ₀} ℓ₁ ℓ₂) frame-axioms
+
+{--
 
 frame-iso-prop : (M N : Σ (Type ℓ) FS) → (i : π₀ M ≃ π₀ N) → IsProp (frame-iso M N i)
 frame-iso-prop M@(A , (P@(RP@(_⊑₀_ , A-set) , _) , _) , _) N@(B , (Q@(RQ@(_⊑₁_ , B-set) , _) , _) , _) i =
