@@ -190,7 +190,8 @@ raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f
         right-inv : (eq : (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set)) → f (g eq) ≡ eq
         right-inv eq = rel-set (_⊑₀_ , A-set) (_⊑₁_ , B-set) (f (g eq)) eq
 
-        h : (eq : (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set)) → (fib : fiber f eq) → (g eq , right-inv eq) ≡ fib
+        h : (eq : (_⊑₀_ , A-set) ≡ (_⊑₁_ , B-set))
+          → (fib : fiber f eq) → (g eq , right-inv eq) ≡ fib
         h eq (i , snd) =
           ΣProp≡
             (λ x → hLevelSuc 2 ((X → X → Ω _) × IsSet X) rel-set P Q (f x) eq)
