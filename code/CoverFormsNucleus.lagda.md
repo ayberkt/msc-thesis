@@ -27,8 +27,6 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
   mono-D  = π₁ D
   _⊑_     = λ (x y : stage-D) → x ⊑[ pos-D ] y is-true
 
-  -- open Frame.Frame F↓ using (_⊓_) renaming (_⊑_ to _<<_)
-
   _⊓_ : ∣ F↓ ∣F → ∣ F↓ ∣F → ∣ F↓ ∣F
   x ⊓ y = x ⊓[ F↓ ] y
 
