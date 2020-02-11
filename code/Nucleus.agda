@@ -118,7 +118,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     _⊑_ : ∣ pos L ∣ₚ → ∣ pos L ∣ₚ → hProp ℓ₁
     _⊑_        = λ x y → x ⊑[ pos L ] y
 
-    _⊑N_ : ∣ nuclear-fixed-point-poset L N ∣ₚ → ∣ nuclear-fixed-point-poset L N ∣ₚ → hProp ℓ₁
+    _⊑N_ : 𝒜 → 𝒜 → hProp ℓ₁
     _⊑N_  = λ x y → x ⊑[ nuclear-fixed-point-poset L N ] y
 
     ⊑N-antisym = ⊑[ nuclear-fixed-point-poset L N ]-antisym

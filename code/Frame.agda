@@ -54,10 +54,11 @@ syntax glb-of F o p = o ⊓[ F ] p
 
 module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
 
-  P = pos F
+  private
+    P = pos F
 
-  _⊑_ : ∣ F ∣F → ∣ F ∣F → hProp ℓ₁
-  x ⊑ y = x ⊑[ P ] y
+    _⊑_ : ∣ F ∣F → ∣ F ∣F → hProp ℓ₁
+    x ⊑ y = x ⊑[ P ] y
 
   𝟏[_]-top : (o : ∣ F ∣F) → o ⊑[ pos F ] 𝟏[ F ] is-true
   𝟏[_]-top = let (_ , _ , (top , _)) = F in top
