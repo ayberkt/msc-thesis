@@ -1,6 +1,8 @@
 image: ayberkt/agda:v8
 
 before_script:
+  - export LC_ALL=en_US.UTF-8
+  - export LANG=en_US.UTF-8
   - cd code
 
 test:
