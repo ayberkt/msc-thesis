@@ -121,6 +121,9 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     _⊑N_ : 𝒜 → 𝒜 → hProp ℓ₁
     _⊑N_  = λ x y → x ⊑[ nuclear-fixed-point-poset L N ] y
 
+    ⋃L_ : Sub ℓ₂ ∣ L ∣F → ∣ L ∣F
+    ⋃L x = ⋃[ L ] x
+
     ⊑N-antisym = ⊑[ nuclear-fixed-point-poset L N ]-antisym
     A-set      = carrier-is-set (nuclear-fixed-point-poset L N)
 
@@ -130,12 +133,17 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
 
     _⊓_ : 𝒜 → 𝒜 → 𝒜
-    _⊓_ (x , x-f) (y , y-f) = x ⊓[ L ] y , ⊑[ P ]-antisym (j (x ⊓[ L ] y)) (x ⊓[ L ] y) φ (n₁ (x ⊓[ L ] y))
+    _⊓_ (x , x-f) (y , y-f) =
+      x ⊓[ L ] y , ⊑[ P ]-antisym (j (x ⊓[ L ] y)) (x ⊓[ L ] y) φ (n₁ (x ⊓[ L ] y))
       where
         ⊑jx : j (x ⊓[ L ] y) ⊑ j x is-true
-        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y) ⟩ j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₀ (j x) (j y) ⟩ j x ■
+        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y)            ⟩
+              j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₀ (j x) (j y) ⟩
+              j x ■
         ⊑jy : j (x ⊓[ L ] y) ⊑ j y is-true
-        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y) ⟩ j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y) ⟩ j y ■
+        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y)            ⟩
+              j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y) ⟩
+              j y ■
 
         ⊑x : j (x ⊓[ L ] y) ⊑ x is-true
         ⊑x = subst (λ z → j (x ⊓[ L ] y) ⊑ z is-true) x-f ⊑jx
@@ -150,7 +158,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
       where
         𝒢 = I , π₀ ∘ F
         j⊔L-fixed : j (j (⋃[ L ] 𝒢)) ≡ j (⋃[ L ] 𝒢)
-        j⊔L-fixed = ⊑[ P ]-antisym (j (j (⋃[ L ] 𝒢))) (j (⋃[ L ] 𝒢)) (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
+        j⊔L-fixed = ⊑[ P ]-antisym _ _ (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
 
     top : (o : 𝒜) → (o ⊑N (𝟏[ L ] , 𝟏-fixed)) is-true
     top = 𝟏[ L ]-top ∘ π₀
@@ -192,19 +200,23 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
         φ = ⋃[ L ]-upper (π₀ ⊚ ℱ) o (i , λ j → π₀ (eq j))
 
     distr : (o : 𝒜) (ℱ : Sub ℓ₂ 𝒜) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
-    distr o@(o′ , j-fix-o′) ℱ@(I , F) = sigmaPath→pathSigma _ _ (φ , carrier-is-set (pos L) _ _ _ _)
+    distr o@(o′ , jo′=o′) ℱ@(I , F) =
+      sigmaPath→pathSigma _ _ (φ , carrier-is-set (pos L) _ _ _ _)
       where
         𝒢 : Sub ℓ₂ ∣ P ∣ₚ
         𝒢 = π₀ ⊚ ℱ
 
+        o′=jo′ : o′ ≡ j o′
+        o′=jo′ = sym jo′=o′
+
         φ :  π₀ (o ⊓ (⊔ ℱ)) ≡ π₀ (⊔ (I , (λ i → o ⊓ (ℱ € i))))
         φ =
-          π₀ (o ⊓ (⊔ ℱ))                           ≡⟨ refl                            ⟩
-          o′ ⊓[ L ] j (⋃[ L ] 𝒢)                   ≡⟨ cong (λ - → - ⊓[ L ] j (⋃[ L ] 𝒢)) (sym j-fix-o′) ⟩
-          j o′ ⊓[ L ] (j (⋃[ L ] 𝒢))               ≡⟨ sym (n₀ o′ (⋃[ L ] 𝒢))          ⟩
-          j (o′ ⊓[ L ] (⋃[ L ] 𝒢))                 ≡⟨ cong j (dist L o′ 𝒢)            ⟩
-          j (⋃[ L ] (I , λ i → o′ ⊓[ L ] (𝒢 € i))) ≡⟨ refl                            ⟩
-          π₀ (⊔ (I , λ i → o ⊓ (ℱ € i)))           ∎
+          π₀ (o ⊓ (⊔ ℱ))                   ≡⟨ refl                                  ⟩
+          o′ ⊓[ L ] j (⋃L 𝒢)               ≡⟨ cong (λ - → - ⊓[ L ] j (⋃L 𝒢)) o′=jo′ ⟩
+          j o′ ⊓[ L ] (j (⋃L 𝒢))           ≡⟨ sym (n₀ o′ (⋃[ L ] 𝒢))                ⟩
+          j (o′ ⊓[ L ] (⋃L 𝒢))             ≡⟨ cong j (dist L o′ 𝒢)                  ⟩
+          j (⋃L ((λ - → o′ ⊓[ L ] -) ⊚ 𝒢)) ≡⟨ refl                                  ⟩
+          π₀ (⊔ (I , λ i → o ⊓ (ℱ € i)))   ∎
 
 -- --}
 -- --}
