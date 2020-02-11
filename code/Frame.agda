@@ -242,20 +242,32 @@ top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
 top-of (_ , _ , 𝟏 , _) = 𝟏
 
 RF-is-SNS : SNS {ℓ = ℓ} (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂)
-RF-is-SNS {ℓ = ℓ} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(PS-A@(P@(_⊑₀_ , A-set₀) , ax₀) , 𝟏₀ , _⊓₀_ , ⋃₀) G@(PS-B@(Q@(_⊑₁_ , A-set₁) , ax₁) , 𝟏₁ , _⊓₁_ , ⋃₁) =
+RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ , ⋃₀) G@(Q , 𝟏₁ , _⊓₁_ , ⋃₁) =
   invEquiv (f , f-equiv)
   where
-    f : RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A) → _≡_ {A = RawFrameStr ℓ₁ ℓ₂ A} F G
-    f (iₚ , eq-𝟏 , ⊓-xeq , ⋃-xeq) =
-      PS-A , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (PS-A , - , _⊓₀_ , ⋃₀))              eq-𝟏 ⟩
-      PS-A , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong {B = λ _ → C} (λ - → PS-A , 𝟏₁ , - , ⋃₀)    ⊓-eq ⟩
-      PS-A , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong {B = λ _ → C} (λ - → PS-A , 𝟏₁ , _⊓₁_ , -)  ⋃-eq ⟩
-      PS-A , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ cong {B = λ _ → C} (λ - → - , 𝟏₁ , _⊓₁_ , ⋃₁)    eq   ⟩
-      PS-B , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
-      where
-        C = RawFrameStr ℓ₁ ℓ₂ A
+    C = RawFrameStr ℓ₁ ℓ₂ A
 
-        eq : PS-A ≡ PS-B
+    _⊑₀_ : A → A → hProp ℓ₁
+    x ⊑₀ y = x ⊑[ (A , P) ] y
+
+    _⊑₁_ : A → A → hProp ℓ₁
+    x ⊑₁ y = x ⊑[ (A , Q) ] y
+
+    A-set₀ = carrier-is-set (A , P)
+    A-set₁ = carrier-is-set (A , Q)
+
+    PS-A = π₀ P
+    PS-B = π₀ Q
+
+    f : RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A) → F ≡ G
+    f (iₚ , eq-𝟏 , ⊓-xeq , ⋃-xeq) =
+      P , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (P , - , _⊓₀_ , ⋃₀))              eq-𝟏 ⟩
+      P , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong {B = λ _ → C} (λ - → P , 𝟏₁ , - , ⋃₀)    ⊓-eq ⟩
+      P , 𝟏₁ , _⊓₁_ , ⋃₀   ≡⟨ cong {B = λ _ → C} (λ - → P , 𝟏₁ , _⊓₁_ , -)  ⋃-eq ⟩
+      P , 𝟏₁ , _⊓₁_ , ⋃₁   ≡⟨ cong {B = λ _ → C} (λ - → - , 𝟏₁ , _⊓₁_ , ⋃₁) eq   ⟩
+      Q , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
+      where
+        eq : P ≡ Q
         eq = ΣProp≡ (poset-axioms-props A)
              (ΣProp≡ (λ _ → isPropIsSet)
                      (fn-ext _⊑₀_ _⊑₁_ λ x → fn-ext (_⊑₀_ x) (_⊑₁_ x) λ y →
@@ -275,7 +287,7 @@ RF-is-SNS {ℓ = ℓ} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(PS-A@(P@(_�
           where
             𝒻  = equivFun (idEquiv A)
 
-            φ : RP-iso (A , _⊑₀_ , A-set₀) (A , _⊑₁_ , A-set₁) (idEquiv A)
+            φ : RP-iso (A , _⊑₀_ , carrier-is-set (A , P)) (A , _⊑₁_ , A-set₁) (idEquiv A)
             φ x y =
                 (subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) eq)
               , subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) (sym eq)
@@ -301,7 +313,7 @@ RF-is-SNS {ℓ = ℓ} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(PS-A@(P@(_�
 
         RF-iso-prop : IsProp (RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A))
         RF-iso-prop =
-          isOfHLevelΣ 1 (RP-iso-prop (A , P) (A , Q) (idEquiv A)) (λ _ →
+          isOfHLevelΣ 1 (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
           isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
           isOfHLevelΣ 1 (∏-prop λ _ → ∏-prop λ _ → A-set₀ _ _) λ _ →
           ∏-prop λ _ → A-set₀ _ _)
