@@ -254,12 +254,10 @@ which yields a new knowledge state.
 
 ```
 prog⇒prog⋆ : (D : Discipline ℓ₀ ℓ₁) → HasPerpetuation⋆ (pos D) (π₁ (post D))
-prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑-refl a
-  where
-    open PosetStr (strₚ P) using (⊑-refl; _⊑⟨_⟩_; _■)
+prog⇒prog⋆ D@(P , disc , IS) a (Leaf a)   o = ⊑[ P ]-refl a
 prog⇒prog⋆ D@(P , disc , IS) a (Branch b f) (o , os) = φ
   where
-   open PosetStr (strₚ P) using (⊑-refl; _⊑⟨_⟩_; _■)
+   open PosetReasoning P
 
    IH : choose⋆ (f o) os ⊑[ P ] revise D o is-true
    IH = prog⇒prog⋆ D (choose (∣ P ∣ₚ , disc) o) (f o) os
@@ -326,7 +324,7 @@ module _ (D : Discipline ℓ₀ ℓ₁) where
   G    = post  D
   prog = π₁    D
 
-  open PosetStr (π₁ P) using (_⊑_; ⊑-refl; _⊑⟨_⟩_; _■)
+  open PosetReasoning P
 
   IsSimulation⋆ : Set (ℓ₀ ⊔ ℓ₁)
   IsSimulation⋆ =
@@ -369,12 +367,12 @@ implies `IsSimulation⋆`.
       g o₁ = π₀ IH
         where
           rev-o₀≤sat-b₀ : revise D o₁ ↓[ P ] (outcome D b₀ , revise D)
-          rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , (⊑-refl _))
+          rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , (⊑[ P ]-refl _))
 
           o₀ : outcome D b₀
           o₀ = π₀ rev-o₀≤sat-b₀
 
-          rev-o₁⊑rev-o₀ : revise D o₁ ⊑ revise D o₀ is-true
+          rev-o₁⊑rev-o₀ : revise D o₁ ⊑[ P ] revise D o₀ is-true
           rev-o₁⊑rev-o₀ = π₁ rev-o₀≤sat-b₀
 
           IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
@@ -386,18 +384,18 @@ implies `IsSimulation⋆`.
       t₁-refines-t₀ a ((o₁ , os₁) , a≤leaves-t₁-os) = (o₀ , os₀) , a⊑leaf-t₀-at-o₀-os₀
         where
           rev-o₀≤sat-b₀ : revise D o₁ ↓[ P ] (outcome D b₀ , revise D)
-          rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , ⊑-refl _)
+          rev-o₀≤sat-b₀ = φ (revise D o₁) (o₁ , ⊑[ P ]-refl _)
 
           o₀ : outcome D b₀
           o₀ = π₀ rev-o₀≤sat-b₀
 
           IH : Σ[ t′ ∈ experiment⋆ D (revise D o₁) ] refines D t′ (f o₀)
-          IH = sim⇒sim⋆ D-sim (revise D o₀) _ (π₁ (φ _ (o₁ , ⊑-refl _))) (f o₀)
+          IH = sim⇒sim⋆ D-sim (revise D o₀) _ (π₁ (φ _ (o₁ , ⊑[ P ]-refl _))) (f o₀)
 
           os₀ : location⋆ (f o₀)
           os₀ = π₀ (π₁ IH a (os₁ , a≤leaves-t₁-os))
 
-          a⊑leaf-t₀-at-o₀-os₀ : a ⊑ (leaves t₀ € (o₀ , os₀)) is-true
+          a⊑leaf-t₀-at-o₀-os₀ : a ⊑[ P ] (leaves t₀ € (o₀ , os₀)) is-true
           a⊑leaf-t₀-at-o₀-os₀ = π₁ ((π₁ IH) a (os₁ , a≤leaves-t₁-os))
 ```
 
@@ -448,7 +446,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   _↓_ : ∣ pos D ∣ₚ → Sub ℓ₂ ∣ pos D ∣ₚ → Set (ℓ₁ ⊔ ℓ₂)
   _↓_ = λ a ℱ → a ↓[ pos D ] ℱ
 
-  open PosetStr (π₁ (π₀ D)) using (_⊑_; _⊑⟨_⟩_; _■)
+  open PosetReasoning (π₀ D)
 
   _⊗_ : {a : stage D} → experiment⋆ D a → experiment⋆ D a → experiment⋆ D a
   _⊗_ {a = a} t@(Leaf a)     t′@(Leaf a)      = Leaf a
@@ -459,15 +457,15 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
       h os = π₀ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
         where
-          a⊑choose⋆-t-os : choose⋆ t os ⊑ a is-true
+          a⊑choose⋆-t-os : choose⋆ t os ⊑[ pos D ] a is-true
           a⊑choose⋆-t-os = prog⇒prog⋆ D a t os
 
   bisect₀-lemma : (a a′ : stage D)
                 → (t : experiment⋆ D a)
                 → (f : (os : outcome⋆ D t) → experiment⋆ D (choose⋆ t os))
                 → (os : outcome⋆ D (append a t f))
-                → a′ ⊑ (leaves (append a t f) € os) is-true
-                → a′ ⊑ (leaves t € bisect₀ a t f os) is-true
+                → a′ ⊑[ pos D ] (leaves (append a t f) € os) is-true
+                → a′ ⊑[ pos D ] (leaves t € bisect₀ a t f os) is-true
   bisect₀-lemma a a′ (Leaf a) g os a′⊑leaves-append-etc =
     a′                                  ⊑⟨ a′⊑leaves-append-etc     ⟩
     leaves (append a (Leaf a) g) € os   ⊑⟨ prog⇒prog⋆ D a (g tt) os ⟩
@@ -478,7 +476,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
     leaves t € (bisect₀ a t g (o , os)) ■
     where
       φ : (leaves (append a t g) € (o , os))
-        ⊑ (leaves t € (bisect₀ a t g (o , os))) is-true
+        ⊑[ pos D ] (leaves t € (bisect₀ a t g (o , os))) is-true
       φ = bisect₀-lemma (revise D o) _ (f o) (λ - → g (o , -)) os (≡⇒⊑ (pos D) refl)
 
   bisect₁-lemma : (a a′ : stage D)
@@ -495,7 +493,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
   ⊗-lemma₀ a a′ t@(Leaf a) t′@(Leaf   a) a′≤leaves-t⊗t′ = a′≤leaves-t⊗t′
   ⊗-lemma₀ a a′ t@(Leaf a) t′@(Branch b′ g) (os , γ) = tt , a′⊑a
     where
-      a′⊑a : a′ ⊑ a is-true
+      a′⊑a : a′ ⊑[ pos D ] a is-true
       a′⊑a = a′ ⊑⟨ γ ⟩ _ ⊑⟨ prog⇒prog⋆ D a t′ os ⟩ a ■
   ⊗-lemma₀ a a′ t@(Branch b x) t′@(Leaf   a)    (os , γ) = os , γ
   ⊗-lemma₀ a a′ t@(Branch b f) t′@(Branch b′ g) (os , γ) =
@@ -504,7 +502,7 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
       h : (os : location⋆ t) → experiment⋆ D (choose⋆ t os)
       h os = π₀ (sim⇒sim⋆ D D-sim a (choose⋆ t os) a⊑choose⋆-t-os t′)
         where
-          a⊑choose⋆-t-os : choose⋆ t os ⊑ a is-true
+          a⊑choose⋆-t-os : choose⋆ t os ⊑[ pos D ] a is-true
           a⊑choose⋆-t-os = prog⇒prog⋆ D a t os
 
   ⊗-lemma₁ : (a a′ : stage D) (t t′ : experiment⋆ D a)
@@ -520,13 +518,13 @@ module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
           h : (os′ : outcome⋆ D t) → experiment⋆ D (choose⋆ t os′)
           h os′ = π₀ (sim⇒sim⋆ D D-sim a (choose⋆ t os′) choose⋆-t-os′⊑a t′)
             where
-              choose⋆-t-os′⊑a : choose⋆ t os′ ⊑ a is-true
+              choose⋆-t-os′⊑a : choose⋆ t os′ ⊑[ pos D ] a is-true
               choose⋆-t-os′⊑a = prog⇒prog⋆ D a t os′
 
           OS : outcome⋆ D t
           OS = (o , bisect₀ (revise D o) (f o) (λ os′ → h (o , os′)) os)
 
-          choose⋆-t-OS⊑a : choose⋆ t OS ⊑ a is-true
+          choose⋆-t-OS⊑a : choose⋆ t OS ⊑[ pos D ] a is-true
           choose⋆-t-OS⊑a = prog⇒prog⋆ D a t OS
 
           sim⋆ = sim⇒sim⋆ D D-sim a (choose⋆ t OS) choose⋆-t-OS⊑a t′
