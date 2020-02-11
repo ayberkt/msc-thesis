@@ -3,21 +3,60 @@
 
 module Basis where
 
-open import Cubical.Core.Everything         public using    ( _≡_; Type; Σ; Σ-syntax; _,_)
-open import Cubical.Foundations.Prelude     public using    ( J; subst; cong; refl; sym
-                                                            ; _≡⟨_⟩_; _∎)
+open import Cubical.Core.Everything         public using    ( _≡_
+                                                            ; Type
+                                                            ; Σ
+                                                            ; Σ-syntax
+                                                            ; _,_
+                                                            ; _≃_
+                                                            ; equivFun
+                                                            ; isEquiv
+                                                            ; equivProof
+                                                            )
+open import Cubical.Data.Prod               public using    (_,_; proj₁; proj₂)
+                                                   renaming (_×_ to _××_)
+open import Cubical.Data.Sigma.Properties   public using    ( Σ≡)
+open import Cubical.Foundations.Prelude     public using    ( J
+                                                            ; subst
+                                                            ; cong; refl; sym
+                                                            ; _≡⟨_⟩_; _∎
+                                                            ; transport
+                                                            ; transportRefl
+                                                            ; isContr)
                                                    renaming ( isProp       to IsProp
                                                             ; isSet        to IsSet
-                                                            ; isProp→isSet to prop⇒set)
+                                                            ; isProp→isSet to prop⇒set )
+open import Cubical.Foundations.Transport   public using    ( transportEquiv )
+open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; secEq; retEq; fiber )
+open import Cubical.Foundations.SIP         public using    ( SNS; SNS'; join-SNS'
+                                                            ; SNS''
+                                                            ; SNS'''
+                                                            ; SNS'≡SNS''
+                                                            ; SNS→SNS'
+                                                            ; SNS''→SNS'''
+                                                            ; add-to-structure
+                                                            ; add-to-iso
+                                                            ; add-axioms-SNS'
+                                                            ; pointed-structure
+                                                            ; Pointed-Type
+                                                            ; pointed-iso
+                                                            ; pointed-is-SNS'
+                                                            ; sip
+                                                            ; SIP
+                                                            ; _≃[_]_)
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
+                                                            ; isPropIsSet
                                                             ; isOfHLevelΣ
-                                                            ; ΣProp≡)
-open import Cubical.Data.Sigma              public using    (sigmaPath→pathSigma)
+                                                            ; ΣProp≡
+                                                            ; hLevelSuc )
+open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
+                                                            ; pathSigma→sigmaPath )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section; retract)
-open import Cubical.Foundations.Logic       public using    ( ⇔toPath )
-open import Data.Product                    public using    ( _×_)
+open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath )
+                                                   renaming ( _⊓_ to _∧_)
+open import Data.Product                    public using    ( _×_; uncurry)
                                                    renaming ( proj₁ to π₀
                                                             ; proj₂ to π₁)
 open import Function                        public using    (_∘_; id)
@@ -26,7 +65,7 @@ open import Level                           public
 
 ```
 variable
-  ℓ ℓ₀ ℓ₁ ℓ₂ : Level
+  ℓ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₀′ ℓ₁′ : Level
 
 variable
   A    : Type ℓ₀
@@ -53,7 +92,7 @@ IsProp-prop {A = A} A-prop₀ A-prop₁ =
             prop⇒set A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
 
 Ω : (ℓ : Level) → Set (suc ℓ)
-Ω ℓ = hProp {ℓ = ℓ}
+Ω ℓ = hProp ℓ
 
 _is-true : Ω ℓ → Type ℓ
 (P , _) is-true = P
