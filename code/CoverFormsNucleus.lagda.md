@@ -3,16 +3,16 @@
 
 open import Basis
 open import Poset        hiding (IsDownwardClosed)
-open import Frame        hiding (pos)
+open import Frame
 open import HITCoverage  hiding (Type)
 open import Nucleus      using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
 open import Powerset
-open import TreeType
+open import TreeType     hiding (pos)
 
 module CoverFormsNucleus (D : Discipline ℓ₀ ℓ₁) (D-sim : IsSimulation D) where
 
-  pos-D  = strₚ (pos D)
-  ⊑-refl = PosetStr.⊑-refl pos-D
+  pos-D  = π₀ D
+  ⊑-refl = ⊑[ pos-D ]-refl
 
 ```
 
@@ -25,10 +25,17 @@ Let us start by defining the frame formed by the downward-closed subsets of `P`.
   out-D   = TreeType.outcome D
   rev-D   = TreeType.revise  D
   mono-D  = π₁ D
-  _⊑_     = λ (x y : stage-D) → x ⊑[ pos D ] y is-true
+  _⊑_     = λ (x y : stage-D) → x ⊑[ pos-D ] y is-true
 
-  open Frame.Frame F↓ using (_⊓_) renaming (_⊑_ to _<<_)
-  open PosetStr (strₚ (Frame.P F↓)) using () renaming (⊑-antisym to ◀-antisym)
+  -- open Frame.Frame F↓ using (_⊓_) renaming (_⊑_ to _<<_)
+
+  _⊓_ : ∣ F↓ ∣F → ∣ F↓ ∣F → ∣ F↓ ∣F
+  x ⊓ y = x ⊓[ F↓ ] y
+
+  _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
+  x << y = x ⊑[ pos F↓ ] y
+
+  ◀-antisym = ⊑[ pos F↓ ]-antisym
 
   sim : (a₀ a : stage-D)
       → a₀ ⊑ a → (b : exp-D a)
