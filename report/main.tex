@@ -21,6 +21,8 @@
 \newcommand{\ball}[2]{\mathfrak{A}(#1, #2)}
 \newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
 
+\newtheorem{defn}{Definition}
+
 \newcommand{\paragraphsummary}[1]{\paragraph*{#1}}
 
 \begin{document}
@@ -44,7 +46,7 @@ functions. The notion of a continuous function pervades practically all of mathe
 pointed out by JJ Sylvester: ``if I were asked to name, in one word, the pole star round
 which the mathematical firmament revolves, the central idea which pervades the whole
 corpus of mathematical doctrine, I should point to Continuity as contained in our notions
-of space, and say, it is this, it is this!''~\cite[pg. 27]{armstrong_basic_2011}. Let us
+of space, and say, it is this, it is this!''~\cite[pg. 27]{armstrong-topology}. Let us
 then start by considering the question of what continuity is.
 
 A continuous function is defined in elementary courses as a function for which ``small
@@ -126,9 +128,42 @@ sets to behave well as a result of the well-behavedness of the distance function
 able to directly start with the approximation sets, we must axiomatise the precise
 behaviour of an ``approximation set''.
 
-This process has not been entirely straightforward
-in historical terms. There were many different definitions of a topological space and it
-took some time until it was realised that the full generality of continuity can be reached
-with this definition.
+% TODO: motivate and define topological spaces.
+
+% TODO: motivate and define pointless topology.
+
+The goal of carrying out topology in type theory presents further challenges: we must do
+it not only constructively but also \emph{predicatively}. To address this problem, we will
+work with presentations of frames that we will call \emph{formal topologies}. The idea is
+that a formal topology is like a formal proof system that allow us to deal with our
+topology as though it were a proof system.
+
+\chapter{Foundations}
+
+\chapter{Frames}
+
+We start by defining frames.
+
+% TODO: recap the underlying idea of a frame.
+
+\begin{defn}[Poset]
+  The structure of a poset is given by the function:
+  \begin{equation*}
+    Order(A) := A \rightarrow A \rightarrow \Omega,
+  \end{equation*}
+  equipped with the axioms
+  \begin{align*}
+    PosetAx(A) := \Sigma \left(R : Order(A)\right)
+                  &(\Pi(x : A) R(x, x))\\
+                \times &(\Pi(x~y~z : A) R(x, y) \rightarrow R(y, z) \rightarrow R(x, z))\\
+                \times &(\Pi(x~y : A) R(x, y) \rightarrow R(y, x) \rightarrow x =_A y)
+  \end{align*}
+  A
+\end{defn}
+
+\begin{defn}[Frame]
+\end{defn}
+
+\chapter{Formal Topologies}
 
 \end{document}
