@@ -51,6 +51,9 @@ syntax rel P x y = x ⊑[ P ] y
 ⊑[_]-antisym : (P : Poset ℓ₀ ℓ₁) (x y : ∣ P ∣ₚ)
              → x ⊑[ P ] y is-true → y ⊑[ P ] x is-true → x ≡ y
 ⊑[_]-antisym (_ , _ , (_ , _ , ⊑-antisym)) = ⊑-antisym
+
+carrier-is-set : (P : Poset ℓ₀ ℓ₁) → IsSet ∣ P ∣ₚ
+carrier-is-set (_ , (_ , is-set) , _) = is-set
 ```
 
 ```

@@ -75,7 +75,10 @@ syntax glb-of F o p = o ⊓[ F ] p
            → ((o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] p is-true)
            → (⋃[ F ] ℱ) ⊑[ pos F ] p is-true
 ⋃[_]-least (_ , (_ , _ , (_ , _ , _ , _ , φ , _))) = φ
-  
+
+dist : (F : Frame ℓ₀ ℓ₁ ℓ₂)
+     → ((o : ∣ F ∣F) (ℱ : Sub ℓ₂ ∣ F ∣F) → o ⊓[ F ] (⋃[ F ] ℱ) ≡ ⋃[ F ] (index ℱ , λ i → o ⊓[ F ] (ℱ € i)))
+dist (_ , (_ , _ , (_ , _ , _ , _ , _ , φ))) = φ
 
 top-unique : (F : Frame ℓ₀ ℓ₁ ℓ₂) (z : ∣ F ∣F)
            → ((o : ∣ F ∣F) → o ⊑[ pos F ] z is-true) → z ≡ 𝟏[ F ]
@@ -133,7 +136,7 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
 downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
-  𝔻 , ((strₚ 𝔻ₚ , 𝟏 , (_⊓_ , ⊔_)) , 𝟏-top , ⊓-lower₀ , (⊓-lower₁ , (⊓-greatest , (⊔-upper , (⊔-least , dist)))))
+  𝔻 , ((strₚ 𝔻ₚ , 𝟏 , (_⊓_ , ⊔_)) , 𝟏-top , ⊓-lower₀ , (⊓-lower₁ , (⊓-greatest , (⊔-upper , (⊔-least , distr)))))
   where
     𝔻ₚ = downward-subset-poset (X , P)
     𝔻  = ∣ 𝔻ₚ ∣ₚ
@@ -187,8 +190,8 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     ⊓-greatest : (D E F : 𝔻) → (F ⊑[ 𝔻ₚ ] D) is-true → (F ⊑[ 𝔻ₚ ] E) is-true → F ⊑[ 𝔻ₚ ] (D ⊓ E) is-true
     ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
-    dist : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
-    dist D ℱ = ⊑[ 𝔻ₚ ]-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , λ i → D ⊓ (ℱ € i))) down up
+    distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
+    distr D ℱ = ⊑[ 𝔻ₚ ]-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , λ i → D ⊓ (ℱ € i))) down up
       where
         𝒜 = ∣ D ⊓ (⊔ ℱ) ∣𝔻
         ℬ = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
