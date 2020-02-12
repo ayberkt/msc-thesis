@@ -1,6 +1,7 @@
 \input{template/template}
 
 \title{Formal Topology in Univalent Foundations}
+\subtitle{Subtitle}
 \author{Ayberk Tosun}
 \newcommand{\authorname}{Ayberk Tosun}
 
@@ -14,16 +15,25 @@
 
 \keywords{topology, domain theory}
 
-\setmainfont{TeX Gyre Pagella}
-\setmathfont{TeX Gyre Pagella Math}
-
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\ball}[2]{\mathfrak{A}(#1, #2)}
 \newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
 
-\newtheorem{defn}{Definition}
+\newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
+\newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
+\newcommand{\univ}{\mathcal{U}}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\pow}[1]{\mathcal{P}\left(#1\right)}
+
+\newcommand{\dcsubsetnm}{\mathsf{DCSubset}}
+\newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
+
+\newcommand{\is}{:\equiv}
 
 \newcommand{\paragraphsummary}[1]{\paragraph*{#1}}
+
+\setmainfont{XITS}
+\setmathfont{XITS Math}
 
 \begin{document}
 
@@ -140,26 +150,123 @@ topology as though it were a proof system.
 
 \chapter{Foundations}
 
+\section{Homotopy levels}
+
+\begin{prop}\label{isOfHLevelSigma}
+  $\Sigma$ types preserve h-levels.
+\end{prop}
+
+\section{Subsets}
+
+Given a type $A$, we would like to talk about all ``subsets'' of $A$. There are
+two ways we can approach this: (1) via taking the characteristic function of the
+subset as the subset, and (2) via $A$-codomained functions. In univalent
+foundations, both of these approaches are equal.
+
+In this development, there will be places where we will prefer one of these two
+approaches over the other for convenience. Therefore we will define both of them
+and show that they are equivalent.
+
+\subsection{Subsets as power sets}
+
+\begin{defn}(Power set)
+  Let $A$ be a type. Its power set $\pow{A}$ is defined as:
+  \begin{equation*}
+    \pow{A} \is A \rightarrow \Omega
+  \end{equation*}
+\end{defn}
+
+\begin{prop}\label{isSetPow}
+  Given any type $A$, $\pow{A}$ is an h-set.
+\end{prop}
+
+\section{Structure identity principle}
+
+\subsection{Subsets as families}
+
 \chapter{Frames}
 
 We start by defining frames.
 
 % TODO: recap the underlying idea of a frame.
 
+\section{Partially ordered sets}
+
 \begin{defn}[Poset]
-  The structure of a poset is given by the function:
+  Let $Order(A) := A \rightarrow A \rightarrow \Omega$. A poset is then defined as
   \begin{equation*}
-    Order(A) := A \rightarrow A \rightarrow \Omega,
+    Poset := \sigmaty{A}{\univ}{\sigmaty{R}{Order(A)}{PosetAx(A, R)}}
   \end{equation*}
-  equipped with the axioms
+  where
   \begin{align*}
-    PosetAx(A) := \Sigma \left(R : Order(A)\right)
-                  &(\Pi(x : A) R(x, x))\\
-                \times &(\Pi(x~y~z : A) R(x, y) \rightarrow R(y, z) \rightarrow R(x, z))\\
-                \times &(\Pi(x~y : A) R(x, y) \rightarrow R(y, x) \rightarrow x =_A y)
+    PosetAx : &\pity{A}{\univ}{Order(A) \rightarrow \univ}\\
+    PosetAx(A, R) :=&~\pity{x}{A}{R(x, x)}\\
+                   \times&~\pity{x~y~z}{A}{R(x, y) \rightarrow R(y, z) \rightarrow R(x, z)}\\
+                   \times&~\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}\\
+                   \times&~IsSet(A)
   \end{align*}
-  A
 \end{defn}
+
+Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in cases there might be
+ambiguity) and the underlying set of $P$ as $\abs{P}$ Notice that the fourth component of
+$PosetAx(A, R)$ requires the carrier set to be an h-set.
+
+Given a poset $P$ we will talk about its \emph{downward-closed subsets}: sets
+that include all elements below their elements. As mentioned, we view the
+elements of our poset as \emph{finite} observations. By this perspective, we
+will view a downward-closed subset as \emph{general observation}. TODO: explain
+better and give examples
+
+This notion of a downward-closed subset is expressed formally in the following
+definition.
+
+\begin{defn}[Downward-closed sets]
+  We first define a predicate expression that a given subset of $P$ is downward closed:
+  \begin{align*}
+    DownwardClosed    &:  \pow{\abs{P}} \rightarrow \Omega\\
+    DownwardClosed(U) &\is{} \pity{x~y}{\abs{P}}{x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U}.
+  \end{align*}
+  Propositionality follows directly from the propositionality of $y \in U$.
+
+  We then define the type of downward-closed subsets of a poset as:
+  \begin{align*}
+    \dcsubsetnm{} &: Poset \rightarrow  \univ\\
+    \dcsubset{P}  &\is{} \sigmaty{U}{\pow{\abs{P}}}{IsDownwardClosed(P, U)}
+  \end{align*}
+\end{defn}
+
+The codomain of $DownwardClosedSubset$ is actually $\Omega$. However, this merits an explicit
+mention.
+
+\begin{prop}\label{isSetDCSubset}
+  $\dcsubset{P}$ is an h-set.
+\end{prop}
+\begin{proof}
+  TODO.
+  Follows from Proposition \ref{isOfHLevelSigma}.
+\end{proof}
+
+In fact, the type of downward-closed subsets of a given poset is itself a poset
+when ordered under the set inclusion relation.
+
+\begin{thm}(Poset of downward-closed subsets)
+  Let $P$ be a poset. The type $\dcsubset{P}$ forms a poset under the
+  inclusion relation.
+\end{thm}
+\begin{proof}
+  The fact that $\dcsubset{P}$ is a set is given by
+  Proposition \ref{isSetDCSubset} so it suffices to show that the poset axioms are
+  satisfied. Reflexivity and transitivity are immediate. For antisymmetry, let $U,
+  V \in \pow{\abs{P}}$ and assume $U \subseteq V$, $V \subseteq U$. By function extensionality, it suffices
+  to show that for every $x : \abs{P}$, $U(x) = V(x)$. Since $U(x), V(x) : \Omega$, it is
+  sufficient to show $U(x) \leftrightarrow V(x)$ which is immediate by assumptions.
+\end{proof}
+
+\subsection{Morphisms between posets}
+
+TODO.
+
+\section{Frames}
 
 \begin{defn}[Frame]
 \end{defn}
