@@ -229,14 +229,14 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 RF-iso : (ℓ₁ ℓ₂ : Level) (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
        → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 RF-iso {ℓ₀ = ℓ₀} ℓ₁ ℓ₂ (A , (P , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (Q , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
-    RP-iso (A , P) (B , Q) i
+    order-iso (A , P) (B , Q) i
   × f 𝟏₀ ≡ 𝟏₁
   × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
   × ((ℱ : Sub ℓ₂ A) → f (⋃₀ ℱ) ≡ ⋃₁ (f ⊚ ℱ))
   where
     f = equivFun i
 
-pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (RawPosetStr ℓ₁)
+pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (OrderStr ℓ₁)
 pos-of (A , ((RPS , _) , _)) = (A , RPS)
 
 top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
@@ -288,7 +288,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
           where
             𝒻  = equivFun (idEquiv A)
 
-            φ : RP-iso (A , _⊑₀_ , carrier-is-set (A , P)) (A , _⊑₁_ , A-set₁) (idEquiv A)
+            φ : order-iso (A , _⊑₀_ , carrier-is-set (A , P)) (A , _⊑₁_ , A-set₁) (idEquiv A)
             φ x y =
                 (subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) eq)
               , subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) (sym eq)
@@ -305,7 +305,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
 
         str-set : IsSet (RawFrameStr ℓ₁ ℓ₂ A)
         str-set =
-          Σ-set (isOfHLevelΣ 2 RPS-prop (λ FS → prop⇒set (poset-axioms-props A FS))) λ _ →
+          Σ-set (isOfHLevelΣ 2 OrderStr-set (prop⇒set ∘ poset-axioms-props A)) λ _ →
           isOfHLevelΣ 2 A-set₀ λ _ →
           isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → A-set₀)) λ _ → ∏-set λ ℱ → A-set₀
 
