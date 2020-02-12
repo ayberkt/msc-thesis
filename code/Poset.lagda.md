@@ -123,11 +123,6 @@ DownwardClosedSubset-set P =
 ```
 
 ```
-RPS-prop : IsSet (RawPosetStr ℓ₁ A)
-RPS-prop =
-  isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → isSetHProp)) λ _ →
-    prop⇒set isPropIsSet
-
 RP-iso : (M N : Σ (Type ℓ₀) (RawPosetStr ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
 RP-iso (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) eq =
   (x y : A) → (x ⊑₀ y ⇔ f x ⊑₁ f y) is-true
