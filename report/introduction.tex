@@ -1,0 +1,98 @@
+\chapter{Introduction}
+
+This thesis is about topology, the branch of mathematics that studies \emph{continuous}
+functions. The notion of a continuous function pervades practically all of mathematics, as
+pointed out by JJ Sylvester: ``if I were asked to name, in one word, the pole star round
+which the mathematical firmament revolves, the central idea which pervades the whole
+corpus of mathematical doctrine, I should point to Continuity as contained in our notions
+of space, and say, it is this, it is this!''~\cite[pg. 27]{armstrong-topology}. Let us
+then start by considering the question of what continuity is.
+
+A continuous function is defined in elementary courses as a function for which ``small
+changes to the input result in small changes to the output''. Usually right after this,
+comes the $\epsilon$-$\delta$ definition of continuity. A function $f : \reals{} \rightarrow \reals{}$ is
+\emph{continuous} if
+\begin{equation*}\label{eq:cont-0}
+  \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in \reals{}.~
+    0 < | x - y | < \delta \rightarrow | f(x) - f(y) | < \epsilon.
+\end{equation*}
+
+This definition embodies the idea that, to make $f(x)$ closer than $\epsilon$ to $f(y)$, it
+suffices to make $x$ closer than $\delta$ to $y$, for some certain $\delta$. Intuitively, this
+expresses the property that the function does not involve any abrupt changes.
+
+\paragraphsummary{Generalise the notion of distance.}
+The pinpoint the essence of continuity, we now start generalising this. First, notice that
+the function
+\begin{equation*}
+  (\langle x, y \rangle \mapsto | x - y |) : \reals{} \times \reals{} \rightarrow \reals{}
+\end{equation*}
+is just a specific notion of distance between inhabitants of the set of interest, namely,
+$\reals{}$. There are many other sets whose elements can be viewed as points in a space.
+For instance $\reals{}^2$ with the usual notion of distance between two points in the
+two-dimensional plane
+\begin{equation*}
+  d((x_0, y_0) , (x_1 , y_1)) = \sqrt{| x_0^2 - x_1^2 |} + \sqrt{| y_0^2 - y_1^2 |}.
+\end{equation*}
+We can therefore formulate continuity for any set $X$ for which we know how to measure the
+distance between any two points meaning we require an appropriate function $d : X \times
+X \rightarrow \reals{}$. Such a set endowed with a distance function is called a
+\emph{metric space}. Let $X$ and $Y$ be two metric spaces. Now we define continuity for
+any function $f : X \rightarrow Y$:
+\begin{equation*}
+  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta \in X.~ \forall y.~ d_X(x, y) < \epsilon \rightarrow d_Y(f(x), f(y)).
+\end{equation*}
+
+\paragraphsummary{Transition to balls.}
+We could have written Definition~\ref{eq:cont-0} in an alternative way. Given some
+$x, \epsilon \in \reals{}$ define
+\begin{equation*}
+  \ball{x}{\epsilon} := \{ y \in \reals{}~\|~| x - y | < \epsilon \}.
+\end{equation*}
+Now, the following is the same as Definition~\ref{eq:cont-0}.
+\begin{equation*}
+  \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in \reals{}.~
+    y \in \ball{x}{\epsilon} \rightarrow f(x) \in \ball{f(x)}{\delta},
+\end{equation*}
+which could even more compactly be expressed as
+\begin{equation*}\label{eq:cont-5}
+  \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ f(\ball{x}{\epsilon}) \subseteq \ball{f(x)}{\delta}.
+\end{equation*}
+
+\paragraphsummary{Approximations.}
+What is the meaning of $\ball{x}{\epsilon}$? The key idea is that, given some $x \in X$,
+$\ball{x}{\epsilon}$ expresses the set of things that are closer than $\epsilon$ to $x$. One intuitive
+reading of this is that $\ball{x}{\epsilon}$ denotes the \emph{set of approximations of $x$ with
+a degree of accuracy of $\epsilon$}. By making $\epsilon$ increasingly smaller, we obtain an
+increasingly more accurate approximation. Consider, for instance, $\pi$ whose digits we
+cannot fully write down. We can, however, obtain arbitrarily precise expansions of it such
+as $\ball{\pi}{10^{-10}}$.
+
+\paragraphsummary{Distance is not needed.}
+To see continuity in its full generality, we now notice that the notion of distance is not
+crucial to what is expressed in Property \ref{eq:cont-5}. We have made use of the distance
+function just to be able to express the approximation sets. Instead, we can simply work
+with a specification of what the approximation sets are. The situation is as follows: we
+are fishing in some lake and we would like to construct a theory of which fish are close
+to which. One approach would be to find a sonar which would give us the precise distance
+between every single fish in the lake. The other approach, that is the \emph{topological}
+one, is to record whenever we catch a certain kind of fish after another. We do not know
+the distances between them but this does not prevent us from studying the proximity of
+different kinds of fish. Topology is to (analytic) geometry what the latter approach is to
+the former.
+
+We required certain properties a distance function must satisfy so that the set on which
+operates can be viewed as a space. In that case, it is guaranteed for the approximation
+sets to behave well as a result of the well-behavedness of the distance function. To be
+able to directly start with the approximation sets, we must axiomatise the precise
+behaviour of an ``approximation set''.
+
+% TODO: motivate and define topological spaces.
+
+% TODO: motivate and define pointless topology.
+
+The goal of carrying out topology in type theory presents further challenges: we must do
+it not only constructively but also \emph{predicatively}. To address this problem, we will
+work with presentations of frames that we will call \emph{formal topologies}. The idea is
+that a formal topology is like a formal proof system that allow us to deal with our
+topology as though it were a proof system.

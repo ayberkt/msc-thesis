@@ -1,0 +1,47 @@
+\chapter{Foundations}
+
+\section{Homotopy levels}
+
+\begin{prop}\label{isOfHLevelSigma}
+  $\Sigma$ types preserve h-levels.
+\end{prop}
+
+\section{Propositions}
+
+We collect propositional types in $\Omega$.
+
+\begin{defn}\label{omega}
+  $\Omega \is \sigmaty{A}{\univ}{\isaprop{A}}$
+\end{defn}
+
+Technically, to assert that some $A~:~\Omega$ holds, we must project out the first component.
+However, in informal writing we will engage in the notational abuse of taking this to be
+implicit.
+
+\section{Subsets}
+
+Given a type $A$, we would like to talk about all ``subsets'' of $A$. There are
+two ways we can approach this: (1) via taking the characteristic function of the
+subset as the subset, and (2) via $A$-codomained functions. In univalent
+foundations, both of these approaches are equal.
+
+In this development, there will be places where we will prefer one of these two
+approaches over the other for convenience. Therefore we will define both of them
+and show that they are equivalent.
+
+\subsection{Subsets as power sets}
+
+\begin{defn}(Power set)
+  Let $A$ be a type. Its power set $\pow{A}$ is defined as:
+  \begin{equation*}
+    \pow{A} \is A \rightarrow \Omega
+  \end{equation*}
+\end{defn}
+
+\begin{prop}\label{isSetPow}
+  Given any type $A$, $\pow{A}$ is an h-set.
+\end{prop}
+
+\section{Structure identity principle}
+
+\subsection{Subsets as families}
