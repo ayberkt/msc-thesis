@@ -20,8 +20,7 @@ PosetAx _ A (_⊑_ , A-set) = IsReflexive ∧ IsTransitive ∧ IsAntisym
     open AlgebraicProperties A-set _⊑_
 
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-PosetStr ℓ₁ =
-  add-to-structure (OrderStr ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+PosetStr ℓ₁ = add-to-structure (OrderStr ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
 
 Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
@@ -162,6 +161,7 @@ RP-iso-prop (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) i =
   where
     f = equivFun i
 
+-- TODO: they already have this result in `cubical`.
 ××=× : (A B : Type ℓ) → (A × B) ≡ A ×× B
 ××=× A B = isoToPath {A = A × B} {B = A ×× B} (iso f g sec ret)
   where
