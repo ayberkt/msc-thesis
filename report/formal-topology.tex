@@ -1,1 +1,67 @@
 \chapter{Formal Topologies}
+
+Our motivation for pointless topology was that it allows us to interpret topology in
+constructive terms. The goal of developing topology in type theory presents further
+challenges: we must be able to develop our results in a completely predicative way as
+well. The definition of a frame we have seen suffers from impredicativity. We will not be
+able to instantiate it to topologies we are interested in. The culprit is the join
+operator.
+
+TODO: explain and give examples.
+
+To present frames, we will make use of the idea of tree set constructors, originally due
+to Petersson and Synek~\cite{tree-sets}. These are also called interaction
+systems~\cite{hancock-interaction-systems} and indexed containers. This chapter
+corresponds to the Agda module \texttt{TreeType} in the formal development.
+
+The fundamental idea of an interaction system is simple. Consider the progression of a
+two-player game. First, there is a type of \emph{game states}; call it $A$:
+\begin{equation*}
+  A~:~\univ.
+\end{equation*}
+
+At each state of the game, there are certain moves the player can take. In other words,
+for every game state $x~:~A$, there is a type of possible moves the player may take.
+Formally, this is a function:
+\begin{equation*}
+  B~:~A \rightarrow \univ.
+\end{equation*}
+
+Furthermore, for every move the player may take, the opponent can take certain
+counter-moves in response. Formally:
+\begin{equation*}
+  C~:~\pity{x}{A}{B(x) \rightarrow \univ}.
+\end{equation*}
+
+Finally, given the counter-move in response to a certain move at some state, we proceed to
+a new game state. This is given by some function:
+\begin{equation*}
+  d~:~\pity{x}{A}{\pity{y}{B(x)}{C(x, y) \rightarrow A}}
+\end{equation*}
+
+In four pieces, namely $(A, B, C, d)$ we express a game-like situation in a very general
+way. Indeed, there are many things that are like games.
+
+TODO: expand and give examples.
+
+Our presentation of frames will be based on this notion of interaction system, based upon
+an idea of Coquand~\cite{coq-posets}. We will have to impose three additional requirements
+on an interaction system.
+\begin{enumerate}
+  \item The type $A$ is equipped with a partial order. We will view this order as ranking
+    states with respect to how \emph{refined} they are. This might be counter-intuitive at
+    first: the more informative the states are, the smaller they will be. The sense of
+    this ordering is: the more informative a state is, there less sequences of
+    interactions there will be that pass through that state. It is like an open ball that
+    encircles its center more tightly; hence it is smaller.
+  \item The ordering on $A$ satisfies the \emph{monotonicity} requirement: for every state
+    $x~:~A$, $d(x) \sqsubseteq x$. In other words, the states that we proceed to via interaction are
+    always at least as informative as the previous ones.
+\end{enumerate}
+We will call an interaction system that satisfies (1) and (2) an \emph{discipline}, in the
+sense that the states resemble a discipline of knowledge.
+The final requirement is (3):
+\begin{enumerate}
+  \item The poset satisfies the \emph{simulation property} which states that at any state
+    we simulate the previous states.
+\end{enumerate}
