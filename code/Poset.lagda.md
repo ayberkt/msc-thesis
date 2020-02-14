@@ -14,7 +14,7 @@ import AlgebraicProperties
 OrderStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
 OrderStr {ℓ = ℓ} ℓ₁ A = (A → A → Ω ℓ₁) × IsSet A
 
-PosetAx : (ℓ₁ : Level) (A : Type ℓ) → OrderStr ℓ₁ A → Ω (ℓ ⊔ ℓ₁)
+PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → OrderStr ℓ₁ A → Ω (ℓ₀ ⊔ ℓ₁)
 PosetAx _ A (_⊑_ , A-set) = IsReflexive ∧ IsTransitive ∧ IsAntisym
   where
     open AlgebraicProperties A-set _⊑_
