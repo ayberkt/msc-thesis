@@ -1,29 +1,112 @@
 \chapter{Frames}\label{chap:frames}
 
-We start by defining frames.
+In this chapter, we develop the notion of a frame in \UF{}. As we explained in
+Chapter~\ref{chap:intro}, a frame is like a system of finite observations.
 
-% TODO: recap the underlying idea of a frame.
+\paragraphsummary{Topology from a CS perspective (1).}
+Let us now motivate the notion of a frame \emph{directly} from a computer science
+perspective. This is a story told by many others including
+Escardó~\cite{synthetic-topology}, etc (TODO), and most saliently, Vickers~\cite{vickers}.
+We will merely relay this story. Consider a black box computing device that produces an
+infinite stream of bits. As a brief digression, let us note that the reliance on the
+notion of ``black box'' perhaps gives the impression that this is a bizarre scenario that
+is not likely to occur in real programming. We would like to stress that
+this is not the case. A program that the programmer does not \emph{completely} grasp is
+essentially a black box; the distance between the programmer's mental model of it and its
+actual behaviour has to be investigated via experimentation. This is none other than the
+familiar process of \emph{debugging a program} that is perhaps the only thing common to
+all kinds of programming; programs do not come to exist in isolation, they come to exist
+through the creative effort of a subject through the dialectical process of
+debugging~\cite{PDD}. This discussion involving a black box can hence be taken to be
+about a program that behaves in a way the programmer does not expect it to, meaning the
+programmer does not really know ``what is inside''. Hence, the programmer must
+experiment with to understand the problem.
 
-\section{Partially ordered sets}
+We can collect all possible outputs of this device in the type
+$\mathsf{Bool}^{\mathbb{N}}$. We can talk about properties on these bitstreams i.e., the
+power set:
+\begin{equation*}
+  \pow{\mathsf{Bool}^{\mathbb{N}}} \quad\equiv\quad \mathsf{Bool}^{\mathbb{N}} \rightarrow \mathsf{Bool}.
+\end{equation*}
+Certain ones among these properties are distinguished in that they are
+\emph{finitely observable} i.e., \emph{if} they hold, the fact that they hold is
+ascertained after a finite number of digits. A property that is not observable is:
+\begin{quote}
+  ``the stream contains no $0$s'',
+\end{quote}
+because we can wait for an arbitrarily long period of time without seeing a $0$ but the
+possibility that the stream contains a $0$ \emph{will not be ruled out}. A property that
+is observable is:
+\begin{quote}
+  ``the stream contains at least one $0$ and one $1$''.
+\end{quote}
+Given a stream $s$ satisfying this property, there must be a finite prefix of $s$ that
+satisfies this property i.e., a point in time at which an observer witness the emission of
+one $0$ and $1$. Let us summarise this definition in the form of an informal definition:
+\begin{quote}
+  An observable property is a property such that if it holds, this can be observed by a
+  finite amount of evidence.
+\end{quote}
+
+\paragraphsummary{Topology from a CS perspective (2).}
+Continuing the example of bitstreams, suppose that we have $n$ observable properties:
+$\phi_0, \ldots, \phi_{n-1}$. Consider the conjunction $\phi_0 \wedge \ldots \wedge \phi_{n-1}$. Suppose that it holds.
+Since all of $\phi_0, \ldots, \phi_{n-1}$ are observable, there must be corresponding indices $i_0,
+\ldots, i_{n-1}$ such that property $\phi_j$ is observed to hold at stage $i_j$. If we wait until
+$\max \{ i_0, \ldots, i_{n-1} \}$, we will then be able to witness the satisfaction of each of
+$\phi_0, \ldots, \phi_{n-1}$ meaning we will be able to witness the satisfaction of
+$\phi_0 \wedge \ldots \wedge \phi_{n-1}$; this means that it is observable.
+
+\paragraphsummary{TODO.}
+Conversely, if we have an arbitrary family $\Phi \is \{ \phi_i \}_{i \in I}$ of observable
+properties,
+\begin{equation*}
+  \bigvee_i \Phi_i
+\end{equation*}
+will hold if there is some $k \in I$ such that $\Phi_k$ holds. This means that if it holds,
+some property $\phi_j$ will hold at a point $n \in \nats{}$. Notice that the truth of
+$\bigvee_i \Phi_i$ will then be satisfied at $n$ as well since we will know that at least one of
+its constituents is satisfied. In short, arbitrary disjunctions of observable properties
+are observable.
+
+\paragraphsummary{TODO.}
+This is to say that the class of observable properties forms a topology, being closed
+under finite intersection and arbitrary union. A frame is a system of finite observations
+in this sense: we want to study things that behave like finitely justified observations
+exactly in this way, so we construct an algebra of finitely justified observations with no
+apparent need to talk about ``sets of points'' of any sort.
+
+\paragraphsummary{Structure of chapter.}
+We now start presenting our development of frames. We start with partially ordered sets in
+Section~\ref{sec:poset}, which underlie frames. In Section~\ref{sec:frame}, we present the
+definition of a frame. In Section~\ref{sec:frame-univ}, we present an important theorem
+unique to \UF{}: isomorphic frames are equal. In Sections \ref{sec:down-set-frame} and
+\ref{sec:nuclei}, we prove two important theorems in preparation for the succeeding
+Chapter~\ref{chap:formal-topo} on formal topology: (1) the set of downward-closed subsets
+of a poset forms a frame and (2) given a nucleus on a frame, its set of fixed points is
+itself a frame.
+
+\section{Partially ordered sets}\label{sec:poset}
 
 \begin{defn}[Poset]
-  Let $Order(A) \is A \rightarrow A \rightarrow \Omega$. A poset is then defined as
+  Let $\order{A} \is A \rightarrow A \rightarrow \Omega$. A poset is then defined as
   \begin{equation*}
-    Poset \is \sigmaty{A}{\univ}{\posetstr{A}}
+    \mathsf{Poset} \quad\is\quad \sigmaty{A}{\univ}{\posetstr{A}}
   \end{equation*}
   where
   \begin{align*}
-    \posetstr{A} &\is \sigmaty{R}{Order(A)}{PosetAx(A, R)}\\
-    PosetAx : &\pity{A}{\univ}{Order(A) \rightarrow \univ}\\
-    PosetAx(A, R) \is &~\pity{x}{A}{R(x, x)}\\
+    \posetstr{A} &\quad\is\quad \sigmaty{R}{Order(A)}{\posetax{A, R}}\\
+    \posetaxnm \quad:&\quad \pity{A}{\univ}{Order(A) \rightarrow \univ}\\
+    \posetax{A, R} \quad\is&\quad ~\pity{x}{A}{R(x, x)}\\
                       \times&~\pity{x~y~z}{A}{R(x, y) \rightarrow R(y, z) \rightarrow R(x, z)}\\
                       \times&~\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}\\
-                      \times&~IsSet(A)
+                      \times&~\isaset{A}
   \end{align*}
 \end{defn}
 
+\paragraphsummary{Clarify notation.}
 Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in cases there might be
-ambiguity) and the underlying set of $P$ as $\abs{P}$ Notice that the fourth component of
+ambiguity) and the underlying set of $P$ as $\abs{P}$. Notice that the fourth component of
 $PosetAx(A, R)$ requires the carrier set to be an h-set.
 
 Given a poset $P$ we will talk about its \emph{downward-closed subsets}: sets
@@ -79,9 +162,26 @@ when ordered under the set inclusion relation.
 
 \subsection{Monotonic functions}
 
-TODO.
+The morphisms between two partially ordered sets are monotonic functions.
 
-\section{Definition of a frame}
+\begin{defn}[Monotonic function]
+  Let $P, Q$ be posets. A function $f : \abs{P} \rightarrow \abs{Q}$ is monotonic if
+  \begin{equation*}
+    \ismonotonic{f} \quad\is\quad \pity{x}{\abs{P}}{x \sqsubseteq_P y \rightarrow f(x) \sqsubseteq_Q f(y)}.
+  \end{equation*}
+  We collect the type of monotonic function between $P$ and $Q$ in the following type:
+  \begin{equation*}
+    \monotonicmap{P}{Q} \quad\is\quad \sigmaty{f}{\abs{P} \rightarrow \abs{Q}}{\ismonotonic{f}}
+  \end{equation*}
+\end{defn}
+
+\begin{defn}[Poset isomorphism]
+  An isomorphism between two posets is a monotonic function with a monotonic inverse.
+\end{defn}
+
+\section{Least upper bounds and greatest lower bounds}
+
+\section{Definition of a frame}\label{sec:frame}
 
 We now proceed to define frames. As discussed previously, a frame is the algebraic
 embodiment of the lattice of open sets. Accordingly, it has all finite meets and all
@@ -95,17 +195,74 @@ Notice that in a topological space, the following law holds:
 due to set-theoretical properties. In the pointless situation, however, we must explicitly
 require this.
 
-\begin{defn}[Frame]
+\begin{defn}[Frame]\label{defn:frame}
   A frame structure on some type $A$ consists of (1) a poset structure, (2) a top element
   (3) a binary meet operation, and (4) a join operation of arbitrary arity, which we
   define using families:
   \begin{equation*}
-    \framestr{A} \is \posetstr{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{A} \rightarrow A).
+    \rawframestr{A} \quad\is\quad \posetstr{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{A} \rightarrow A).
   \end{equation*}
-  This structure must be subject to the following axioms
-  \begin{equation*}
-    \frameax{A} \is TODO
-  \end{equation*}
+  This raw structure must be subject to the following axioms
+  \begin{align*}
+    \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad
+      \mathsf{IsTop}(\top) \times \mathsf{IsGLB}(\wedge) \times \mathsf{IsLUB}\left(\bigvee\right)\\
+    \mathsf{IsTop}(\top) \quad&\is\quad \pity{x~~}{A}{x \sqsubseteq \top}\\
+    \mathsf{ISGLB}(\wedge) \quad&\is\quad \pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
+                       &\hspace{0.7em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
+    \mathsf{IsLUB}\left(\bigvee\right) \quad&\is\quad \text{\todo{Complete.}}
+  \end{align*}
 \end{defn}
 
-\section{Isomorphic frames are equal}
+\section{Isomorphic frames are equal}\label{sec:frame-univ}
+
+\todo{
+  Prove that isomorphic frames are equal using the structure identity principle developed
+  in Section~\ref{sec:sip}. This will consist in showing that definition of a frame with
+  frame isomorphism forms a standard notion of structure and that frame axioms are
+  propositions.
+}
+
+\section{Frame of downward-closed subsets}\label{sec:down-set-frame}
+
+We have already shown how to construct the poset of downward-closed subsets from a given
+poset. We will now show that this in fact forms a frame. We mentioned several times
+throughout the previous discussion that a frame is a like system of finite observations.
+We will interpret this frame of downward-closed subsets as generalising a given set of
+observable properties.
+
+\begin{thm}
+  Given a poset $P$, its poset of downward-closed subsets forms a frame.
+\end{thm}
+\begin{proof}
+  We start by defining the following $\top, \wedge, and \bigvee$ operations:
+  \begin{align*}
+    \top       \quad&\is\quad \top_A   && \text{(as in Definition~\ref{defn:full-set})}               \\
+    U \wedge V   \quad&\is\quad U \cap V && \text{(as in Definition~\ref{defn:set-intersection})}       \\
+    \bigvee \bF{} \quad&\is\quad \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}
+  \end{align*}
+  Notice that $\top$ and $\cap$ can immediately be seen to be propositional where as $\bigvee$
+  requires a truncation to be forced to be propositional.
+
+  We now proceed to show that these subsets we have defined are indeed downward-closed.
+  \begin{itemize}
+    \item $\top_A$ is trivially downward-closed.
+    \item Downward-closure of $U \cap V$ follows immediately from the downward closure of $U$
+      and $V$.
+    \item This is also immediate: if $x$ is in $\bigvee \bF{}$ where $\bF{}$ is a family of
+      downward-closed subsets, $x$ must belong to a particular $\bF{}_i$ which will contain
+      any $y \sqsubseteq x$ meaning $\bigvee \bF{}$ itself will contain any $y \sqsubseteq x$.
+  \end{itemize}
+  The LUB and GLB properties follow from the fact that subsets of a type form a lattice
+  (\todo{should this be explicitly proven?}).
+
+  It remains to be shown that the distributivity law is satisfied. Let $U$ be a downward
+  -closed subsets nd $\bF{}$ be a family of downward-closed subsets. We must show
+  \begin{align*}
+    U \cap \left(\lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) &=
+      \bigvee \left( \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) \cap U \right)\\
+      &= \bigvee \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}} \cap x \epsilon U \right)
+  \end{align*}
+  which follows from antisymmetry.
+\end{proof}
+
+\section{Nuclei and their fixed-points}\label{sec:nuclei}

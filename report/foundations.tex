@@ -4,11 +4,36 @@ In this chapter, we provide the preliminary constructions and theorems of \UF{} 
 sake of self-containment. It is intended to be a summary rather than an introduction to
 HoTT/UF.
 
+\section{The identity type}
+
+\todo{
+  Do a couple of things here.
+  \begin{enumerate}
+    \item Define the identity type and present its introduction and elimination rules.
+    \item Give a brief summary of Cubical Type Theory and the fact that that's what really
+      we are making use of.
+    \item Remark that the refl is a built-in in CTT.
+    \item Explain that the details of CTT need not concern us as we will be viewing it as
+      just one particular implementation of HoTT.
+  \end{enumerate}
+}
+
+\section{Product types}
+
+\todo{Complete.}
+
+\section{Function types}
+
+\todo{Complete.}
+
 \section{Homotopy levels}
 
 \begin{prop}\label{isOfHLevelSigma}
   $\Sigma$ types preserve h-levels.
 \end{prop}
+\begin{proof}
+  \todo{Sketch the proof}.
+\end{proof}
 
 \section{Propositions}
 
@@ -21,6 +46,8 @@ We collect propositional types in $\Omega$.
 Technically, to assert that some $A~:~\Omega$ holds, we must project out the first component.
 However, in informal writing we will engage in the notational abuse of taking this to be
 implicit.
+
+\section{Propositional truncation}
 
 \section{Subsets}
 
@@ -35,12 +62,10 @@ and show that they are equivalent.
 
 \subsection{Subsets as power sets}
 
-\subsection{Subsets as families}
-
-\begin{defn}(Power set)
+\begin{defn}(Power set)\label{defn:pow}
   Let $A$ be a type. Its power set $\pow{A}$ is defined as:
   \begin{equation*}
-    \pow{A} \is A \rightarrow \Omega
+    \pow{A} \quad\is\quad A \rightarrow \Omega
   \end{equation*}
 \end{defn}
 
@@ -48,4 +73,36 @@ and show that they are equivalent.
   Given any type $A$, $\pow{A}$ is an h-set.
 \end{prop}
 
-\section{Structure identity principle}
+\begin{defn}[Full subset]\label{defn:full-set}
+  The empty subset on any type $A$ is defined as $\lambda \_ \rightarrow \top$. We will refer to this as
+  $\top_A$.
+\end{defn}
+
+\begin{defn}[Set intersection]\label{defn:set-intersection}
+  Given subsets $U, V : \pow{A}$, their intersection is defined as:
+  \begin{equation*}
+    U \cap V \quad\is\quad x \mapsto x \epsilon U \times x \epsilon V
+  \end{equation*}
+\end{defn}
+
+\subsection{Subsets as families}
+
+\begin{defn}(Subset as a family of elements)\label{defn:fam}
+  Let $A$ be a type. We define a subset of $A$ as a family of its elements as:
+  \begin{equation*}
+    \sub{A} \quad\is\quad \sigmaty{I}{\univ}{I \rightarrow A},
+  \end{equation*}
+  where $I$ is viewed as a type of index elements.
+
+  Given some $F : \sub{A}$ we will refer the index type of $\mathcal{F}$ as
+  $\indexset{F}$.
+\end{defn}
+
+\subsection{Equivalence of power sets and subsets as families}
+
+\todo{
+  Prove that Definition~\ref{defn:pow} and Definition~\ref{defn:fam} are actually equal to
+  each other
+}
+
+\section{Structure identity principle}\label{sec:sip}
