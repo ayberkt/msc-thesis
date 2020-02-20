@@ -290,7 +290,7 @@ To prepare for formal topology, we will now define a technical notion called a
 \end{prop}
 \begin{proof}
   Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$ a nucleus on it.
-  Let $x y : \abs{F}$ and suppose $x \sqsubseteq y$. We need to show that $j(x) \sqsubseteq j(y)$.
+  Let $x~y : \abs{F}$ and suppose $x \sqsubseteq y$. We need to show that $j(x) \sqsubseteq j(y)$.
   First, notice that $x = \meet{x}{y}$ by antisymmetry since $x \sqsubseteq \meet{x}{y}$ by the fact
   that $\meet{\_}{\_}$ is a greatest lower and $\meet{x}{y} \sqsubseteq y$ by the fact that it is a
   lower bound. The result can now be derived as follows:
@@ -299,4 +299,24 @@ To prepare for formal topology, we will now define a technical notion called a
          &\quad\sqsubseteq\quad \meet{j(x)}{j(y)}              && [\text{meets are preserved}]            \\
          &\quad\sqsubseteq\quad {j(y)}                         && [\text{\meet{\_}{\_} is a lower bound}]  .
   \end{align*}
+\end{proof}
+
+\begin{prop}
+  The set of fixed points of a nucleus forms a poset.
+\end{prop}
+\begin{proof}
+  \todo{
+    Complete this rather trivial proof. The only interesting thing in it is antisymmetry.
+  }
+\end{proof}
+
+Now, we are ready to prove the main theorem of this section.
+
+\begin{thm}
+  The set of fixed points for a nucleus forms a frame.
+\end{thm}
+\begin{proof}
+  \todo{
+    Write and explain this proof completely and precisely.
+  }
 \end{proof}
