@@ -12,21 +12,17 @@ open import Powerset
 open import TreeType     hiding (pos)
 
 formal-topo-to-frame : FormalTopology ℓ₀ ℓ₁ → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
-formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D , D-sim) =
+formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim) =
   nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
   where
-    pos-D   = π₀ D
-    ⊑-refl  = ⊑[ pos-D ]-refl
+    ⊑-refl  = ⊑[ P ]-refl
     F↓      = downward-subset-frame (TreeType.pos D)
     stage-D = TreeType.stage   D
     exp-D   = TreeType.exp     D
     out-D   = TreeType.outcome D
     rev-D   = TreeType.revise  D
     mono-D  = π₁ D
-    _⊑_     = λ (x y : stage-D) → x ⊑[ pos-D ] y is-true
-
-    _⊓_ : ∣ F↓ ∣F → ∣ F↓ ∣F → ∣ F↓ ∣F
-    x ⊓ y = x ⊓[ F↓ ] y
+    _⊑_     = λ (x y : stage-D) → x ⊑[ P ] y is-true
 
     _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
     x << y = x ⊑[ pos F↓ ] y
@@ -49,13 +45,11 @@ formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D , D-sim) =
     𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
     𝕛 (U , U-down) = U₀ , λ _ _ → down-closed
       where
-        U′ = _is-true ∘ U
-
         -- This is not  h-propositional unless we force it to be using the HIT definition.
         U₀ : stage-D → Ω ℓ₀
-        U₀ = λ a → a <| U′ , <|-prop a U′
+        U₀ = λ a → a <| (_is-true ∘ U) , <|-prop a (_is-true ∘ U)
 
-        down-closed : IsDownwardClosed (λ - → - <| U′)
+        down-closed : IsDownwardClosed (λ - → - <| (_is-true ∘ U))
         down-closed aεU₁ a₀⊑a = lem1 (U-down _ _) a₀⊑a aεU₁
 
     𝕛-nuclear : IsNuclear F↓ 𝕛
@@ -63,8 +57,9 @@ formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D , D-sim) =
       where
         -- We reason by antisymmetry and prove in (d) 𝕛 (a₀ ⊓ a₁) ⊑ (𝕛 a₀) ⊓ (𝕛 a₁) and
         -- in (u) (𝕛 a₀) ⊓ (𝕛 a₁) ⊑ 𝕛 (a₀ ⊓ a₁).
-        N₀ : (a₀ a₁ : ∣ F↓ ∣F) → 𝕛 (a₀ ⊓ a₁) ≡ (𝕛 a₀) ⊓ (𝕛 a₁)
-        N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) = ◀-antisym (𝕛 (𝕌 ⊓ 𝕍)) (𝕛 𝕌 ⊓ 𝕛 𝕍) d u
+        N₀ : (a₀ a₁ : ∣ F↓ ∣F) → 𝕛 (a₀ ⊓[ F↓ ] a₁) ≡ (𝕛 a₀) ⊓[ F↓ ] (𝕛 a₁)
+        N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) =
+          ◀-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) d u
           where
             U′ = _is-true ∘ U
             V′ = _is-true ∘ V
@@ -75,18 +70,18 @@ formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D , D-sim) =
             V-down′ : IsDownwardClosed (_is-true ∘ V)
             V-down′ = V-down _ _
 
-            d : 𝕛 (𝕌 ⊓ 𝕍) << (𝕛 𝕌 ⊓ 𝕛 𝕍) is-true
+            d : 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) is-true
             d a (dir p)        = dir (π₀ p) , dir (π₁ p)
             d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
               where
-                IH : (c : out-D b) → π₀ (𝕛 𝕌 ⊓ 𝕛 𝕍) (rev-D c) is-true
+                IH : (c : out-D b) → π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (rev-D c) is-true
                 IH c = d (rev-D c) (f c)
             d a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
               where
                 IH₀ = d a p
                 IH₁ = d a q
 
-            u : (𝕛 𝕌 ⊓ 𝕛 𝕍) << 𝕛 (𝕌 ⊓ 𝕍) is-true
+            u : (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) is-true
             u a p = lem3 U′ V′ U-down′ V-down′ a a (⊑-refl a) (π₀ p) (π₁ p)
 
         N₁ : (𝕌 : ∣ F↓ ∣F) → 𝕌 << (𝕛 𝕌) is-true
@@ -96,7 +91,4 @@ formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D , D-sim) =
         N₂ 𝕌@(U , U-down) a′ p = lem4 a′ (λ a → π₀ (𝕛 𝕌) a is-true) U′ p (λ _ q → q)
           where
             U′ = _is-true ∘ U
-
-    NN : Nucleus F↓
-    NN = 𝕛 , 𝕛-nuclear
 ```
