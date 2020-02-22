@@ -17,7 +17,7 @@ function $f : \reals{} \rightarrow \reals{}$ is
 \emph{continuous} if
 \begin{equation*}\label{eq:cont-0}
   \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in \reals{}.~
-    0 < | x - y | < \delta \rightarrow | f(x) - f(y) | < \epsilon.
+    | x - y | < \delta \rightarrow | f(x) - f(y) | < \epsilon.
 \end{equation*}
 This definition embodies the idea that, to make $f(x)$ closer than $\epsilon$ to
 $f(y)$, it suffices to make $x$ closer than $\delta$ to $y$, for some certain $\delta$.
@@ -28,10 +28,10 @@ function
 \begin{equation*}
   d(\pair{x}{y}) = | x - y | : \reals{} \times \reals{} \rightarrow \reals{}
 \end{equation*}
-is just a \emph{special} notion of distance between inhabitants of the set of interest, namely,
-$\reals{}$. There are many other sets whose elements can be viewed as points in a space.
-For instance $\reals{}^2$ with the usual notion of distance between two points in the
-two-dimensional plane has the corresponding distance function:
+is just a \emph{special} notion of distance between inhabitants of the set of interest,
+namely, $\reals{}$. There are many other sets whose elements can be viewed as points in a
+space. $\reals{}^2$, for instance, with the usual notion of distance between two points in
+the two-dimensional plane has the corresponding distance function:
 \begin{equation*}
   d(\pair{x_0}{y_0} , \pair{x_1}{y_1}) = \sqrt{(x_0 - x_1)^2 + (y_0 - y_1)^2}.
 \end{equation*}
@@ -41,83 +41,83 @@ Such a set endowed with a distance function will be called \emph{metric space} i
 satisfies certain axioms that ensure that the distance function is well-behaved i.e.,
 behaves properly like a notion of distance. For instance, we may expect that $d(x, y) =
 d(y, x)$ for any two points $x, y \in X$. The specifics of these axioms are not central to
-our focus so we will refrain from formulating those. Let $X$ and $Y$ be two metric spaces.
+our focus so we will refrain from presenting those. Let $X$ and $Y$ be two metric spaces.
 Now we define continuity for any function $f : X \rightarrow Y$:
 \begin{equation}\label{cont-1}
-  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta \in X.~ \forall y.~ d_X(x, y) < \epsilon \rightarrow d_Y(f(x), f(y)).
+  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta \in X.~ \forall y.~ d_X(x, y) < δ \rightarrow d_Y(f(x), f(y)) < ε.
 \end{equation}
-Now we can express continuity of a function on any set that is behaves like a space.
+Now we can express continuity of a function on any set that behaves like a space.
 
 \paragraphsummary{Transition to balls.}
 Notice that we could have written (\ref{cont-1}) in an alternative way. Given
-some $x, \epsilon \in \reals{}$ define
+some $x \in X, \epsilon \in \reals{}$ define
 \begin{equation*}
-  \ball{x}{\epsilon} := \{ y \in \reals{}~|~d(x, y) < \epsilon \}.
+  \ball{x}{\epsilon} \quad\is\quad \{ y \in \reals{}~|~d(x, y) < \epsilon \}.
 \end{equation*}
-Now, the following is the same as \ref{cont-1}.
+Now, the following is the same as (\ref{cont-1}).
 \begin{equation*}
-  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in X.~ y \in \ball{x}{\epsilon} \rightarrow f(x) \in \ball{f(x)}{\delta},
+  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in X.~ y \in \ball{x}{\epsilon} \rightarrow f(y) \in \ball{f(x)}{\delta},
 \end{equation*}
 which could be expressed even more compactly as:
 \begin{equation}\label{cont-2}
   \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ f(\ball{x}{\epsilon}) \subseteq \ball{f(x)}{\delta}.
 \end{equation}
 
-\paragraphsummary{Approximations.}
+\paragraphsummary{Open balls as approximation sets.}
 After having written down continuity in this more compact way, we consider the question:
 what is the meaning of $\ball{x}{\epsilon}$? Given some $x \in X$, $\ball{x}{\epsilon}$ expresses the set
 of things that are closer than $\epsilon$ to $x$. One intuitive reading of this is that
 $\ball{x}{\epsilon}$ denotes the \emph{set of approximations of $x$ with a degree of accuracy of
-  $\epsilon$}. As $\epsilon$ decreases, the accuracy with which $\ball{x}{\epsilon}$ represents $x$ increases.
-Consider, for instance, $\pi$ whose digits we cannot fully write down. We can, however,
-obtain arbitrarily precise expansions of it such as $\ball{\pi}{10^{-10}}$, if we are
-willing to wait long enough.
+$\epsilon$}. As $\epsilon$ decreases, the accuracy with which the inhabitants of $\ball{x}{\epsilon}$
+represent $x$ increases. Consider, for instance, $\pi$ whose digits we cannot fully write
+down. We can, however, obtain arbitrarily precise expansions of it such as
+$\ball{\pi}{10^{-10}}$, if we are willing to wait long enough.
 
 \paragraphsummary{Distance is not needed.}
 To see continuity in its full generality, we now notice that the notion of distance is not
 crucial to what is expressed in (\ref{cont-2}). We have made use of the distance function
-just to be able to express the approximation sets. Instead, we can work directly with a
+just to be able to specify the approximation sets. Instead, we can work directly with a
 specification of what the approximation sets are. This is the main idea underlying
-topology: we study spaces not through distance but through approximations.
+topology: instead of working with a notion of distance, we work directly with a
+specification of the approximations.
 
-\paragraphsummary{Axiomatisation of basis.}
+\paragraphsummary{Axiomatisation of basis (0).}
 We mentioned that certain metric space axioms ensure that the distance function is
 well-behaved. When one defines approximation sets in terms of such a distance function, it
 is guaranteed that they will be well-behaved as well. As we want to completely remove our
 dependency on a notion of distance, we will have to axiomatise instead the behaviour of
-approximation sets themselves. Consider again the example of $\pi$. It must clearly be the
-case that any approximation set for $\pi$ contains $\pi$ itself. In other words, we want
-approximations to give us ``error bars'' around some result and if the result is not
-within the error bars they are clearly not well-behaved. Furthermore, if we have two
-approximation sets for $\pi$, say $A_0$ and $A_1$, $\pi$ must be lie in $A_0 \cap A_1$. We can
-then pick out a \emph{finer}, more accurate approximation $A_2$ for $\pi$ such that $\pi \subseteq A_1
-\cap A_2$. For instance, $A_0$ might say that $\pi$ lies within $3.0$ and $3.2$ and $A_1$ that it
-lies within $3.1$ and $3.5$ from which we can tell that it lies within $3.1$ and $3.2$.
-This will be the second requirement. The standard term in topology for such a class of
-sets is a \emph{basis for a topology}. We now summarise it precisely in the following
-definition.
+approximation sets themselves.
 
+\paragraphsummary{Axiomatisation of basis (1).}
+Any approximation set for a real number must that real number itself. In other words, we
+want approximations to give us ``error bars'' around some result and any error bar that
+does not encircle the result is clearly ill-behaved.
+
+\paragraphsummary{Axiomatisation of basis(2).}
+Furthermore, if we have two approximation sets for a real number, say $A_0$ and $A_1$,
+that real number must lie in $A_0 \cap A_1$. We can then pick out a \emph{finer}, more
+accurate approximation $A_2$ for the number such that $A_2 \subseteq A_1 \cap A_2$. For instance,
+$A_0$ might say that $\pi$ lies within $3.0$ and $3.2$ and $A_1$ that it lies within $3.1$
+and $3.5$ from which we can tell that it lies within $3.1$ and $3.2$. This will be our
+second requirement.
+
+\paragraphsummary{Formal defn.~ of basis.}
+The standard term in topology for such a class of sets is a \emph{basis for a topology}.
+We now summarise it precisely in the following definition.
 \begin{defn}[Basis for a topology]
   Given a set $X$, a basis for a topology on $X$ is a class $\mathcal{B}$ of subsets of
   $X$ such that:
   \begin{enumerate}
-    \item $\forall x \in X.~ \exists B \in \mathcal{B}.~x \in B$, ``approximations approximate''; and
+    \item $\forall x \in X.~ \exists B \in \mathcal{B}.~x \in B$, which intuitively says ``approximations
+      approximate'', and
     \item $\forall x \in X.~ \exists B_0, B_1 \in \mathcal{B}.~ x \in B_0 \cap B_1 \rightarrow \exists B_2 \subseteq (B_0 \cap B_1).~
-      x \in B_2$, ``approximations can be refined''.
+      x \in B_2$, which says ``approximations can be refined''.
   \end{enumerate}
 \end{defn}
 
-\paragraphsummary{Topology generated by a basis.}
-We will then say that the topology generated by basis $\mathcal{B}$ on $X$ is the class
-\begin{equation*}
-  \mathbf{T}(\mathcal{B}) \quad\is\quad \{ U \cup V~|~U, V \in \mathcal{B} \},
-\end{equation*}
-namely, the closure of the basis under union.
-
 \paragraphsummary{Continuity with bases.}
-Now, we can reformulate continuity in a more general way using basis elements. Given a
-sets $X, Y$ with bases $\mathcal{B}_X, \mathcal{B}_Y$, a function $f : X \rightarrow Y$ is
-continuous if
+Now, we can reformulate continuity in a more general way using basis elements. Given sets
+$X, Y$ with bases $\mathcal{B}_X, \mathcal{B}_Y$, a function $f : X \rightarrow Y$ is continuous if
 \begin{equation}\label{cont-basis}
   \forall x \in X.~ \forall V \in \mathcal{B}_Y.~ f(x) \in V \rightarrow \exists U \in \mathcal{B}_X.~
     f(U) \subseteq V.
@@ -129,28 +129,48 @@ $\epsilon$ to $f(y)$ by making $x$ closer than $\delta$ to $y$. We are now sayin
 set approximating some $f(x)$, there is a set approximating $x$ such that the image of
 the latter is contained in the former, which corresponds directly to (\ref{cont-2}).
 
-\paragraphsummary{Motivate topologies.}
-There is only one more step remaining until we reach the standard, most general definition
-of a topology.
-%% TODO: complete.
+\paragraphsummary{Topology generated by a basis.}
+Given a basis $\mathcal{B}$ on set $X$, we say that the topology generated by
+$\mathcal{B}$, that we call $\mathbf{T}_{\mathcal{B}}$, is the class of all possible
+unions of $\mathcal{B}$. The idea here is that an element $U$ of
+$\mathbf{T}_{\mathcal{B}}$ is like a property of the set that we are interested in
+\emph{verifying}. To verify $U$, it suffices to show that it falls in one of the basis
+elements that constitute $U$ and since all of these are approximation sets, $U$ can be
+verified from a finite amount of data since approximations suffice to express it.
 
+\paragraphsummary{Start motivating topologies.}
+In reality, it is often the case that we deal directly with the bases that generates
+topologies. However, we will not have reached full generality until we can talk about
+\emph{topologies} i.e., properties of a set which can be verified via approximations.
+We will call such properties \emph{finitely verifiable}. The topological term is ``open
+set'' in the sense that the set does not contain its own boundary.
+
+If we have two finitely verifiable properties, we should be able to verify them from an
+approximations of degrees of accuracy of $ε₀$ and $ε₁$. Then, we can verify both by taking
+the higher between them so we can verify their intersection. If we have an arbitrary
+number of finitely verifiable properties, to verify the union it suffices to verify at
+least one, so if an point is in this set it must be in one of the finitely verifiable
+subsets, meaning the set itself is finitely verifiable. This brings us to the following
+definition:
 \begin{defn}[Topological space]
   A topology on a set $X$ is a class $\mathcal{T}$ of subsets of $X$ such that
   \begin{itemize}
-  \item The trivial subsets $X, \emptyset \subseteq X$ are in $\mathcal{T}$,
-  \item $\mathcal{T}$ is closed under finite intersections, and
-  \item $\mathcal{T}$ is closed under arbitrary unions.
+    \item The trivial subsets $X, \emptyset \subseteq X$ are in $\mathcal{T}$,
+    \item $\mathcal{T}$ is closed under finite intersections, and
+    \item $\mathcal{T}$ is closed under arbitrary unions.
   \end{itemize}
 \end{defn}
 
 \paragraphsummary{Transition to pointless topology.}
 From the perspective where we view topology as a mathematical theory of finitary
-approximations, it makes further sense to take the notions of approximation as primitive
-and then investigate them directly instead of defining them as \emph{derived notions} that
-are defined as certain kinds of ``sets of points''. This is analogous to the distinction
-between analytic and synthetic geometry: in the former, one defines a space as a set of
-points, whereas in the latter one works directly with constructs on spaces such as angles,
-lines, and circles.
+approximations, it makes further sense to take the finitely verifiable properties as
+primitive and then investigate them directly instead of defining them as \emph{derived
+notions} that are defined as certain kinds of ``sets of points''. This is analogous to
+the distinction between analytic and synthetic geometry: in the former, one defines a
+space as a set of points, whereas in the latter one works directly with constructs on
+spaces such as angles, lines, and circles. This approach in which we start directly with
+a given set of finitely verifiable properties is called \emph{pointless topology} in the
+sense that we avoid mentioning the points until we really need them.
 
 \paragraphsummary{Motivate frames.}
 In pointless topology, we start with a set $\mathcal{O}$ of opens. We then axiomatise
@@ -158,27 +178,47 @@ directly how these opens shall behave.
 \begin{enumerate}
   \item Corresponding to the set-inclusion partial order in the pointful case, we require that
     there be a partial order $\_\sqsubseteq\_ \subseteq \mathcal{O} \times \mathcal{O}$.
-  \item Corresponding to the fact that open sets are closed under finite intersection, we require
-    that there be a binary meet operation $\_\sqcap\_ : \mathcal{O} \times \mathcal{O} \rightarrow \mathcal{O}$ and a
-    nullary one $\top : \mathcal{O}$.
-  \item Corresponding to the fact that open sets are closed under arbitary union, we require that
-    there be a join operation of arbitrary arity: $\bigcup\_ : \pow{\mathcal{O}} \rightarrow \mathcal{O}$.
+  \item Corresponding to the fact that open sets are closed under finite intersection, we
+    require that there be a binary meet operation $\meet{\_}{\_} : \mathcal{O} \times
+    \mathcal{O} \rightarrow \mathcal{O}$ and a nullary one $\top : \mathcal{O}$.
+  \item Corresponding to the fact that open sets are closed under arbitary union, we
+    require that there be a join operation of arbitrary arity: $\joinnm{}\_ :
+    \pow{\mathcal{O}} \rightarrow \mathcal{O}$.
 \end{enumerate}
-In addition to this, require that these operations satisfy the distributivity law.
-%% TODO: complete.
-Such a set $\mathcal{O}$ that satisfies these four conditions is called a \emph{frame}.
-Historically, it has occurred to multiple mathematicians that topological questions can
-be entertained in this pointless manner.
+In addition to this, require that these operations satisfy the distributivity law, which
+we will elaborate on in Chapter~\ref{chap:frames}. Such a lattice that embodies a logic
+of finitely verifiable properties is called a \emph{frame}.
+
+\paragraphsummary{Explain the benefit of pointless topology.} A question that is natural
+is: what does this give us that traditional topology lacks? In this thesis, we will look
+at topology from the perspective of computer science therefore we would like to be able to
+understand theorems of topology \emph{in computational terms}. Topology notoriously relies
+on classical reasoning in its flagship theorems such as the Tychonoff theorem. The need to
+employ classical reasoning arises from the traditional order of things in which the open
+sets are sets of points. By doing pointless topology, we will see that we can avoid
+classical reasoning and hence gain a computational understanding of topology. This point
+was put eloquently by Johnstone~\cite[pg.~46]{stone-spaces}:
+\begin{quote}
+  It is here that the real point of pointless topology begins to emerge; the difference
+  between locales and spaces is one that we can (usually) afford to ignore if we are
+  working in a ``classical'' universe with the axiom of choice available, but when (or if)
+  we work in a context where choice principles are not allowed, then we have to take
+  account of the difference—and usually it is locales, not spaces, which provide the right
+  context in which to do topology. This is the point which, as I mentioned earlier,
+  Andre\'{e} Joyal began to hammer home in the early 1970s; I can well remember how, at
+  the time, his insistence that locales were the real stuff of topology, and spaces were
+  merely figments of the classical mathematician's imagination, seemed (to me, and I
+  suspect to others) like unmotivated fanaticism. I have learned better since then.
+\end{quote}
 
 \paragraphsummary{Motivate formal topology.}
 The goal of carrying out topology in type theory presents further challenges: we must do
 it not only constructively but also \emph{predicatively}. To address this problem, we will
 work with presentations of frames that we will call \emph{formal topologies}. The idea is
-that a formal topology is like a formal proof system that allow us to deal with our
-topology as though it were a proof system in which one proves theorems by applying rules.
-We remarked that the point of pointless topology is that it allows us to constructively
-understand results of topology. Formal topology provides us the further advantage of
-being able to understand them predicatively.
+that a formal topology is like a formal proof system that allows us to deal with our
+topology as though it were a proof system. In addition to the benefit of constructively
+understanding the results of topology. Formal topology provides us the further advantage
+of being able to understand them predicatively.
 
 \paragraphsummary{Explain the goal of the thesis.}
 In this thesis, we present a development of formal topology in \UF{}. By now, it has

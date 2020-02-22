@@ -1,7 +1,9 @@
 \input{template/template}
 
+\usepackage{ebproof}
+
 \title{Formal Topology in Univalent Foundations}
-\subtitle{Subtitle}
+\subtitle{\emph{Subtitle}}
 \author{Ayberk Tosun}
 
 \supervisor{Thierry Coquand}
@@ -45,6 +47,8 @@
 \newcommand{\posetaxnm}{\mathsf{PosetAx}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
 
+\newcommand{\poset}{\mathsf{Poset}}
+
 \newcommand{\ismonotonicnm}{\mathsf{IsMonotonic}}
 \newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
 
@@ -55,6 +59,17 @@
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
 \newcommand{\frameax}[1]{\mathsf{FrameAx}\left(#1\right)}
 
+\newcommand{\treestrnm}{\mathsf{TreeStr}}
+\newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
+
+\newcommand{\stumpnm}{\mathsf{Stump}}
+\newcommand{\stump}[1]{\stumpnm\left(#1\right)}
+
+\newcommand{\refines}[2]{#1~\mathcal{R}~#2}
+
+\newcommand{\disciplinestrnm}{\mathsf{DisciplineStr}}
+\newcommand{\disciplinestr}[1]{\disciplinestrnm{}\left(#1\right)}
+
 \newcommand{\rawframestrnm}{\mathsf{RawFrameStr}}
 \newcommand{\rawframestr}[1]{\rawframestrnm{}\left(#1\right)}
 
@@ -62,6 +77,11 @@
 \newcommand{\isnuclear}[1]{\isnuclearnm{}\left(#1\right)}
 
 \newcommand{\meet}[2]{#1 \wedge #2}
+\newcommand{\joinnm}[3]{\bigvee}
+\newcommand{\join}[3]{\joinnm{}_{#1~:~#2} #3}
+
+\newcommand{\covernm}{\triangleleft}
+\newcommand{\covers}[2]{#1 \covernm{} #2}
 
 \newcommand{\bF}{\mathbf{F}}
 
@@ -70,25 +90,26 @@
 %% Names.
 \newcommand{\UF}{Univalent Foundations}
 
-\newcommand{\paragraphsummary}[1]{{\color{orange} \textsc{#1}}}
+%% \newcommand{\paragraphsummary}[1]{{\color{orange} \textsc{#1}}}
+\newcommand{\paragraphsummary}[1]{}
 \newcommand{\todo}[1]{
-  {\large {\color{red} \texttt{TODO: #1}}}
+  {\color{red} \texttt{TODO: #1}}
 }
 
 \setmainfont{XITS}
 \setmathfont{XITS Math}
-\setmonofont[Scale=0.85]{PragmataPro}
+\setmonofont[Scale=0.85]{PragmataPro Mono Liga}
 
 \begin{document}
 
 \maketitlepage{}
 
 \begin{abstract}
-  \lipsum[1-2]{}
+  \todo{Write an abstract.}
 \end{abstract}
 
 \begin{acknowledgements}
-  Foo bar.
+  \todo{Add acknowledgements here.}
 \end{acknowledgements}
 
 \makelists{}
