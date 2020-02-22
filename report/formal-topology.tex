@@ -1,5 +1,6 @@
-\chapter{Formal Topologies}\label{chap:formal-topo}
+\chapter{Formal Topology}\label{chap:formal-topo}
 
+\paragraphsummary{Motivate formal topology.}
 Our motivation for pointless topology was that it allows us to interpret topology in
 constructive terms. The goal of developing topology in type theory presents further
 challenges: we must be able to develop our results in a completely predicative way as
@@ -7,43 +8,48 @@ well. The definition of a frame we have seen suffers from impredicativity. We wi
 able to instantiate it to topologies we are interested in. The culprit is the join
 operator.
 
+\paragraphsummary{Explain the impredicativity of the join operator.}
 TODO: explain and give examples.
 
+\paragraphsummary{Introduce the tree type.}
 To present frames, we will make use of the idea of tree set constructors, originally due
-to Petersson and Synek~\cite{tree-sets}. These are also called interaction
-systems~\cite{hancock-interaction-systems} and indexed containers. This chapter
+to Petersson and Synek~\cite{tree-sets}, who were trying to generalise Martin-Löf's
+$\mathsf{W}$ type so that it can accommodate mutually recursive types. It is remarkable
+that these structures embody the essence of a Post system in type theory. Tree set
+constructors are also called interaction systems~\cite{hancock-interaction-systems} and
+indexed containers~\cite{indexed-containers}; we will call it the tree type. This chapter
 corresponds to the Agda module \texttt{TreeType} in the formal development.
 
+\section{Petersson and Synek's tree type}
+
+\paragraphsummary{Explain the idea of the tree type.}
 The fundamental idea of an interaction system is simple. Consider the progression of a
 two-player game. First, there is a type of \emph{game states}; call it $A$:
 \begin{equation*}
   A~:~\univ.
 \end{equation*}
-
 At each state of the game, there are certain moves the player can take. In other words,
 for every game state $x~:~A$, there is a type of possible moves the player may take.
 Formally, this is a function:
 \begin{equation*}
   B~:~A \rightarrow \univ.
 \end{equation*}
-
 Furthermore, for every move the player may take, the opponent can take certain
 counter-moves in response. Formally:
 \begin{equation*}
   C~:~\pity{x}{A}{B(x) \rightarrow \univ}.
 \end{equation*}
-
 Finally, given the counter-move in response to a certain move at some state, we proceed to
 a new game state. This is given by some function:
 \begin{equation*}
   d~:~\pity{x}{A}{\pity{y}{B(x)}{C(x, y) \rightarrow A}}
 \end{equation*}
+In four pieces, namely $(A, B, C, d)$, we express a ``game-like system'' in a very general
+way. Even though the game analogy is very useful, the tree type is more general: it
+expresses \emph{anything} that is like a dialogue i.e., two subjects interacting with each
+other.
 
-In four pieces, namely $(A, B, C, d)$ we express a game-like situation in a very general
-way. Indeed, there are many things that are like games.
-
-TODO: expand and give examples.
-
+\paragraphsummary{Explain how we will use the tree type.}
 Our presentation of frames will be based on this notion of interaction system, based upon
 an idea of Coquand~\cite{coq-posets}. We will have to impose three additional requirements
 on an interaction system.
@@ -58,10 +64,164 @@ on an interaction system.
     $x~:~A$, $d(x) \sqsubseteq x$. In other words, the states that we proceed to via interaction are
     always at least as informative as the previous ones.
 \end{enumerate}
-We will call an interaction system that satisfies (1) and (2) an \emph{discipline}, in the
-sense that the states resemble a discipline of knowledge.
+We will call an interaction system that satisfies (1) and (2) an \emph{discipline}, (in the
+sense that the states resemble a discipline of knowledge, which we will explain later).
 The final requirement is (3):
 \begin{enumerate}
   \item The poset satisfies the \emph{simulation property} which states that at any state
     we simulate the previous states.
 \end{enumerate}
+
+\paragraphsummary{Formally define the tree type.}
+Let us now formally define the tree type.
+\begin{defn}[Tree type]
+  \begin{align*}
+    \treestr{A} &\quad\is\quad
+      \sigmaty{B}{A \rightarrow \univ}{
+        \sigmaty{C}{\pity{x}{A}{B(x) \rightarrow C}}{
+          \pity{x}{A}{\pity{y}{B(x)}{C(x, y) \rightarrow A}}
+        }
+      }\\
+    \mathsf{Tree} &\quad\is\quad \sigmaty{A}{~~~~\univ}{\treestr{A}}
+  \end{align*}
+  Given a tree type structure $\mathcal{T}$, we will refer to its components as
+  $A_{\mathcal{T}}, B_{\mathcal{T}}, C_{\mathcal{T}}$, and $d_{\mathcal{T}}$.
+\end{defn}
+
+\paragraphsummary{Formally define disciplines.}
+\begin{defn}[Discipline]
+  \begin{align*}
+    \mathsf{Discipline} \quad&\is\quad \sigmaty{P}{\poset{}}{\disciplinestr{P}}                 \\
+    \disciplinestr{P}   \quad&\is\quad \hspace{-0.9em}\sigmaty{\mathcal{T}}{\treestr{A}}{
+      \pity{x}{A_{\mathcal{T}}}{\pity{y}{B_{\mathcal{T}}(x)}{
+          \pity{z}{C_{\mathcal{T}}(x, y)}{d_{\mathcal{T}}(x, y, z) \sqsubseteq x}}
+      }
+    }
+  \end{align*}
+  We will refer to this as the monotonicity property \emph{of a discipline}. This is not
+  to be confused with the monotonicity of a monotonic map.
+\end{defn}
+
+\paragraphsummary{Transition to talking about the simulation property.}
+The only remaining thing towards our definition of formal topology is the aforementioned
+simulation property. It requires a couple of auxiliary concepts which we will now define.
+
+\paragraphsummary{Formally define the simulation property.}
+We will first define this formally and justify it conceptually afterwards.
+\begin{defn}[Simulation property]
+  Given a discipline $D$, we will say that it satisfies the simulation property if the
+  following type is inhabited:
+  \begin{equation*}
+    \pity{x~x'}{\abs{D}}{
+      x' \sqsubseteq x \rightarrow \pity{y}{B(x)}{
+        \sigmaty{y'}{B(x')}{
+          \pity{z'}{C(x', y')}{
+            \sigmaty{z}{C(x, y)}{
+              d(x', y', z') \sqsubseteq d(x, y, z)
+            }
+          }
+        }
+      }
+    }.
+  \end{equation*}
+\end{defn}
+
+\paragraphsummary{Intuitive justification.}
+What does this say intuitively? At more refined stages we can always find a counterpart to
+any experiment from a less refined stage, in the sense that that experiment will lead to a
+more refined stage. To put it more succinctly:
+\begin{quote}
+  \emph{lower stages can always simulate upper stages}.
+\end{quote}
+
+\paragraphsummary{Define formal topology.}
+Once the property of simulation has been defined it is easy to state our
+definition of a formal topology.
+\begin{defn}[Formal topology]
+  A formal topology is a discipline that has the simulation property.
+\end{defn}
+
+\section{Coverage}
+
+\paragraphsummary{Motivate and provide historical summary.} The reason we defined the
+notion of a formal topology is that it admits a coverage relation. This method goes back
+to Johnstone's~\cite{stone-spaces} adaptation of the notion of a Grothendieck topology.
+
+\paragraphsummary{Defn.~of coverage.}
+First, we define the coverage relation on a given formal topology.
+\begin{defn}[Coverage relation]
+  \[
+  \begin{prooftree}
+    \hypo{ a \epsilon U }
+    \infer1[\textsf{dir}]{\covers{a}{U}}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \hypo{
+      \pity{b}{B(a)}{\left( \pity{c}{B(a, b)}{d(a, b, c) \triangleleft U} \right) \rightarrow a \triangleleft U}
+    }
+    \infer1[\textsf{branch}]{\covers{a}{U}}
+  \end{prooftree}
+  \]
+\end{defn}
+
+\paragraphsummary{Cover is a nucleus.}
+This coverage relation gives us a way of obtaining a frame from a formal topology. Let us
+look at the type of the coverage relation:
+\begin{equation*}
+  \_\covernm{}\_ : A \rightarrow \pow{A} \rightarrow \univ{}
+\end{equation*}
+which we can flip to get
+\begin{equation*}
+  \_\triangleright\_ : \pow{A} \rightarrow A \rightarrow \univ{}
+\end{equation*}
+which can be written as
+\begin{equation*}
+  \_\triangleright\_ : \pow{A} \rightarrow \pow{A}
+\end{equation*}
+so we have an endofunction. We can restrict this to the subset of $\pow{A}$ that is
+downwards-closed
+\begin{equation*}
+  \_\triangleright\_ : \dcsubset{A} \rightarrow \dcsubset{A},
+\end{equation*}
+which of course requires us to show that given a downwards-closed subset $U$,
+$\covers{\_}{U}$ is a subset that is downwards-closed.
+
+\begin{thm}
+  Given any subset $U$, $\covers{\_}{U}$ is a downwards-closed subset.
+\end{thm}
+\begin{proof}
+  \todo{Complete the proof.}
+\end{proof}
+
+Now, our method of obtaining a frame out of a formal topology is the following.
+\begin{enumerate}
+  \item Start with a formal topology $\mathcal{T}$ on type $A$.
+  \item $\mathcal{T}$ has an underlying poset $P$; construct its frame of downwards-closed
+    subsets.
+  \item Note: $\covers{\_}{\_}$ is a nucleus on the frame of downwards-closed subsets.
+  \item We have shown (in Theorem~\ref{thm:fixed-point-frame}) that the set of
+    fixed-points of every nucleus is a frame. The final frame is this fixed-point frame
+    on the frame of downwards-closed subsets by the nucleus $\covers{\_}{\_}$.
+\end{enumerate}
+
+\section{Discipline presentations present}
+
+\paragraphsummary{Explain the aim.}
+We are now ready to shift our focus on what can be called main theorem of this
+thesis: our notion of a formal topology is capable of presenting a frame. We
+will see that this presents an interesting challenge, arising from the
+peculiarity of \UF{}.
+
+\paragraphsummary{Explain the intuition of representation.}
+Let $A$ be a formal topology and $L$ a frame. Consider a monotonic function $f : \abs{A} \rightarrow
+\abs{L}$ on the underlying posets. We will define a notion of $f$ representing $F$ in $L$
+which is to say $f$ encodes crucial information of $F$.
+
+\begin{defn}[Representation]
+  \begin{equation*}
+  \pity{x}{A}{\pity{y}{B(x)}{f(x) \sqsubseteq \left( \bigvee_{z~:~C(x, y)} f(d(x, y, z))}} \right)
+  \end{equation*}
+\end{defn}
+
+\todo{State and prove the main theorem.}
