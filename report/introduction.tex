@@ -13,7 +13,7 @@ then start by considering the question of what continuity is.
 A continuous function, in the context of real numbers, is a function for which
 ``small changes to the input result in small changes to the output''. This is
 formally expressed in the following ``$\epsilon$-$\delta$ definition'' of continuity: a
-function $f : \reals{} \rightarrow \reals{}$ is
+function March$f : \reals{} \rightarrow \reals{}$ is
 \emph{continuous} if
 \begin{equation*}\label{eq:cont-0}
   \forall x \in \reals{}.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in \reals{}.~
@@ -193,11 +193,10 @@ of finitely verifiable properties is called a \emph{frame}.
 is: what does this give us that traditional topology lacks? In this thesis, we will look
 at topology from the perspective of computer science therefore we would like to be able to
 understand theorems of topology \emph{in computational terms}. Topology notoriously relies
-on classical reasoning in its flagship theorems such as the Tychonoff theorem. The need to
-employ classical reasoning arises from the traditional order of things in which the open
-sets are sets of points. By doing pointless topology, we will see that we can avoid
-classical reasoning and hence gain a computational understanding of topology. This point
-was put eloquently by Johnstone~\cite[pg.~46]{stone-spaces}:
+on classical reasoning in many of its fundamental theorems such as the Tychonoff theorem.
+By doing pointless topology, we will see that we can avoid classical reasoning and hence
+gain a computational understanding of topology. This point was put eloquently by
+Johnstone~\cite[pg.~46]{stone-spaces}:
 \begin{quote}
   It is here that the real point of pointless topology begins to emerge; the difference
   between locales and spaces is one that we can (usually) afford to ignore if we are
@@ -214,24 +213,24 @@ was put eloquently by Johnstone~\cite[pg.~46]{stone-spaces}:
 \paragraphsummary{Motivate formal topology.}
 The goal of carrying out topology in type theory presents further challenges: we must do
 it not only constructively but also \emph{predicatively}. To address this problem, we will
-work with presentations of frames that we will call \emph{formal topologies}. The idea is
-that a formal topology is like a formal proof system that allows us to deal with our
-topology as though it were a proof system. In addition to the benefit of constructively
-understanding the results of topology. Formal topology provides us the further advantage
-of being able to understand them predicatively.
+work with presentations of frames that are called \emph{formal
+topologies}~\cite{int-formal-spaces}. The idea is that a formal topology is like a
+formal proof system that allows us to deal with our topology as though it were a proof
+system. In addition to the benefit of constructively understanding the results of
+topology, formal topology provides us the further advantage of being able to understand
+them predicatively.
 
 \paragraphsummary{Explain the goal of the thesis.}
 In this thesis, we present a development of formal topology in \UF{}. By now, it has
 become clear that univalence addresses many shortcomings of type theory therefore the
 question of what novelties it presents for the question of topology in type theory is a
-natural one. We focus on one particular approach to formal topology, using certain partial
-orders endowed with a ``discipline'' structure, an idea going back to
-Coquand~\cite{coq-posets}.
+natural one. We focus on one particular approach to formal topology, implementing an idea
+going back to Coquand~\cite{coq-posets} to endow posets with an ``interaction'' structure.
 
 \paragraphsummary{Summarise the thesis structure.}
 This thesis is structured as follows. In Chapter~\ref{chap:foundations}, we summarise the
 fundamentals of \UF{}. In Chapter~\ref{chap:frames}, we present our development of frames
 and constructs related to them in preparation for Chapter~\ref{chap:formal-topo} in which
-we present our development of main development of formal topology in \UF{}. In
+we present our main development of formal topology in \UF{}. In
 Chapter~\ref{chap:domain-theory}, we develop some Domain Theory and denotational semantics
 as a branch of formal topology.
