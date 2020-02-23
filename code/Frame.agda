@@ -131,6 +131,9 @@ IsFrameHomomorphism {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G m 
 _─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 _─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (IsFrameHomomorphism F G)
 
+_$f_ : {F G : Frame ℓ₀ ℓ₁ ℓ₂} → F ─f→ G → ∣ F ∣F → ∣ G ∣F
+(m , _) $f x = m $ₘ x
+
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
