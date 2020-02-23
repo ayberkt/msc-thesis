@@ -93,12 +93,10 @@ formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim
             U′ = _is-true ∘ U
 
 represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
-           → let A = ∣ pos′ (π₀ F) ∣ₚ in
-             (f : A → ∣ L ∣F)
-           → IsMonotonic (pos′ (π₀ F)) (pos L) f
+           → (m : pos′ (π₀ F) ─m→ (pos L))
            → Type ℓ
-represents F L f f-mono =
-  (x : A) (y : exp (π₀ F) x) → f x ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → f (revise (π₀ F) u))) is-true
+represents F L m =
+  (x : A) (y : exp (π₀ F) x) → (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (revise (π₀ F) u))) is-true
   where
     A = ∣ pos′ (π₀ F) ∣ₚ
 ```
