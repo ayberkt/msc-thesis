@@ -11,8 +11,8 @@ open import Nucleus      using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
 open import Powerset
 open import TreeType     renaming (pos to pos′)
 
-formal-topo-to-frame : FormalTopology ℓ₀ ℓ₁ → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
-formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim) =
+free : FormalTopology ℓ₀ ℓ₁ → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
+free {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim) =
   nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
   where
     ⊑-refl  = ⊑[ P ]-refl
