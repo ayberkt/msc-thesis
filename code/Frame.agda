@@ -277,7 +277,6 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
     x ⊑₁ y = x ⊑[ (A , Q) ] y
 
     A-set₀ = carrier-is-set (A , P)
-    A-set₁ = carrier-is-set (A , Q)
 
     PS-A = π₀ P
     PS-B = π₀ Q
@@ -310,7 +309,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
           where
             𝒻  = equivFun (idEquiv A)
 
-            φ : order-iso (A , _⊑₀_ , carrier-is-set (A , P)) (A , _⊑₁_ , A-set₁) (idEquiv A)
+            φ : order-iso (A , _⊑₀_ , A-set₀) (A , _⊑₁_ , A-set₀) (idEquiv A)
             φ x y =
                 (subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) eq)
               , subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) (sym eq)
