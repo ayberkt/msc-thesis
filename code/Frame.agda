@@ -112,6 +112,25 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       NTS : (⋃[ F ] ℱ) ⊑ z is-true
       NTS = ⋃[_]-least ℱ z upper
 
+-- Frame homomorphisms.
+IsFrameHomomorphism : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
+                    → (m : pos F ─m→ pos G)
+                    → Type (ℓ₀ ⊔ suc ℓ₂)
+IsFrameHomomorphism {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G m =
+  resp-𝟏 × resp-⊓ × resp-⋃
+  where
+    resp-𝟏 : Type ℓ₀
+    resp-𝟏 = m $ₘ 𝟏[ F ] ≡ 𝟏[ G ]
+
+    resp-⊓ : Type ℓ₀
+    resp-⊓ = (x y : ∣ F ∣F) → m $ₘ (x ⊓[ F ] y) ≡ (m $ₘ x) ⊓[ G ] (m $ₘ y)
+
+    resp-⋃ : Type (ℓ₀ ⊔ suc ℓ₂)
+    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → m $ₘ (⋃[ F ] ℱ) ≡ ⋃[ G ] (π₀ m ⊚ ℱ)
+
+_─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+_─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (IsFrameHomomorphism F G)
+
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
