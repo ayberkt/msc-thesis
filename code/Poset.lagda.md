@@ -105,7 +105,8 @@ _$ₘ_ = π₀
 Monotonic function composition.
 
 ```
-_∘m_ : {P Q R : Poset ℓ₀ ℓ₁} → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
+_∘m_ : {P : Poset ℓ₀ ℓ₁} {Q : Poset ℓ₀′ ℓ₁′} {R : Poset ℓ₀′′ ℓ₁′′}
+     → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
 (g , pg) ∘m (f , pf) = g ∘ f , λ x y p → pg (f x) (f y) (pf x y p)
 
 𝟏m : (P : Poset ℓ₀ ℓ₁) → P ─m→ P
