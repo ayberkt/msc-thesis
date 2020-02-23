@@ -3,13 +3,13 @@
 
 module CoverFormsNucleus where
 
-open import Basis
+open import Basis        hiding (A)
 open import Poset        hiding (IsDownwardClosed)
 open import Frame
 open import HITCoverage  hiding (Type)
 open import Nucleus      using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
 open import Powerset
-open import TreeType     hiding (pos)
+open import TreeType     renaming (pos to pos′)
 
 formal-topo-to-frame : FormalTopology ℓ₀ ℓ₁ → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
 formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim) =
@@ -91,4 +91,14 @@ formal-topo-to-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim
         N₂ 𝕌@(U , U-down) a′ p = lem4 a′ (λ a → π₀ (𝕛 𝕌) a is-true) U′ p (λ _ q → q)
           where
             U′ = _is-true ∘ U
+
+represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
+           → let A = ∣ pos′ (π₀ F) ∣ₚ in
+             (f : A → ∣ L ∣F)
+           → IsMonotonic (pos′ (π₀ F)) (pos L) f
+           → Type ℓ
+represents F L f f-mono =
+  (x : A) (y : exp (π₀ F) x) → f x ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → f (revise (π₀ F) u))) is-true
+  where
+    A = ∣ pos′ (π₀ F) ∣ₚ
 ```
