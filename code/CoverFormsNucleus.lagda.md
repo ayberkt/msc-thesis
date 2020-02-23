@@ -93,7 +93,7 @@ free {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim) =
             U′ = _is-true ∘ U
 
 represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
-           → (m : pos′ (π₀ F) ─m→ (pos L))
+           → (m : pos′ (π₀ F) ─m→ pos L)
            → Type ℓ
 represents F L m =
   (x : A) (y : exp (π₀ F) x) → (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (revise (π₀ F) u))) is-true
