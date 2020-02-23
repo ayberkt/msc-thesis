@@ -96,7 +96,8 @@ represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
            → (m : pos′ (π₀ F) ─m→ pos L)
            → Type ℓ
 represents F L m =
-  (x : A) (y : exp (π₀ F) x) → (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (revise (π₀ F) u))) is-true
+  (x : A) (y : exp (π₀ F) x) →
+    (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (revise (π₀ F) u))) is-true
   where
     A = ∣ pos′ (π₀ F) ∣ₚ
 ```
