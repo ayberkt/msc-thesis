@@ -32,13 +32,11 @@ free {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} 𝒯@(D@(P , _) , D-sim) =
     sim : (a₀ a : stage-D)
         → a₀ ⊑ a → (b : exp-D a)
         → Σ (exp-D a₀) (λ b₀ → (c₀ : out-D b₀) → Σ (out-D b) (λ c → rev-D c₀ ⊑ rev-D c))
-    sim a₀ a a₀⊑a b = b₀ , NTS
+    sim a₀ a a₀⊑a b =
+      b₀ , λ c₀ → π₁ (D-sim a a₀ a₀⊑a b) (rev-D c₀) (c₀ , ⊑-refl (rev-D c₀))
       where
         b₀ : exp-D a₀
         b₀ = π₀ (D-sim a a₀ a₀⊑a b)
-
-        NTS : (c₀ : out-D (π₀ (D-sim a a₀ a₀⊑a b))) → Σ (out-D b) (λ c → rev-D c₀ ⊑ rev-D c)
-        NTS c₀ = π₁ (D-sim a a₀ a₀⊑a b) (rev-D c₀) (c₀ , ⊑-refl (rev-D c₀))
 
     open Test stage-D _⊑_ exp-D out-D rev-D (π₁ mono-D) sim
 
