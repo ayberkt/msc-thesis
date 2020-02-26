@@ -1,10 +1,9 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --safe #-}
 
 open import Data.Nat using (ℕ)
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude using (isProp)
 open import Data.Product using (_×_; _,_)
-open import Function using (flip)
 
 data 𝔻  : Type₀ where
   []    : 𝔻
@@ -40,12 +39,14 @@ variable
 ζ′ : IsDC P → IsDC (λ - → - ◀ P)
 ζ′ P-dc σ n σ◀P = ζ n P-dc σ◀P
 
+lemma : IsDC P → P σ → σ ◀ Q → σ ◀ (λ - → P - × Q -)
+lemma P-dc σεP (dir σεQ)           = dir (σεP , σεQ)
+lemma P-dc σεP (branch f)          = branch (λ n → lemma P-dc (P-dc _ n σεP) (f n))
+lemma P-dc σεP (squash σ◀Q σ◀Q′ i) = squash (lemma P-dc σεP σ◀Q) (lemma P-dc σεP σ◀Q′) i
+
 -- Meet preservation.
--- mp : IsDC P → IsDC Q → σ ◀ P → σ ◀ Q → σ ◀ (λ - → P - × Q -)
--- mp P-dc Q-dc σ◀P                  (squash σ◀Q₀ σ◀Q₁ i) = squash (mp P-dc Q-dc σ◀P σ◀Q₀) (mp P-dc Q-dc σ◀P σ◀Q₁) i
--- mp P-dc Q-dc (squash σ◀P₀ σ◀P₁ i) σ◀Q                  = squash (mp P-dc Q-dc σ◀P₀ σ◀Q) (mp P-dc Q-dc σ◀P₁ σ◀Q) i
--- mp P-dc Q-dc (dir σεP)            (dir σεQ)            = dir (σεP , σεQ)
--- mp P-dc Q-dc (dir σεP)            (branch g)           = branch (λ n → mp P-dc Q-dc (dir (P-dc _ n σεP)) (g n))
--- mp P-dc Q-dc (branch f)           (dir σεQ)            = branch (λ n → mp P-dc Q-dc (f n) {!dir (Q-dc _ n σεQ)!})
--- mp P-dc Q-dc (branch f)           (branch g)           = branch (λ n → mp P-dc Q-dc (f n) (g n))
+mp : IsDC P → IsDC Q → σ ◀ P → σ ◀ Q → σ ◀ (λ - → P - × Q -)
+mp P-dc Q-dc (dir    σεP)        σ◀Q = lemma P-dc σεP σ◀Q
+mp P-dc Q-dc (branch f)          σ◀Q = branch (λ n → mp P-dc Q-dc (f n) (ζ n Q-dc σ◀Q))
+mp P-dc Q-dc (squash σ◀P σ◀P′ i) σ◀Q = squash (mp P-dc Q-dc σ◀P σ◀Q) (mp P-dc Q-dc σ◀P′ σ◀Q) i
 
