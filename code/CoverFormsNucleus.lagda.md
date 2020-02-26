@@ -96,6 +96,7 @@ module _ (F : FormalTopology ℓ₀ ℓ₁) where
   gen : Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
   gen = nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
 
+{--
 down-closure : (F : FormalTopology ℓ ℓ) → stage (π₀ F) → ∣ gen F ∣F
 down-closure F x = x↓ , fixed
   where
@@ -115,7 +116,7 @@ down-closure F x = x↓ , fixed
 
     x↓ = IsBelow-x , down-DC
 
-    fixed : 𝕛 F x↓ ≡ x↓ 
+    fixed : 𝕛 F x↓ ≡ x↓
     fixed = ⊑[ pos F↓ ]-antisym _ _ below above
       where
         below : 𝕛 F x↓ ⊑[ pos F↓ ] x↓ is-true
@@ -124,13 +125,14 @@ down-closure F x = x↓ , fixed
         below y (Test.squash yε𝕛D yε𝕛D₁ i) = {!!}
 
         above : x↓ ⊑[ pos F↓ ] 𝕛 F x↓ is-true
-        above = π₀ (π₁ (𝕛-nuclear F)) x↓ 
+        above = π₀ (π₁ (𝕛-nuclear F)) x↓
 
 down-closure-m : (F : FormalTopology ℓ ℓ) → (pos′ (π₀ F)) ─m→ pos (gen F)
 down-closure-m F = down-closure F , is-mono
   where
     is-mono : IsMonotonic (pos′ (π₀ F)) (pos (gen F)) (down-closure F)
     is-mono x y x⊑y z z⊑x = ⊑[ pos′ (π₀ F) ]-trans z x y z⊑x x⊑y
+--}
 
 represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
            → (m : pos′ (π₀ F) ─m→ pos L)
@@ -141,14 +143,14 @@ represents F L m =
   where
     A = ∣ pos′ (π₀ F) ∣ₚ
 
-↓-represents : (F : FormalTopology ℓ ℓ) → represents F (gen F) (down-closure-m F)
-↓-represents = {!!}
+-- ↓-represents : (F : FormalTopology ℓ ℓ) → represents F (gen F) (down-closure-m F)
+-- ↓-represents = {!!}
 
-universal : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
-          → (f : pos′ (π₀ F) ─m→ pos L)
-          → represents F L f
-          → Σ[ m ∈ (pos′ (π₀ F) ─m→ pos L) ] (m ∘m (down-closure-m F)) ≡ f
-universal = {!!}
+-- universal : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
+          -- → (f : pos′ (π₀ F) ─m→ pos L)
+          -- → represents F L f
+          -- → Σ[ m ∈ (pos′ (π₀ F) ─m→ pos L) ] (m ∘m (down-closure-m F)) ≡ f
+-- universal = {!!}
 
 -- Universal property: Given a formal topology A and a function from f_A : A → free(A), for any function
 -- f : A → L, where L is any frame, there exists an m : free(A) → L, that makes the diagram commute and is
