@@ -151,13 +151,4 @@ represents F L m =
           -- → represents F L f
           -- → Σ[ m ∈ (pos′ (π₀ F) ─m→ pos L) ] (m ∘m (down-closure-m F)) ≡ f
 -- universal = {!!}
-
--- Universal property: Given a formal topology A and a function from f_A : A → free(A), for any function
--- f : A → L, where L is any frame, there exists an m : free(A) → L, that makes the diagram commute and is
--- unique: Σ![m ∈ free(A) → L ] m ∘ f_A = f.
-
--- We don't need an extra condition on the elements of A because
-```
-
-```
 ```
