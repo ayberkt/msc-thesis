@@ -121,15 +121,21 @@ Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in case
 ambiguity) and the underlying set of $P$ as $\abs{P}$. Notice that the fourth component of
 $PosetAx(A, R)$ requires the carrier set to be an h-set.
 
-Given a poset $P$ we will talk about its \emph{downward-closed subsets}: sets
-that include all elements below their elements. As mentioned, we view the
-elements of our poset as \emph{finite} observations. By this perspective, we
-will view a downward-closed subset as \emph{general observation}. TODO: explain
-better and give examples
+Given a poset $P$ we will talk about its \emph{downward-closed subsets}: sets that include
+all elements below their elements. This notion embodies the idea of verification at a
+certain, finite stage of information. Take a certain element $x : \abs{P}$, that we vie as
+a stage of information. For some other $y~:~\abs{P}$, $y \sqsubseteq x$ expresses the idea that $y$
+is a \emph{more refined} stage of information i.e., it contains more information hence
+ruling out more approximations. Let $U$ be a subset of $\abs{P}$. The property that $U$
+is downward-closed is then expressed as
+\begin{equation*}
+  x \epsilon U \rightarrow y \sqsubseteq x \rightarrow y \epsilon U
+\end{equation*}
+the intuitive reading of which is: if $U$ contains a stage of information then it also
+contains all the stages that are refinements of that stage.
 
 This notion of a downward-closed subset is expressed formally in the following
 definition.
-
 \begin{defn}[Downward-closed sets]
   We first define a predicate expression that a given subset of $P$ is downward closed:
   \begin{align*}
