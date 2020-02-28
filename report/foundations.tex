@@ -28,6 +28,13 @@ HoTT/UF.
 
 \section{Homotopy levels}
 
+\begin{defn}[Proposition]
+  A type $A$ is called \emph{propositional} if the following type is inhabited:
+  \begin{equation*}
+    \isaprop{A} \quad\is\quad \pity{x~y}{A}{x =_A y}.
+  \end{equation*}
+\end{defn}
+
 \begin{prop}\label{isOfHLevelSigma}
   $\Sigma$ types preserve h-levels.
 \end{prop}
