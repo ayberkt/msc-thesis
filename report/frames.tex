@@ -99,14 +99,16 @@ itself a frame.
 \section{Partially ordered sets}\label{sec:poset}
 
 \begin{defn}[Poset]
-  Let $\order{A} \is A \rightarrow A \rightarrow \Omega$. A poset is then defined as
+  Let $\order{m}{A} \is A \rightarrow A \rightarrow \hprop{}_m$. Notice the generality of the universes: the
+  codomain of the relation is permitted to be on a level different than that of the
+  carrier set. A poset at carrier level $m$ and relation level $n$ is then defined as:
   \begin{equation*}
-    \mathsf{Poset} \quad\is\quad \sigmaty{A}{\univ}{\posetstr{A}}
+    \mathsf{Poset}_{m, n} \quad\is\quad \sigmaty{A}{\univ_m}{\posetstr{n}{A}},
   \end{equation*}
   where
   \begin{align*}
-    \posetstr{A} &\quad\is\quad \sigmaty{R}{Order(A)}{\posetax{A, R}}\\
-    \posetaxnm \quad:&\quad \pity{A}{\univ}{Order(A) \rightarrow \univ}\\
+    \posetstr{n}{A} \quad\is&\quad \sigmaty{R}{\order{n}{A}}{\posetax{A, R}}\\
+    \posetaxnm \quad:&\quad \pity{A}{\univ{}_m}{\order{n}{A} \rightarrow \univ_{\max(m, n)}}\\
     \posetax{A, R} \quad\is&\quad ~\pity{x}{A}{R(x, x)}\\
                       \times&~\pity{x~y~z}{A}{R(x, y) \rightarrow R(y, z) \rightarrow R(x, z)}\\
                       \times&~\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}\\
@@ -210,7 +212,7 @@ require this.
   (3) a binary meet operation, and (4) a join operation of arbitrary arity, which we
   define using families:
   \begin{equation*}
-    \rawframestr{A} \quad\is\quad \posetstr{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{A} \rightarrow A).
+    \rawframestr{A} \quad\is\quad \posetstr{m}{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{A} \rightarrow A).
   \end{equation*}
   This raw structure must be subject to the following axioms
   \begin{align*}
