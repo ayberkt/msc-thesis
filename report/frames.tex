@@ -52,23 +52,39 @@ $\phi_0, \ldots, \phi_{n-1}$ meaning we will be able to witness the satisfaction
 $\phi_0 \wedge \ldots \wedge \phi_{n-1}$; this means that it is observable.
 
 \paragraphsummary{TODO.}
-Conversely, if we have an arbitrary family $\Phi \is \{ \phi_i \}_{i \in I}$ of observable
-properties,
+Conversely, if we have an arbitrary family $\{ \phi_i \}_{i \in I}$ of observable properties,
 \begin{equation*}
-  \bigvee_i \Phi_i
+  \bigvee_i \phi_i
 \end{equation*}
-will hold if there is some $k \in I$ such that $\Phi_k$ holds. This means that if it holds,
-some property $\phi_j$ will hold at a point $n \in \nats{}$. Notice that the truth of
-$\bigvee_i \Phi_i$ will then be satisfied at $n$ as well since we will know that at least one of
-its constituents is satisfied. In short, arbitrary disjunctions of observable properties
-are observable.
+will hold if there is some $k \in I$ such that $\phi_k$ holds. This means that if it holds,
+some property $\phi_j$ will hold at a point $n \in \nats{}$. Notice that the truth of $\bigvee_i \phi_i$
+will then be satisfied at $n$ as well since we will know that at least one of its
+disjuncts is satisfied. In short, arbitrary disjunctions of observable properties are
+observable.
 
 \paragraphsummary{TODO.}
 This is to say that the class of observable properties forms a topology, being closed
 under finite intersection and arbitrary union. A frame is a system of finite observations
 in this sense: we want to study things that behave like finitely justified observations
 exactly in this way, so we construct an algebra of finitely justified observations with no
-apparent need to talk about ``sets of points'' of any sort.
+apparent need to talk about ``sets of points'' of any sort. In our case, the points are
+the programs producing these infinite bitstreams whose internal structures are not
+accessible to us due to which we are obligated understand them only through finite
+approximations. We construct, \emph{directly}, an algebra of how these observations behave
+rather than trying to define the observations as sets of such points.
+
+There is one more law that needs justification. Suppose that we have the
+observable property $\phi$ and the family of observable properties $\psi_0, \psi_1, \ldots$. Consider
+the property:
+\begin{equation*}
+  \phi \wedge (\bigvee_i \psi_i).
+\end{equation*}
+If this property holds, $\phi$ holds and some $\psi_k$ holds meaning then the following holds.
+\begin{equation*}
+  \bigvee_i (\phi \wedge \psi_i).
+\end{equation*}
+The converse can also be immediately seen to be the case as well. This is a law we need
+for our notion of a frame as well.
 
 \paragraphsummary{Structure of chapter.}
 We now start presenting our development of frames. We start with partially ordered sets in
