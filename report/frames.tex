@@ -5,32 +5,17 @@ Chapter~\ref{chap:intro}, a frame is like a system of finite observations.
 
 \paragraphsummary{Topology from a CS perspective (1).}
 Let us now motivate the notion of a frame \emph{directly} from a computer science
-perspective. This is a story told by many others including
-Escardó~\cite{synthetic-topology}, etc (TODO), and most saliently, Vickers~\cite{vickers}.
-We will merely relay this story. Consider a black box computing device that produces an
-infinite stream of bits. As a brief digression, let us note that the reliance on the
-notion of ``black box'' perhaps gives the impression that this is a bizarre scenario that
-is not likely to occur in real programming. We would like to stress that
-this is not the case. A program that the programmer does not \emph{completely} grasp is
-essentially a black box; the distance between the programmer's mental model of it and its
-actual behaviour has to be investigated via experimentation. This is none other than the
-familiar process of \emph{debugging a program} that is perhaps the only thing common to
-all kinds of programming; programs do not come to exist in isolation, they come to exist
-through the creative effort of a subject through the dialectical process of
-debugging~\cite{PDD}. This discussion involving a black box can hence be taken to be
-about a program that behaves in a way the programmer does not expect it to, meaning the
-programmer does not really know ``what is inside''. Hence, the programmer must
-experiment with to understand the problem.
-
-We can collect all possible outputs of this device in the type
-$\mathsf{Bool}^{\mathbb{N}}$. We can talk about properties on these bitstreams i.e., the
-power set:
+perspective. This is a story told by many others including Vickers~\cite{vickers} and
+Escardó~\cite{synthetic-topology}. We will merely relay this story. Consider a black box
+computing device that produces an infinite stream of bits. We can collect all possible
+outputs of this device in the type $\mathsf{Bool}^{\mathbb{N}}$. We can talk about the
+type of properties on these bitstreams i.e., the power set:
 \begin{equation*}
   \pow{\mathsf{Bool}^{\mathbb{N}}} \quad\equiv\quad \mathsf{Bool}^{\mathbb{N}} \rightarrow \mathsf{Bool}.
 \end{equation*}
-Certain ones among these properties are distinguished in that they are
-\emph{finitely observable} i.e., \emph{if} they hold, the fact that they hold is
-ascertained after a finite number of digits. A property that is not observable is:
+Certain ones among these properties are distinguished in that they are \emph{finitely
+observable} i.e., \emph{if} they hold, the fact that they hold is ascertained after
+observing a finite number of digits. A property that is not observable is:
 \begin{quote}
   ``the stream contains no $0$s'',
 \end{quote}
@@ -329,3 +314,16 @@ Now, we are ready to prove the main theorem of this section.
     Write and explain this proof completely and precisely.
   }
 \end{proof}
+
+%% As a brief digression, let us note that the reliance on the notion of ``black box''
+%% perhaps gives the impression that this is a bizarre scenario that is not likely to occur
+%% in real programming. We would like to stress that this is not the case. A program that the
+%% programmer does not \emph{completely} grasp is essentially a black box; the distance
+%% between the programmer's mental model of it and its actual behaviour has to be
+%% investigated via experimentation. This is none other than the familiar process of
+%% \emph{debugging a program} that is perhaps the only thing common to all kinds of
+%% programming; programs do not come to exist in isolation, they come to exist through the
+%% creative effort of a subject through the dialectical process of debugging~\cite{PDD}. This
+%% discussion involving a black box can hence be taken to be about a program that behaves in
+%% a way the programmer does not expect it to, meaning the programmer does not really know
+%% ``what is inside''. Hence, the programmer must experiment with to understand the problem.
