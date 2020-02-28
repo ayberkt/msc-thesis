@@ -11,6 +11,7 @@ test:
   - agda --safe Main.lagda.md
 
 pages:
+  only: master
   script:
   - make
   - mv html ../public

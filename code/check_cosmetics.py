@@ -3,7 +3,7 @@ import sys
 
 res = True
 
-count = 0
+count = 1
 
 with open(sys.argv[1], encoding="utf-8") as f:
   for line in f:

@@ -140,3 +140,15 @@
 *** Regarding the `cover-of` relation
     - TODO: The subset `U`, in `a ◀ U`, will be downward-closed when I use it so it must
       suffice to talk about just the leaves not things below the leaves.
+** <2020-01-23 Thu>
+   #+ATTR_ORG: :width 800
+   [[[[file:photos/universal-property.jpg]]]]
+** <2020-02-21 Fri>
+*** Wrote down the notion `represents` in Agda during the meeting.
+*** Universal property
+     - Given a formal topology on set A and a function f_A : A → free(A), for some
+       f : A → L, where L is any frame, there exists an m : free(A) → L, that uniquely
+       makes the diagram commute: Σ![m ∈ free(A) → L ] m ∘ f_A = f.
+     - In fact, the uniqueness should be trivial (one could think that we would need an
+       extra condition on A to force uniqueness but this is not the case because it is
+       trivial).

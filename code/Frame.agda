@@ -112,6 +112,28 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       NTS : (⋃[ F ] ℱ) ⊑ z is-true
       NTS = ⋃[_]-least ℱ z upper
 
+-- Frame homomorphisms.
+IsFrameHomomorphism : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
+                    → (m : pos F ─m→ pos G)
+                    → Type (ℓ₀ ⊔ suc ℓ₂)
+IsFrameHomomorphism {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G m =
+  resp-𝟏 × resp-⊓ × resp-⋃
+  where
+    resp-𝟏 : Type ℓ₀
+    resp-𝟏 = m $ₘ 𝟏[ F ] ≡ 𝟏[ G ]
+
+    resp-⊓ : Type ℓ₀
+    resp-⊓ = (x y : ∣ F ∣F) → m $ₘ (x ⊓[ F ] y) ≡ (m $ₘ x) ⊓[ G ] (m $ₘ y)
+
+    resp-⋃ : Type (ℓ₀ ⊔ suc ℓ₂)
+    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → m $ₘ (⋃[ F ] ℱ) ≡ ⋃[ G ] (π₀ m ⊚ ℱ)
+
+_─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+_─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (IsFrameHomomorphism F G)
+
+_$f_ : {F G : Frame ℓ₀ ℓ₁ ℓ₂} → F ─f→ G → ∣ F ∣F → ∣ G ∣F
+(m , _) $f x = m $ₘ x
+
 -- An element of the poset is like a finite observation whereas an element of the
 -- frame of downward closed posets is like a general observation.
 
@@ -229,14 +251,14 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 RF-iso : (ℓ₁ ℓ₂ : Level) (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
        → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 RF-iso {ℓ₀ = ℓ₀} ℓ₁ ℓ₂ (A , (P , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (Q , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
-    RP-iso (A , P) (B , Q) i
+    order-iso (A , P) (B , Q) i
   × f 𝟏₀ ≡ 𝟏₁
   × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
   × ((ℱ : Sub ℓ₂ A) → f (⋃₀ ℱ) ≡ ⋃₁ (f ⊚ ℱ))
   where
     f = equivFun i
 
-pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (RawPosetStr ℓ₁)
+pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (OrderStr ℓ₁)
 pos-of (A , ((RPS , _) , _)) = (A , RPS)
 
 top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
@@ -255,7 +277,6 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
     x ⊑₁ y = x ⊑[ (A , Q) ] y
 
     A-set₀ = carrier-is-set (A , P)
-    A-set₁ = carrier-is-set (A , Q)
 
     PS-A = π₀ P
     PS-B = π₀ Q
@@ -288,7 +309,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
           where
             𝒻  = equivFun (idEquiv A)
 
-            φ : RP-iso (A , _⊑₀_ , carrier-is-set (A , P)) (A , _⊑₁_ , A-set₁) (idEquiv A)
+            φ : order-iso (A , _⊑₀_ , A-set₀) (A , _⊑₁_ , A-set₀) (idEquiv A)
             φ x y =
                 (subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) eq)
               , subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) (sym eq)
@@ -305,7 +326,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
 
         str-set : IsSet (RawFrameStr ℓ₁ ℓ₂ A)
         str-set =
-          Σ-set (isOfHLevelΣ 2 RPS-prop (λ FS → prop⇒set (poset-axioms-props A FS))) λ _ →
+          Σ-set (isOfHLevelΣ 2 OrderStr-set (prop⇒set ∘ poset-axioms-props A)) λ _ →
           isOfHLevelΣ 2 A-set₀ λ _ →
           isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → A-set₀)) λ _ → ∏-set λ ℱ → A-set₀
 
@@ -349,9 +370,11 @@ frame-axioms-props A (((_⊑_ , A-set) , _) , 𝟏 , _⊓_ , ⋃_) =
   isOfHLevelΣ 1 (∏-prop λ x → is-true-prop (x ⊑ 𝟏)) λ _ →
   isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ o)) λ _ →
   isOfHLevelΣ 1 (∏-prop (λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ p))) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → ∏-prop λ q → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (q ⊑ (o ⊓ p))) λ _ →
+  isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → ∏-prop λ q →
+                 ∏-prop λ _ → ∏-prop λ _ → is-true-prop (q ⊑ (o ⊓ p))) λ _ →
   isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ o → ∏-prop λ _ → is-true-prop (o ⊑ (⋃ ℱ))) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ z → ∏-prop λ _ → is-true-prop ((⋃ ℱ) ⊑ z)) λ _ → ∏-prop λ o → ∏-prop λ ℱ → A-set _ _
+  isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ z → ∏-prop λ _ → is-true-prop ((⋃ ℱ) ⊑ z)) λ _ →
+                 ∏-prop λ o → ∏-prop λ ℱ → A-set _ _
 
 frame-is-SNS' : SNS' {ℓ = ℓ} (FrameStr ℓ₁ ℓ₂) frame-iso
 frame-is-SNS' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = add-axioms-SNS' _ _ _ frame-axioms-props RF-is-SNS'
@@ -500,6 +523,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
 _≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] poset-iso (pos F) (pos G) i
 
+-- This is the weak form of univalence.
 frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
 frame-univ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso' F G eqv iso-f)
 

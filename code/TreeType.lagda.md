@@ -280,10 +280,10 @@ TODO: do not call this a predicate.
 of information than at least one stage in `ℱ`.
 
 ```
-down : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Set (ℓ₁ ⊔ ℓ₂)
-down P ℱ@(I , F) a = Σ[ i ∈ I ] a ⊑[ P ] F i is-true
+downs : (P : Poset ℓ₀ ℓ₁) → Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ → Set (ℓ₁ ⊔ ℓ₂)
+downs P ℱ@(I , F) a = Σ[ i ∈ I ] a ⊑[ P ] F i is-true
 
-syntax down P ℱ a = a ↓[ P ] ℱ
+syntax downs P ℱ a = a ↓[ P ] ℱ
 ```
 
 We will often be dealing with the predicate `ℱ ↓[ P ] -`.
@@ -320,9 +320,10 @@ experiments.
 ```
 module _ (D : Discipline ℓ₀ ℓ₁) where
 
-  P    = pos   D
-  G    = post  D
-  prog = π₁    D
+  private
+    P    = pos   D
+    G    = post  D
+    prog = π₁    D
 
   open PosetReasoning P
 
@@ -349,8 +350,8 @@ implies `IsSimulation⋆`.
   sim⇒sim⋆ _ a₀ a₁ a₁⊑a₀ (Leaf a₀) = (Leaf a₁) , ψ
     where
       ψ : (x : stage D)
-        → down (pos D) (leaves {D = post D} (Leaf a₁)) x
-        → down (pos D) (leaves {D = post D} (Leaf a₀)) x
+        → downs (pos D) (leaves {D = post D} (Leaf a₁)) x
+        → downs (pos D) (leaves {D = post D} (Leaf a₀)) x
       ψ a (tt , a⊑a₁) = tt , (a ⊑⟨ a⊑a₁ ⟩ a₁ ⊑⟨ a₁⊑a₀ ⟩ a₀ ■)
 
   sim⇒sim⋆ D-sim a₀ a₁ a₀⊒a₁ t₀@(Branch b₀ f) =
@@ -416,32 +417,34 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 ```
 
 ```
-down-closure : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (π₀ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
-             → (a₀ a₁ : stage (π₀ 𝒯))
-             → a₁ ⊑[ pos (π₀ 𝒯) ] a₀ is-true
-             → a₀ ◀[ 𝒯 ] U
-             → a₁ ◀[ 𝒯 ] U
-down-closure 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
-  where
-    ψ : Σ[ t₀ ∈ experiment⋆ D a₀ ] (λ - → - ↓[ pos D ] leaves t₀) ⊆⊆ (_is-true ∘ U)
-      → Σ[ t₁ ∈ experiment⋆ D a₁ ] (λ - → - ↓[ pos D ] leaves t₁) ⊆⊆ (_is-true ∘ U)
-    ψ (t , φ) = t₁ , conc-t₁↓⊆U
-      where
-        t₁ : experiment⋆ D a₁
-        t₁ = π₀ (sim⇒sim⋆ D D-sim a₀ a₁ a₀⊒a₁ t)
+private
+  down-closure : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (π₀ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
+              → (a₀ a₁ : stage (π₀ 𝒯))
+              → a₁ ⊑[ pos (π₀ 𝒯) ] a₀ is-true
+              → a₀ ◀[ 𝒯 ] U
+              → a₁ ◀[ 𝒯 ] U
+  down-closure 𝒯@(D , D-sim) U a₀ a₁ a₀⊒a₁ a₀◀U = ∥∥-rec (∥∥-prop _) (∣_∣ ∘ ψ) a₀◀U
+    where
+      ψ : Σ[ t₀ ∈ experiment⋆ D a₀ ] (λ - → - ↓[ pos D ] leaves t₀) ⊆⊆ (_is-true ∘ U)
+        → Σ[ t₁ ∈ experiment⋆ D a₁ ] (λ - → - ↓[ pos D ] leaves t₁) ⊆⊆ (_is-true ∘ U)
+      ψ (t , φ) = t₁ , conc-t₁↓⊆U
+        where
+          t₁ : experiment⋆ D a₁
+          t₁ = π₀ (sim⇒sim⋆ D D-sim a₀ a₁ a₀⊒a₁ t)
 
-        t₁-sim : refines D t₁ t
-        t₁-sim = π₁ (sim⇒sim⋆ D D-sim a₀ a₁ a₀⊒a₁ t)
+          t₁-sim : refines D t₁ t
+          t₁-sim = π₁ (sim⇒sim⋆ D D-sim a₀ a₁ a₀⊒a₁ t)
 
-        conc-t₁↓⊆U : (λ - → - ↓[ pos D ] leaves t₁) ⊆⊆ (_is-true ∘ U)
-        conc-t₁↓⊆U a = φ a ∘ t₁-sim a
+          conc-t₁↓⊆U : (λ - → - ↓[ pos D ] leaves t₁) ⊆⊆ (_is-true ∘ U)
+          conc-t₁↓⊆U a = φ a ∘ t₁-sim a
 ```
 
 ```
 module _ (𝒯 : FormalTopology ℓ₀ ℓ₁) where
 
-  D     = π₀ 𝒯
-  D-sim = π₁ 𝒯
+  private
+    D     = π₀ 𝒯
+    D-sim = π₁ 𝒯
 
   _↓_ : ∣ pos D ∣ₚ → Sub ℓ₂ ∣ pos D ∣ₚ → Set (ℓ₁ ⊔ ℓ₂)
   _↓_ = λ a ℱ → a ↓[ pos D ] ℱ
