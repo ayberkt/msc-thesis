@@ -42,11 +42,20 @@ is observable is:
 \end{quote}
 Given a stream $s$ satisfying this property, there must be a finite prefix of $s$ that
 satisfies this property i.e., a point in time at which an observer witness the emission of
-one $0$ and $1$. Let us summarise this definition in the form of an informal definition:
+one $0$ and one $1$. At this point in time, the fact that this sequence satisfies this
+property will be ascertained in the sense that, in any possible way that things might
+unfold after this stage (i.e., whatever bits might come after), this sequence will
+continue to satisfy the property; no ramification thereafter can make this sequence not
+satisfy the property.
+
+Let us summarise this in the form of an informal definition:
 \begin{quote}
-  An observable property is a property such that if it holds, this can be observed by a
-  finite amount of evidence.
+  An observable property is a property such that if it holds, the fact that it holds can
+  be ascertained by a finite examination of the data.
 \end{quote}
+Something important to note here is: we are not saying anything about properties that do
+not hold. In other words, we are interested only in positive outcomes and not negative
+outcomes.
 
 \paragraphsummary{Topology from a CS perspective (2).}
 Continuing the example of bitstreams, suppose that we have $n$ observable properties:
