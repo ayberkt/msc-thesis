@@ -256,16 +256,12 @@ containing their ramifications.
   a truncation to be forced to be propositional.
 
   We now proceed to show that these subsets we have defined are indeed downward-closed.
-  \begin{itemize}
-    \item $\top_A$ is trivially downward-closed.
-    \item Downward-closure of $U \cap V$ follows immediately from the downward closure of $U$
-      and $V$.
-    \item This is also immediate: if $x$ is in $\bigvee \bF{}$ where $\bF{}$ is a family of
-      downward-closed subsets, $x$ must belong to a particular $\bF{}_i$ which will contain
-      any $y \sqsubseteq x$ meaning $\bigvee \bF{}$ itself will contain any $y \sqsubseteq x$.
-  \end{itemize}
-  The LUB and GLB properties follow from the fact that subsets of a type form a lattice
-  (\todo{should this be explicitly proven?}).
+  $\top_A$ is trivially downward-closed. Downward-closure of $U \cap V$ follows immediately from
+  the downward closure of $U$ and $V$. This is also immediate: if $x$ is in $\bigvee \bF{}$
+  where $\bF{}$ is a family of downward-closed subsets, $x$ must belong to a particular
+  $\bF{}_i$ which will contain any $y \sqsubseteq x$ meaning $\bigvee \bF{}$ itself will contain any $y \sqsubseteq
+  x$. The LUB and GLB properties follow from the fact that subsets of a type form a
+  lattice as shown in Chapter~\ref{chap:foundations}.
 
   It remains to be shown that the distributivity law is satisfied. Let $U$ be a downward
   -closed subsets nd $\bF{}$ be a family of downward-closed subsets. We must show
