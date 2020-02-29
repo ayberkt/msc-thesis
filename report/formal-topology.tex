@@ -87,15 +87,15 @@ Let us now formally define the tree type.
     \mathsf{Tree} &\quad\is\quad \sigmaty{A}{~~~~\univ}{\treestr{A}}
   \end{align*}
   Given a tree type structure $\mathcal{T}$, we will refer to its components as
-  $A_{\mathcal{T}}, B_{\mathcal{T}}, C_{\mathcal{T}}$, and $d_{\mathcal{T}}$.
+  $B_{\mathcal{T}}, C_{\mathcal{T}}$, and $d_{\mathcal{T}}$.
 \end{defn}
 
 \paragraphsummary{Formally define disciplines.}
 \begin{defn}[Discipline]
   \begin{align*}
     \mathsf{Discipline} \quad&\is\quad \sigmaty{P}{\poset{}}{\disciplinestr{P}}                 \\
-    \disciplinestr{P}   \quad&\is\quad \hspace{-0.9em}\sigmaty{\mathcal{T}}{\treestr{A}}{
-      \pity{x}{A_{\mathcal{T}}}{\pity{y}{B_{\mathcal{T}}(x)}{
+    \disciplinestr{P}   \quad&\is\quad \hspace{-0.9em}\sigmaty{\mathcal{T}}{\treestr{\abs{P}}}{
+      \pity{x}{\abs{P}}{\pity{y}{B_{\mathcal{T}}(x)}{
           \pity{z}{C_{\mathcal{T}}(x, y)}{d_{\mathcal{T}}(x, y, z) \sqsubseteq x}}
       }
     }
