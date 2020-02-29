@@ -134,20 +134,19 @@ downward-closed is then expressed as
 the intuitive reading of which is: $U$ contains all stages that are ramifications of the
 stages it contains.
 
-This notion of a downward-closed subset is expressed formally in the following
-definition.
-\begin{defn}[Downward-closed sets]
-  We first define a predicate expression that a given subset of $P$ is downward closed:
+We now express downward-closed subsets formally.
+\begin{defn}[Downward-closed subset]\label{defn:dc-subset}
+  We first define a predicate expressing that a given subset of $P$ is downward closed:
   \begin{align*}
-    DownwardClosed    &:  \pow{\abs{P}} \rightarrow \Omega\\
-    DownwardClosed(U) &\is{} \pity{x~y}{\abs{P}}{x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U}.
+    \isdcnm{} &:  \pow{\abs{P}} \rightarrow \Omega\\
+    \isdc{U}  &\is{} \pity{x~y}{\abs{P}}{x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U}.
   \end{align*}
-  Propositionality follows directly from the propositionality of $y \in U$.
-
-  We then define the type of downward-closed subsets of a poset as:
+  Propositionality follows from the propositionality of $y \in U$ combined with
+  Proposition \label{prop:pi-prop}. We then define the type of downward-closed subsets of
+  a poset as:
   \begin{align*}
-    \dcsubsetnm{} &: Poset \rightarrow  \univ\\
-    \dcsubset{P}  &\is{} \sigmaty{U}{\pow{\abs{P}}}{IsDownwardClosed(P, U)}
+    \dcsubsetnm{} &: \mathsf{Poset}_{m, n} \rightarrow \univ_{\max(m+1, n)}\\
+    \dcsubset{P}  &\is{} \sigmaty{U}{\pow{\abs{P}}}{\isdc{P, U}}.
   \end{align*}
 \end{defn}
 
