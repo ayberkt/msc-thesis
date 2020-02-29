@@ -279,17 +279,18 @@ To prepare for formal topology, we will now define a technical notion called a
 \emph{nucleus}.
 
 \begin{defn}[Nucleus]\label{defn:nucleus}
-  Let $F : Frame$ and $j : \abs{F} \rightarrow \abs{F}$ and endofunction on it. We say that $F$ is
-  nuclear if the following condition holds:
+  Let $F : \mathsf{Frame}_{m, n, o}$ and $j : \abs{F} \rightarrow \abs{F}$ and endofunction on it.
+  We say that $F$ is nuclear if the following condition holds:
   \begin{align*}
-    \isnuclear{F} \quad&\is\quad \pity{x~y}{\abs{F}}{j(\meet{x}{y}) = \meet{j(x)}{j(y)}}       \\
-                   &\hspace{0.6em}\times\quad \pity{x~~}{\abs{F}}{x \sqsubseteq j(x)}                     \\
-                   &\hspace{0.6em}\times\quad \pity{x~~}{\abs{F}}{j(j(x)) \sqsubseteq j(x)}.
+    \isnuclear{j} \quad&\is\quad
+       \pity{x~y}{\abs{F}}{j(\meet{x}{y}) = \meet{j(x)}{j(y)}}       \\
+      &\hspace{0.6em}\times\quad \pity{x~~}{\abs{F}}{x \sqsubseteq j(x)}                     \\
+      &\hspace{0.6em}\times\quad \pity{x~~}{\abs{F}}{j(j(x)) \sqsubseteq j(x)}.
   \end{align*}
 
   A nucleus is then just a $\sum$ type collecting nuclear endofunctions on a frame:
   \begin{equation*}
-    \mathsf{Nucleus} \quad\is\quad \sigmaty{f}{\abs{F} \rightarrow \abs{F}}{\isnuclear{F}}.
+    \mathsf{Nucleus} \quad\is\quad \sigmaty{j}{\abs{F} \rightarrow \abs{F}}{\isnuclear{j}}.
   \end{equation*}
 \end{defn}
 
@@ -305,7 +306,7 @@ To prepare for formal topology, we will now define a technical notion called a
   \begin{align*}
     j(x) &\quad\sqsubseteq\quad j(\meet{x}{y})                 && [x = \meet{x}{y}]                       \\
          &\quad\sqsubseteq\quad \meet{j(x)}{j(y)}              && [\text{meets are preserved}]            \\
-         &\quad\sqsubseteq\quad {j(y)}                         && [\text{\meet{\_}{\_} is a lower bound}]  .
+         &\quad\sqsubseteq\quad {j(y)}                         && [\text{$\meet{}{}$ is a lower bound}]  .
   \end{align*}
 \end{proof}
 
