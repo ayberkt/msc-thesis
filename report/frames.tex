@@ -263,14 +263,14 @@ containing their ramifications.
   x$. The LUB and GLB properties follow from the fact that subsets of a type form a
   lattice as shown in Chapter~\ref{chap:foundations}.
 
-  It remains to be shown that the distributivity law is satisfied. Let $U$ be a downward
-  -closed subsets nd $\bF{}$ be a family of downward-closed subsets. We must show
+  It remains to be shown that the distributivity law is satisfied. Let $U$ be a
+  downwards-closed subset and $\bF{}$, a family of downward-closed subsets. We must show
   \begin{align*}
     U \cap \left(\lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) &=
       \bigvee \left( \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) \cap U \right)\\
       &= \bigvee \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}} \cap x \epsilon U \right)
   \end{align*}
-  which follows from antisymmetry.
+  which follows by antisymmetry.
 \end{proof}
 
 \section{Nuclei and their fixed-points}\label{sec:nuclei}
