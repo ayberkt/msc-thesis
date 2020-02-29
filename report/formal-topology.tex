@@ -5,22 +5,19 @@ Our motivation for pointless topology was that it allows us to interpret topolog
 constructive terms. The goal of developing topology in type theory presents further
 challenges: we must be able to develop our results in a completely predicative way as
 well. The definition of a frame we have seen suffers from impredicativity. We will not be
-able to instantiate it to topologies we are interested in. The culprit is the join
+able to instantiate it to topologies we are interested in, the culprit being the join
 operator.
-
-\paragraphsummary{Explain the impredicativity of the join operator.}
-TODO: explain and give examples.
 
 \paragraphsummary{Introduce the tree type.}
 To present frames, we will make use of the idea of tree set constructors, originally due
 to Petersson and Synek~\cite{tree-sets}, who were trying to generalise Martin-Löf's
-$\mathsf{W}$ type so that it can accommodate mutually recursive types. It is remarkable
+$\mathsf{W}$ type so that it could accommodate mutually inductive types. It is remarkable
 that these structures embody the essence of a Post system in type theory. Tree set
 constructors are also called interaction systems~\cite{hancock-interaction-systems} and
-indexed containers~\cite{indexed-containers}; we will call it the tree type. This chapter
-corresponds to the Agda module \texttt{TreeType} in the formal development.
+indexed containers~\cite{indexed-containers}; we will prefer the term interaction systems.
+This chapter corresponds to the Agda module \texttt{TreeType} in the formal development.
 
-\section{Petersson and Synek's tree type}
+\section{Petersson and Synek's tree set constructors}
 
 \paragraphsummary{Explain the idea of the tree type.}
 The fundamental idea of an interaction system is simple. Consider the progression of a
@@ -57,14 +54,14 @@ on an interaction system.
   \item The type $A$ is equipped with a partial order. We will view this order as ranking
     states with respect to how \emph{refined} they are. This might be counter-intuitive at
     first: the more informative the states are, the smaller they will be. The sense of
-    this ordering is: the more informative a state is, there less sequences of
-    interactions there will be that pass through that state. It is like an open ball that
-    encircles its center more tightly; hence it is smaller.
+    this ordering is: the more informative a state is, there will be less sequences of
+    interactions that pass through that state. It is like an open ball that encircles its
+    center more tightly; hence it is smaller.
   \item The ordering on $A$ satisfies the \emph{monotonicity} requirement: for every state
     $x~:~A$, $d(x) \sqsubseteq x$. In other words, the states that we proceed to via interaction are
     always at least as informative as the previous ones.
 \end{enumerate}
-We will call an interaction system that satisfies (1) and (2) an \emph{discipline}, (in the
+We will call an interaction system that satisfies (1) and (2) a \emph{discipline}, (in the
 sense that the states resemble a discipline of knowledge, which we will explain later).
 The final requirement is (3):
 \begin{enumerate}
@@ -104,12 +101,10 @@ Let us now formally define the tree type.
   to be confused with the monotonicity of a monotonic map.
 \end{defn}
 
-\paragraphsummary{Transition to talking about the simulation property.}
-The only remaining thing towards our definition of formal topology is the aforementioned
-simulation property. It requires a couple of auxiliary concepts which we will now define.
-
 \paragraphsummary{Formally define the simulation property.}
-We will first define this formally and justify it conceptually afterwards.
+The only remaining thing towards our definition of formal topology is the aforementioned
+property of simulation. We will first define this formally and justify it conceptually
+afterwards.
 \begin{defn}[Simulation property]
   Given a discipline $D$, we will say that it satisfies the simulation property if the
   following type is inhabited:
@@ -155,8 +150,10 @@ and others~\cite{coq-sambin} by defining the cover relation inductively. It is t
 that we will follow in this development.
 
 \paragraphsummary{Defn.~of coverage.}
-First, we define the coverage relation on a given formal topology.
-\begin{defn}[Coverage relation]
+First, we define the cover relation on a given formal topology. Given a formal topology
+$\mathcal{F}$ on set $A$, and given $a~:~A$, $U : \pow{A}$, the type $\covers{a}{U}$ may
+be inhabited via the following rules.
+\begin{defn}[Cover relation]
   \[
   \begin{prooftree}
     \hypo{ a \epsilon U }
@@ -164,8 +161,10 @@ First, we define the coverage relation on a given formal topology.
   \end{prooftree}
   \qquad
   \begin{prooftree}
-    \hypo{
-      \pity{b}{B(a)}{\left( \pity{c}{B(a, b)}{d(a, b, c) \triangleleft U} \right) \rightarrow a \triangleleft U}
+    \hypo{ \left(
+      \pity{b}{B(a)}{
+        \pity{c}{B(a, b)}{\covers{d(a, b, c)}{U}} \right) \rightarrow \covers{a}{U}
+      }
     }
     \infer1[\textsf{branch}]{\covers{a}{U}}
   \end{prooftree}
@@ -174,25 +173,54 @@ First, we define the coverage relation on a given formal topology.
 
 \paragraphsummary{Cover is a nucleus.}
 This coverage relation gives us a way of obtaining a frame from a formal topology. Let us
-look at the type of the coverage relation:
+examine its type:
 \begin{equation*}
-  \_\covernm{}\_ : A \rightarrow \pow{A} \rightarrow \univ{}
+  \_\covernm{}\_ : A \rightarrow \pow{A} \rightarrow \univ{},
 \end{equation*}
 which we can flip to get
 \begin{equation*}
-  \_\triangleright\_ : \pow{A} \rightarrow A \rightarrow \univ{}
+  \_\RHD\_ : \pow{A} \rightarrow A \rightarrow \univ{}.
 \end{equation*}
-which can be written as
+\emph{If only} this had codomain $\hprop{}$ rather than $\univ{}$, we would have been able
+to write it like:
 \begin{equation*}
-  \_\triangleright\_ : \pow{A} \rightarrow \pow{A}
+  \_\RHD\_ : \pow{A} \rightarrow \pow{A}.
 \end{equation*}
-so we have an endofunction. We can restrict this to the subset of $\pow{A}$ that is
-downwards-closed
+We could then restrict this to get an endofunction on the set of downwards-closed subsets:
 \begin{equation*}
-  \_\triangleright\_ : \dcsubset{A} \rightarrow \dcsubset{A},
+  \_\RHD\_ : \dcsubset{A} \rightarrow \dcsubset{A}.
 \end{equation*}
 which of course requires us to show that given a downwards-closed subset $U$,
-$\covers{\_}{U}$ is a subset that is downwards-closed.
+$\covers{\_}{U}$ is a subset that is downwards-closed. But first, we have to deal with the
+problem that the codomain of $\LHD$ is not $\hprop{}$. It turns out that this is not a
+straightforward problem to solve.
+
+The $\covers{}{}$ relation has two constructors so it is not propositional. One would then
+be tempted to define this relation as the truncation of $\covers{}{}$. When we do this, it
+becomes impossible to prove the idempotence law for the purported nucleus $\RHD :
+\dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? To prove the idempotence law:
+\begin{equation*}
+  \trunc{\covers{a}{\trunc{\covers{-}{U}}}} \rightarrow \trunc{\covers{a}{U}},
+\end{equation*}
+we need a lemma that says, given any $a$, and subsets $U, V$,
+\begin{center}
+  if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$, for every $a'$, then
+  $\trunc{\covers{a}{V}}$.
+\end{center}
+The $\mathsf{dir}$ case is easily verified. The $\mathsf{branch}$ case, however, results
+in a situation where we are trying to show
+\begin{equation*}
+  \trunc{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}}
+\end{equation*}
+whereas all we get from the inductive hypothesis is
+\begin{equation*}
+  \pity{c}{C(a, b)}{\trunc{\covers{d(a, b, c)}{V}}}.
+\end{equation*}
+An inference of the former of the latter would require exactly the axiom of countable
+choice~\cite{axiom-of-choice}.
+
+One way to solve this problem is by using HITs. The idea is due to Thierry Coquand.
+\todo{Explain the solution.}
 
 \begin{thm}
   Given any subset $U$, $\covers{\_}{U}$ is a downwards-closed subset.
