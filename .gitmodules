@@ -1,0 +1,3 @@
+[submodule "report/template"]
+	path = report/template
+	url = git@github.com:ayberkt/chalmers-msc-thesis-template.git

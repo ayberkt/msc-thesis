@@ -1,0 +1,132 @@
+\input{template/template}
+
+\usepackage{ebproof}
+\usepackage{wasysym}
+
+\title{Formal Topology in Univalent Foundations}
+\author{Ayberk Tosun}
+
+\supervisor{Thierry Coquand}
+\departmentofsupervisor{Computer Science and Engineering}
+
+\examiner{Nils Anders Danielsson}
+\departmentofexaminer{Computer Science and Engineering}
+
+\division{Logic and Types}
+
+\keywords{topology, domain theory}
+
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\nats}{\mathbb{N}}
+\newcommand{\bool}{\mathbf{Bool}}
+\newcommand{\ball}[2]{\mathfrak{A}(#1, #2)}
+\newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
+
+\newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
+\newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
+\newcommand{\univ}{\mathcal{U}}
+\newcommand{\isaprop}[1]{\mathsf{IsProp}\left(#1\right)}
+\newcommand{\hprop}{\mathsf{hProp}}
+\newcommand{\isaset}[1]{\mathsf{IsSet}\left(#1\right)}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\trunc}[1]{\left\| #1 \right\|}
+\newcommand{\pow}[1]{\mathcal{P}\left(#1\right)}
+\newcommand{\sub}[2]{\mathsf{Fam}_{#1}\left(#2\right)}
+\newcommand{\indexnm}{\mathsf{index}}
+\newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
+\newcommand{\pair}[2]{\langle #1 , #2 \rangle}
+
+\newcommand{\isdcnm}{\mathsf{DownwardsClosed}}
+\newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
+\newcommand{\dcsubsetnm}{\mathsf{DCSubset}}
+\newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
+
+\newcommand{\ordernm}{\mathsf{Order}}
+\newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
+
+\newcommand{\posetstrnm}{\mathsf{PosetStr}}
+\newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
+
+\newcommand{\posetaxnm}{\mathsf{PosetAx}}
+\newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
+
+\newcommand{\poset}{\mathsf{Poset}}
+
+\newcommand{\ismonotonicnm}{\mathsf{IsMonotonic}}
+\newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
+
+\newcommand{\monotonicmapnm}{\rightarrow_m}
+\newcommand{\monotonicmap}[2]{#1 \rightarrow_m #2}
+
+\newcommand{\framestrnm}{\mathsf{FrameStr}}
+\newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
+\newcommand{\frameax}[1]{\mathsf{FrameAx}\left(#1\right)}
+
+\newcommand{\treestrnm}{\mathsf{TreeStr}}
+\newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
+
+\newcommand{\stumpnm}{\mathsf{Stump}}
+\newcommand{\stump}[1]{\stumpnm\left(#1\right)}
+
+\newcommand{\refines}[2]{#1~\mathcal{R}~#2}
+
+\newcommand{\disciplinestrnm}{\mathsf{DisciplineStr}}
+\newcommand{\disciplinestr}[1]{\disciplinestrnm{}\left(#1\right)}
+
+\newcommand{\rawframestrnm}{\mathsf{RawFrameStr}}
+\newcommand{\rawframestr}[3]{\rawframestrnm{}_{#1, #2}\left(#3\right)}
+
+\newcommand{\isnuclearnm}{\mathsf{IsNuclear}}
+\newcommand{\isnuclear}[1]{\isnuclearnm{}\left(#1\right)}
+
+\newcommand{\meet}[2]{#1 \wedge #2}
+\newcommand{\joinnm}[3]{\bigvee}
+\newcommand{\join}[3]{\joinnm{}_{#1~:~#2} #3}
+
+\newcommand{\covernm}{\LHD}
+\newcommand{\covers}[2]{#1 \covernm{} #2}
+
+\newcommand{\bF}{\mathbf{F}}
+
+\newcommand{\is}{:\equiv}
+
+%% Names.
+\newcommand{\UF}{Univalent Foundations}
+
+%% \newcommand{\paragraphsummary}[1]{{\color{orange} \textsc{#1}}}
+\newcommand{\paragraphsummary}[1]{}
+\newcommand{\todo}[1]{
+  {\color{red} \texttt{TODO: #1}}
+}
+
+\setmainfont{XITS}
+\setmathfont{XITS Math}
+\setmonofont[Scale=0.85]{PragmataPro Mono Liga}
+
+\begin{document}
+
+\maketitlepage{}
+
+\begin{abstract}
+  \todo{Write an abstract.}
+\end{abstract}
+
+\begin{acknowledgements}
+  \todo{Add acknowledgements here.}
+\end{acknowledgements}
+
+\makelists{}
+
+\input{introduction}
+
+\input{foundations}
+
+\input{frames}
+
+\input{formal-topology}
+
+\input{domain-theory}
+
+\makebackmatter{}
+
+\end{document}

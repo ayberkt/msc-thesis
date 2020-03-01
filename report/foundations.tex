@@ -1,0 +1,125 @@
+\chapter{Foundations}\label{chap:foundations}
+
+In this chapter, we provide the preliminary constructions and theorems of \UF{} for the
+sake of self-containment. It is intended to be a summary rather than an introduction to
+HoTT/UF.
+
+\section{The identity type}
+
+\todo{
+  Do a couple of things here.
+  \begin{enumerate}
+    \item Define the identity type and present its introduction and elimination rules.
+    \item Give a brief summary of Cubical Type Theory and the fact that that's what really
+      we are making use of.
+    \item Remark that the refl is a built-in in CTT.
+    \item Explain that the details of CTT need not concern us as we will be viewing it as
+      just one particular implementation of HoTT.
+  \end{enumerate}
+}
+
+\section{Pi types}
+
+\todo{Provide a short summary.}
+
+\begin{prop}\label{prop:pi-prop}
+  Let $A~:~\univ{}_m$ be a type, $B : A \rightarrow \univ{}_n$ a family of $A$-indexed types. If
+  $\isaprop{B(x)}$ for every $x~:~A$, then $\isaprop{\pity{x}{A}{B(x)}}$.
+\end{prop}
+
+\section{Sigma types}
+
+\todo{Complete.}
+
+\section{Homotopy levels}
+
+\begin{defn}[Proposition]
+  A type $A$ is called \emph{propositional} if the following type is inhabited:
+  \begin{equation*}
+    \isaprop{A} \quad\is\quad \pity{x~y}{A}{x =_A y}.
+  \end{equation*}
+\end{defn}
+
+\begin{prop}\label{isOfHLevelSigma}
+  $\Sigma$ types preserve h-levels.
+\end{prop}
+\begin{proof}
+  \todo{Sketch the proof}.
+\end{proof}
+
+\section{Propositions}
+
+We collect propositional types in $\hprop{}$.
+
+\begin{defn}\label{omega}
+  $\hprop{} \is \sigmaty{A}{\univ}{\isaprop{A}}$
+\end{defn}
+
+Technically, to assert that some $A~:~\hprop{}$ is inhabited, we must project out the
+first component. However, we will engage in the understandable notational abuse of taking
+this to be implicit.
+
+\section{Propositional truncation}
+
+\todo{Complete.}
+
+\section{Subsets}
+
+Given a type $A : \univ{}_m$, we would like to talk about all ``subsets'' of $A$. There
+are two ways we can approach this: (1) taking the characteristic function of the subset as
+the subset, and (2) via $A$-codomained functions. In \UF{}, these approaches are
+equivalent.
+
+In this development, there will be places where we will prefer one of these two approaches
+over the other for convenience. Therefore we will define both of them and show that they
+are equivalent.
+
+\subsection{Subsets as power sets}
+
+\begin{defn}(Power set)\label{defn:pow}
+  Let $A$ be a type. Its power set $\pow{A}$ is defined as:
+  \begin{align*}
+    &\mathcal{P} : \univ{}_m \rightarrow \univ{}_{m+1}\\
+    &\pow{A} \quad\is\quad A \rightarrow \hprop{}_m
+  \end{align*}
+\end{defn}
+
+\begin{prop}\label{isSetPow}
+  Given any type $A$, $\pow{A}$ is an h-set.
+\end{prop}
+\begin{proof}
+  \todo{Complete.}
+\end{proof}
+
+\begin{defn}[Full subset]\label{defn:full-set}
+  The full subset on any type $A$ is defined as $\lambda\_.~ \top$. We will refer to this as $\top_A$.
+\end{defn}
+
+\begin{defn}[Set intersection]\label{defn:set-intersection}
+  Given subsets $U, V : \pow{A}$, their intersection is defined as:
+  \begin{equation*}
+    U \cap V \quad\is\quad x \mapsto x \epsilon U \times x \epsilon V
+  \end{equation*}
+\end{defn}
+
+\subsection{Subsets as families}
+
+\begin{defn}(Subset as a family of elements)\label{defn:fam}
+  Let $A$ be a type. We define a subset of $A$ as a family of its elements as:
+  \begin{equation*}
+    \sub{n}{A} \quad\is\quad \sigmaty{I}{\univ{}_n}{I \rightarrow A},
+  \end{equation*}
+  where $I$ is viewed as a type of index elements. Accordingly, given some $F : \sub{}{A}$,
+  we will refer the index type of $\mathcal{F}$ as $\indexset{F}$.
+\end{defn}
+
+\subsection{Equivalence of power sets and subsets as families}
+
+\todo{
+  Prove that Definition~\ref{defn:pow} and Definition~\ref{defn:fam} are actually equal to
+  each other.
+}
+
+\section{Structure identity principle}\label{sec:sip}
+
+\todo{Complete}.
