@@ -221,7 +221,11 @@ require this.
     \mathsf{IsTop}(\top) \quad&\is\quad \pity{x~~}{A}{x \sqsubseteq \top}\\
     \mathsf{ISGLB}(\wedge) \quad&\is\quad \pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
                        &\hspace{0.7em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
-    \mathsf{IsLUB}\left(\bigvee\right) \quad&\is\quad \text{\todo{Complete.}}
+    \mathsf{IsLUB}\left(\bigvee\right) \quad&\is\quad
+         \pity{F}{\sub{n}{A}}{\pity{x}{A}{x \epsilon F \rightarrow x \sqsubseteq \bigvee_{i~:~\indexset{F}} F_i}}\\
+         &\hspace{0.7em}\times \pity{F}{\sub{n}{A}}{\pity{x}{A}{
+               \left( \pity{y}{A}{y \epsilon F \rightarrow x \sqsubseteq y}\right) \rightarrow \left( \bigvee_{i~:~\indexset{F}} F \right) \sqsubseteq x
+             }}
   \end{align*}
 \end{defn}
 
