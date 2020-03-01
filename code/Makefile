@@ -6,7 +6,6 @@ all: main
 
 .PHONY:
 main: $(FILES)
-	./mark_version.sh
 	cp -f Agda.css html/Agda.css
 
 html/%.md: %.lagda.md
