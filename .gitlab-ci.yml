@@ -14,6 +14,7 @@ pages:
   only:
   - master
   script:
+  - ./mark_version.sh Main.lagda.md
   - make
   - mv html ../public
   artifacts:
