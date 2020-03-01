@@ -18,10 +18,18 @@ PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → Ω (ℓ₀ �
 PosetAx _ A (_⊑_ , A-set) = IsReflexive ∧ IsTransitive ∧ IsAntisym
   where
     open AlgebraicProperties A-set _⊑_
+```
 
+A poset structure with level `ℓ₁`.
+
+```
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
 PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+```
 
+A poset with carrier level `ℓ₀` and relation level `ℓ₁`.
+
+```
 Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
 ```
