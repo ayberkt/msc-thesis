@@ -217,15 +217,20 @@ require this.
   This raw structure must be subject to the following axioms
   \begin{align*}
     \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad
-      \mathsf{IsTop}(\top) \times \mathsf{IsGLB}(\wedge) \times \mathsf{IsLUB}\left(\bigvee\right)\\
+      \mathsf{IsTop}(\top) \times \mathsf{IsGLB}(\wedge) \times \mathsf{IsLUB}\left( \bigvee \right)
+      \mathsf{IsDistr}(\wedge, \bigvee)\\
     \mathsf{IsTop}(\top) \quad&\is\quad \pity{x~~}{A}{x \sqsubseteq \top}\\
     \mathsf{ISGLB}(\wedge) \quad&\is\quad \pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
                        &\hspace{0.7em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
     \mathsf{IsLUB}\left(\bigvee\right) \quad&\is\quad
-         \pity{F}{\sub{n}{A}}{\pity{x}{A}{x \epsilon F \rightarrow x \sqsubseteq \bigvee_{i~:~\indexset{F}} F_i}}\\
+         \pity{F}{\sub{n}{A}}{\pity{x}{A}{x \epsilon F \rightarrow x \sqsubseteq \bigvee_i F_i}}\\
          &\hspace{0.7em}\times \pity{F}{\sub{n}{A}}{\pity{x}{A}{
-               \left( \pity{y}{A}{y \epsilon F \rightarrow x \sqsubseteq y}\right) \rightarrow \left( \bigvee_{i~:~\indexset{F}} F \right) \sqsubseteq x
-             }}
+               \left( \pity{y}{A}{y \epsilon F \rightarrow x \sqsubseteq y}\right) \rightarrow \left( \bigvee_i F \right) \sqsubseteq x
+             }}\\
+    \mathsf{IsDistr} \quad&\is\quad
+      \pity{x}{A}{\pity{F}{\sub{n}{A}}{
+          x \wedge \left( \bigvee_i F_i \right)} =_A \bigvee_i \left( x \wedge F_i \right)
+      }
   \end{align*}
 \end{defn}
 
