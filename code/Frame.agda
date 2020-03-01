@@ -144,7 +144,7 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
   where
     𝔻 = DownwardClosedSubset (A , P)
 
-    _<<_ : 𝔻 → 𝔻 → Ω ℓ₀
+    _<<_ : 𝔻 → 𝔻 → hProp ℓ₀
     _<<_ (S , _) (T , _) = S ⊆ T
 
     open AlgebraicProperties (DownwardClosedSubset-set (A , P)) _<<_
