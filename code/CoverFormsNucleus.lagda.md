@@ -42,7 +42,7 @@ module _ (F : FormalTopology ℓ₀ ℓ₁) where
   𝕛 (U , U-down) = U₀ , λ _ _ → down-closed
     where
       -- This is not  h-propositional unless we force it to be using the HIT definition.
-      U₀ : stage-D → Ω ℓ₀
+      U₀ : stage-D → hProp ℓ₀
       U₀ = λ a → a <| (_is-true ∘ U) , <|-prop a (_is-true ∘ U)
 
       down-closed : IsDownwardClosed (λ - → - <| (_is-true ∘ U))

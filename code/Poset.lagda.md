@@ -11,17 +11,25 @@ import AlgebraicProperties
 ## Definition of poset
 
 ```
-OrderStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-OrderStr {ℓ = ℓ} ℓ₁ A = (A → A → Ω ℓ₁) × IsSet A
+Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
+Order {ℓ = ℓ} ℓ₁ A = (A → A → hProp ℓ₁) × IsSet A
 
-PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → OrderStr ℓ₁ A → Ω (ℓ₀ ⊔ ℓ₁)
+PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 PosetAx _ A (_⊑_ , A-set) = IsReflexive ∧ IsTransitive ∧ IsAntisym
   where
     open AlgebraicProperties A-set _⊑_
+```
 
+A poset structure with level `ℓ₁`.
+
+```
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-PosetStr ℓ₁ = add-to-structure (OrderStr ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+```
 
+A poset with carrier level `ℓ₀` and relation level `ℓ₁`.
+
+```
 Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
 ```
@@ -39,7 +47,7 @@ strₚ (_ , s) = s
 ```
 
 ```
-rel : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω ℓ₁
+rel : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → ∣ P ∣ₚ → hProp ℓ₁
 rel (_ , (_⊑_ , _) , _) = _⊑_
 
 syntax rel P x y = x ⊑[ P ] y
@@ -119,7 +127,7 @@ _∘m_ : {P : Poset ℓ₀ ℓ₁} {Q : Poset ℓ₀′ ℓ₁′} {R : Poset �
 ## Downward-closure
 
 ```
-IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → (𝒫 ∣ P ∣ₚ) → Ω (ℓ₀ ⊔ ℓ₁)
+IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → (𝒫 ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁)
 IsDownwardClosed P@(X , _) D =
   ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true) , prop
   where
@@ -138,24 +146,24 @@ DownwardClosedSubset-set P =
 ## H-levels
 
 ```
-OrderStr-set : IsSet (OrderStr ℓ₁ A)
+OrderStr-set : IsSet (Order ℓ₁ A)
 OrderStr-set P@(_ , A-set₀) Q@(_ , A-set₁) =
   isOfHLevelΣ 2 order-set (λ _ → prop⇒set isPropIsSet) P Q
   where
-    order-set : IsSet (A → A → Ω _)
+    order-set : IsSet (A → A → hProp _)
     order-set = ∏-set λ _ → ∏-set λ _ → isSetHProp
 ```
 
 ## Equality of isomorphic posets
 
 ```
-order-iso : (M N : Σ (Type ℓ₀) (OrderStr ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
+order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
 order-iso (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) eq =
   (x y : A) → (x ⊑₀ y ⇔ f x ⊑₁ f y) is-true
   where
     f = equivFun eq
 
-RP-iso-prop : (P Q : Σ (Type ℓ₀) (OrderStr ℓ₁))
+RP-iso-prop : (P Q : Σ (Type ℓ₀) (Order ℓ₁))
             → (i : π₀ P ≃ π₀ Q) → IsProp (order-iso P Q i)
 RP-iso-prop (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) i =
   ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
@@ -178,7 +186,7 @@ RP-iso-prop (A , (_⊑₀_ , _)) (B , (_⊑₁_ , _)) i =
     ret : retract f g
     ret (x , y) = refl
 
-raw-poset-is-SNS : SNS {ℓ = ℓ} (OrderStr ℓ₁) order-iso
+raw-poset-is-SNS : SNS {ℓ = ℓ} (Order ℓ₁) order-iso
 raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f , f-equiv)
   where
     f : order-iso (X , (_⊑₀_ , A-set)) (X , (_⊑₁_ , B-set)) (idEquiv X)
@@ -201,7 +209,7 @@ raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f
             (λ x⊑₀y → subst (λ { (_⊑⋆_ , _) → x ⊑⋆ y is-true }) eq x⊑₀y)
           , λ x⊑₁y → subst (λ { (_⊑⋆_ , _) → (x ⊑⋆ y) is-true }) (sym eq) x⊑₁y
 
-        rel-set : IsSet ((X → X → Ω ℓ) × IsSet X)
+        rel-set : IsSet ((X → X → hProp ℓ) × IsSet X)
         rel-set =
           Σ-set (∏-set (λ _ → ∏-set λ _ → isSetHProp)) λ _ →
             prop⇒set isPropIsSet
@@ -216,16 +224,16 @@ raw-poset-is-SNS {X = X} P@(_⊑₀_ , A-set) Q@(_⊑₁_ , B-set) = invEquiv (f
           → (fib : fiber f eq) → (g eq , right-inv eq) ≡ fib
         h eq (i , snd) =
           ΣProp≡
-            (λ x → hLevelSuc 2 ((X → X → Ω _) × IsSet X) rel-set P Q (f x) eq)
+            (λ x → hLevelSuc 2 ((X → X → hProp _) × IsSet X) rel-set P Q (f x) eq)
             (iff-prop (g eq) i)
 
-raw-poset-is-SNS' : SNS' {ℓ = ℓ} (OrderStr ℓ₁) order-iso
-raw-poset-is-SNS' {ℓ₁ = ℓ₁} = SNS→SNS' (OrderStr ℓ₁) order-iso raw-poset-is-SNS
+raw-poset-is-SNS' : SNS' {ℓ = ℓ} (Order ℓ₁) order-iso
+raw-poset-is-SNS' {ℓ₁ = ℓ₁} = SNS→SNS' (Order ℓ₁) order-iso raw-poset-is-SNS
 
 poset-iso : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
 poset-iso {ℓ₁ = ℓ₁} = add-to-iso _ order-iso λ A str → PosetAx ℓ₁ A str is-true
 
-poset-axioms-props : (A : Type ℓ₀) (str : OrderStr ℓ₁ A)
+poset-axioms-props : (A : Type ℓ₀) (str : Order ℓ₁ A)
                    → IsProp (PosetAx ℓ₁ A str is-true)
 poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx ℓ₁ A str)
 

@@ -91,13 +91,10 @@ IsProp-prop {A = A} A-prop₀ A-prop₁ =
     rem = λ x → fn-ext (A-prop₀ x) (A-prop₁ x) λ y →
             prop⇒set A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
 
-Ω : (ℓ : Level) → Set (suc ℓ)
-Ω ℓ = hProp ℓ
-
-_is-true : Ω ℓ → Type ℓ
+_is-true : hProp ℓ → Type ℓ
 (P , _) is-true = P
 
-is-true-prop : (P : Ω ℓ) → IsProp (P is-true)
+is-true-prop : (P : hProp ℓ) → IsProp (P is-true)
 is-true-prop (P , P-prop) = P-prop
 
 infix 5 _is-true

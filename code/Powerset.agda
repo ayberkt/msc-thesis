@@ -5,7 +5,7 @@ module Powerset where
 open import Basis
 
 𝒫 : Type ℓ → Type (suc ℓ)
-𝒫 {ℓ} A = A → Ω ℓ
+𝒫 {ℓ} A = A → hProp ℓ
 
 𝒫-set : (A : Type ℓ) → IsSet (𝒫 A)
 𝒫-set A = ∏-set λ _ → isSetHProp
@@ -16,7 +16,7 @@ variable
 _⊆⊆_ : {A : Type ℓ} → (A → Type ℓ₀) → (A → Type ℓ₁) → Type (ℓ ⊔ ℓ₀ ⊔ ℓ₁)
 _⊆⊆_ {A = A} U V =  (x : A) → U x → V x
 
-_⊆_ : 𝒫 A → 𝒫 A → Ω _
+_⊆_ : 𝒫 A → 𝒫 A → hProp _
 _⊆_ {A = A} U V = ((λ - → U - is-true) ⊆⊆ (λ - → V - is-true)) , prop
   where
     prop : IsProp ((x : A) → U x is-true → V x is-true)

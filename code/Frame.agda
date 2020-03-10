@@ -144,7 +144,7 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
   where
     𝔻 = DownwardClosedSubset (A , P)
 
-    _<<_ : 𝔻 → 𝔻 → Ω ℓ₀
+    _<<_ : 𝔻 → 𝔻 → hProp ℓ₀
     _<<_ (S , _) (T , _) = S ⊆ T
 
     open AlgebraicProperties (DownwardClosedSubset-set (A , P)) _<<_
@@ -258,7 +258,7 @@ RF-iso {ℓ₀ = ℓ₀} ℓ₁ ℓ₂ (A , (P , _) , 𝟏₀ , _⊓₀_ , ⋃�
   where
     f = equivFun i
 
-pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (OrderStr ℓ₁)
+pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (Order ℓ₁)
 pos-of (A , ((RPS , _) , _)) = (A , RPS)
 
 top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F

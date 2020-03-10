@@ -409,7 +409,7 @@ FormalTopology : (ℓ₀ ℓ₁ : Level) → Set (suc ℓ₀ ⊔ suc ℓ₁)
 FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] (IsSimulation D)
 
 cover-of : (𝒯 : FormalTopology ℓ₀ ℓ₁)
-         → stage (π₀ 𝒯) → (stage (π₀ 𝒯) → Ω ℓ₂) → Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
+         → stage (π₀ 𝒯) → (stage (π₀ 𝒯) → hProp ℓ₂) → Set (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
 cover-of 𝒯@(D , topo) a U =
   ∥ Σ[ t ∈ (experiment⋆ D a) ] (λ - → - ↓[ pos D ] leaves t) ⊆⊆ (_is-true ∘ U) ∥
 
@@ -418,7 +418,7 @@ syntax cover-of 𝒯 a U = a ◀[ 𝒯 ] U
 
 ```
 private
-  down-closure : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (π₀ 𝒯) → Ω (ℓ₀ ⊔ ℓ₁))
+  down-closure : (𝒯 : FormalTopology ℓ₀ ℓ₁) (U : stage (π₀ 𝒯) → hProp (ℓ₀ ⊔ ℓ₁))
               → (a₀ a₁ : stage (π₀ 𝒯))
               → a₁ ⊑[ pos (π₀ 𝒯) ] a₀ is-true
               → a₀ ◀[ 𝒯 ] U
