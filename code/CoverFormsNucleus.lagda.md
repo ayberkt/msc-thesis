@@ -3,46 +3,32 @@
 
 module CoverFormsNucleus where
 
-open import Basis        hiding (A)
-open import Poset        renaming (IsDownwardClosed to IsDownwardClosed′)
+open import Basis          hiding (A)
+open import Poset          renaming (IsDownwardClosed to IsDownwardClosed′)
 open import Frame
-open import HITCoverage  hiding (Type)
-open import Nucleus      using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
+open import HITCoverage    hiding (Type)
+open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
 open import Powerset
-open import TreeType     renaming (pos to pos′)
+open import FormalTopology renaming (pos to pos′)
 
-module _ (F : FormalTopology ℓ₀ ℓ₁) where
+module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
   private
     D       = π₀ F
     D-sim   = π₁ F
     P       = pos′ (π₀ F)
     ⊑-refl  = ⊑[ P ]-refl
-    F↓      = downward-subset-frame (TreeType.pos D)
-    stage-D = TreeType.stage   D
-    exp-D   = TreeType.exp     D
-    out-D   = TreeType.outcome D
-    rev-D   = TreeType.revise  D
+    F↓      = downward-subset-frame (pos′ D)
     mono-D  = π₁ D
-    _⊑_     = λ (x y : stage-D) → x ⊑[ P ] y is-true
+    _⊑_     = λ (x y : stage D) → x ⊑[ P ] y is-true
 
-  sim : (a₀ a : stage-D)
-      → a₀ ⊑ a → (b : exp-D a)
-      → Σ (exp-D a₀) (λ b₀ → (c₀ : out-D b₀) → Σ (out-D b) (λ c → rev-D c₀ ⊑ rev-D c))
-  sim a₀ a a₀⊑a b =
-    b₀ , λ c₀ → π₁ (D-sim a a₀ a₀⊑a b) (rev-D c₀) (c₀ , ⊑-refl (rev-D c₀))
-    where
-      b₀ : exp-D a₀
-      b₀ = π₀ (D-sim a a₀ a₀⊑a b)
-
-
-  open Test stage-D _⊑_ exp-D out-D rev-D (π₁ mono-D) sim
+  open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono-D) D-sim
 
   𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
   𝕛 (U , U-down) = U₀ , λ _ _ → down-closed
     where
       -- This is not  h-propositional unless we force it to be using the HIT definition.
-      U₀ : stage-D → hProp ℓ₀
+      U₀ : stage D → hProp ℓ₀
       U₀ = λ a → a <| (_is-true ∘ U) , <|-prop a (_is-true ∘ U)
 
       down-closed : IsDownwardClosed (λ - → - <| (_is-true ∘ U))
@@ -75,8 +61,8 @@ module _ (F : FormalTopology ℓ₀ ℓ₁) where
           d a (dir p)        = dir (π₀ p) , dir (π₁ p)
           d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
             where
-              IH : (c : out-D b) → π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (rev-D c) is-true
-              IH c = d (rev-D c) (f c)
+              IH : (c : outcome D b) → π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next D c) is-true
+              IH c = d (next D c) (f c)
           d a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
             where
               IH₀ = d a p
@@ -93,62 +79,82 @@ module _ (F : FormalTopology ℓ₀ ℓ₁) where
         where
           U′ = _is-true ∘ U
 
-  gen : Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
+  gen : Frame (suc ℓ₀) ℓ₀ ℓ₀
   gen = nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
 
-{--
-down-closure : (F : FormalTopology ℓ ℓ) → stage (π₀ F) → ∣ gen F ∣F
-down-closure F x = x↓ , fixed
+  down-closure : stage (π₀ F) → ∣ F↓ ∣F
+  down-closure x = x↓ , down-DC
+    where
+      x↓ = λ y → y ⊑[ P ] x
+      down-DC : IsDownwardClosed′ P x↓ is-true
+      down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
+
+      -- fixed : 𝕛 x↓ ≡ x↓
+      -- fixed =  ⊑[ pos F↓ ]-antisym _ _ below above
+        -- where
+          -- NTS : ∀ y → y <| (_is-true ∘ IsBelow-x) → y ⊑[ P ] x is-true
+          -- NTS y (dir p) = p
+          -- NTS y (branch b f) = {!!}
+            -- where
+              -- IH : (c : out-D b) → (rev-D c) ⊑[ P ] x is-true
+              -- IH c = NTS (rev-D c) (f c)
+          -- NTS y (squash p q i) = {!!}
+          -- below : 𝕛 x↓ ⊑[ pos F↓ ] x↓ is-true
+          -- below = NTS
+          -- above : x↓ ⊑[ pos F↓ ] 𝕛 x↓ is-true
+          -- above = π₀ (π₁ 𝕛-nuclear) x↓
+
+  η : stage (π₀ F) → ∣ F↓ ∣F
+  η z = (λ a → (a <| (_is-true ∘ (π₀ (down-closure z)))) , squash) , NTS
+    where
+      NTS : IsDownwardClosed′ (π₀ (pos′ D) , π₁ (pos′ D)) (λ a → (a <| (λ - → π₀ (down-closure z) - is-true)) , squash) is-true
+      NTS x y p q = lem1 rem q p
+        where
+          rem : IsDownwardClosed (λ - → - ⊑[ P ] z is-true)
+          rem p q =  ⊑[ P ]-trans _ _ z q p
+
+  compose′ : stage (π₀ F) → ∣ gen ∣F
+  compose′ x = (η x) , fixing
+    where
+      P↓ = pos (downward-subset-frame (pos′ (π₀ F)))
+      NTS : ∀ y → π₀ (𝕛 (η x)) y is-true → π₀ (η x) y is-true
+      NTS y (dir p) = p
+      NTS y (branch b f) = branch b (λ c → NTS (next D c) (f c))
+      NTS y (squash p q i) = squash (NTS y p) (NTS y q) i
+      up : η x ⊑[ P↓ ] 𝕛 (η x) is-true
+      up = π₀ (π₁ 𝕛-nuclear) (η x)
+      fixing : 𝕛 (η x) ≡ η x
+      fixing = ⊑[ P↓ ]-antisym (𝕛 (η x)) (η x) NTS up
+
+down-closure-m : (F : FormalTopology ℓ ℓ)
+               → (pos′ (π₀ F)) ─m→ (pos (downward-subset-frame (pos′ (π₀ F))))
+down-closure-m F = down-closure F , NTS
   where
-    pos-F  = pos′ (π₀ F)
-    A      = ∣ pos-F ∣ₚ
-    _⊑_    = λ (x y : A) → x ⊑[ pos-F ] y is-true
-    exp-A  = exp (π₀ F)
-    out-A  = outcome (π₀ F)
-    rev-A  = revise (π₀ F)
-    D-sim  = π₁ F
-    F↓     = downward-subset-frame pos-F
-
-    IsBelow-x   = λ y → y ⊑[ pos-F ] x
-
-    down-DC : IsDownwardClosed′ pos-F IsBelow-x is-true
-    down-DC z y z⊑x y⊑z = ⊑[ pos-F ]-trans y z x y⊑z z⊑x
-
-    x↓ = IsBelow-x , down-DC
-
-    fixed : 𝕛 F x↓ ≡ x↓
-    fixed = ⊑[ pos F↓ ]-antisym _ _ below above
-      where
-        below : 𝕛 F x↓ ⊑[ pos F↓ ] x↓ is-true
-        below y (Test.dir x)               = x
-        below y (Test.branch b f)          = {!!}
-        below y (Test.squash yε𝕛D yε𝕛D₁ i) = {!!}
-
-        above : x↓ ⊑[ pos F↓ ] 𝕛 F x↓ is-true
-        above = π₀ (π₁ (𝕛-nuclear F)) x↓
-
-down-closure-m : (F : FormalTopology ℓ ℓ) → (pos′ (π₀ F)) ─m→ pos (gen F)
-down-closure-m F = down-closure F , is-mono
-  where
-    is-mono : IsMonotonic (pos′ (π₀ F)) (pos (gen F)) (down-closure F)
-    is-mono x y x⊑y z z⊑x = ⊑[ pos′ (π₀ F) ]-trans z x y z⊑x x⊑y
---}
+    NTS : IsMonotonic (pos′ (π₀ F)) (pos (downward-subset-frame (pos′ (π₀ F)))) (down-closure F)
+    NTS x y x⊑y z z⊑x = ⊑[ pos′ (π₀ F) ]-trans z x y z⊑x x⊑y
 
 represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
            → (m : pos′ (π₀ F) ─m→ pos L)
            → Type ℓ
 represents F L m =
   (x : A) (y : exp (π₀ F) x) →
-    (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (revise (π₀ F) u))) is-true
+    (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (next (π₀ F) u))) is-true
   where
     A = ∣ pos′ (π₀ F) ∣ₚ
 
 -- ↓-represents : (F : FormalTopology ℓ ℓ) → represents F (gen F) (down-closure-m F)
 -- ↓-represents = {!!}
 
--- universal : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
-          -- → (f : pos′ (π₀ F) ─m→ pos L)
-          -- → represents F L f
-          -- → Σ[ m ∈ (pos′ (π₀ F) ─m→ pos L) ] (m ∘m (down-closure-m F)) ≡ f
--- universal = {!!}
+{--
+universal : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
+          → (f : pos′ (π₀ F) ─m→ pos L)
+          → represents F L f
+          →
+            let
+              P = pos′ (π₀ F)
+              Q = pos (downward-subset-frame (pos′ (π₀ F)))
+            in
+              Σ[ m ∈ (Q ─m→ pos L) ] (_∘m_ {P = P} {Q = Q} {R = pos L} m (down-closure-m F)) ≡ f
+universal = {!!}
+--}
 ```
