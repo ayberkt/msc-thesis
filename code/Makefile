@@ -1,6 +1,6 @@
 FILES := html/Main.html html/Poset.html html/Basis.html html/Frame.html\
          html/HITCoverage.html html/Nucleus.html html/CoverFormsNucleus.html\
-         html/Powerset.html html/TreeType.html
+         html/Powerset.html html/FormalTopology.html
 
 all: main
 
