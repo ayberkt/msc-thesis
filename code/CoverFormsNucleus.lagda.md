@@ -157,10 +157,10 @@ Furthermore, `η` is a monotonic map.
 The notion of *representation* is defined as follows.
 
 ```
-  represents : (L : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos L) → Type ℓ₀
-  represents L m =
+  represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R) → Type ℓ₀
+  represents R m =
     (x : ∣ P ∣ₚ) (y : exp D x) →
-      (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome D y , λ u → m $ₘ next D u)) is-true
+      (m $ₘ x) ⊑[ pos R ] (⋃[ R ] (outcome D y , λ u → m $ₘ next D u)) is-true
 ```
 
 Now we can state the universal property. Notice that `_∘m_` is just the composition of two
