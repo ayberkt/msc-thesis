@@ -23,7 +23,7 @@ pages:
 cosmetics:
   script:
   - export LC_ALL=C.UTF-8
-  - ./check_cosmetics.py FormalTopology.lagda.md
+  - ./check_cosmetics.py FormalTopology.agda
   - ./check_cosmetics.py HITCoverage.lagda.md
   - ./check_cosmetics.py CoverFormsNucleus.lagda.md
   - ./check_cosmetics.py Nucleus.agda
