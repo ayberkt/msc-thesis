@@ -10,20 +10,36 @@ open import HITCoverage    hiding (Type)
 open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
 open import Powerset
 open import FormalTopology renaming (pos to pos′)
+```
 
+We use an anonymous module that takes some formal topology `F` as a parameter to reduce
+parameter-passing.
+
+```
 module _ (F : FormalTopology ℓ₀ ℓ₀) where
+```
 
+We refer to the underlying poset of `F` as `P` and the frame of downwards-closed subsets
+of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity properties of
+`F`.
+
+```
   private
     D       = π₀ F
-    D-sim   = π₁ F
     P       = pos′ (π₀ F)
-    ⊑-refl  = ⊑[ P ]-refl
-    F↓      = downward-subset-frame (pos′ D)
-    mono-D  = π₁ D
+    F↓      = downward-subset-frame P
+    P↓      = pos F↓
+    sim     = π₁ F
+    mono    = π₁ D
     _⊑_     = λ (x y : stage D) → x ⊑[ P ] y is-true
 
-  open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono-D) D-sim
+  open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono) sim
+```
 
+Now, we define the *covering nucleus* which we denote by `𝕛`. At its heart, this is
+nothing but the map `U ↦ - <| U`.
+
+```
   𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
   𝕛 (U , U-down) = U₀ , λ _ _ → down-closed
     where
@@ -69,68 +85,94 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
               IH₁ = d a q
 
           u : (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) is-true
-          u a p = lem3 U′ V′ U-down′ V-down′ a a (⊑-refl a) (π₀ p) (π₁ p)
+          u a p = lem3 U′ V′ U-down′ V-down′ a a (⊑[ P ]-refl a) (π₀ p) (π₁ p)
 
       N₁ : (𝕌 : ∣ F↓ ∣F) → 𝕌 << (𝕛 𝕌) is-true
-      N₁ 𝕌@(U , U-down) a₀ p = lem1 (U-down _ _) (⊑-refl a₀) (dir p)
+      N₁ 𝕌@(U , U-down) a₀ p = lem1 (U-down _ _) (⊑[ P ]-refl a₀) (dir p)
 
       N₂ : (a : ∣ F↓ ∣F) → 𝕛 (𝕛 a) << (𝕛 a) is-true
       N₂ 𝕌@(U , U-down) a′ p = lem4 a′ (λ a → π₀ (𝕛 𝕌) a is-true) U′ p (λ _ q → q)
         where
           U′ = _is-true ∘ U
+```
 
-  gen : Frame (suc ℓ₀) ℓ₀ ℓ₀
-  gen = nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
+We denote by `L` the frame of fixed points for `𝕛`.
 
-  down-closure : stage (π₀ F) → ∣ F↓ ∣F
-  down-closure x = x↓ , down-DC
+```
+  L : Frame (suc ℓ₀) ℓ₀ ℓ₀
+  L = nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
+```
+
+Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
+
+```
+  ↓-clos : stage D → ∣ F↓ ∣F
+  ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
       down-DC : IsDownwardClosed′ P x↓ is-true
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
+```
 
-      -- fixed : 𝕛 x↓ ≡ x↓
-      -- fixed =  ⊑[ pos F↓ ]-antisym _ _ below above
-        -- where
-          -- NTS : ∀ y → y <| (_is-true ∘ IsBelow-x) → y ⊑[ P ] x is-true
-          -- NTS y (dir p) = p
-          -- NTS y (branch b f) = {!!}
-            -- where
-              -- IH : (c : out-D b) → (rev-D c) ⊑[ P ] x is-true
-              -- IH c = NTS (rev-D c) (f c)
-          -- NTS y (squash p q i) = {!!}
-          -- below : 𝕛 x↓ ⊑[ pos F↓ ] x↓ is-true
-          -- below = NTS
-          -- above : x↓ ⊑[ pos F↓ ] 𝕛 x↓ is-true
-          -- above = π₀ (π₁ 𝕛-nuclear) x↓
+By composing this with the covering nucleus, we define a map `e` from `F` to `F↓`.
 
-  η : stage (π₀ F) → ∣ F↓ ∣F
-  η z = (λ a → (a <| (_is-true ∘ (π₀ (down-closure z)))) , squash) , NTS
+```
+  e : stage D → ∣ F↓ ∣F
+  e z = (λ a → (a <| (_is-true ∘ (π₀ (↓-clos z)))) , squash) , NTS
     where
-      NTS : IsDownwardClosed′ (π₀ (pos′ D) , π₁ (pos′ D)) (λ a → (a <| (λ - → π₀ (down-closure z) - is-true)) , squash) is-true
-      NTS x y p q = lem1 rem q p
-        where
-          rem : IsDownwardClosed (λ - → - ⊑[ P ] z is-true)
-          rem p q =  ⊑[ P ]-trans _ _ z q p
+      NTS : IsDownwardClosed′ (π₀ (pos′ D) , π₁ (pos′ D)) (λ a → (a <| (λ - → π₀ (↓-clos z) - is-true)) , squash) is-true
+      NTS x y p q = lem1 (λ p q → ⊑[ P ]-trans _ _ z q p) q p
+```
 
-  compose′ : stage (π₀ F) → ∣ gen ∣F
-  compose′ x = (η x) , fixing
+We can further refine the codomain of `e` to `L`. In other words, we can prove that `j (e
+x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
+
+```
+  fixing : (x : stage D) → 𝕛 (e x) ≡ e x
+  fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
     where
-      P↓ = pos (downward-subset-frame (pos′ (π₀ F)))
-      NTS : ∀ y → π₀ (𝕛 (η x)) y is-true → π₀ (η x) y is-true
-      NTS y (dir p) = p
-      NTS y (branch b f) = branch b (λ c → NTS (next D c) (f c))
+      NTS : ∀ y → π₀ (𝕛 (e x)) y is-true → π₀ (e x) y is-true
+      NTS y (dir p)        = p
+      NTS y (branch b f)   = branch b (λ c → NTS (next D c) (f c))
       NTS y (squash p q i) = squash (NTS y p) (NTS y q) i
-      up : η x ⊑[ P↓ ] 𝕛 (η x) is-true
-      up = π₀ (π₁ 𝕛-nuclear) (η x)
-      fixing : 𝕛 (η x) ≡ η x
-      fixing = ⊑[ P↓ ]-antisym (𝕛 (η x)) (η x) NTS up
+      up : e x ⊑[ P↓ ] 𝕛 (e x) is-true
+      up = π₀ (π₁ 𝕛-nuclear) (e x)
 
-down-closure-m : (F : FormalTopology ℓ ℓ)
-               → (pos′ (π₀ F)) ─m→ (pos (downward-subset-frame (pos′ (π₀ F))))
-down-closure-m F = down-closure F , NTS
+  η : stage (π₀ F) → ∣ L ∣F
+  η x = (e x) , (fixing x)
+```
+
+Furthermore, `η` is a monotonic map.
+
+```
+  ηm : P ─m→ pos L
+  ηm = η , η-mono
+    where
+      open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
+      η-mono : IsMonotonic P (pos L) η
+      η-mono x y x⊑y = lemma
+        where
+          NTS : IsDownwardClosed′ (π₀ P , π₁ P) (λ a → (a <| (λ x₁ → π₀ (↓-clos x) x₁ is-true)) , squash) is-true
+          NTS x′ y′ p q = lem1 (λ p′ q′ → ⊑[ P ]-trans _ _ x q′ p′) q p
+          NTS′ : IsDownwardClosed′ (π₀ P , π₁ P) (λ a → (a <| (λ x₁ → π₀ (↓-clos y) x₁ is-true)) , squash) is-true
+          NTS′ x′ y′ p q = lem1 (λ p′ q′ → ⊑[ P ]-trans _ _ y q′ p′) q p
+          lemma : (((λ a → (a <| (_is-true ∘ (π₀ (↓-clos x)))) , squash) , NTS)  , (fixing x)) ⊑[ pos L ] (((λ a → (a <| (_is-true ∘ (π₀ (↓-clos y)))) , squash) , NTS′) , (fixing y)) is-true
+          lemma a (dir p) = dir (⊑[ P ]-trans a x y p x⊑y)
+          lemma a (branch b f) = branch b IH
+            where
+              IH : (c : outcome D b) → next D c <| (_is-true ∘ π₀ (↓-clos y))
+              IH c = lemma (next D c) (f c)
+          lemma a (squash p q i) = squash (lemma a p) (lemma a q) i
+          foo : η x ≡ ((e x) , (fixing x))
+          foo = refl
+```
+
+```
+↓-clos-mono : (F : FormalTopology ℓ ℓ)
+            → (pos′ (π₀ F)) ─m→ (pos (downward-subset-frame (pos′ (π₀ F))))
+↓-clos-mono F = ↓-clos F , NTS
   where
-    NTS : IsMonotonic (pos′ (π₀ F)) (pos (downward-subset-frame (pos′ (π₀ F)))) (down-closure F)
+    NTS : IsMonotonic (pos′ (π₀ F)) (pos (downward-subset-frame (pos′ (π₀ F)))) (↓-clos F)
     NTS x y x⊑y z z⊑x = ⊑[ pos′ (π₀ F) ]-trans z x y z⊑x x⊑y
 
 represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
