@@ -120,7 +120,7 @@ By composing this with the covering nucleus, we define a map `e` from `F` to `F�
   e : stage D → ∣ F↓ ∣F
   e z = (λ a → (a <| (_is-true ∘ (π₀ (↓-clos z)))) , squash) , NTS
     where
-      NTS : IsDownwardClosed′ (π₀ (pos′ D) , π₁ (pos′ D)) (λ a → (a <| (λ - → π₀ (↓-clos z) - is-true)) , squash) is-true
+      NTS : IsDownwardClosed′ P (λ a → (a <| (λ - → - ⊑[ P ] z is-true)) , squash) is-true
       NTS x y p q = lem1 (λ p q → ⊑[ P ]-trans _ _ z q p) q p
 ```
 
