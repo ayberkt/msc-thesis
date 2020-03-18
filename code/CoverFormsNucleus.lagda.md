@@ -148,55 +148,28 @@ Furthermore, `η` is a monotonic map.
   ηm : P ─m→ pos L
   ηm = η , η-mono
     where
-      open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
       η-mono : IsMonotonic P (pos L) η
-      η-mono x y x⊑y = lemma
-        where
-          NTS : IsDownwardClosed′ (π₀ P , π₁ P) (λ a → (a <| (λ x₁ → π₀ (↓-clos x) x₁ is-true)) , squash) is-true
-          NTS x′ y′ p q = lem1 (λ p′ q′ → ⊑[ P ]-trans _ _ x q′ p′) q p
-          NTS′ : IsDownwardClosed′ (π₀ P , π₁ P) (λ a → (a <| (λ x₁ → π₀ (↓-clos y) x₁ is-true)) , squash) is-true
-          NTS′ x′ y′ p q = lem1 (λ p′ q′ → ⊑[ P ]-trans _ _ y q′ p′) q p
-          lemma : (((λ a → (a <| (_is-true ∘ (π₀ (↓-clos x)))) , squash) , NTS)  , (fixing x)) ⊑[ pos L ] (((λ a → (a <| (_is-true ∘ (π₀ (↓-clos y)))) , squash) , NTS′) , (fixing y)) is-true
-          lemma a (dir p) = dir (⊑[ P ]-trans a x y p x⊑y)
-          lemma a (branch b f) = branch b IH
-            where
-              IH : (c : outcome D b) → next D c <| (_is-true ∘ π₀ (↓-clos y))
-              IH c = lemma (next D c) (f c)
-          lemma a (squash p q i) = squash (lemma a p) (lemma a q) i
-          foo : η x ≡ ((e x) , (fixing x))
-          foo = refl
+      η-mono x y x⊑y a (dir p)        = dir (⊑[ P ]-trans a x y p x⊑y)
+      η-mono x y x⊑y a (branch b f)   = branch b (λ c → η-mono x y x⊑y (next D c) (f c))
+      η-mono x y x⊑y a (squash p q i) = squash (η-mono x y x⊑y a p) (η-mono x y x⊑y a q) i
 ```
 
+The notion of *representation* is defined as follows.
+
 ```
-↓-clos-mono : (F : FormalTopology ℓ ℓ)
-            → (pos′ (π₀ F)) ─m→ (pos (downward-subset-frame (pos′ (π₀ F))))
-↓-clos-mono F = ↓-clos F , NTS
-  where
-    NTS : IsMonotonic (pos′ (π₀ F)) (pos (downward-subset-frame (pos′ (π₀ F)))) (↓-clos F)
-    NTS x y x⊑y z z⊑x = ⊑[ pos′ (π₀ F) ]-trans z x y z⊑x x⊑y
+  represents : (L : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos L) → Type ℓ₀
+  represents L m =
+    (x : ∣ P ∣ₚ) (y : exp D x) →
+      (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome D y , λ u → m $ₘ next D u)) is-true
+```
 
-represents : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
-           → (m : pos′ (π₀ F) ─m→ pos L)
-           → Type ℓ
-represents F L m =
-  (x : A) (y : exp (π₀ F) x) →
-    (m $ₘ x) ⊑[ pos L ] (⋃[ L ] (outcome (π₀ F) y , λ u → m $ₘ (next (π₀ F) u))) is-true
-  where
-    A = ∣ pos′ (π₀ F) ∣ₚ
+Now we can state the universal property. Notice that `_∘m_` is just the composition of two
+monotonic functions and it has to be explicitly provided the domains and codomains because
+Agda does not seem to be able to infer them otherwise.
 
--- ↓-represents : (F : FormalTopology ℓ ℓ) → represents F (gen F) (down-closure-m F)
--- ↓-represents = {!!}
-
-{--
-universal : (F : FormalTopology ℓ ℓ) (L : Frame (suc ℓ) ℓ ℓ)
-          → (f : pos′ (π₀ F) ─m→ pos L)
-          → represents F L f
-          →
-            let
-              P = pos′ (π₀ F)
-              Q = pos (downward-subset-frame (pos′ (π₀ F)))
-            in
-              Σ[ m ∈ (Q ─m→ pos L) ] (_∘m_ {P = P} {Q = Q} {R = pos L} m (down-closure-m F)) ≡ f
-universal = {!!}
---}
+```
+  universal-prop : Type (suc (suc ℓ₀))
+  universal-prop =
+    (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) (f : P ─m→ pos R) → represents R f →
+      Σ[ m ∈ (pos L ─m→ pos R) ] (_∘m_ {P = P} {Q = pos L} {R = pos R} m ηm) ≡ f
 ```
