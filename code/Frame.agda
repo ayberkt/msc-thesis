@@ -37,7 +37,7 @@ Frame ℓ₀ ℓ₁ ℓ₂ = Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Type ℓ₀
 ∣ A , _ ∣F = A
 
--- The underlying frame of a poset.
+-- The underlying poset of a frame.
 pos : Frame ℓ₀ ℓ₁ ℓ₂ → Poset ℓ₀ ℓ₁
 pos (A , (P , _) , _) = A , P
 
