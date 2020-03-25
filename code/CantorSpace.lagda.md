@@ -35,31 +35,29 @@ cantor-poset = ℂ , ((_≤_ , ℂ-set) , (≤-refl , ≤-trans , ≤-antisym))
   where
     ≤-refl : (xs : ℂ) → xs ≤ xs is-true
     ≤-refl xs = [] , refl
+
     ≤-trans : (xs ys zs : ℂ) → xs ≤ ys is-true → ys ≤ zs is-true → xs ≤ zs is-true
-    ≤-trans xs ys zs xs≤ys ys≤zs = NTS xs≤ys ys≤zs
+    ≤-trans xs ys zs (as , p) (bs , q) =
+      (bs ++ as) , NTS′
       where
-        NTS : Σ[ as ∈ ℂ ] xs ≡ ys ++ as → Σ[ bs ∈ ℂ ] ys ≡ zs ++ bs → xs ≤ zs is-true
-        NTS (as , p) (bs , q) = (bs ++ as) , NTS′
-          where
-            NTS′ : xs ≡ zs ++ (bs ++ as)
-            NTS′ = xs               ≡⟨ p                      ⟩
-                   ys ++ as         ≡⟨ cong (λ - → - ++ as) q ⟩
-                   (zs ++ bs) ++ as ≡⟨ sym (assoc zs bs as)   ⟩
-                   zs ++ (bs ++ as) ∎
+        NTS′ : xs ≡ zs ++ (bs ++ as)
+        NTS′ = xs               ≡⟨ p                      ⟩
+                ys ++ as         ≡⟨ cong (λ - → - ++ as) q ⟩
+                (zs ++ bs) ++ as ≡⟨ sym (assoc zs bs as)   ⟩
+                zs ++ (bs ++ as) ∎
+
     ≤-antisym : (xs ys : ℂ) → xs ≤ ys is-true → ys ≤ xs is-true → xs ≡ ys
-    ≤-antisym xs ys xs≤ys ys≤xs = NTS xs≤ys ys≤xs
+    ≤-antisym xs ys ([]     , p) ([]      , q) = p
+    ≤-antisym xs ys ([]     , p) (bs ⌢ x  , q) = p
+    ≤-antisym xs ys (as ⌢ x , p) ([]      , q) = sym q
+    ≤-antisym xs ys (as ⌢ a , p) (bs ⌢ b  , q) =
+      ⊥-elim (lemma3 NTS′)
       where
-        NTS : Σ[ as ∈ ℂ ] xs ≡ ys ++ as → Σ[ bs ∈ ℂ ] ys ≡ xs ++ bs → xs ≡ ys
-        NTS ([] , p) ([] , q) = p
-        NTS ([] , p) (bs ⌢ x , q) = p
-        NTS (as ⌢ x , p) ([] , q) = sym q
-        NTS (as ⌢ a , p) (bs ⌢ b  , q) = ⊥-elim (lemma3 NTS′)
-          where
-            NTS′ : xs ≡ xs ++ ((bs ⌢ b) ++ (as ⌢ a))
-            NTS′ = xs                           ≡⟨ p                                ⟩
-                   ys ++ (as ⌢ a)               ≡⟨ cong (λ - → - ++ (as ⌢ a)) q     ⟩
-                   (xs ++ (bs ⌢ b)) ++ (as ⌢ a) ≡⟨ sym (assoc xs (bs ⌢ b) (as ⌢ a)) ⟩
-                   xs ++ ((bs ⌢ b) ++ (as ⌢ a)) ∎
+        NTS′ : xs ≡ xs ++ ((bs ⌢ b) ++ (as ⌢ a))
+        NTS′ = xs                            ≡⟨ p                                ⟩
+                ys ++ (as ⌢ a)               ≡⟨ cong (λ - → - ++ (as ⌢ a)) q     ⟩
+                (xs ++ (bs ⌢ b)) ++ (as ⌢ a) ≡⟨ sym (assoc xs (bs ⌢ b) (as ⌢ a)) ⟩
+                xs ++ ((bs ⌢ b) ++ (as ⌢ a)) ∎
 ```
 
 ## The formal Cantor topology
