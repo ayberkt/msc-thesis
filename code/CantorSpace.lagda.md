@@ -14,14 +14,22 @@ open import Truncation
 open import Poset
 open import FormalTopology
 open import SnocList 𝔹  _≟_ renaming (SnocList to ℂ; SnocList-set to ℂ-set)
+```
 
+## Ordering on lists of booleans
+
+```
 _≤_ : ℂ → ℂ → hProp ℓ-zero
 xs ≤ ys = (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs) , prop
   where
     prop : IsProp (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs)
     prop xs≤ys@(_ , p) xs≤ys′@(_ , q) =
       to-subtype-≡ xs≤ys xs≤ys′ (λ ws → ℂ-set xs (ys ++ ws)) (++-lemma p q)
+```
 
+## The underlying poset of the formal Cantor topology
+
+```
 cantor-poset : Poset ℓ-zero ℓ-zero
 cantor-poset = ℂ , ((_≤_ , ℂ-set) , (≤-refl , ≤-trans , ≤-antisym))
   where
@@ -52,7 +60,11 @@ cantor-poset = ℂ , ((_≤_ , ℂ-set) , (≤-refl , ≤-trans , ≤-antisym))
                    ys ++ (as ⌢ a)               ≡⟨ cong (λ - → - ++ (as ⌢ a)) q     ⟩
                    (xs ++ (bs ⌢ b)) ++ (as ⌢ a) ≡⟨ sym (assoc xs (bs ⌢ b) (as ⌢ a)) ⟩
                    xs ++ ((bs ⌢ b) ++ (as ⌢ a)) ∎
+```
 
+## The formal Cantor topology
+
+```
 cantor : FormalTopology ℓ-zero ℓ-zero
 cantor = (cantor-poset , is , mono) , sim
   where
@@ -77,8 +89,4 @@ cantor = (cantor-poset , is , mono) , sim
                    ((ys ⌢ head (zs ⌢ z) tt) ++ tail (zs ⌢ z) tt) ⌢ c₀ ∎
             NTS′ : ((ys ++ zs) ⌢ z ⌢ c₀) ≤ (ys ⌢ head (zs ⌢ z) tt) is-true
             NTS′ = ((tail (zs ⌢ z) tt) ⌢ c₀) , rem
-
--- --}
--- --}
--- --}
 ```
