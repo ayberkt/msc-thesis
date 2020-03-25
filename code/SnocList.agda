@@ -84,10 +84,12 @@ xs≰xs⌢y {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (xs≰xs⌢y NTS)
 lemma3 : {xs : SnocList} {ys : SnocList} {y : Z} → ¬ (xs ≡ xs ++ (ys ⌢ y))
 lemma3 {[]}     {ys}     {y}  p = ⊥-elim ((⌢≠[] ((ys ⌢ y) ≡⟨ sym (cong (λ - → - ⌢ y) (++-left-id ys)) ⟩ ([] ++ ys) ⌢ y ≡⟨ sym p ⟩ [] ∎)))
 lemma3 {xs ⌢ x} {[]}     {y}  p = ⊥-elim (lemma3 (⌢-eq-left p))
-lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 bar)
+lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
   where
-    bar : xs ≡ (xs ++ (([] ⌢ x) ++ ys)) ⌢ y
-    bar = xs ≡⟨ ⌢-eq-left p ⟩ ((xs ⌢ x) ++ ys) ⌢ y ≡⟨ snoc-lemma xs (ys ⌢ y) x ⟩ (xs ++ (([] ⌢ x) ++ ys)) ⌢ y ∎
+    NTS : xs ≡ (xs ++ (([] ⌢ x) ++ ys)) ⌢ y
+    NTS = xs                         ≡⟨ ⌢-eq-left p              ⟩
+          ((xs ⌢ x) ++ ys) ⌢ y       ≡⟨ snoc-lemma xs (ys ⌢ y) x ⟩
+          xs ++ (([] ⌢ x) ++ ys) ⌢ y ∎
 
 
 ++-lemma : {xs ys zs₀ zs₁ : SnocList} → xs ≡ ys ++ zs₀ → xs ≡ ys ++ zs₁ → zs₀ ≡ zs₁
