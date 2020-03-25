@@ -1,3 +1,4 @@
+```
 {-# OPTIONS --cubical --safe #-}
 
 module CantorSpace where
@@ -80,3 +81,4 @@ cantor = (cantor-poset , is , mono) , sim
 -- --}
 -- --}
 -- --}
+```
