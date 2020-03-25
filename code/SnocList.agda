@@ -82,7 +82,12 @@ xs≰xs⌢y {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (xs≰xs⌢y NTS)
           (xs ⌢ x) ++ (([] ⌢ y′) ++ ys) ∎
 
 lemma3 : {xs : SnocList} {ys : SnocList} {y : Z} → ¬ (xs ≡ xs ++ (ys ⌢ y))
-lemma3 {[]}     {ys}     {y}  p = ⊥-elim ((⌢≠[] ((ys ⌢ y) ≡⟨ sym (cong (λ - → - ⌢ y) (++-left-id ys)) ⟩ ([] ++ ys) ⌢ y ≡⟨ sym p ⟩ [] ∎)))
+lemma3 {[]}     {ys}     {y}  p = ⊥-elim (⌢≠[] NTS)
+  where
+    NTS : ys ⌢ y ≡ []
+    NTS = (ys ⌢ y)       ≡⟨ sym (cong (λ - → - ⌢ y) (++-left-id ys)) ⟩
+          ([] ++ ys) ⌢ y ≡⟨ sym p ⟩
+          []             ∎
 lemma3 {xs ⌢ x} {[]}     {y}  p = ⊥-elim (lemma3 (⌢-eq-left p))
 lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
   where
