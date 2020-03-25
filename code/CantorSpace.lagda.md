@@ -42,9 +42,9 @@ cantor-poset = ℂ , ((_≤_ , ℂ-set) , (≤-refl , ≤-trans , ≤-antisym))
       where
         NTS′ : xs ≡ zs ++ (bs ++ as)
         NTS′ = xs               ≡⟨ p                      ⟩
-                ys ++ as         ≡⟨ cong (λ - → - ++ as) q ⟩
-                (zs ++ bs) ++ as ≡⟨ sym (assoc zs bs as)   ⟩
-                zs ++ (bs ++ as) ∎
+               ys ++ as         ≡⟨ cong (λ - → - ++ as) q ⟩
+               (zs ++ bs) ++ as ≡⟨ sym (assoc zs bs as)   ⟩
+               zs ++ (bs ++ as) ∎
 
     ≤-antisym : (xs ys : ℂ) → xs ≤ ys is-true → ys ≤ xs is-true → xs ≡ ys
     ≤-antisym xs ys ([]     , p) ([]      , q) = p
