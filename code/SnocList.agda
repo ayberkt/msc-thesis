@@ -148,6 +148,6 @@ tail : (xs : SnocList) → nonempty xs → SnocList
 tail ([] ⌢ x) tt = []
 tail (xs ⌢ x₀ ⌢ x₁) p = (tail (xs ⌢ x₀) tt) ⌢ x₁
 
-hd-tl-lemma : (xs : SnocList) → (ne : nonempty xs) → ([] ⌢ (head xs ne)) ++ (tail xs ne) ≡ xs
+hd-tl-lemma : (xs : SnocList) (ne : nonempty xs) → ([] ⌢ head xs ne) ++ tail xs ne ≡ xs
 hd-tl-lemma ([] ⌢ x) tt = refl
 hd-tl-lemma (xs ⌢ x₀ ⌢ x₁) tt = cong (λ - → - ⌢ x₁) (hd-tl-lemma (xs ⌢ x₀) tt)
