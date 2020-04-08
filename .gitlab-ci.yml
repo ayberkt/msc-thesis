@@ -30,3 +30,4 @@ cosmetics:
   - ./check_cosmetics.py Poset.lagda.md
   - ./check_cosmetics.py SnocList.agda
   - ./check_cosmetics.py CantorSpace.lagda.md
+  - ./check_cosmetics.py ProductTopology.agda
