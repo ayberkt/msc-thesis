@@ -154,6 +154,33 @@ OrderStr-set P@(_ , A-set₀) Q@(_ , A-set₁) =
     order-set = ∏-set λ _ → ∏-set λ _ → isSetHProp
 ```
 
+## Product of two posets
+
+```
+_×ₚ_ : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) → Poset (ℓ₀ ⊔ ℓ₀′) (ℓ₁ ⊔ ℓ₁′)
+P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , ((_⊑_ , carrier-set) , ⊑-refl , ⊑-trans , ⊑-antisym)
+  where
+    _⊑_ : ∣ P ∣ₚ × ∣ Q ∣ₚ → ∣ P ∣ₚ × ∣ Q ∣ₚ → hProp _
+    _⊑_ (x₀ , y₀) (x₁ , y₁) = x₀ ⊑[ P ] x₁ ∧ y₀ ⊑[ Q ] y₁
+
+    carrier-set : IsSet (∣ P ∣ₚ × ∣ Q ∣ₚ)
+    carrier-set = isOfHLevelΣ 2 (carrier-is-set P) λ _ → (carrier-is-set Q)
+
+    ⊑-refl : (p : ∣ P ∣ₚ × ∣ Q ∣ₚ) → p ⊑ p is-true
+    ⊑-refl (x , y) = (⊑[ P ]-refl x) , (⊑[ Q ]-refl y)
+
+    ⊑-trans : (p q r : ∣ P ∣ₚ × ∣ Q ∣ₚ) → p ⊑ q is-true → q ⊑ r is-true → p ⊑ r is-true
+    ⊑-trans (x₀ , y₀) (x₁ , y₁) (x₂ , y₂) (x₀⊑x₁ , y₀⊑y₁) (x₁⊑x₂ , y₁⊑y₂) =
+      ⊑[ P ]-trans _ _ _ x₀⊑x₁ x₁⊑x₂ , ⊑[ Q ]-trans _ _ _ y₀⊑y₁ y₁⊑y₂
+
+    ⊑-antisym : (p q : ∣ P ∣ₚ × ∣ Q ∣ₚ) → p ⊑ q is-true → q ⊑ p is-true → p ≡ q
+    ⊑-antisym (x₀ , y₀) (x₁ , y₁) (x₀⊑x₁ , y₀⊑y₁) (x₁⊑x₀ , y₁⊑y₀) =
+      sigmaPath→pathSigma (x₀ , y₀) (x₁ , y₁) (⊑[ P ]-antisym _ _ x₀⊑x₁ x₁⊑x₀ , sym NTS)
+      where
+        NTS : y₁ ≡ transport refl y₀
+        NTS = subst (_≡_ y₁) (sym (transportRefl y₀)) (⊑[ Q ]-antisym _ _ y₁⊑y₀ y₀⊑y₁)
+```
+
 ## Equality of isomorphic posets
 
 ```
