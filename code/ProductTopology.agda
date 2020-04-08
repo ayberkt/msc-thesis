@@ -18,7 +18,7 @@ module _ (𝔉 𝔊 : FormalTopology ℓ₀ ℓ₀) where
   Q     = pos E
 
   𝔉×𝔊 : FormalTopology ℓ₀ ℓ₀
-  𝔉×𝔊 = (P ×ₚ Q , (×-exp , ×-out ,  λ {a} {b} c → ×-next {b = b} c) , mono) , sim
+  𝔉×𝔊 = (P ×ₚ Q , IS , mono) , sim
     where
       ×-exp : ∣ P ×ₚ Q ∣ₚ → Type ℓ₀
       ×-exp (a₀ , a₁) = exp D a₀ ⊎ exp E a₁
