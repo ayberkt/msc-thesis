@@ -7,6 +7,9 @@ open import Basis
 𝒫 : Type ℓ → Type (suc ℓ)
 𝒫 {ℓ} A = A → hProp ℓ
 
+_∈_ : A → 𝒫 A → hProp _
+x ∈ U = U x
+
 𝒫-set : (A : Type ℓ) → IsSet (𝒫 A)
 𝒫-set A = ∏-set λ _ → isSetHProp
 

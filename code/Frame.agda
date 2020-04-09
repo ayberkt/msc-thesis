@@ -112,6 +112,62 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       NTS : (⋃[ F ] ℱ) ⊑ z is-true
       NTS = ⋃[_]-least ℱ z upper
 
+  comm : (x y : ∣ F ∣F) → x ⊓[ F ] y ≡ y ⊓[ F ] x
+  comm x y = ⊓-unique y x _ (⊓[_]-lower₁ x y) (⊓[_]-lower₀ x y) NTS
+    where
+      NTS = λ w w⊑y w⊑x → ⊓[_]-greatest x y w w⊑x w⊑y
+
+  family-iff : {ℱ 𝒢 : Sub ℓ₂ ∣ F ∣F}
+             → ((x : ∣ F ∣F) → (x ε ℱ → x ε 𝒢) × (x ε 𝒢 → x ε ℱ))
+             → ⋃[ F ] ℱ ≡ ⋃[ F ] 𝒢
+  family-iff {ℱ = ℱ} {𝒢 = 𝒢} h = ⋃-unique _ _ ub least
+    where
+      ub : (o : ∣ F ∣F) → o ε 𝒢 → (o ⊑ (⋃[ F ] ℱ)) is-true
+      ub o (i , p) = subst
+                       (λ - → - ⊑[ pos F ] (⋃[ F ] ℱ) is-true)
+                       p
+                       (⋃[ _ ]-upper _ (π₁ (h (𝒢 € i)) (i , refl)))
+      least : (w : ∣ F ∣F)
+            → ((o : ∣ F ∣F) → o ε 𝒢 → o ⊑ w is-true)
+            → (⋃[ F ] ℱ) ⊑ w is-true
+      least w f = ⋃[ _ ]-least _ λ o oεℱ → f o (π₀ (h o) oεℱ)
+
+  flatten : (I : Type ℓ₂) (J : I → Type ℓ₂) (f : (i : I) → J i → ∣ F ∣F)
+          → ⋃[ F ] (Σ I J , λ { (x , y) → f x y })
+          ≡ ⋃[ F ] (I , λ i → ⋃[ F ] (J i , λ y → f i y))
+  flatten I J f = ⊑[ pos F ]-antisym _ _ down up
+    where
+      open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
+
+      LHS = ⋃[ F ] (Σ I J , (λ { (x , y) → f x y }))
+      RHS = ⋃[ F ] (I , (λ i → ⋃[ F ] (J i , f i)))
+
+      down : LHS ⊑[ pos F ] RHS is-true
+      down = ⋃[_]-least _ _ isUB
+        where
+          isUB : (o : ∣ F ∣F)
+               → o ε (Σ I J , (λ { (x , y) → f x y }))
+               → o ⊑[ pos F ] RHS is-true
+          isUB o ((i , j) , eq) =
+              o                          ⊑⟨ ≡⇒⊑ (pos F) (sym eq) ⟩
+              f i j                      ⊑⟨ ⋃[_]-upper _ _ (j , refl) ⟩
+              ⋃[ F ] (J i , λ - → f i -) ⊑⟨ ⋃[_]-upper _ _ (i , refl) ⟩
+              RHS                        ■
+
+      up : RHS ⊑[ pos F ] LHS is-true
+      up = ⋃[_]-least _ _ isUB
+        where
+          isUB : (o : ∣ F ∣F)
+               → o ε (I , (λ i → ⋃[ F ] (J i , f i)))
+               → o ⊑[ pos F ] (⋃[ F ] (Σ I J , (λ { (x , y) → f x y }))) is-true
+          isUB o (i , eq) =
+            o                                        ⊑⟨ ≡⇒⊑ (pos F) (sym eq) ⟩
+            ⋃[ F ] (J i , λ y → f i y)               ⊑⟨ ⋃[_]-least _ _ isUB′ ⟩
+            ⋃[ F ] (Σ I J , (λ { (x , y) → f x y })) ■
+            where
+              isUB′ : (z : ∣ F ∣F) → z ε (J i , (λ y → f i y)) → z ⊑[ pos F ] LHS is-true
+              isUB′ z (j , eq′) = ⋃[_]-upper _ _ ((i , j) , eq′)
+
 -- Frame homomorphisms.
 IsFrameHomomorphism : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
                     → (m : pos F ─m→ pos G)
@@ -127,6 +183,14 @@ IsFrameHomomorphism {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G m 
 
     resp-⋃ : Type (ℓ₀ ⊔ suc ℓ₂)
     resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → m $ₘ (⋃[ F ] ℱ) ≡ ⋃[ G ] (π₀ m ⊚ ℱ)
+
+IsFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
+                         → (m : pos F ─m→ pos G)
+                         → IsProp (IsFrameHomomorphism F G m)
+IsFrameHomomorphism-prop F G m =
+  isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
+  isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → carrier-is-set (pos G) _ _) λ _ →
+    ∏-prop λ ℱ → carrier-is-set (pos G) _ _
 
 _─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 _─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (IsFrameHomomorphism F G)

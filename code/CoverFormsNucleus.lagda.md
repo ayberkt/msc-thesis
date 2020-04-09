@@ -7,16 +7,21 @@ open import Basis          hiding (A)
 open import Poset          renaming (IsDownwardClosed to IsDownwardClosed′)
 open import Frame
 open import HITCoverage    hiding (Type)
-open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame)
+open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame; idem)
+open import Family         using  (Sub; _⊚_; _€_; _ε_; index)
+open import Truncation     renaming (squash to squash′)
+open import Data.Bool      using    (Bool; true; false)
+open import Unit           using  (tt)
 open import Powerset
 open import FormalTopology renaming (pos to pos′)
+open import PowFamEquivalence
 ```
 
 We use an anonymous module that takes some formal topology `F` as a parameter to reduce
 parameter-passing.
 
 ```
-module _ (F : FormalTopology ℓ₀ ℓ₀) where
+module NucleusFrom (F : FormalTopology ℓ₀ ℓ₀) where
 ```
 
 We refer to the underlying poset of `F` as `P` and the frame of downwards-closed subsets
@@ -27,13 +32,14 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
   private
     D       = π₀ F
     P       = pos′ (π₀ F)
+    𝔉       = ∣ P ∣ₚ
     F↓      = downward-subset-frame P
     P↓      = pos F↓
     sim     = π₁ F
     mono    = π₁ D
     _⊑_     = λ (x y : stage D) → x ⊑[ P ] y is-true
 
-  open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono) sim
+  open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono) sim public
 ```
 
 Now, we define the *covering nucleus* which we denote by `𝕛`. At its heart, this is
@@ -101,17 +107,24 @@ We denote by `L` the frame of fixed points for `𝕛`.
 ```
   L : Frame (suc ℓ₀) ℓ₀ ℓ₀
   L = nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
+
+  ⦅_⦆ : ∣ L ∣F → 𝒫 ∣ P ∣ₚ
+  ⦅ ((U , _) , _) ⦆ = U
 ```
 
 Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
 
 ```
+
   ↓-clos : stage D → ∣ F↓ ∣F
   ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
       down-DC : IsDownwardClosed′ P x↓ is-true
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
+
+  x◀x↓ : (x : stage D) → x <| (λ - → - ⊑[ P ] x is-true)
+  x◀x↓ x = dir (⊑[ P ]-refl x)
 ```
 
 By composing this with the covering nucleus, we define a map `e` from `F` to `F↓`.
@@ -152,24 +165,4 @@ Furthermore, `η` is a monotonic map.
       η-mono x y x⊑y a (dir p)        = dir (⊑[ P ]-trans a x y p x⊑y)
       η-mono x y x⊑y a (branch b f)   = branch b (λ c → η-mono x y x⊑y (next D c) (f c))
       η-mono x y x⊑y a (squash p q i) = squash (η-mono x y x⊑y a p) (η-mono x y x⊑y a q) i
-```
-
-The notion of *representation* is defined as follows.
-
-```
-  represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R) → Type ℓ₀
-  represents R m =
-    (x : ∣ P ∣ₚ) (y : exp D x) →
-      (m $ₘ x) ⊑[ pos R ] (⋃[ R ] (outcome D y , λ u → m $ₘ next D u)) is-true
-```
-
-Now we can state the universal property. Notice that `_∘m_` is just the composition of two
-monotonic functions and it has to be explicitly provided the domains and codomains because
-Agda does not seem to be able to infer them otherwise.
-
-```
-  universal-prop : Type (suc (suc ℓ₀))
-  universal-prop =
-    (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) (f : P ─m→ pos R) → represents R f →
-      Σ[ m ∈ (pos L ─m→ pos R) ] (_∘m_ {P = P} {Q = pos L} {R = pos R} m ηm) ≡ f
 ```

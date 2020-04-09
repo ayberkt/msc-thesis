@@ -57,8 +57,9 @@ module Test (P     : Type ℓ)
 ```
 
 ```
-  _∩_ : (P → Type ℓ₀) → (P → Type ℓ₁) → P → Type (ℓ₀ ⊔ ℓ₁)
-  U ∩ V = λ x → U x × V x
+  private
+    _∩_ : (P → Type ℓ₀) → (P → Type ℓ₁) → P → Type (ℓ₀ ⊔ ℓ₁)
+    U ∩ V = λ x → U x × V x
 
   ∩-comm : (U : P → Type ℓ₀) → (V : P → Type ℓ₁)
          → (a : P) → ((V ∩ U) a → (U ∩ V) a) × ((U ∩ V) a → (V ∩ U) a)

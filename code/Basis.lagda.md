@@ -27,7 +27,7 @@ open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; isSet        to IsSet
                                                             ; isProp→isSet to prop⇒set )
 open import Cubical.Foundations.Transport   public using    ( transportEquiv )
-open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; secEq; retEq; fiber )
+open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; secEq; retEq; fiber)
 open import Cubical.Foundations.SIP         public using    ( SNS; SNS'; join-SNS'
                                                             ; SNS''
                                                             ; SNS'''
@@ -103,6 +103,11 @@ infix 5 _is-true
 ```
 ∏-prop : ((x : A) → IsProp (B x)) → IsProp ((x : A) → B x)
 ∏-prop B-prop x y = fn-ext x y λ x′ → B-prop x′ (x x′) (y x′)
+```
+
+```
+∃_ : {A : Type ℓ₀} → (A → hProp ℓ₁) → Type (ℓ₀ ⊔ ℓ₁)
+∃_ {A = A} P = Σ[ x ∈ A ] (P x is-true)
 ```
 
 ## Sets
