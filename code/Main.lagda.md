@@ -8,5 +8,6 @@ open import Poset
 open import Frame
 open import CoverFormsNucleus
 open import BaireSpace
+open import UniversalProperty
 open import ProductTopology
 ```

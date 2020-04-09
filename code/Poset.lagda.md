@@ -95,6 +95,11 @@ IsMonotonic : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₂ ℓ₃)
             → (∣ P ∣ₚ → ∣ Q ∣ₚ) → Type (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₃)
 IsMonotonic P Q f =
   (x y : ∣ P ∣ₚ) → x ⊑[ P ] y is-true → (f x) ⊑[ Q ] (f y) is-true
+
+IsMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f : ∣ P ∣ₚ → ∣ Q ∣ₚ)
+                 → IsProp (IsMonotonic P Q f)
+IsMonotonic-prop P Q f =
+  ∏-prop (λ x → ∏-prop λ y → ∏-prop λ _ → is-true-prop (f x ⊑[ Q ] f y))
 ```
 
 ## Monotonic functions
