@@ -14,6 +14,10 @@ with open(sys.argv[1], encoding="utf-8") as f:
         print("Line {} has trailing spaces.".format(line_num))
         sys.exit(1)
 
+    if " Set " in line:
+      print("Line {} uses the name `Set`.".format(line_num))
+      sys.exit(1)
+
     line_num += 1
 
 print("OK.")
