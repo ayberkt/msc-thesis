@@ -11,7 +11,7 @@ open import Frame
 import AlgebraicProperties
 
 -- A predicate expressing whether a function is a nucleus.
-IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Set (ℓ₀ ⊔ ℓ₁)
+IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Type (ℓ₀ ⊔ ℓ₁)
 IsNuclear L j = N₀ × N₁ × N₂
   where
     N₀ = (a b : ∣ L ∣F) → j (a ⊓[ L ] b) ≡ (j a) ⊓[ L ] (j b)
@@ -19,7 +19,7 @@ IsNuclear L j = N₀ × N₁ × N₂
     N₂ = (a   : ∣ L ∣F) → j (j a) ⊑[ pos L ] j a is-true
 
 -- The type of nuclei.
-Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Set (ℓ₀ ⊔ ℓ₁)
+Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
@@ -81,7 +81,7 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
     P = pos L
     A-set = carrier-is-set (pos L)
 
-    𝔽 : Set ℓ₀
+    𝔽 : Type ℓ₀
     𝔽 = Σ[ a ∈ ∣ L ∣F ] j a ≡ a
 
     𝔽-set : IsSet 𝔽
