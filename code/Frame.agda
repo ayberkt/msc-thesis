@@ -16,7 +16,7 @@ import AlgebraicProperties
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 RawFrameStr ℓ₁ ℓ₂ A = (PosetStr ℓ₁ A) × A × (A → A → A) × (Sub ℓ₂ A → A)
 
-frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → Set (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
     ((o : O)       → o ⊑ 𝟏 is-true)
   × ((o p : O)     → (o ⊓ p) ⊑ o is-true)
@@ -255,7 +255,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
-    in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Set ℓ₀
+    in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Type ℓ₀
     in-some-set-of ℱ x = Σ (index ℱ) (λ i → ∣ ℱ € i ∣𝔻 x is-true)
 
     ⊔_ : Sub ℓ₀ 𝔻 → 𝔻
