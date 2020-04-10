@@ -20,11 +20,11 @@ infixl 5 _⌢_
 ⌢-eq-right : {xs ys : SnocList} {x y : Z} → xs ⌢ x ≡ ys ⌢ y → x ≡ y
 ⌢-eq-right {x = x} {y = y} p with x ≟ y
 ⌢-eq-right {x = x} {y = y} p | yes q = q
-⌢-eq-right {x = x} {y = y} p | no ¬q = sym (subst P p refl) 
+⌢-eq-right {x = x} {y = y} p | no ¬q = sym (subst P p refl)
   where
     P : SnocList → Type zero
     P []      = ⊥
-    P (_ ⌢ z) = z ≡ x 
+    P (_ ⌢ z) = z ≡ x
 
 ⌢≠[] : {xs : SnocList} {x : Z} → ¬ (xs ⌢ x ≡ [])
 ⌢≠[] p = subst P p tt
