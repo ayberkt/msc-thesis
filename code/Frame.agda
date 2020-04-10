@@ -9,7 +9,6 @@ open import Family
 open import Truncation
 open import Poset
 open import Powerset
-open import Unit
 
 import AlgebraicProperties
 

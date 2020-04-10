@@ -10,7 +10,6 @@ open import Powerset
 open import PowFamEquivalence
 open import Family
 open import Truncation
-open import Unit
 open import FormalTopology hiding (pos)
 open import CoverFormsNucleus
 

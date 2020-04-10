@@ -11,7 +11,6 @@ open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame
 open import Family         using  (Sub; _⊚_; _€_; _ε_; index)
 open import Truncation     renaming (squash to squash′)
 open import Data.Bool      using    (Bool; true; false)
-open import Unit           using  (tt)
 open import Powerset
 open import FormalTopology renaming (pos to pos′)
 open import PowFamEquivalence
