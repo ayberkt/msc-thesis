@@ -4,8 +4,8 @@ module Unit where
 
 open import Basis
 
-data N₁ {ℓ : Level} : Set ℓ where
-  tt : N₁
+data Unit (ℓ : Level) : Type ℓ where
+  tt : Unit ℓ
 
-N₁-prop : {ℓ : Level} → IsProp {ℓ = ℓ} N₁
-N₁-prop tt tt = refl
+Unit-prop : {ℓ : Level} → IsProp (Unit ℓ)
+Unit-prop tt tt = refl

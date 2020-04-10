@@ -239,7 +239,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
 
-    𝟏 = (λ _ → N₁ , N₁-prop) , λ _ _ _ _ → tt
+    𝟏 = (λ _ → Unit ℓ₀ , Unit-prop) , λ _ _ _ _ → tt
 
     ∩-down : (S T : 𝒫 X)
            → IsDownwardClosed (X , P) S is-true
