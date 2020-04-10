@@ -467,7 +467,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
     g = equivFun (invEquiv eqv)
 
     ret : (y : ∣ G ∣F) → f (g y) ≡ y
-    ret y = retEq eqv y 
+    ret y = retEq eqv y
 
     sec : (x : ∣ F ∣F) → g (f x) ≡ x
     sec = secEq eqv
