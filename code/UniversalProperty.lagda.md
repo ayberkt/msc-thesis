@@ -290,7 +290,8 @@ Proof.
 ### `g` is uniquely determined
 
 ```
-    g-unique : (y : Σ[ g′ ∈ (L ─f→ R) ] (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ g′) ηm ≡ fm))
+    g-unique : (y : Σ[ g′ ∈ (L ─f→ R) ]
+                     (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ g′) ηm ≡ fm))
             → ((gm , g-frame-homo) , g∘η=f) ≡ y
     g-unique ((g′m , g′-frame-homo) , φ) = ΣProp≡ I II
       where
@@ -299,7 +300,8 @@ Proof.
         f=g′∘η : f ≡ g′ ∘ η
         f=g′∘η = subst (λ { (f′ , _) → f′ ≡ g′ ∘ η }) φ refl
 
-        NTS₀ : (y : Σ (∣ pos L ∣ₚ → ∣ pos R ∣ₚ) (IsMonotonic (pos L) (pos R))) → IsProp ((_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) ≡ fm)
+        NTS₀ : (y : Σ (∣ pos L ∣ₚ → ∣ pos R ∣ₚ) (IsMonotonic (pos L) (pos R)))
+             → IsProp ((_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) ≡ fm)
         NTS₀ y = isOfHLevelΣ 2
                    (∏-set λ _ → carrier-is-set (pos R))
                    (λ h → prop⇒set (IsMonotonic-prop P (pos R) h))
