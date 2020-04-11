@@ -290,6 +290,48 @@ Proof.
 ### `g` is uniquely determined
 
 ```
+    g-unique : (y : Σ[ g′ ∈ (L ─f→ R) ] (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ g′) ηm ≡ fm))
+            → ((gm , g-frame-homo) , g∘η=f) ≡ y
+    g-unique ((g′m , g′-frame-homo) , φ) = ΣProp≡ I II
+      where
+        g′ = _$ₘ_ g′m
+
+        f=g′∘η : f ≡ g′ ∘ η
+        f=g′∘η = subst (λ { (f′ , _) → f′ ≡ g′ ∘ η }) φ refl
+
+        NTS₀ : (y : Σ (∣ pos L ∣ₚ → ∣ pos R ∣ₚ) (IsMonotonic (pos L) (pos R))) → IsProp ((_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) ≡ fm)
+        NTS₀ y = isOfHLevelΣ 2
+                   (∏-set λ _ → carrier-is-set (pos R))
+                   (λ h → prop⇒set (IsMonotonic-prop P (pos R) h))
+                   (_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) fm
+
+        I : (h : L ─f→ R) → IsProp (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm ≡ fm)
+        I h = isOfHLevelΣ 2
+                (∏-set λ _ → carrier-is-set (pos R))
+                (λ h → prop⇒set (IsMonotonic-prop P (pos R) h))
+                (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm) fm
+
+        g~g′ : (𝔘 : ∣ L ∣F) → g 𝔘 ≡ g′ 𝔘
+        g~g′ 𝔘 =
+          g 𝔘                           ≡⟨ cong g (main-lemma 𝔘)                      ⟩
+          g (⋃[ L ] (η ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫))    ≡⟨ π₁ (π₁ g-frame-homo) (η ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫)       ⟩
+          ⋃[ R ] ((g  ∘ η) ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡⟨ cong (λ - → ⋃[ R ] (- ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫)) g∘η=f′ ⟩
+          ⋃[ R ] (f ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫)        ≡⟨  eq₀                                       ⟩
+          ⋃[ R ] ((g′ ∘ η) ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡⟨  eq₁                                       ⟩
+          g′ (⋃[ L ] (η ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫))   ≡⟨  eq₂                                       ⟩
+          g′ 𝔘 ∎
+          where
+            eq₀ : ⋃[ R ] (f ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡ ⋃[ R ] ((g′ ∘ η) ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫)
+            eq₀ = cong (λ - → ⋃[ R ] (- ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫)) f=g′∘η
+            eq₁ : ⋃[ R ] ((g′ ∘ η) ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡ g′ (⋃[ L ] (η ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫))
+            eq₁ = sym (π₁ (π₁ g′-frame-homo) (η ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫))
+            eq₂ : g′ (⋃[ L ] ((η ⊚ ⟪ ⦅ 𝔘 ⦆ ⟫))) ≡ g′ 𝔘
+            eq₂ = cong g′ (sym (main-lemma 𝔘))
+
+        II : (gm , g-frame-homo) ≡ (g′m , g′-frame-homo)
+        II = ΣProp≡
+               (IsFrameHomomorphism-prop L R)
+               (ΣProp≡ (IsMonotonic-prop (pos L) (pos R)) (fn-ext _ _ g~g′))
 ```
 
 ### The final proof

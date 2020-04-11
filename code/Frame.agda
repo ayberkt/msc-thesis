@@ -215,15 +215,16 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
                 ; IsTransitive to <<-IsTransitive
                 ; IsAntisym    to <<-IsAntisym)
 
-    <<-refl : <<-IsReflexive is-true
-    <<-refl (U , U-down) x xεU = xεU
+    abstract
+      <<-refl : <<-IsReflexive is-true
+      <<-refl (U , U-down) x xεU = xεU
 
-    <<-trans : <<-IsTransitive is-true
-    <<-trans _ _ _ S<<T T<<U x xεS = T<<U x (S<<T x xεS)
+      <<-trans : <<-IsTransitive is-true
+      <<-trans _ _ _ S<<T T<<U x xεS = T<<U x (S<<T x xεS)
 
-    <<-antisym : <<-IsAntisym is-true
-    <<-antisym X Y S⊆T T⊆S =
-      to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
+      <<-antisym : <<-IsAntisym is-true
+      <<-antisym X Y S⊆T T⊆S =
+        to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
