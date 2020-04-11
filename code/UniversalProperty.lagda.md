@@ -337,9 +337,9 @@ Proof.
 ### The final proof
 
 ```
-  -- main : universal-prop
-  -- main R fm@(f , f-mono) f-flat rep =
-  -- (((g , g-mono) , g-resp-𝟏 , g-resp-⊓ , g-resp-⊔) , g∘η=f) , {!!}
-    -- where
-      -- open MainProof R fm f-flat rep
+  main : universal-prop
+  main R fm@(f , f-mono) f-flat rep =
+    (((g , g-mono) , g-resp-𝟏 , g-resp-⊓ , g-resp-⊔) , g∘η=f) , g-unique
+    where
+      open MainProof R fm f-flat rep
 ```
