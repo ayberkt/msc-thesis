@@ -87,4 +87,77 @@ Now, let us prove some simple facts about the class of propositional types.
   Given $\oftyI{A}{\univ{}_n}$, the type $\isprop{A}$ is propositional.
 \end{prop}
 
+As we view propositional types as embodying logical propositions, it is natural to
+expect that the right notion of equivalence between them is logical equivalence.
+
+\begin{defn}\label{defn:iff}
+  Types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_m}$ are logically equivalent
+  (denoted $\logequiv{A}{B}$) iff there exists functions both ways:
+  \begin{equation*}
+    A \leftrightarrow B \quad\is\quad (A \rightarrow B) \times (B \rightarrow A).
+  \end{equation*}
+\end{defn}
+
+Indeed, it turns out that in \UF{}, it is sufficient to show logical equivalence to
+establish equivalence between propositional types. We provide this result in
+Proposition~\ref{prop:iff-equiv} after we present the general notion of type equivalence.
+
 \section{Sets}
+
+The other homotopy class of interest is the class of types whose proof structure is not
+trivial, in that there may be distinct terms that inhabit it, but the proof structure of
+the type of equality proofs between these terms is trivial. In other words, inhabitants of
+a set are equal to each other in \emph{at most one way}.
+
+\begin{defn}[Set]\label{defn:hset}
+  A type $A$ is a set if its homotopy level is two:
+  \begin{equation*}
+    \isset{A} \quad\is\quad \isofhlevel{A}{2}.
+  \end{equation*}
+\end{defn}
+
+\section{Equivalence of types}
+
+\begin{defn}[Fiber]
+  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function
+  $f : A \rightarrow B$, and some $\oftyI{y}{B}$, the fiber of $f$ is the type of all inhabitants
+  of $A$ that are mapped by $f$ to $y$:
+  \begin{equation*}
+    \fiber{f}{y} \quad\is\quad \sigmaty{x}{A}{f(x) =_B y}.
+  \end{equation*}
+\end{defn}
+
+The following definition of type equivalence was first formulated by Voevodsky.
+
+\begin{defn}[Type equivalence]
+  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function $f : A \rightarrow B$ is an
+  \emph{equivalence} if $\fiber{f}{y}$ is a contractible type for every $\oftyI{y}{B}$:
+  \begin{equation*}
+    \isequiv{f} \quad\is\quad \pity{y}{B}{\iscontr{\fiber{f}{y}}}.
+  \end{equation*}
+\end{defn}
+
+We will collect the type of type equivalences in the following type.
+
+\begin{defn}
+  Let $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$.
+  \begin{equation*}
+    A \simeq B \quad\is\quad \sigmaty{f}{A \rightarrow B}{\isequiv{f}}
+  \end{equation*}
+\end{defn}
+
+\begin{prop}[Equivalences are invertible]
+  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, if a function $f : A \rightarrow B$
+  is an equivalence then it has an inverse.
+\end{prop}
+
+\begin{prop}\label{prop:iff-equiv}
+  Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
+  then $\typequiv{A}{B}$.
+\end{prop}
+\begin{proof}
+  Let $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$ such that there exist $f : A \rightarrow B$ and
+  $g : B \rightarrow A$. Let $\oftyI{y}{B}$. We will show that $\fiber{f}{y}$ is contractible.
+\end{proof}
+
+\section{Higher Inductive Types (HITs)}
