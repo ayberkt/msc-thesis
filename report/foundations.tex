@@ -26,6 +26,20 @@ Homotopy levels of one and two are of special interest. The former is the type o
 \emph{propositions} i.e., types that are like propositions in the sense that they have
 trivial proof structure: they are inhabited by at most one term.
 
+\begin{defn}
+  A type $A$ is a set (sometimes disambiguated as \emph{h-set}) if it a has a homotopy
+  level of two:
+  \begin{equation*}
+    \isset{A} \quad\is\quad \isofhlevel{A}{2}.
+  \end{equation*}
+\end{defn}
+
+\section{Propositions}
+
+The homotopy level of one is of special interest: it is the class of types that are like
+propositions in the sense that they have trivial proof structure: they are inhabited by at
+most one term.
+
 \begin{defn}[Proposition]
   A type $A$ is a proposition (sometimes disambiguated as \emph{h-proposition}) if it has
   a homotopy level of one:
@@ -34,10 +48,43 @@ trivial proof structure: they are inhabited by at most one term.
   \end{equation*}
 \end{defn}
 
-\begin{defn}
-  A type $A$ is a set (sometimes disambiguated as \emph{h-set}) if it a has a homotopy
-  level of two:
+We will be collecting the class of propositional types in the following type of $\Omega$.
+
+\begin{defn}[$\Omega$]
+  $\Omega_n$ is the type of all types at universe $n$ that are propositional.
   \begin{equation*}
-    \isset{A} \quad\is\quad \isofhlevel{A}{2}.
+    \sigmaty{A}{\univ{}_n}{\isprop{A}}.
   \end{equation*}
 \end{defn}
+
+When asserting that a proposition $\oftyI{A}{\Omega_n}$ is inhabited, we have to technically
+project out the first component. We will engage in the excusable notational abuse of
+denoting this projection by $A$ itself.
+
+Once we introduce this delineation of the class of propositional types, we have to make
+sure that types that we view as \emph{properties} of structures are actually propositional
+types. This is usually easy to do, that is, most types that are expected to behave like
+propositions behave naturally like propositions, so it suffices to prove this fact.
+However, there are cases when they actually \emph{are not} propositional. A substantial
+component of the work presented in this thesis is devoted to the problem of ensuring
+certain types behave propositionally as we will explain later.
+
+Now, let us prove some simple facts about the class of propositional types.
+
+\begin{prop}\label{thm:pi-prop}
+  Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
+  is a proposition when every $B(x)$ is a proposition for every $\oftyI{x}{A}$.
+\end{prop}
+\begin{proof}
+  Let $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$ and assume that $B(x)$ is a
+  proposition for every $\oftyI{x}{A}$. Let $\oftyII{f}{g}{\pity{x}{A}{B(x)}}$. By
+  function extensionality, it suffices to show that $f(x) = g(x)$ for every
+  $\oftyI{x}{A}$. Let $\oftyI{x}{A}$. $f(x) = g(x)$ is given directly by the fact that
+  $B(x)$ is propositional.
+\end{proof}
+
+\begin{prop}[Propositionality is propositional]
+  Given $\oftyI{A}{\univ{}_n}$, the type $\isprop{A}$ is propositional.
+\end{prop}
+
+\section{Sets}
