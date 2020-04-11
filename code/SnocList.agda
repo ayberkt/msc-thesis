@@ -2,7 +2,6 @@
 
 open import Basis
 open import Cubical.Data.Empty.Base using (⊥; ⊥-elim)
-open import Cubical.Data.Unit.Base  using (Unit; tt)
 open import Cubical.Relation.Nullary.DecidableEq using (Discrete→isSet)
 open import Cubical.Relation.Nullary using (Discrete; yes; no; Dec; ¬_)
 
@@ -31,7 +30,7 @@ infixl 5 _⌢_
   where
     P : SnocList → Type zero
     P []      = ⊥
-    P (_ ⌢ _) = Unit
+    P (_ ⌢ _) = Unit zero
 
 
 SnocList-discrete : Discrete SnocList
@@ -67,12 +66,12 @@ assoc xs ys []       = refl
 assoc xs ys (zs ⌢ z) = cong (λ - → - ⌢ z) (assoc xs ys zs)
 
 xs≠xs⌢y : {xs : SnocList} {y : Z} → ¬ (xs ≡ xs ⌢ y)
-xs≠xs⌢y {[]}     p = subst (λ { [] → Unit ; (_ ⌢ _) → ⊥ }) p tt
+xs≠xs⌢y {[]}     p = subst (λ { [] → Unit zero ; (_ ⌢ _) → ⊥ }) p tt
 xs≠xs⌢y {xs ⌢ x} p = ⊥-elim (xs≠xs⌢y (⌢-eq-left p))
 
 xs≰xs⌢y : {xs ys : SnocList} {x : Z} → ¬ (xs ≡ (xs ⌢ x) ++ ys)
-xs≰xs⌢y {[]} {[]} {y} p = subst (λ { (_ ⌢ _) → ⊥ ; [] → Unit }) p tt
-xs≰xs⌢y {[]} {ys ⌢ _} {y} p = subst (λ { (_ ⌢ _) → ⊥ ; [] → Unit }) p tt
+xs≰xs⌢y {[]} {[]} {y} p = subst (λ { (_ ⌢ _) → ⊥ ; [] → Unit zero }) p tt
+xs≰xs⌢y {[]} {ys ⌢ _} {y} p = subst (λ { (_ ⌢ _) → ⊥ ; [] → Unit zero }) p tt
 xs≰xs⌢y {xs ⌢ x} {[]} {y} p = ⊥-elim (xs≠xs⌢y (⌢-eq-left p))
 xs≰xs⌢y {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (xs≰xs⌢y NTS)
   where
@@ -138,7 +137,7 @@ lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
 
 nonempty : SnocList → Type zero
 nonempty []       = ⊥
-nonempty (xs ⌢ x) = Unit
+nonempty (xs ⌢ x) = Unit zero
 
 head : (xs : SnocList) → nonempty xs → Z
 head ([] ⌢ x) p = x
