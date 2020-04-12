@@ -5,16 +5,22 @@ self-containment. It is intended to be a summary rather than an introduction.
 
 \section{Homotopy levels}
 
+One of the most interesting observations that arise from associating type theory with
+homotopy theory is that we can classify types with respect to the non-trivial homotopy
+structure they bear. A space containing no nontrivial homotopy above dimension $n$ is
+called a homotopy $n$-type (or said to be of homotopy level $n$).
+
+The hierarchy of homotopy levels starts with that of \emph{contractible} ones.
 \begin{defn}[Contractible]
-  A type $A$ is called contractible if
+  A type $A$ is called contractible if it has exactly one inhabitant:
   \begin{equation*}
-    \iscontr{A} \quad\is\quad \sigmaty{x}{A}{\pity{y}{A}{x =_A y}}
+    \iscontr{A} \quad\is\quad \sigmaty{c}{A}{\pity{y}{A}{c =_A y}}.
   \end{equation*}
 \end{defn}
 
-This says precisely that type $A$ has \emph{exactly one} inhabitant.
-
-\begin{defn}
+We then recursively define a predicate expressing that a given type has homotopy level
+$n$. The idea is that we increase the dimension by one at each step.
+\begin{defn}[Homotopy level]
   We will say that the homotopy level of a type $A$ is $\oftyI{n}{\mathbb{N}}$ if
   \begin{align*}
     \isofhlevel{A}{\zero{}} &\quad\is\quad \iscontr{A}\\
@@ -22,23 +28,11 @@ This says precisely that type $A$ has \emph{exactly one} inhabitant.
   \end{align*}
 \end{defn}
 
-Homotopy levels of one and two are of special interest. The former is the type of
-\emph{propositions} i.e., types that are like propositions in the sense that they have
-trivial proof structure: they are inhabited by at most one term.
-
-\begin{defn}
-  A type $A$ is a set (sometimes disambiguated as \emph{h-set}) if it a has a homotopy
-  level of two:
-  \begin{equation*}
-    \isset{A} \quad\is\quad \isofhlevel{A}{2}.
-  \end{equation*}
-\end{defn}
-
 \section{Propositions}
 
 The homotopy level of one is of special interest: it is the class of types that are like
-propositions in the sense that they have trivial proof structure: they are inhabited by at
-most one term.
+propositions in the sense that their own proof structure is trivial: they are inhabited by
+at most one term.
 
 \begin{defn}[Proposition]
   A type $A$ is a proposition (sometimes disambiguated as \emph{h-proposition}) if it has
@@ -69,7 +63,7 @@ However, there are cases when they actually \emph{are not} propositional. A subs
 component of the work presented in this thesis is devoted to the problem of ensuring
 certain types behave propositionally as we will explain later.
 
-Now, let us prove some simple facts about the class of propositional types.
+Now, let us state some simple facts about the class of propositional types.
 
 \begin{prop}\label{thm:pi-prop}
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
@@ -116,6 +110,32 @@ a set are equal to each other in \emph{at most one way}.
   \end{equation*}
 \end{defn}
 
+A highly useful sufficient condition of setness was given by Michael Hedberg in
+1998~\cite{hedberg}: every type with decidable equality is a set.
+
+First, let us note that we can express the decidability of a type as follows.
+\begin{defn}[Decidability]
+  A type $A$ is decidable if it is either provable of refutable:
+  \begin{equation*}
+    \isdec{A} \quad\is\quad A + \neg A.
+  \end{equation*}
+\end{defn}
+
+A type $A$ for which the identity type is decidable for every two inhabitants is called
+\emph{discrete}.
+\begin{defn}[Discrete]
+  \begin{equation*}
+    \isdisc{A} \quad\is\quad \pity{x~y}{A}{\isdec{x =_A y}}
+  \end{equation*}
+\end{defn}
+
+Hedberg can then be stated simply as follows.
+\begin{thm}[Hedberg]\label{thm:hedberg}
+  \begin{equation*}
+    \pity{A}{\univ{}_n}{\isdisc{A} \rightarrow \isset{A}}
+  \end{equation*}
+\end{thm}
+
 \section{Equivalence of types}
 
 \begin{defn}[Fiber]
@@ -155,9 +175,8 @@ We will collect the type of type equivalences in the following type.
   Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
   then $\typequiv{A}{B}$.
 \end{prop}
-\begin{proof}
-  Let $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$ such that there exist $f : A \rightarrow B$ and
-  $g : B \rightarrow A$. Let $\oftyI{y}{B}$. We will show that $\fiber{f}{y}$ is contractible.
-\end{proof}
 
 \section{Higher Inductive Types (HITs)}
+
+In addition to univalence, Univalent Foundations augments type theory with the means to
+add paths and higher paths into an inductively defined type.
