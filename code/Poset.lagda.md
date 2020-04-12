@@ -118,9 +118,7 @@ _─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (IsMonotonic P Q)
 Projection for the underlying function of a monotonic map.
 
 ```
-_$ₘ_ : {P : Poset ℓ₀ ℓ₁} {Q : Poset ℓ₀′ ℓ₁′}
-     → P ─m→ Q → ∣ P ∣ₚ → ∣ Q ∣ₚ
-(f , _) $ₘ x = f x
+_$ₘ_ = π₀
 ```
 
 The identity monotonic map and composition of monotonic maps.
