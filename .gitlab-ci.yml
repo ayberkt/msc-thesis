@@ -1,4 +1,4 @@
-image: ayberkt/agda:v12
+image: ayberkt/agda:v13
 
 before_script:
   - export LC_ALL=en_US.UTF-8
