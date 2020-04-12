@@ -3,7 +3,7 @@
 open import Basis
 
 module AlgebraicProperties {ℓ ℓ′ : Level}
-                           {X : Set ℓ}
+                           {X : Type ℓ}
                            (X-set : IsSet X)
                            (_⊑_ : X → X → hProp ℓ′) where
 
@@ -13,7 +13,7 @@ module AlgebraicProperties {ℓ ℓ′ : Level}
   IsTransitive : hProp (ℓ ⊔ ℓ′)
   IsTransitive = φ , φ-prop
     where
-      φ      : Set (ℓ ⊔ ℓ′)
+      φ      : Type (ℓ ⊔ ℓ′)
       φ      = ((x y z : X) → (x ⊑ y) is-true → (y ⊑ z) is-true → (x ⊑ z) is-true)
       φ-prop : IsProp φ
       φ-prop = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z
@@ -22,7 +22,7 @@ module AlgebraicProperties {ℓ ℓ′ : Level}
   IsAntisym : hProp (ℓ ⊔ ℓ′)
   IsAntisym = φ , φ-prop
     where
-      φ      : Set (ℓ ⊔ ℓ′)
+      φ      : Type (ℓ ⊔ ℓ′)
       φ      = ((x y : X) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y)
       φ-prop : IsProp φ
       φ-prop = ∏-prop λ x → ∏-prop λ y →

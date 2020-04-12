@@ -8,7 +8,6 @@ open import Cubical.Core.Everything
 open import Cubical.Relation.Nullary using (Discrete; yes; no; Dec; ¬_)
 open import Cubical.Relation.Nullary.DecidableEq using (Discrete→isSet)
 open import Cubical.Data.Empty.Base  using (⊥; ⊥-elim)
-open import Cubical.Data.Unit.Base   using (Unit; tt)
 open import Cubical.Data.Bool.Base   using (true; false; _≟_) renaming (Bool to 𝔹)
 open import Truncation
 open import Poset
@@ -67,7 +66,7 @@ cantor : FormalTopology ℓ-zero ℓ-zero
 cantor = (cantor-poset , is , mono) , sim
   where
     is : InteractionStr ℂ
-    is = (λ _ → Unit) , (λ _ → 𝔹) , λ {x = xs} b → xs ⌢ b
+    is = (λ _ → Unit zero) , (λ _ → 𝔹) , λ {x = xs} b → xs ⌢ b
 
     mono : HasMonotonicity cantor-poset is
     mono _ _ c = [] ⌢ c , refl

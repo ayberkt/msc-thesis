@@ -65,12 +65,22 @@ open import Level                           public
 
 ```
 variable
-  ℓ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₀′ ℓ₁′ ℓ₂′ ℓ₀′′ ℓ₁′′ ℓ₂′′ : Level
+  ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₀′ ℓ₁′ ℓ₂′ ℓ₀′′ ℓ₁′′ ℓ₂′′ : Level
 
 variable
   A    : Type ℓ₀
   B    : A → Type ℓ₀
   A₀   : Type ℓ₁
+```
+
+## The unit type
+
+```
+data Unit (ℓ : Level) : Type ℓ where
+  tt : Unit ℓ
+
+Unit-prop : {ℓ : Level} → IsProp (Unit ℓ)
+Unit-prop tt tt = refl
 ```
 
 ## Function extensionality

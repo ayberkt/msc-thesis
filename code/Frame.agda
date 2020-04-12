@@ -9,14 +9,13 @@ open import Family
 open import Truncation
 open import Poset
 open import Powerset
-open import Unit
 
 import AlgebraicProperties
 
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 RawFrameStr ℓ₁ ℓ₂ A = (PosetStr ℓ₁ A) × A × (A → A → A) × (Sub ℓ₂ A → A)
 
-frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → Set (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
     ((o : O)       → o ⊑ 𝟏 is-true)
   × ((o p : O)     → (o ⊓ p) ⊑ o is-true)
@@ -216,15 +215,16 @@ downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
                 ; IsTransitive to <<-IsTransitive
                 ; IsAntisym    to <<-IsAntisym)
 
-    <<-refl : <<-IsReflexive is-true
-    <<-refl (U , U-down) x xεU = xεU
+    abstract
+      <<-refl : <<-IsReflexive is-true
+      <<-refl (U , U-down) x xεU = xεU
 
-    <<-trans : <<-IsTransitive is-true
-    <<-trans _ _ _ S<<T T<<U x xεS = T<<U x (S<<T x xεS)
+      <<-trans : <<-IsTransitive is-true
+      <<-trans _ _ _ S<<T T<<U x xεS = T<<U x (S<<T x xεS)
 
-    <<-antisym : <<-IsAntisym is-true
-    <<-antisym X Y S⊆T T⊆S =
-      to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
+      <<-antisym : <<-IsAntisym is-true
+      <<-antisym X Y S⊆T T⊆S =
+        to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
@@ -239,7 +239,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
 
-    𝟏 = (λ _ → N₁ , N₁-prop) , λ _ _ _ _ → tt
+    𝟏 = (λ _ → Unit ℓ₀ , Unit-prop) , λ _ _ _ _ → tt
 
     ∩-down : (S T : 𝒫 X)
            → IsDownwardClosed (X , P) S is-true
@@ -255,7 +255,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
-    in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Set ℓ₀
+    in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Type ℓ₀
     in-some-set-of ℱ x = Σ (index ℱ) (λ i → ∣ ℱ € i ∣𝔻 x is-true)
 
     ⊔_ : Sub ℓ₀ 𝔻 → 𝔻

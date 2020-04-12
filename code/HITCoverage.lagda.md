@@ -4,25 +4,7 @@
 module HITCoverage where
 
 open import Level
-open import Agda.Primitive.Cubical
-open import Agda.Builtin.Cubical.Path
-open import Data.Product              using    (Σ; _,_; _×_)
-                                      renaming (proj₁ to π₀; proj₂ to π₁)
-
-Type₀  = Set zero
-
-Type : (ℓ : Level) → Set (suc ℓ)
-Type ℓ = Set ℓ
-```
-
-```
-private
-  variable
-    ℓ ℓ′ ℓ₀ ℓ₁ ℓ₂ : Level
-    A B P         : Type ℓ
-
-IsProposition : Type ℓ → Type ℓ
-IsProposition A = (a b : A) → a ≡ b
+open import Basis
 ```
 
 ## The test
@@ -52,7 +34,7 @@ module Test (P     : Type ℓ)
     branch : (b : exp a) → (f : (c : out b) → rev c <| U) → a <| U
     squash : (p₀ p₁ : a <| U) → p₀ ≡ p₁
 
-  <|-prop : (a : P) (U : P → Type ℓ) → IsProposition (a <| U)
+  <|-prop : (a : P) (U : P → Type ℓ) → IsProp (a <| U)
   <|-prop a U = squash
 ```
 

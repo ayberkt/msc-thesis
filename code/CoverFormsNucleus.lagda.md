@@ -6,12 +6,11 @@ module CoverFormsNucleus where
 open import Basis          hiding (A)
 open import Poset          renaming (IsDownwardClosed to IsDownwardClosed′)
 open import Frame
-open import HITCoverage    hiding (Type)
+open import HITCoverage
 open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame; idem)
 open import Family         using  (Sub; _⊚_; _€_; _ε_; index)
 open import Truncation     renaming (squash to squash′)
 open import Data.Bool      using    (Bool; true; false)
-open import Unit           using  (tt)
 open import Powerset
 open import FormalTopology renaming (pos to pos′)
 open import PowFamEquivalence
