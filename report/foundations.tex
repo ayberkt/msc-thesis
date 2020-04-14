@@ -5,20 +5,83 @@ self-containment. It is intended to be a summary rather than an introduction.
 
 \section{Notation}
 
-\section{Homotopy levels}
+\section{Equivalence of types and univalence}
 
-One of the most interesting observations that arise from associating type theory with
-homotopy theory is that we can classify types with respect to the non-trivial homotopy
-structure they bear. A space containing no nontrivial homotopy above dimension $n$ is
-called a homotopy $n$-type (or said to be of homotopy level $n$).
-
-The hierarchy of homotopy levels starts with that of \emph{contractible} ones.
 \begin{defn}[Contractible]
   A type $A$ is called contractible if it has exactly one inhabitant:
   \begin{equation*}
     \iscontr{A} \quad\is\quad \sigmaty{c}{A}{\pity{y}{A}{c =_A y}}.
   \end{equation*}
 \end{defn}
+
+\begin{defn}[Fiber]
+  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function
+  $f : A \rightarrow B$, and some $\oftyI{y}{B}$, the fiber of $f$ is the type of all inhabitants
+  of $A$ that are mapped by $f$ to $y$:
+  \begin{equation*}
+    \fiber{f}{y} \quad\is\quad \sigmaty{x}{A}{f(x) =_B y}.
+  \end{equation*}
+\end{defn}
+
+The following definition of type equivalence was first formulated by Voevodsky.
+\begin{defn}[Type equivalence]\label{defn:equiv}
+  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function $f : A \rightarrow B$ is an
+  \emph{equivalence} if $\fiber{f}{y}$ is a contractible type for every $\oftyI{y}{B}$:
+  \begin{equation*}
+    \isequiv{f} \quad\is\quad \pity{y}{B}{\iscontr{\fiber{f}{y}}}.
+  \end{equation*}
+\end{defn}
+
+We will denote by $A \simeq B$ the type of equivalences between types $A$ and $B$.
+\begin{defn}
+  Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$,
+  \begin{equation*}
+    A \simeq B \quad\is\quad \sigmaty{f}{A \rightarrow B}{\isequiv{f}}
+  \end{equation*}
+\end{defn}
+
+Given two types $\oftyI{A~B}{\univ{}_n}$ and a proof that they are equal
+$A = B$, we can clearly prove that they are equivalent.
+\begin{defn}
+  \begin{equation*}
+    \oftyI{\mathsf{idToEquiv}}{A = B \rightarrow A \simeq B}
+  \end{equation*}
+\end{defn}
+In other words, it is justified intuitively that equality is stronger than equivalence.
+Voevodsky's famous Univalence Axiom states, essentially, that equivalence is as strong as
+equality. Formally, this amounts to saying that $\mathsf{idToEquiv}$ is an equivalence:
+\begin{equation*}
+  \isequiv{\idtoeqvnm{}},
+\end{equation*}
+an immediate consequence of which is that the type of identity proofs is equivalent to the
+type of equivalences:
+\begin{equation*}
+  \pity{A~B}{\univ{}_n}{(A = B) \simeq (A \simeq B)}.
+\end{equation*}
+
+The consequences of adding this simple axiom into type theory are quite remarkable.
+Perhaps most importantly, it allows us to \emph{prove} function extensionality.
+\begin{defn}[Extensional equality]\label{defn:exteq}
+  Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, and functions
+  $\oftyII{f}{g}{A \rightarrow B}$, $f$ and $g$ are said to be extensionally equal if:
+  \begin{equation*}
+    f \sim g \quad\is\quad \pity{x}{A}{f(x) = g(x)}.
+  \end{equation*}
+\end{defn}
+
+\begin{prop}[Function extensionality]\label{prop:funext}
+  Two functions are equal whenever they are extensionally equal.
+\end{prop}
+\begin{proof}
+  \todo{complete.}
+\end{proof}
+
+\section{Homotopy levels}
+
+One of the most interesting observations that arise from associating type theory with
+homotopy theory is that we can classify types with respect to the non-trivial homotopy
+structure they bear. A space containing no nontrivial homotopy above dimension $n$ is
+called a homotopy $n$-type (or said to be of homotopy level $n$).
 
 We then recursively define a predicate expressing that a given type has homotopy level
 $n$. The idea is that we increase the dimension by one at each step.
@@ -30,13 +93,13 @@ $n$. The idea is that we increase the dimension by one at each step.
   \end{align*}
 \end{defn}
 
-\section{Propositions}
+\subsection{Propositions}
 
 The homotopy level of one is of special interest: it is the class of types that are like
 propositions in the sense that their own proof structure is trivial: they are inhabited by
 at most one term.
 
-\begin{defn}[Proposition]
+\begin{defn}[Proposition]\label{defn:prop'}
   A type $A$ is a proposition (sometimes disambiguated as \emph{h-proposition}) if it has
   a homotopy level of one:
   \begin{equation*}
@@ -44,39 +107,45 @@ at most one term.
   \end{equation*}
 \end{defn}
 
-We will be collecting the class of propositional types in the following type of $\Omega$.
-
-\begin{defn}[$\Omega$]
-  $\Omega_n$ is the type of all types at universe $n$ that are propositional.
+An equivalent way of expressing propositionality would be the following.
+\begin{defn}[Proposition (official)]\label{defn:prop}
   \begin{equation*}
-    \sigmaty{A}{\univ{}_n}{\isprop{A}}.
+    \isprop{A} \quad\is\quad \pity{x~y}{A}{x =_A y}
   \end{equation*}
 \end{defn}
 
-When asserting that a proposition $\oftyI{A}{\Omega_n}$ is inhabited, we have to technically
-project out the first component. We will engage in the excusable notational abuse of
-denoting this projection by $A$ itself.
+The class of propositional types is collected in the following type $\Omega$.
+\begin{defn}[$\Omega$]
+  $\Omega_n$ is the type of all types at universe $n$ that are propositional:
+  \begin{equation*}
+    \Omega_n \quad\is\quad \sigmaty{A}{\univ{}_n}{\isprop{A}}.
+  \end{equation*}
+\end{defn}
+
+When asserting that a proposition $\oftyI{A}{\Omega_n}$ is inhabited, we have to project out
+the first component to be completely precise. We will engage in the excusable notational
+abuse of denoting this projection by $A$ itself.
 
 Once we introduce this delineation of the class of propositional types, we have to make
-sure that types that we view as \emph{properties} of structures are actually propositional
-types. This is usually easy to do, that is, most types that are expected to behave like
-propositions behave naturally like propositions, so it suffices to prove this fact.
-However, there are cases when they actually \emph{are not} propositional. A substantial
-component of the work presented in this thesis is devoted to the problem of ensuring
-certain types behave propositionally as we will explain later.
+sure that types that are thought of as properties are actually propositional types. This
+is usually easy to do, that is, most types that are expected to behave like propositions
+behave naturally like propositions, so it suffices to prove this fact. However, there are
+cases when they actually \emph{are not} propositional. A substantial component of the work
+presented in this thesis is devoted to the problem of forcing certain types to behave
+propositionally.
 
 Now, let us state some simple facts about the class of propositional types.
 
 \begin{prop}\label{thm:pi-prop}
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
-  is a proposition when every $B(x)$ is a proposition for every $\oftyI{x}{A}$.
+  is a proposition whenever every $B(x)$ is a proposition.
 \end{prop}
 \begin{proof}
   Let $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$ and assume that $B(x)$ is a
   proposition for every $\oftyI{x}{A}$. Let $\oftyII{f}{g}{\pity{x}{A}{B(x)}}$. By
-  function extensionality, it suffices to show that $f(x) = g(x)$ for every
-  $\oftyI{x}{A}$. Let $\oftyI{x}{A}$. $f(x) = g(x)$ is given directly by the fact that
-  $B(x)$ is propositional.
+  function extensionality (Proposition~\ref{prop:funext}), it suffices to show that $f(x)
+  = g(x)$ for every $\oftyI{x}{A}$. Let $\oftyI{x}{A}$. $f(x) = g(x)$ is given directly by
+  the fact that $B(x)$ is propositional.
 \end{proof}
 
 \begin{prop}[Propositionality is propositional]
@@ -85,7 +154,6 @@ Now, let us state some simple facts about the class of propositional types.
 
 As we view propositional types as embodying logical propositions, it is natural to
 expect that the right notion of equivalence between them is logical equivalence.
-
 \begin{defn}\label{defn:iff}
   Types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_m}$ are logically equivalent
   (denoted $\logequiv{A}{B}$) iff there exists functions both ways:
@@ -93,18 +161,19 @@ expect that the right notion of equivalence between them is logical equivalence.
     A \leftrightarrow B \quad\is\quad (A \rightarrow B) \times (B \rightarrow A).
   \end{equation*}
 \end{defn}
-
 Indeed, it turns out that in \UF{}, it is sufficient to show logical equivalence to
-establish equivalence between propositional types. We provide this result in
-Proposition~\ref{prop:iff-equiv} after we present the general notion of type equivalence.
+establish equivalence between propositional types.
+\begin{prop}\label{prop:iff-equiv}
+  Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
+  then $\typequiv{A}{B}$.
+\end{prop}
 
-\section{Sets}
+\subsection{Sets}
 
 The other homotopy class of interest is the class of types whose proof structure is not
 trivial, in that there may be distinct terms that inhabit it, but the proof structure of
 the type of equality proofs between these terms is trivial. In other words, inhabitants of
 a set are equal to each other in \emph{at most one way}.
-
 \begin{defn}[Set]\label{defn:hset}
   A type $A$ is a set if its homotopy level is two:
   \begin{equation*}
@@ -114,8 +183,6 @@ a set are equal to each other in \emph{at most one way}.
 
 A highly useful sufficient condition of setness was given by Michael Hedberg in
 1998~\cite{hedberg}: every type with decidable equality is a set.
-
-First, let us note that we can express the decidability of a type as follows.
 \begin{defn}[Decidability]
   A type $A$ is decidable if it is either provable of refutable:
   \begin{equation*}
@@ -131,54 +198,45 @@ A type $A$ for which the identity type is decidable for every two inhabitants is
   \end{equation*}
 \end{defn}
 
-Hedberg can then be stated simply as follows.
+Hedberg's theorem can then be stated simply as follows.
 \begin{thm}[Hedberg]\label{thm:hedberg}
   \begin{equation*}
     \pity{A}{\univ{}_n}{\isdisc{A} \rightarrow \isset{A}}
   \end{equation*}
 \end{thm}
 
-\section{Equivalence of types}
-
-\begin{defn}[Fiber]
-  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function
-  $f : A \rightarrow B$, and some $\oftyI{y}{B}$, the fiber of $f$ is the type of all inhabitants
-  of $A$ that are mapped by $f$ to $y$:
-  \begin{equation*}
-    \fiber{f}{y} \quad\is\quad \sigmaty{x}{A}{f(x) =_B y}.
-  \end{equation*}
-\end{defn}
-
-The following definition of type equivalence was first formulated by Voevodsky.
-
-\begin{defn}[Type equivalence]
-  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function $f : A \rightarrow B$ is an
-  \emph{equivalence} if $\fiber{f}{y}$ is a contractible type for every $\oftyI{y}{B}$:
-  \begin{equation*}
-    \isequiv{f} \quad\is\quad \pity{y}{B}{\iscontr{\fiber{f}{y}}}.
-  \end{equation*}
-\end{defn}
-
-We will collect the type of type equivalences in the following type.
-
-\begin{defn}
-  Let $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$.
-  \begin{equation*}
-    A \simeq B \quad\is\quad \sigmaty{f}{A \rightarrow B}{\isequiv{f}}
-  \end{equation*}
-\end{defn}
-
-\begin{prop}[Equivalences are invertible]
-  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, if a function $f : A \rightarrow B$
-  is an equivalence then it has an inverse.
-\end{prop}
-
-\begin{prop}\label{prop:iff-equiv}
-  Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
-  then $\typequiv{A}{B}$.
-\end{prop}
-
 \section{Higher Inductive Types (HITs)}
 
-In addition to univalence, Univalent Foundations augments type theory with the means to
-add paths and higher paths into an inductively defined type.
+In ordinary type theory, the inductive definition of a type amounts to a specification of
+its points. In \UF{} we are working with not just with $0$-types but with arbitrary
+$n$-types. Therefore, we accordingly generalise our mechanism for the inductive
+specification of types by generalising $0$-constructors to $n$-constructors. In other
+words, we add the means to define a type not just with its points but also with the paths
+between the points, paths between those paths, and then paths between those and so on.
+Such an inductive type is called a \emph{higher inductive type} (HIT for short).
+
+Let us give an example of what an HIT definition might look like. The usual $\unit{}$
+type would be inductively defined by the specification of a single constructor:
+\begin{equation*}
+  \begin{prooftree}
+    \infer0{\oftyI{\star}{\unit{}}}
+  \end{prooftree}
+\end{equation*}
+whose only equality is the trivial one: $\oftyI{\mathsf{refl}_\star}{\star =_{\unit{}} \star}$.
+
+Using HITs, we can add, for instance, a non-trivial equality of $\star$ to itself. The
+resulting type is called the $\mathsf{Circle}$
+
+\begin{equation*}
+  \begin{prooftree}
+    \infer0{\oftyI{\mathsf{base}}{\mathsf{Circle}}}
+  \end{prooftree}
+  \hspace{2em}
+  \begin{prooftree}
+    \infer0{\oftyI{\mathsf{loop}}{\mathsf{base} =_{\mathsf{Circle}} \mathsf{base}}}
+  \end{prooftree}
+\end{equation*}
+
+HITs turn out to be immensely useful and in fact we will explain later that they are used
+in a crucial way in this thesis: the main theorem we prove in
+Chapter~\ref{chap:formal-topo} could not have been proven without them.
