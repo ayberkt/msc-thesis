@@ -1,3 +1,5 @@
+\*Version: `40410d6`\*
+
 ```
 {-# OPTIONS --cubical --safe #-}
 
