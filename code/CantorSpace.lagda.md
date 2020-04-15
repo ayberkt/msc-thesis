@@ -179,7 +179,7 @@ compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : IsDownwardClosed ℂ-pos U is-true)
               (xs ◀ (λ - → - ↓ yss is-true) × ((λ - → - ↓ yss) ⊆ U is-true)) ∥
 ```
 
-We will now prove that the Cantor space is compact.
+We will now prove this.
 
 ### Two little lemmas
 
@@ -225,7 +225,7 @@ U⊆V⇒◀U⊆◀V xs U V U⊆V xs◀U = lem4 xs _ _ xs◀U λ ys ys∈U → di
         NTS₁ (inj₂ xs◀zss) = ∣ inj₂ xs◀zss          ∣
 ```
 
-### Compactness theorem
+### The proof
 
 The proof is by induction on the proof of `xs ◀ U`.
 
