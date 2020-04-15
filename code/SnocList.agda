@@ -53,6 +53,10 @@ _++_ : SnocList → SnocList → SnocList
 xs ++ []       = xs
 xs ++ (ys ⌢ y) = (xs ++ ys) ⌢ y
 
+[]≠⌢++ : (xs ys : SnocList) (x : Z) → ¬ ([] ≡ ((xs ⌢ x) ++ ys))
+[]≠⌢++ xs []        x p = ⌢≠[] (sym p)
+[]≠⌢++ xs (ys ⌢ y)  x p = ⌢≠[] (sym p)
+
 snoc-lemma : (xs ys : SnocList) (x : Z) → (xs ⌢ x) ++ ys ≡ xs ++ (([] ⌢ x) ++ ys)
 snoc-lemma xs [] x = refl
 snoc-lemma xs (ys ⌢ y) x = cong (λ - → - ⌢ y) (snoc-lemma xs ys x)
