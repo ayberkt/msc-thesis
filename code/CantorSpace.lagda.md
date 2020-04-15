@@ -182,9 +182,6 @@ compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : IsDownwardClosed ℂ-pos U is-true)
               (xs ◀ (λ - → - <f| yss is-true) × ((λ - → - <f| yss) ⊆ U is-true)) ∥
 ```
 
-This says that for every cover there is some list `yss` that is a subset of `U` and
-being covered by `yss` is a sufficient condition for being covered by `U`.
-
 We will now prove that the Cantor space is compact.
 
 ### Two little lemmas
