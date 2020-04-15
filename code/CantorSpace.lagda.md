@@ -147,30 +147,27 @@ We now want to view a list of `ℂ`s as a _finite cover_. We associate with some
 `xss : List ℂ` a subset, being covered by which corresponds to being covered by this list.
 
 ```
-_|f>_ : List ℂ → 𝒫 ℂ
-_|f>_ []         = λ _ → bot
-_|f>_ (xs ∷ xss) =
-  λ ys → ∥ ys ≤ xs is-true ⊎ xss |f> ys is-true ∥ , ∥∥-prop _
+down : List ℂ → 𝒫 ℂ
+down []         = λ _ → bot
+down (xs ∷ xss) =
+  λ ys → ∥ ys ≤ xs is-true ⊎ ys ↓ xss is-true ∥ , ∥∥-prop _
 
-covers : List ℂ → 𝒫 ℂ
-covers = _|f>_
-
-syntax covers xss zs = zs <f| xss
+syntax down xss xs = xs ↓ xss
 ```
 
 This subset is downwards-closed.
 
 ```
 
-<f|-dc : (xss : List ℂ) → IsDownwardClosed ℂ-pos (λ - → - <f| xss) is-true
-<f|-dc (xs ∷ xss) ys zs ys◀xs∷xss zs≤ys =
-  ∥∥-rec (is-true-prop (zs <f| (xs ∷ xss))) NTS ys◀xs∷xss
+↓-dc : (xss : List ℂ) → IsDownwardClosed ℂ-pos (λ - → - ↓ xss) is-true
+↓-dc (xs ∷ xss) ys zs ys◀xs∷xss zs≤ys =
+  ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss))) NTS ys◀xs∷xss
   where
     open PosetReasoning ℂ-pos using (_⊑⟨_⟩_; _■)
 
-    NTS : ys ≤ xs is-true ⊎ ys <f| xss is-true → zs <f| (xs ∷ xss) is-true
+    NTS : ys ≤ xs is-true ⊎ ys ↓ xss is-true → zs ↓ (xs ∷ xss) is-true
     NTS (inj₁ ys≤xs)  = ∣ inj₁ (zs ⊑⟨ zs≤ys ⟩ ys ⊑⟨ ys≤xs ⟩ xs ■) ∣
-    NTS (inj₂ ys◀xss) = ∣ inj₂ (<f|-dc xss ys zs ys◀xss zs≤ys)    ∣
+    NTS (inj₂ ys◀xss) = ∣ inj₂ (↓-dc xss ys zs ys◀xss zs≤ys)    ∣
 ```
 
 The statement of compactness then is as follows.
@@ -179,7 +176,7 @@ The statement of compactness then is as follows.
 compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : IsDownwardClosed ℂ-pos U is-true)
         → xs ◀ (_is-true ∘ U)
         → ∥ Σ[ yss ∈ List ℂ ]
-              (xs ◀ (λ - → - <f| yss is-true) × ((λ - → - <f| yss) ⊆ U is-true)) ∥
+              (xs ◀ (λ - → - ↓ yss is-true) × ((λ - → - ↓ yss) ⊆ U is-true)) ∥
 ```
 
 We will now prove that the Cantor space is compact.
@@ -191,39 +188,39 @@ U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ)
        → U ⊆ V is-true → xs ◀ (_is-true ∘ U) → xs ◀ (_is-true ∘ V)
 U⊆V⇒◀U⊆◀V xs U V U⊆V xs◀U = lem4 xs _ _ xs◀U λ ys ys∈U → dir (U⊆V ys ys∈U)
 
-<f|-++-left : (xss yss : List ℂ) → (λ - → - <f| xss) ⊆ (λ - → - <f| (xss ^ yss)) is-true
-<f|-++-left []         yss _ ()
-<f|-++-left (xs ∷ xss) yss ys ys∈down-xs-xss =
-  ∥∥-rec (is-true-prop (ys <f| ((xs ∷ xss) ^ yss))) NTS ys∈down-xs-xss
+↓-++-left : (xss yss : List ℂ) → (λ - → - ↓ xss) ⊆ (λ - → - ↓ (xss ^ yss)) is-true
+↓-++-left []         yss _ ()
+↓-++-left (xs ∷ xss) yss ys ys∈down-xs-xss =
+  ∥∥-rec (is-true-prop (ys ↓ ((xs ∷ xss) ^ yss))) NTS ys∈down-xs-xss
   where
-    NTS : ys ≤ xs is-true ⊎ ys <f| xss is-true → ys <f| (xs ∷ xss ^ yss) is-true
+    NTS : ys ≤ xs is-true ⊎ ys ↓ xss is-true → ys ↓ (xs ∷ xss ^ yss) is-true
     NTS (inj₁ ys≤xs)       = ∣ inj₁ ys≤xs ∣
-    NTS (inj₂ ys∈down-xss) = ∣ inj₂ (<f|-++-left xss yss ys ys∈down-xss) ∣
+    NTS (inj₂ ys∈down-xss) = ∣ inj₂ (↓-++-left xss yss ys ys∈down-xss) ∣
 
-<f|-++-right : (xss yss : List ℂ) → (λ - → - <f| yss) ⊆ (λ - → - <f| (xss ^ yss)) is-true
-<f|-++-right xss        []         _  ()
-<f|-++-right []         (ys ∷ yss) zs zs∈◀ys∷yss = zs∈◀ys∷yss
-<f|-++-right (xs ∷ xss) (ys ∷ yss) zs zs∈◀ys∷yss =
-  ∥∥-rec (is-true-prop (zs <f| (xs ∷ xss ^ ys ∷ yss))) NTS zs∈◀ys∷yss
+↓-++-right : (xss yss : List ℂ) → (λ - → - ↓ yss) ⊆ (λ - → - ↓ (xss ^ yss)) is-true
+↓-++-right xss        []         _  ()
+↓-++-right []         (ys ∷ yss) zs zs∈◀ys∷yss = zs∈◀ys∷yss
+↓-++-right (xs ∷ xss) (ys ∷ yss) zs zs∈◀ys∷yss =
+  ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss ^ ys ∷ yss))) NTS zs∈◀ys∷yss
   where
-    NTS : zs ≤ ys is-true ⊎ zs <f| yss is-true → zs <f| (xs ∷ xss ^ ys ∷ yss) is-true
-    NTS (inj₁ zs≤ys)  = let IH = <f|-++-right xss _ _ ∣ inj₁ (⊑[ ℂ-pos ]-refl ys) ∣
-                        in ∣ inj₂ (<f|-dc (xss ^ ys ∷ yss) ys zs IH zs≤ys) ∣
-    NTS (inj₂ zs◀yss) = ∣ inj₂ (<f|-++-right xss _ zs ∣ inj₂ zs◀yss ∣) ∣
+    NTS : zs ≤ ys is-true ⊎ zs ↓ yss is-true → zs ↓ (xs ∷ xss ^ ys ∷ yss) is-true
+    NTS (inj₁ zs≤ys)  = let IH = ↓-++-right xss _ _ ∣ inj₁ (⊑[ ℂ-pos ]-refl ys) ∣
+                        in ∣ inj₂ (↓-dc (xss ^ ys ∷ yss) ys zs IH zs≤ys) ∣
+    NTS (inj₂ zs◀yss) = ∣ inj₂ (↓-++-right xss _ zs ∣ inj₂ zs◀yss ∣) ∣
 
 ◀^-decide : (xs : ℂ) (yss zss : List ℂ)
-          → xs <f| (yss ^ zss) is-true
-          → ∥ (xs <f| yss is-true) ⊎ (xs <f| zss is-true) ∥
+          → xs ↓ (yss ^ zss) is-true
+          → ∥ (xs ↓ yss is-true) ⊎ (xs ↓ zss is-true) ∥
 ◀^-decide xs []         zss k = ∣ inj₂ k ∣
 ◀^-decide xs (ys ∷ yss) zss k = ∥∥-rec (∥∥-prop _) NTS₀ k
   where
-    NTS₀ : xs ≤ ys is-true ⊎ xs <f| (yss ^ zss) is-true
-        → ∥ covers (ys ∷ yss) xs is-true ⊎ xs <f| zss is-true ∥
+    NTS₀ : xs ≤ ys is-true ⊎ xs ↓ (yss ^ zss) is-true
+        → ∥ xs ↓ (ys ∷ yss) is-true ⊎ xs ↓ zss is-true ∥
     NTS₀ (inj₁ xs≤ys) = ∣ inj₁ ∣ inj₁ xs≤ys ∣ ∣
     NTS₀ (inj₂ xs◀yss^zss) = ∥∥-rec (∥∥-prop _) NTS₁ (◀^-decide xs yss zss xs◀yss^zss)
       where
-        NTS₁ : xs <f| yss is-true ⊎ xs <f| zss is-true
-             → ∥ xs <f| (ys ∷ yss) is-true ⊎ xs <f| zss is-true ∥
+        NTS₁ : xs ↓ yss is-true ⊎ xs ↓ zss is-true
+             → ∥ xs ↓ (ys ∷ yss) is-true ⊎ xs ↓ zss is-true ∥
         NTS₁ (inj₁ xs◀yss) = ∣ inj₁ ∣ inj₂ xs◀yss ∣ ∣
         NTS₁ (inj₂ xs◀zss) = ∣ inj₂ xs◀zss          ∣
 ```
@@ -235,40 +232,40 @@ The proof is by induction on the proof of `xs ◀ U`.
 ```
 compact xs U U-dc (dir xs∈U) = ∣ [ xs ] , NTS₀ , NTS₁ ∣
   where
-    NTS₀ : xs ◀ (λ - → - <f| [ xs ] is-true)
+    NTS₀ : xs ◀ (λ - → - ↓ [ xs ] is-true)
     NTS₀ = dir ∣ inj₁ (⊑[ ℂ-pos ]-refl xs) ∣
 
-    NTS₁ : (λ - → - <f| [ xs ]) ⊆ U is-true
+    NTS₁ : (λ - → - ↓ [ xs ]) ⊆ U is-true
     NTS₁ ys ∣ys◀[xs]∣ = ∥∥-rec (is-true-prop (ys ∈ U)) NTS₁′ ∣ys◀[xs]∣
       where
-        NTS₁′ : ys ≤ xs is-true ⊎ ([] |f> ys) is-true → U ys is-true
+        NTS₁′ : ys ≤ xs is-true ⊎ (ys ↓ []) is-true → U ys is-true
         NTS₁′ (inj₁ ys≤xs) = U-dc xs ys xs∈U ys≤xs
 
 compact xs U U-dc (branch b f) =
   let
     IH₀ : ∥ Σ[ yss₀ ∈ List ℂ ]
-              ((xs ⌢ true) ◀ (λ - → - <f| yss₀ is-true)) × (covers yss₀ ⊆ U) is-true ∥
+              ((xs ⌢ true) ◀ (λ - → - ↓ yss₀ is-true)) × (down yss₀ ⊆ U) is-true ∥
     IH₀ = compact (xs ⌢ true) U U-dc (f true)
     IH₁ : ∥ Σ[ yss ∈ List ℂ ]
-              ((xs ⌢ false) ◀ (λ - → covers yss - is-true) × (covers yss ⊆ U) is-true) ∥
+              ((xs ⌢ false) ◀ (λ - → - ↓ yss is-true) × (down yss ⊆ U) is-true) ∥
     IH₁ = compact (xs ⌢ false) U U-dc (f false)
   in
     ∥∥-rec (∥∥-prop _) (λ φ → ∥∥-rec (∥∥-prop _) (λ ψ → ∣ NTS φ ψ ∣) IH₁) IH₀
   where
-    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - <f| yss₀ is-true) × _|f>_ yss₀ ⊆ U is-true
-        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - <f| yss₁ is-true) × _|f>_ yss₁ ⊆ U is-true
-        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - <f| yss is-true) × covers yss ⊆ U is-true
+    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀ is-true) × down yss₀ ⊆ U is-true
+        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁ is-true) × down yss₁ ⊆ U is-true
+        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss is-true) × down yss ⊆ U is-true
     NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch b g , NTS′
       where
-        g : (c : ℂ-out b) → (xs ⌢ c) ◀ (λ - → covers (yss ^ zss) - is-true)
-        g false = U⊆V⇒◀U⊆◀V _ (_|f>_ zss) (_|f>_ (yss ^ zss)) (<f|-++-right yss zss) ψ
-        g true  = U⊆V⇒◀U⊆◀V _ (_|f>_ yss) (_|f>_ (yss ^ zss)) (<f|-++-left  yss zss) φ
+        g : (c : ℂ-out b) → (xs ⌢ c) ◀ (λ - → down (yss ^ zss) - is-true)
+        g false = U⊆V⇒◀U⊆◀V _ (down zss) (down (yss ^ zss)) (↓-++-right yss zss) ψ
+        g true  = U⊆V⇒◀U⊆◀V _ (down yss) (down (yss ^ zss)) (↓-++-left  yss zss) φ
 
-        NTS′ : (λ - → - <f| (yss ^ zss)) ⊆ U is-true
+        NTS′ : (λ - → - ↓ (yss ^ zss)) ⊆ U is-true
         NTS′ ys ys◀yss₀^yss₁ =
           ∥∥-rec (is-true-prop (U ys)) NTS₂ (◀^-decide _ yss _ ys◀yss₀^yss₁)
           where
-            NTS₂ : ys <f| yss is-true ⊎ ys <f| zss is-true → U ys is-true
+            NTS₂ : ys ↓ yss is-true ⊎ ys ↓ zss is-true → U ys is-true
             NTS₂ (inj₁ ys◀yss₀) = p ys ys◀yss₀
             NTS₂ (inj₂ ys◀yss₁) = q ys ys◀yss₁
 
