@@ -1,4 +1,4 @@
-/```
+```
 {-# OPTIONS --cubical --safe #-}
 
 module CantorSpace where
