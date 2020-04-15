@@ -1,4 +1,4 @@
-```
+/```
 {-# OPTIONS --cubical --safe #-}
 
 module CantorSpace where
@@ -93,7 +93,7 @@ We give the formal topology of the Cantor space as an
 1. This takes us to a new stage information, obtained by snoc'ing in the new bit to the
    current stage of information.
 ```
-ℂ-rev : {x : ℂ} (x₁ : 𝔹) → ℂ
+ℂ-rev : {_ : ℂ} → 𝔹 → ℂ
 ℂ-rev {xs} b = xs ⌢ b
 ```
 
