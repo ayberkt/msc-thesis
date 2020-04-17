@@ -1,7 +1,11 @@
 \chapter{Foundations}\label{chap:foundations}
 
-In this chapter, we provide the preliminary lemmas of \UF{} for the sake of
-self-containment. It is intended to be a summary rather than an introduction.
+We present in this chapter basics of \UF{}, that are central to the foundational
+framework in which we will be carrying out our development. We assume that the
+author is familiar with standard (intensional) type theory and refrain from
+building the formal calculus from scratch. Instead, we summarise the additions
+that must be made to type theory to make it a suitable context for the pursuit
+of \emph{univalent} mathematics.
 
 \section{Notation}
 
@@ -180,6 +184,12 @@ a set are equal to each other in \emph{at most one way}.
     \isset{A} \quad\is\quad \isofhlevel{A}{2}.
   \end{equation*}
 \end{defn}
+
+Most of the structures presented in this thesis will be based on an underlying partially
+ordered \emph{set}. When formalising these in \UF{}, these will be required to be h-sets,
+since a poset whose carrier bears higher dimensional homotopy structure does not
+correspond to the usual notion of a poset. It would be more accurate to call such a
+structure an \emph{$\infty$-poset}.
 
 A highly useful sufficient condition of setness was given by Michael Hedberg in
 1998~\cite{hedberg}: every type with decidable equality is a set.
