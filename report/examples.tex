@@ -1,0 +1,3 @@
+\chapter{The Cantor formal topology}\label{chap:examples}
+
+Foo bar...
