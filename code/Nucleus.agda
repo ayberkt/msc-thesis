@@ -107,14 +107,13 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
 nuclear-fixed-point-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
 nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
     ∣ nuclear-fixed-point-poset L N ∣ₚ
-  , (strₚ (nuclear-fixed-point-poset L N)
-  , (𝟏[ L ] , 𝟏-fixed)
-  , _⊓_ , ⊔_)
-  , top , ⊓-lower₀ , ⊓-lower₁ , ⊓-greatest , ⊔-upper , ⊔-least , distr
+  , (strₚ (nuclear-fixed-point-poset L N) , (𝟏[ L ] , 𝟏-fixed) , _⊓_ , ⊔_)
+  , top
+  , ((λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y) , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
+  , ((⊔-upper , ⊔-least) , distr)
   where
     𝒜 = π₀ (nuclear-fixed-point-poset L N)
 
-    P          = pos L
     _⊑_ : ∣ pos L ∣ₚ → ∣ pos L ∣ₚ → hProp ℓ₁
     _⊑_        = λ x y → x ⊑[ pos L ] y
 
@@ -128,20 +127,20 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     A-set      = carrier-is-set (nuclear-fixed-point-poset L N)
 
     𝟏-fixed : j 𝟏[ L ] ≡ 𝟏[ L ]
-    𝟏-fixed = ⊑[ pos L ]-antisym (j 𝟏[ L ]) 𝟏[ L ] (𝟏[ L ]-top (j 𝟏[ L ])) (n₁ 𝟏[ L ])
+    𝟏-fixed = ⊑[ pos L ]-antisym _ _ (𝟏[ L ]-top (j 𝟏[ L ])) (n₁ 𝟏[ L ])
 
     open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
 
     _⊓_ : 𝒜 → 𝒜 → 𝒜
     _⊓_ (x , x-f) (y , y-f) =
-      x ⊓[ L ] y , ⊑[ P ]-antisym (j (x ⊓[ L ] y)) (x ⊓[ L ] y) φ (n₁ (x ⊓[ L ] y))
+      x ⊓[ L ] y , ⊑[ pos L ]-antisym (j (x ⊓[ L ] y)) (x ⊓[ L ] y) φ (n₁ (x ⊓[ L ] y))
       where
         ⊑jx : j (x ⊓[ L ] y) ⊑ j x is-true
-        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y)            ⟩
+        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)      ⟩
               j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₀ (j x) (j y) ⟩
               j x ■
         ⊑jy : j (x ⊓[ L ] y) ⊑ j y is-true
-        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y)            ⟩
+        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)      ⟩
               j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y) ⟩
               j y ■
 
@@ -158,7 +157,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
       where
         𝒢 = I , π₀ ∘ F
         j⊔L-fixed : j (j (⋃[ L ] 𝒢)) ≡ j (⋃[ L ] 𝒢)
-        j⊔L-fixed = ⊑[ P ]-antisym _ _ (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
+        j⊔L-fixed = ⊑[ pos L ]-antisym _ _ (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
 
     top : (o : 𝒜) → (o ⊑N (𝟏[ L ] , 𝟏-fixed)) is-true
     top = 𝟏[ L ]-top ∘ π₀
@@ -176,11 +175,11 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
             → ((o : 𝒜) → o ε ℱ → o ⊑N p is-true) → ((⊔ ℱ) ⊑N p) is-true
     ⊔-least ℱ p@(p′ , eq) ℱ⊑p = φ
       where
-        𝒢 : Sub ℓ₂ ∣ P ∣ₚ
+        𝒢 : Sub ℓ₂ ∣ pos L ∣ₚ
         𝒢 = index ℱ , λ i → π₀ (ℱ € i)
 
-        ϑ : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ p′ is-true
-        ϑ o o∈𝒢@(i , eq′) = o     ⊑⟨ ≡⇒⊑ P (sym eq′)                     ⟩
+        ϑ : (o : ∣ pos L ∣ₚ) → o ε 𝒢 → o ⊑ p′ is-true
+        ϑ o o∈𝒢@(i , eq′) = o     ⊑⟨ ≡⇒⊑ (pos L) (sym eq′)               ⟩
                             𝒢 € i ⊑⟨ ℱ⊑p (𝒢 € i , π₁ (ℱ € i)) (i , refl) ⟩
                             p′    ■
 
@@ -203,7 +202,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     distr o@(o′ , jo′=o′) ℱ@(I , F) =
       sigmaPath→pathSigma _ _ (φ , carrier-is-set (pos L) _ _ _ _)
       where
-        𝒢 : Sub ℓ₂ ∣ P ∣ₚ
+        𝒢 : Sub ℓ₂ ∣ pos L ∣ₚ
         𝒢 = π₀ ⊚ ℱ
 
         o′=jo′ : o′ ≡ j o′
