@@ -126,7 +126,7 @@ Let us start by showing that $\dcsubset{P}$ is a set.
 \end{proof}
 
 Now we can proceed to construct the poset of downwards-closed subsets.
-\begin{thm}(Poset of downward-closed subsets)
+\begin{thm}(Poset of downward-closed subsets)\label{thm:dc-poset}
   Let $P$ be a poset. The type $\dcsubset{P}$ forms a poset under the
   inclusion relation.
 \end{thm}
@@ -190,6 +190,10 @@ We now proceed to define frames.
   \end{align*}
 \end{defn}
 
+We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
+do for posets. Similarly, we will refer to the underlying partial order as $\_\sqsubseteq_F\_$, in
+possibly ambiguous contexts.
+
 \begin{prop}
   For every raw frame structure $(\sqsubseteq, \top, \wedge, \bigvee)$, $\frameax{\sqsubseteq, \top, \wedge, \bigvee}$ is a proposition.
 \end{prop}
@@ -213,59 +217,64 @@ We now proceed to define frames.
 
 \section{Frame of downward-closed subsets}\label{sec:down-set-frame}
 
-We have shown how to construct the poset of downwards-closed subsets from a given poset.
-We will now show that this in fact forms a frame. We will interpret this frame of
-downward-closed subsets as taking a set of stages of information, ordered with respect to
-how refined they are, and then focusing on the ones that are downward-closed i.e.,
-containing their ramifications.
+We have constructed, in Theorem~\ref{thm:dc-poset}, the poset of downwards-closed subsets,
+where the relation is the subset inclusion relation. We will now construct the
+\emph{frame} of downwards-closed subsets, in which the meet is subset intersection and the
+join is subset union.
 
 \begin{thm}
-  Given a poset $P$, its poset of downward-closed subsets forms a frame.
+  Given a poset $P$, the poset of downwards-closed subsets of $P$ (as constructed in
+  Theorem~\ref{thm:dc-poset}), is a frame.
 \end{thm}
 \begin{proof}
   We start by defining the following $\top, \wedge, and \bigvee$ operations:
   \begin{align*}
-    \top       \quad&\is\quad \top_A   && \text{(as in Definition~\ref{defn:full-set})}               \\
-    U \wedge V   \quad&\is\quad U \cap V && \text{(as in Definition~\ref{defn:set-intersection})}       \\
+    \top       \quad&\is\quad \top_A   && \text{(as constructed in Defn.~\ref{defn:full-set})} \\
+    U \wedge V   \quad&\is\quad U \cap V && \text{(as constructed in Defn.~\ref{defn:intersection})}\\
     \bigvee \bF{} \quad&\is\quad \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}
+                         && \text{(using truncation as defined in Defn.~\ref{defn:truncation})}
   \end{align*}
-  Notice that $\top$ and $\cap$ can immediately be seen to be propositional whereas $\bigvee$ requires
-  a truncation to be forced to be propositional.
-
-  We now proceed to show that these subsets we have defined are indeed downwards-closed.
-  $\top_A$ is trivially downward-closed. Downward-closure of $U \cap V$ follows immediately from
-  the downward closure of $U$ and $V$. This is also immediate: if $x$ is in $\bigvee \bF{}$
-  where $\bF{}$ is a family of downward-closed subsets, $x$ must belong to a particular
-  $\bF{}_i$ which will contain any $y \sqsubseteq x$ meaning $\bigvee \bF{}$ itself will contain any $y \sqsubseteq
-  x$. The LUB and GLB properties follow from the fact that subsets of a type form a
-  lattice as shown in Chapter~\ref{chap:foundations}.
-
-  It remains to be shown that the distributivity law is satisfied. Let $U$ be a
+  $\top$ and $\cap$ are propositional by construction whereas $\bigvee$ requires a truncation to be
+  forced to be propositional. Downwards-closure and the LUB/GLB properties are easy to
+  verify. We focus on showing that the distributivity law is satisfied. Let $U$ be a
   downwards-closed subset and $\bF{}$, a family of downward-closed subsets. We must show
   \begin{align*}
-    U \cap \left(\lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) &=
-      \bigvee \left( \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) \cap U \right)\\
-      &= \bigvee \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}} \cap x \epsilon U \right)
+    U \cap \left(\lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right)
+      &= \bigvee \left( U \cap \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) \right)\\
+      &\equiv \bigvee \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}} \times x \epsilon U \right)
   \end{align*}
   which follows by antisymmetry.
+
+  \todo{revise and expand}.
 \end{proof}
 
-\section{Nuclei and their fixed-points}\label{sec:nuclei}
+\section{Nuclei and their fixed points}\label{sec:nuclei}
 
 To prepare for formal topology, we will now define a technical notion called a
-\emph{nucleus}.
+\emph{nucleus}. Nuclei are used to describe quotient frames of a frame, which one views as
+subspaces of the space corresponding to that frame. They are presented by Johnstone
+in~\cite[Sec.~II.2]{stone-spaces}.
 
+The reason we are interested in nuclei is that in Chapter~\ref{chap:formal-topo} we will
+be focusing on a particular nucleus on the frame of downward-closed subsets. It is this
+nucleus that will allow us to describe the topological structure of our frame by letting
+us specify laws that are expected to hold in the resulting frame.
 \begin{defn}[Nucleus]\label{defn:nucleus}
   Let $F : \mathsf{Frame}_{m, n, o}$ and $j : \abs{F} \rightarrow \abs{F}$ and endofunction on it.
-  We say that $F$ is nuclear if the following condition holds:
+  We say that $F$ is \emph{nuclear} if the following condition holds:
   \begin{align*}
+    \isnuclearnm{}\quad&:\quad (\abs{F} \rightarrow \abs{F}) \rightarrow \Omega                   \\
     \isnuclear{j} \quad&\is\quad
-       \pity{x~y}{\abs{F}}{j(\meet{x}{y}) = \meet{j(x)}{j(y)}}       \\
-      &\hspace{0.6em}\times\quad \pity{x~~}{\abs{F}}{x \sqsubseteq j(x)}                     \\
-      &\hspace{0.6em}\times\quad \pity{x~~}{\abs{F}}{j(j(x)) \sqsubseteq j(x)}.
+       \pity{x~y}{\abs{F}}{j(\meet{x}{y}) = \meet{j(x)}{j(y)}}  \\
+      &\hspace{0.55em}\times\quad \pity{x~~}{\abs{F}}{x \sqsubseteq j(x)}          \\
+      &\hspace{0.55em}\times\quad \pity{x~~}{\abs{F}}{j(j(x)) \sqsubseteq j(x)}.
   \end{align*}
+  The propositionality is, as usual, a consequence of Proposition~\ref{prop:sigma-prop},
+  Proposition~\ref{prop:pi-prop}, and the fact that the carrier set is a set (by the
+  definition of $\posetaxnm{}$ from Defn.~\ref{defn:poset}).
 
-  A nucleus is then just a $\sum$ type collecting nuclear endofunctions on a frame:
+  The type of nuclei is then just the $\sum$ type collecting all nuclear endofunctions on a
+  frame:
   \begin{equation*}
     \mathsf{Nucleus} \quad\is\quad \sigmaty{j}{\abs{F} \rightarrow \abs{F}}{\isnuclear{j}}.
   \end{equation*}
@@ -275,50 +284,45 @@ To prepare for formal topology, we will now define a technical notion called a
   Every nucleus is monotonic.
 \end{prop}
 \begin{proof}
-  Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$ a nucleus on it.
-  Let $x~y : \abs{F}$ and suppose $x \sqsubseteq y$. We need to show that $j(x) \sqsubseteq j(y)$.
-  First, notice that $x = \meet{x}{y}$ by antisymmetry since $x \sqsubseteq \meet{x}{y}$ by the fact
-  that $\meet{\_}{\_}$ is a greatest lower and $\meet{x}{y} \sqsubseteq y$ by the fact that it is a
-  lower bound. The result can now be derived as follows:
+  Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$ a nucleus on it. Let
+  $\oftyII{x}{y}{\abs{F}}$ and suppose $x \sqsubseteq y$. We need to show that $j(x) \sqsubseteq j(y)$. First,
+  notice that $x = \meet{x}{y}$ by antisymmetry since $\meet{x}{y} \sqsubseteq x$ and $x \sqsubseteq
+  \meet{x}{y}$ as $\meet{x}{y}$ is greater than any other lower bound and $x$ is a lower
+  bound as it is less than both itself and $y$.
   \begin{align*}
-    j(x) &\quad\sqsubseteq\quad j(\meet{x}{y})                 && [x = \meet{x}{y}]                       \\
-         &\quad\sqsubseteq\quad \meet{j(x)}{j(y)}              && [\text{meets are preserved}]            \\
+    j(x) &\quad\sqsubseteq\quad j(\meet{x}{y})                 && [x = \meet{x}{y}]                      \\
+         &\quad\sqsubseteq\quad \meet{j(x)}{j(y)}              && [\text{nuclei preserve meets}]         \\
          &\quad\sqsubseteq\quad {j(y)}                         && [\text{$\meet{}{}$ is a lower bound}]  .
   \end{align*}
 \end{proof}
 
+We will be interested in the type of inhabitants of a frame that are \emph{fixed} points
+for a given nucleus on the frame, i.e., given a frame $F$ and a nucleus $j$ on it,
+the type $$\sigmaty{x}{F}{j(x) = x}.$$
+
 \begin{prop}
   The set of fixed points of a nucleus forms a poset.
 \end{prop}
-\begin{proof}
-  \todo{
-    Complete this rather trivial proof. The only interesting thing in it is antisymmetry.
-  }
+\begin{proof}[Proof sketch]
+  The proof amounts to forgetting the information of being a fixed point. For
+  antisymmetry, we use Proposition~\ref{prop:sigma-prop} along with the fact that the
+  carrier set is an h-set (by the definition of $\posetaxnm{}$ from
+  Defn.~\ref{defn:poset}).
 \end{proof}
 
-Now, we are ready to prove the main theorem of this section.
+Now, we are ready to prove the main theorem of this section: this poset of fixed points
+for a nucleus on a frame is itself a frame. The proof we will present has been adapted to
+the type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone-spaces}.
 
 \begin{thm}\label{thm:fixed-point-frame}
-  The set of fixed points for a nucleus forms a frame.
+  The set of fixed points for a nucleus $j$ on some frame $F$ forms a frame.
 \end{thm}
 \begin{proof}
-  \todo{
-    Write and explain this proof completely and precisely.
-  }
+  The binary meets and the top elements are taken directly from the frame $F$. We need
+  to show that they are fixed points for $j$. Let $\oftyII{x}{y}{\abs{F}}$.
 \end{proof}
 
-In the next chapter, we will see now nuclei are useful for generating a frame with a given
-formal topology.
+In the next chapter, we will make use of nuclei to a generate frame from a formal
+topology.
 
-%% As a brief digression, let us note that the reliance on the notion of ``black box''
-%% perhaps gives the impression that this is a bizarre scenario that is not likely to occur
-%% in real programming. We would like to stress that this is not the case. A program that the
-%% programmer does not \emph{completely} grasp is essentially a black box; the distance
-%% between the programmer's mental model of it and its actual behaviour has to be
-%% investigated via experimentation. This is none other than the familiar process of
-%% \emph{debugging a program} that is perhaps the only thing common to all kinds of
-%% programming; programs do not come to exist in isolation, they come to exist through the
-%% creative effort of a subject through the dialectical process of debugging~\cite{PDD}. This
-%% discussion involving a black box can hence be taken to be about a program that behaves in
-%% a way the programmer does not expect it to, meaning the programmer does not really know
-%% ``what is inside''. Hence, the programmer must experiment with to understand the problem.
+\section{Comparison to the Agda formalisation}

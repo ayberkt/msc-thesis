@@ -256,15 +256,24 @@ write this as $x \in U \is U(x)$ for subsets.
 \begin{proof}
 \end{proof}
 
-\begin{prop}
+\begin{defn}\label{defn:inclusion}
   Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the inclusion
   relation is defined as follows:
   \begin{equation*}
     U \subseteq V \quad\is\quad \pity{x}{A}{x \in U \rightarrow x \in V}.
   \end{equation*}
-\end{prop}
-\begin{proof}
-\end{proof}
+\end{defn}
+
+\begin{defn}\label{defn:intersection}
+  Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the subset
+  delineating those elements that are in \emph{both} of $U$ and $V$ are:
+  \begin{equation*}
+    \_\cap\_ : \pow{A} \rightarrow \pow{A} \rightarrow \pow{A}
+    U \cap V \quad\is\quad \pity{x}{A}{x \in U \times x \in V}.
+  \end{equation*}
+  We note that $x \in U \cap V$ is propositional by the propositionality of $x \in U$ and $x \in V$
+  combined via Proposition~\ref{prop:sigma-prop}.
+\end{defn}
 
 
 \section{Higher Inductive Types (HITs)}
@@ -302,3 +311,23 @@ resulting type is called the $\mathsf{Circle}$
 HITs turn out to be immensely useful and in fact we will explain later that they are used
 in a crucial way in this thesis: the main theorem we prove in
 Chapter~\ref{chap:formal-topo} could not have been proven without them.
+
+\section{Truncation}
+
+A particular HIT of interest will be the \emph{propositional truncation} type. This will
+allow us to \emph{forget} the proof structure of a type, or in other words, force a
+non-propositional type to be propositional by collapsing all of its different proofs into
+a single one.
+
+This turns out to be extremely useful as it gives us a way making proof-relevant things
+proof-irrelevant. Consider for instance two propositions $\oftyII{P}{Q}{\Omega_n}$. We would
+like to be able to express their logical disjunction, $P + Q$, and we would also like it
+to be a proposition itself. It will clearly not be propositional due to the fundamental,
+proof-relevant nature of type theory: the inhabitant will contain the information of which
+one of $P$ or $Q$ it comes from. For this to become propositional, we have to
+\emph{forget} this information; propositional truncation allows us to do precisely this.
+
+We now give the definition of propositional truncation as an HIT.
+
+\begin{defn}[Propositional truncation]\label{defn:truncation}
+\end{defn}
