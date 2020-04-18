@@ -112,7 +112,7 @@ at most one term.
 \end{defn}
 
 An equivalent way of expressing propositionality would be the following.
-\begin{defn}[Proposition (official)]\label{defn:prop}
+\begin{defn}[Proposition (official)]\label{defn:hprop}
   \begin{equation*}
     \isprop{A} \quad\is\quad \pity{x~y}{A}{x =_A y}
   \end{equation*}
@@ -140,7 +140,7 @@ propositionally.
 
 Now, let us state some simple facts about the class of propositional types.
 
-\begin{prop}\label{thm:pi-prop}
+\begin{prop}\label{prop:pi-prop}
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
   is a proposition whenever every $B(x)$ is a proposition.
 \end{prop}
@@ -171,6 +171,14 @@ establish equivalence between propositional types.
   Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
   then $\typequiv{A}{B}$.
 \end{prop}
+
+\begin{prop}\label{prop:sigma-prop}
+  Given some type $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an h-prop
+  and $B(a)$ is an h-set for ever $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-prop.
+\end{prop}
+\begin{proof}
+  \todo{Complete.}
+\end{proof}
 
 \subsection{Sets}
 
@@ -214,6 +222,50 @@ Hedberg's theorem can then be stated simply as follows.
     \pity{A}{\univ{}_n}{\isdisc{A} \rightarrow \isset{A}}
   \end{equation*}
 \end{thm}
+
+\begin{prop}\label{prop:sigma-set}
+  Given some type $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an h-set
+  and $B(a)$ is an h-set for ever $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-set.
+\end{prop}
+
+\begin{prop}\label{prop:prop-is-set}
+  Every proposition is a set.
+\end{prop}
+\begin{proof}
+\end{proof}
+
+\section{Powersets}
+
+The type of subsets of a given type $A$ is defined as follows.
+
+\begin{defn}\label{defn:pow}
+  Given a type $\oftyI{A}{\univ{}_n}$, the powerset of $A$ is the type of all predicates
+  on $A$:
+  \begin{equation*}
+    \pow{A} \quad\is\quad A \rightarrow \Omega_n.
+  \end{equation*}
+\end{defn}
+
+The proposition expressing membership of an element $x$ in a subset is then just the
+application $U(x)$. For the sake of clarity, we will use a bit of syntactic sugar and
+write this as $x \in U \is U(x)$ for subsets.
+
+\begin{prop}\label{prop:pow-set}
+  Given \emph{any} type $A$, $\pow{A}$ is an h-set.
+\end{prop}
+\begin{proof}
+\end{proof}
+
+\begin{prop}
+  Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the inclusion
+  relation is defined as follows:
+  \begin{equation*}
+    U \subseteq V \quad\is\quad \pity{x}{A}{x \in U \rightarrow x \in V}.
+  \end{equation*}
+\end{prop}
+\begin{proof}
+\end{proof}
+
 
 \section{Higher Inductive Types (HITs)}
 
