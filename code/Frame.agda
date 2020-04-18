@@ -15,18 +15,55 @@ import AlgebraicProperties
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 RawFrameStr ℓ₁ ℓ₂ A = (PosetStr ℓ₁ A) × A × (A → A → A) × (Sub ℓ₂ A → A)
 
-frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} O (((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
-    ((o : O)       → o ⊑ 𝟏 is-true)
-  × ((o p : O)     → (o ⊓ p) ⊑ o is-true)
-  × ((o p : O)     → (o ⊓ p) ⊑ p is-true)
-  × ((o p q : O)   → q ⊑ o is-true → q ⊑ p is-true → q ⊑ (o ⊓ p) is-true)
-  × ((ℱ : Sub ℓ₂ O) → (o : O) → o ε ℱ → o ⊑ (⋃ ℱ) is-true)
-  × ((ℱ : Sub ℓ₂ O) → (p : O) → ((o : O) → o ε ℱ → o ⊑ p is-true) → (⋃ ℱ) ⊑ p is-true)
-  × ((o : O) (ℱ : Sub ℓ₂ O) → o ⊓ (⋃ ℱ) ≡ ⋃ (index ℱ , λ i → o ⊓ (ℱ € i)))
+isTop : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
+isTop P x = ((y : ∣ P ∣ₚ) → y ⊑[ P ] x is-true) , ∏-prop λ y → is-true-prop (y ⊑[ P ] x)
+
+isGLB : (P : Poset ℓ₀ ℓ₁) → (∣ P ∣ₚ → ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁)
+isGLB P _⟨f⟩_ = φ , φ-prop
+  where
+    φ = -- x ⟨f⟩ y is _lower_ than both x and y.
+        ((x y    : ∣ P ∣ₚ) → (x ⟨f⟩ y) ⊑[ P ] x ∧ (x ⟨f⟩ y) ⊑[ P ] y is-true)
+        -- Given any other z that is lower than both x and y, x ⟨f⟩ y is _greater_ than that.
+      × ((x y z  : ∣ P ∣ₚ) → (z ⊑[ P ] x ∧ z ⊑[ P ] y) ⇒ (z ⊑[ P ] (x ⟨f⟩ y)) is-true)
+
+    φ-prop : IsProp φ
+    φ-prop = isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → is-true-prop ((x ⟨f⟩ y) ⊑[ P ] x ∧ (x ⟨f⟩ y) ⊑[ P ] y)) λ _ →
+            ∏-prop λ x → ∏-prop λ y → ∏-prop λ z → is-true-prop ((z ⊑[ P ] x ∧ z ⊑[ P ] y) ⇒ (z ⊑[ P ] (x ⟨f⟩ y)))
+
+isLUB : (P : Poset ℓ₀ ℓ₁) → (Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+isLUB {ℓ₂ = ℓ₂} P f = φ , φ-prop
+  where
+    -- We write down the property φ, expressing that f is the LUB, and couple it with the
+    -- proof (φ-prop) that it is propositional.
+    φ = ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) → ∀[ x ε ℱ ] (x ⊑[ P ] (f ℱ)) is-true)
+      × ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ f ℱ ⊑[ P ] x is-true)
+        -- f ℱ is is the _upper_ bound of ℱ i.e., above every x ε ℱ.
+        -- Given any other x that is an upper bound of ℱ, f ℱ is _lower_ than x.
+
+    φ-prop : IsProp φ
+    φ-prop = isOfHLevelΣ 1
+              (λ ψ ϑ → fn-ext ψ ϑ λ ℱ → is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] f ℱ)) (ψ ℱ) (ϑ ℱ)) λ _ →
+              ∏-prop λ ℱ → ∏-prop λ x → is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] x) ⇒ f ℱ ⊑[ P ] x)
+
+isDist : (P : Poset ℓ₀ ℓ₁)
+       → (∣ P ∣ₚ → ∣ P ∣ₚ → ∣ P ∣ₚ)
+       → (Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ)
+       → hProp (ℓ₀ ⊔ suc ℓ₂)
+isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
+  where
+    φ = (x : ∣ P ∣ₚ) (ℱ : Sub ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ € i))
+
+    φ-prop : IsProp φ
+    φ-prop p q = fn-ext p q λ x → fn-ext _ _ λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
+
+frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} A (P-str@((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
+  isTop P 𝟏 ∧ isGLB P _⊓_ ∧ isLUB P ⋃_ ∧ isDist P _⊓_ ⋃_
+  where
+    P = A , P-str
 
 FrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
-FrameStr ℓ₁ ℓ₂ = add-to-structure (RawFrameStr ℓ₁ ℓ₂) frame-axioms
+FrameStr ℓ₁ ℓ₂ = add-to-structure (RawFrameStr ℓ₁ ℓ₂) λ A RF → (frame-axioms A RF) is-true
 
 Frame : (ℓ₀ ℓ₁ ℓ₂ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 Frame ℓ₀ ℓ₁ ℓ₂ = Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)
@@ -60,31 +97,35 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     x ⊑ y = x ⊑[ P ] y
 
   𝟏[_]-top : (o : ∣ F ∣F) → o ⊑[ pos F ] 𝟏[ F ] is-true
-  𝟏[_]-top = let (_ , _ , (top , _)) = F in top
+  𝟏[_]-top = let (_ , _ , frame-str) = F in proj₁ frame-str
 
   ⊓[_]-lower₀ : (o p : ∣ F ∣F) → (o ⊓[ F ] p) ⊑[ pos F ] o is-true
-  ⊓[_]-lower₀ = let (_ , (_ , _ , (φ , _))) = F in φ
+  ⊓[_]-lower₀ =
+    let (_ , _ , str) = F in λ x y → proj₁ (π₀ (proj₁ (proj₂ str)) x y)
 
   ⊓[_]-lower₁ : (o p : ∣ F ∣F) → (o ⊓[ F ] p) ⊑[ pos F ] p is-true
-  ⊓[_]-lower₁ = let (_ , (_ , _ , (_ , φ , _))) = F in φ
+  ⊓[_]-lower₁ =
+    let (_ , _ , str) = F in λ x y → proj₂ (π₀ (proj₁ (proj₂ str)) x y)
 
   ⊓[_]-greatest : (o p q : ∣ F ∣F)
                 → q ⊑[ pos F ] o is-true
                 → q ⊑[ pos F ] p is-true
                 → q ⊑[ pos F ] (o ⊓[ F ] p) is-true
-  ⊓[_]-greatest = let (_ , (_ , _ , (_ , _ , φ , _))) = F in φ
+  ⊓[_]-greatest =
+    let (_ , _ , str) = F in λ x y z z⊑x z⊑y → π₁ (proj₁ (proj₂ str)) x y z (z⊑x , z⊑y)
 
   ⋃[_]-upper : (ℱ : Sub ℓ₂ ∣ F ∣F) (o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] (⋃[ F ] ℱ) is-true
-  ⋃[_]-upper = let (_ , (_ , _ , (_ , _ , _ , φ , _))) = F in φ
+  ⋃[_]-upper = let (_ , _ , str) = F in π₀ (proj₁ (proj₂ (proj₂ str)))
 
-  ⋃[_]-least : (ℱ : Sub ℓ₂ ∣ F ∣F) (p : ∣ F ∣F)
-            → ((o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] p is-true)
-            → (⋃[ F ] ℱ) ⊑[ pos F ] p is-true
-  ⋃[_]-least = let (_ , (_ , _ , (_ , _ , _ , _ , φ , _))) = F in φ
+  ⋃[_]-least : (ℱ : Sub ℓ₂ ∣ F ∣F) (x : ∣ F ∣F)
+            → (∀[ y ε ℱ ] (y ⊑[ pos F ] x) is-true)
+            → (⋃[ F ] ℱ) ⊑[ pos F ] x is-true
+  ⋃[_]-least = let (_ , _ , str) = F in π₁ (proj₁ (proj₂ (proj₂ str))) 
+
 
   dist : (o : ∣ F ∣F) (ℱ : Sub ℓ₂ ∣ F ∣F)
        → o ⊓[ F ] (⋃[ F ] ℱ) ≡ ⋃[ F ] ((λ - → o ⊓[ F ] -) ⊚ ℱ)
-  dist = let (_ , (_ , _ , (_ , _ , _ , _ , _ , φ))) = F in φ
+  dist = let (_ , _ , str) = F in proj₂ (proj₂ (proj₂ str))
 
   top-unique : (z : ∣ F ∣F)
             → ((o : ∣ F ∣F) → o ⊑[ pos F ] z is-true) → z ≡ 𝟏[ F ]
@@ -231,7 +272,11 @@ downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ�
 downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     𝔻
   , (strₚ 𝔻ₚ , 𝟏 , (_⊓_ , ⊔_))
-  , 𝟏-top , ⊓-lower₀ , ⊓-lower₁ , ⊓-greatest , ⊔-upper , ⊔-least , distr
+  , 𝟏-top
+  , (  (λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y)
+     , λ { x y z (z⊑x , z⊑y) → ⊓-greatest x y z z⊑x z⊑y })
+  , (⊔-upper , ⊔-least)
+  , distr
   where
     𝔻ₚ = downward-subset-poset (X , P)
     𝔻  = ∣ 𝔻ₚ ∣ₚ
@@ -414,7 +459,8 @@ RF-is-SNS' : SNS' {ℓ = ℓ} (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂)
 RF-is-SNS' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = SNS→SNS' (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂) RF-is-SNS
 
 frame-iso : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = add-to-iso (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂) frame-axioms
+frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
+  add-to-iso (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂) λ A RF → frame-axioms A RF is-true
 
 frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → IsProp (frame-iso M N i)
 frame-iso-prop F G i =
@@ -429,16 +475,8 @@ frame-iso-prop F G i =
 frame-iso-Ω : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ M ≃ π₀ N → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-iso-Ω M N i = frame-iso M N i , frame-iso-prop M N i
 
-frame-axioms-props : (A : Type ℓ₀) (F : RawFrameStr ℓ₁ ℓ₂ A) → IsProp (frame-axioms A F)
-frame-axioms-props A (((_⊑_ , A-set) , _) , 𝟏 , _⊓_ , ⋃_) =
-  isOfHLevelΣ 1 (∏-prop λ x → is-true-prop (x ⊑ 𝟏)) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ o)) λ _ →
-  isOfHLevelΣ 1 (∏-prop (λ o → ∏-prop λ p → is-true-prop ((o ⊓ p) ⊑ p))) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ o → ∏-prop λ p → ∏-prop λ q →
-                 ∏-prop λ _ → ∏-prop λ _ → is-true-prop (q ⊑ (o ⊓ p))) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ o → ∏-prop λ _ → is-true-prop (o ⊑ (⋃ ℱ))) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ ℱ → ∏-prop λ z → ∏-prop λ _ → is-true-prop ((⋃ ℱ) ⊑ z)) λ _ →
-                 ∏-prop λ o → ∏-prop λ ℱ → A-set _ _
+frame-axioms-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A) → IsProp ((frame-axioms A str) is-true)
+frame-axioms-props A str = is-true-prop (frame-axioms A str)
 
 frame-is-SNS' : SNS' {ℓ = ℓ} (FrameStr ℓ₁ ℓ₂) frame-iso
 frame-is-SNS' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = add-axioms-SNS' _ _ _ frame-axioms-props RF-is-SNS'
