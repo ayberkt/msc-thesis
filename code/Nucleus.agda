@@ -106,7 +106,7 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
 -- The join of this frame is define as ⊔ᵢ ℱᵢ := j (⊔′ᵢ ℱᵢ) where ⊔′ denotes the join of L.
 nuclear-fixed-point-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
 nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
-    ∣ nuclear-fixed-point-poset L N ∣ₚ
+                          ∣ nuclear-fixed-point-poset L N ∣ₚ
   , (strₚ (nuclear-fixed-point-poset L N) , (𝟏[ L ] , 𝟏-fixed) , _⊓_ , ⊔_)
   , top
   , ((λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y) , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
@@ -133,7 +133,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
 
     _⊓_ : 𝒜 → 𝒜 → 𝒜
     _⊓_ (x , x-f) (y , y-f) =
-      x ⊓[ L ] y , ⊑[ pos L ]-antisym (j (x ⊓[ L ] y)) (x ⊓[ L ] y) φ (n₁ (x ⊓[ L ] y))
+      x ⊓[ L ] y , ⊑[ pos L ]-antisym _ _ φ (n₁ (x ⊓[ L ] y))
       where
         ⊑jx : j (x ⊓[ L ] y) ⊑ j x is-true
         ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)      ⟩
@@ -173,30 +173,27 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
 
     ⊔-least : (ℱ : Sub ℓ₂ 𝒜) (p : 𝒜)
             → ((o : 𝒜) → o ε ℱ → o ⊑N p is-true) → ((⊔ ℱ) ⊑N p) is-true
-    ⊔-least ℱ p@(p′ , eq) ℱ⊑p = φ
+    ⊔-least ℱ (u , fix) ℱ⊑p = subst (λ - → j (⋃[ L ] 𝒢) ⊑ - is-true) fix NTS₀
       where
         𝒢 : Sub ℓ₂ ∣ pos L ∣ₚ
         𝒢 = index ℱ , λ i → π₀ (ℱ € i)
 
-        ϑ : (o : ∣ pos L ∣ₚ) → o ε 𝒢 → o ⊑ p′ is-true
-        ϑ o o∈𝒢@(i , eq′) = o     ⊑⟨ ≡⇒⊑ (pos L) (sym eq′)               ⟩
-                            𝒢 € i ⊑⟨ ℱ⊑p (𝒢 € i , π₁ (ℱ € i)) (i , refl) ⟩
-                            p′    ■
+        NTS₁ : (o : ∣ pos L ∣ₚ) → o ε 𝒢 → o ⊑ u is-true
+        NTS₁ o (i , eq′) = o     ⊑⟨ ≡⇒⊑ (pos L) (sym eq′)               ⟩
+                           𝒢 € i ⊑⟨ ℱ⊑p (𝒢 € i , π₁ (ℱ € i)) (i , refl) ⟩
+                           u     ■
 
-        ψ : j (⋃[ L ] 𝒢) ⊑ (j p′) is-true
-        ψ = mono L N (⋃[ L ] 𝒢) p′ (⋃[ L ]-least 𝒢 p′ ϑ)
+        NTS₀ : j (⋃[ L ] 𝒢) ⊑ j u is-true
+        NTS₀ = mono L N (⋃[ L ] 𝒢) u (⋃[ L ]-least 𝒢 u NTS₁)
 
-        φ : j (⋃[ L ] 𝒢) ⊑ p′ is-true
-        φ = subst (λ k → (j (⋃[ L ] 𝒢) ⊑ k) is-true) eq ψ
-
-    ⊔-upper : (ℱ : Sub ℓ₂ 𝒜) (o : 𝒜) → o ε ℱ → (o ⊑N (⊔ ℱ)) is-true
-    ⊔-upper ℱ (o , _) o∈ℱ@(i , eq) =
-      o               ⊑⟨ φ ⟩
-      ⋃[ L ] (π₀ ⊚ ℱ) ⊑⟨ n₁ (⋃[ L ] (π₀ ⊚ ℱ)) ⟩
+    ⊔-upper : (ℱ : Sub ℓ₂ 𝒜) (x : 𝒜) → x ε ℱ → (x ⊑N (⊔ ℱ)) is-true
+    ⊔-upper ℱ (x , _) o∈ℱ@(i , eq) =
+      x                   ⊑⟨ NTS                  ⟩
+      ⋃[ L ] (π₀ ⊚ ℱ)     ⊑⟨ n₁ (⋃[ L ] (π₀ ⊚ ℱ)) ⟩
       j (⋃[ L ] (π₀ ⊚ ℱ)) ■
       where
-        φ : o ⊑ (⋃[ L ] (π₀ ⊚ ℱ)) is-true
-        φ = ⋃[ L ]-upper (π₀ ⊚ ℱ) o (i , λ j → π₀ (eq j))
+        NTS : x ⊑ (⋃[ L ] (π₀ ⊚ ℱ)) is-true
+        NTS = ⋃[ L ]-upper (π₀ ⊚ ℱ) x (i , λ j → π₀ (eq j))
 
     distr : (o : 𝒜) (ℱ : Sub ℓ₂ 𝒜) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
     distr o@(o′ , jo′=o′) ℱ@(I , F) =
