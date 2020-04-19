@@ -1,4 +1,5 @@
 \input{/home/ayberkt/academic/thesis/report/template/template}
+\usepackage{agda}
 
 \usepackage{ebproof}
 \usepackage{wasysym}
