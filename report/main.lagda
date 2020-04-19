@@ -1,4 +1,4 @@
-\input{template/template}
+\input{/home/ayberkt/academic/thesis/report/template/template}
 
 \usepackage{ebproof}
 \usepackage{wasysym}
@@ -149,7 +149,7 @@
 
 \input{formal-topology}
 
-\input{examples}
+%% \input{examples}
 
 \makebackmatter{}
 
