@@ -76,7 +76,7 @@ nuclear-image L j N@(n₀ , n₁ , n₂) = isoToPath (iso f g sec-f-g ret-f-g)
 -- The set of fixed points for a nucleus `j` forms a poset.
 nuclear-fixed-point-poset : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Poset ℓ₀ ℓ₁
 nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
-  𝔽 , (_≤_ , 𝔽-set) , ≤-refl , ≤-trans , ≤-antisym
+  𝔽 , _≤_ , 𝔽-set , ≤-refl , ≤-trans , ≤-antisym
   where
     P = pos L
     A-set = carrier-is-set (pos L)
