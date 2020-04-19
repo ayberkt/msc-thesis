@@ -112,6 +112,7 @@
 \newcommand{\covers}[2]{#1 \covernm{} #2}
 
 \newcommand{\bF}{\mathbf{F}}
+\newcommand{\bG}{\mathbf{G}}
 
 \newcommand{\is}{:\equiv}
 

@@ -280,7 +280,7 @@ us specify laws that are expected to hold in the resulting frame.
   \end{equation*}
 \end{defn}
 
-\begin{prop}
+\begin{prop}\label{prop:nucleus-mono}
   Every nucleus is monotonic.
 \end{prop}
 \begin{proof}
@@ -318,11 +318,101 @@ the type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone
   The set of fixed points for a nucleus $j$ on some frame $F$ forms a frame.
 \end{thm}
 \begin{proof}
-  The binary meets and the top elements are taken directly from the frame $F$. We need
-  to show that they are fixed points for $j$. Let $\oftyII{x}{y}{\abs{F}}$.
+  The binary meets and the top element are taken directly from the frame $F$. The fact
+  that the top element is a fixed point of $j$ is easy to verify: $\top \sqsubseteq j(\top)$ by nuclearity
+  (Defn.~\ref{defn:nucleus}). For the meet operation, let $\oftyII{x}{y}{\abs{F}}$ such
+  that $j(x) = x$ and $j(y) = y$. $x \wedge y \sqsubseteq j(x \wedge y)$ by $N_1$ so it suffices to show $j(x
+  \wedge y) \sqsubseteq x \wedge y$. Nuclei preserve meets so $j(x \wedge y) = j(x) \wedge j(y) \sqsubseteq j(x) = x$ and $j(x \wedge
+  y) = j(x) \wedge j(y) \sqsubseteq j(y) = y$. This means that $j(x \wedge y)$ is an upper bound of $x$ and
+  $y$ hence $j(x \wedge y) \sqsubseteq x \wedge y$.
+
+  We define the LUB on a family $\mathbf{G}$, making use of the LUB $\bigvee^F$ of $F$ but
+  applying $j$ on the result:
+  \begin{equation*}
+    \bigvee \mathbf{G} \quad\is\quad j \left( \bigvee^F \mathbf{G} \right).
+  \end{equation*}
+  Notice that this is a LUB operator. Let $\bG{}$ be a family of fixed points for $j$ and
+  let $x~\epsilon~\bG{}$. $\bigvee^F \mathbf{G}$ is an upper bound of $\bG{}$ so $x \sqsubseteq \bigvee^F \mathbf{G}$.
+  Notice also that $\bigvee^F \mathbf{G} \sqsubseteq j \left( \bigvee^F \mathbf{G} \right)$ by ($N_1$). This
+  means that $\bigvee$ is an upper operator. Let $u$ be some other upper bound of $\bG{}$ such
+  that $j(u) = u$. We need to show that $j \left( \bigvee^F \mathbf{G} \right) \sqsubseteq u$. Since $u =
+  j(u)$ it suffices by the monotonicity of $j$ (Prop.~\ref{prop:nucleus-mono}) to show
+  $\bigvee^F \mathbf{G} \sqsubseteq u$. As $\bigvee^F \bG{}$ is a LUB, we are done since $u$ is an upper bound
+  of $\bG{}$
+
+  It remains to be shown that the infinite distributivity law is satisfied. Let
+  $\oftyI{x}{\abs{F}}$ such that $j(x) = x$ and let $\bG{}$ be a family.
+  \begin{align*}
+    x \wedge \left( \bigvee \bG{} \right)
+      &\quad\equiv\quad x    \wedge j\left( \bigvee^F \bG{} \right)      && [x = j(x)]                     \\
+      &\quad=\quad j(x) \wedge j\left( \bigvee^F \bG{} \right)      && [N_1]                          \\
+      &\quad=\quad j \left( x \wedge \bigvee^F \bG{} \right)        && [\text{distributivity of}\ F]  \\
+      &\quad=\quad j \left( \bigvee^F_i x \wedge \bG{}_i \right)                                      \\
+      &\quad\equiv\quad \bigvee_i x \wedge \bG{}_i
+  \end{align*}
 \end{proof}
 
 In the next chapter, we will make use of nuclei to a generate frame from a formal
 topology.
 
 \section{Comparison to the Agda formalisation}
+
+In this section, we provide a brief overview of how these constructions look in the Agda
+formalisation. Our aim in doing this is to merely give a feel of what the formal
+development looks like. The reader uninterested in the Agda formalisation can safely skip
+this section.
+
+The definition of posets corresponds directly to the one Sec.~\ref{sec:poset}. Note that
+we adopt the convention of using $\mathscr{l}_0$ for the level of the carrier set and
+$\mathscr{l}_1$ for the level of relation result.
+\begin{code}
+{-# OPTIONS --cubical #-}
+
+open import basis
+
+Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
+Order ℓ₁ A = A → A → hProp ℓ₁
+
+isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+isReflexive {A = X} _⊑_ =
+  ((x : X) → x ⊑ x is-true) , ∏-prop λ x → is-true-prop (x ⊑ x)
+
+isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
+  where
+    φ        : Type (ℓ₀ ⊔ ℓ₁)
+    φ        = (x y z : X) → (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z) is-true
+    φ-prop   : isProp φ
+    φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z →
+                 is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
+
+isAntisym : {A : Type ℓ₀} → IsSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
+  where
+    φ        : Type (ℓ₀ ⊔ ℓ₁)
+    φ        = (x y : X) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y
+    φ-prop   : isProp φ
+    φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ p → ∏-prop λ q → A-set x y
+
+PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = φ , φ-prop
+  where
+    isPartial  : IsSet A → hProp (ℓ₀ ⊔ ℓ₁)
+    isPartial  = λ hset → isReflexive _⊑_ ∧ isTransitive _⊑_ ∧ isAntisym hset _⊑_
+    φ          = Σ[ A-set ∈ IsSet A ] (isPartial A-set) is-true
+    φ-prop     = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
+
+PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
+PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+
+Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
+Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
+\end{code}
+
+The {\color{AgdaFunction} \texttt{add-to-structure}} function is imported from the
+\texttt{cubical} library. It is a direct implementation of Mart\'{i}n Escard\'{o}'s
+SIP~\cite[Sec.~3.33.1]{escardo-uf-intro}.
+
+It would have been more idiomatic to use records to represent posets in Agda. $\sum$ types
+have been used to avoid repeating h-level theorems such as
+Proposition~\ref{prop:sigma-set}.
