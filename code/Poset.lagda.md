@@ -50,6 +50,13 @@ A poset structure with level `ℓ₁`.
 ```
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
 PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+
+PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → IsSet (PosetStr ℓ₁ A)
+PosetStr-set ℓ₁ A =
+  Σ-set (∏-set λ _ → ∏-set λ _ → isSetHProp) λ _⊑_ →
+  Σ-set (prop⇒set isPropIsSet) λ A-set →
+    prop⇒set
+      (is-true-prop (isReflexive {A = A} _⊑_  ∧ isTransitive _⊑_ ∧ isAntisym A-set _⊑_))
 ```
 
 A poset with carrier level `ℓ₀` and relation level `ℓ₁`.

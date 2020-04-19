@@ -57,7 +57,7 @@ isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
     φ-prop p q = fn-ext p q λ x → fn-ext _ _ λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
 
 frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} A (P-str@((_⊑_ , _) , _) , 𝟏 , _⊓_ , ⋃_) =
+frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} A (P-str@(_⊑_ , _) , 𝟏 , _⊓_ , ⋃_) =
   isTop P 𝟏 ∧ isGLB P _⊓_ ∧ isLUB P ⋃_ ∧ isDist P _⊓_ ⋃_
   where
     P = A , P-str
@@ -243,27 +243,23 @@ _$f_ : {F G : Frame ℓ₀ ℓ₁ ℓ₂} → F ─f→ G → ∣ F ∣F → ∣
 
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-poset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
-downward-subset-poset {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (A , P) =
-  𝔻 , (_<<_ , DownwardClosedSubset-set (A , P)) , <<-refl , <<-trans , <<-antisym
+downward-subset-poset {ℓ₀ = ℓ₀} (A , P) =
+   𝔻 , _<<_ , 𝔻-set , <<-refl , <<-trans  , <<-antisym
   where
-    𝔻 = DownwardClosedSubset (A , P)
+    𝔻     = DownwardClosedSubset     (A , P)
+    𝔻-set = DownwardClosedSubset-set (A , P)
 
     _<<_ : 𝔻 → 𝔻 → hProp ℓ₀
     _<<_ (S , _) (T , _) = S ⊆ T
 
-    open AlgebraicProperties (DownwardClosedSubset-set (A , P)) _<<_
-       renaming ( IsReflexive  to <<-IsReflexive
-                ; IsTransitive to <<-IsTransitive
-                ; IsAntisym    to <<-IsAntisym)
-
     abstract
-      <<-refl : <<-IsReflexive is-true
+      <<-refl : isReflexive _<<_ is-true
       <<-refl (U , U-down) x xεU = xεU
 
-      <<-trans : <<-IsTransitive is-true
+      <<-trans : isTransitive _<<_ is-true
       <<-trans _ _ _ S<<T T<<U x xεS = T<<U x (S<<T x xεS)
 
-      <<-antisym : <<-IsAntisym is-true
+      <<-antisym : isAntisym 𝔻-set _<<_ is-true
       <<-antisym X Y S⊆T T⊆S =
         to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
@@ -337,19 +333,15 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
     distr D ℱ = ⊑[ 𝔻ₚ ]-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , λ i → D ⊓ (ℱ € i))) down up
       where
-        𝒜 = ∣ D ⊓ (⊔ ℱ) ∣𝔻
-        ℬ = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
+        LHS = ∣ D ⊓ (⊔ ℱ) ∣𝔻
+        RHS = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
 
-        down : (x : X) → 𝒜 x is-true → ℬ x is-true
-        down x x∈𝒜@(x∈D , x∈⊔ℱ) = ∥∥-rec (∥∥-prop _) ind x∈⊔ℱ
-          where
-            ind : in-some-set-of ℱ x → ∥ in-some-set-of (index ℱ , λ i → D ⊓ (ℱ € i)) x ∥
-            ind (i , x∈ℱᵢ) = ∣ i , x∈D , x∈ℱᵢ ∣
+        down : LHS ⊆ RHS is-true
+        down x x∈𝒜@(x∈D , x∈⊔ℱ) =
+          ∥∥-rec (∥∥-prop _) (λ { (i , x∈ℱᵢ) → ∣ i , x∈D , x∈ℱᵢ ∣ }) x∈⊔ℱ
 
-        up : (x : X) → ℬ x is-true → 𝒜 x is-true
-        up x x∈ℬ =
-          ∥∥-rec (isOfHLevelΣ 1 (is-true-prop (∣ D ∣𝔻 x)) λ _ →
-          is-true-prop (∣ ⊔ ℱ ∣𝔻 x)) φ x∈ℬ
+        up : RHS ⊆ LHS is-true
+        up x = ∥∥-rec (is-true-prop (x ∈ LHS)) φ
           where
             φ : in-some-set-of (index ℱ , λ j → D ⊓ (ℱ € j)) x
               → (∣ D ∣𝔻 x is-true) × ∣ ⊔ ℱ ∣𝔻 x is-true
@@ -399,10 +391,10 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
       Q , 𝟏₁ , _⊓₁_ , ⋃₁   ∎
       where
         eq : P ≡ Q
-        eq = ΣProp≡ (poset-axioms-props A)
-             (ΣProp≡ (λ _ → isPropIsSet)
-                     (fn-ext _⊑₀_ _⊑₁_ λ x → fn-ext (_⊑₀_ x) (_⊑₁_ x) λ y →
-                      ⇔toPath (proj₁ (iₚ x y)) (proj₂ (iₚ x y))))
+        eq = ΣProp≡
+               (poset-axioms-props A)
+               (fn-ext _ _ λ x → fn-ext _ _ λ y →
+                 ⇔toPath (proj₁ (iₚ x y)) (proj₂ (iₚ x y)))
 
         ⊓-eq : _⊓₀_ ≡ _⊓₁_
         ⊓-eq = fn-ext _⊓₀_ _⊓₁_ (λ x → fn-ext (_⊓₀_ x) (_⊓₁_ x) λ y → ⊓-xeq x y)
@@ -418,10 +410,10 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
           where
             𝒻  = equivFun (idEquiv A)
 
-            φ : order-iso (A , _⊑₀_ , A-set₀) (A , _⊑₁_ , A-set₀) (idEquiv A)
+            φ : order-iso (A , _⊑₀_) (A , _⊑₁_) (idEquiv A)
             φ x y =
-                (subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) eq)
-              , subst (λ { (((_⊑⋆_ , _) , _) , _) → (x ⊑⋆ y) is-true }) (sym eq)
+                (subst (λ { ((_⊑⋆_ , _) , _) → (x ⊑⋆ y) is-true }) eq)
+              , subst (λ { ((_⊑⋆_ , _) , _) → (x ⊑⋆ y) is-true }) (sym eq)
 
             ψ : equivFun (idEquiv A) 𝟏₀ ≡ 𝟏₁
             ψ = subst (λ { (_ , - , _ , _) → 𝒻 - ≡ 𝟏₁ }) (sym eq) refl
@@ -434,10 +426,9 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
             ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ ⋃₁ (𝒻 ⊚ ℱ) }) (sym eq) refl
 
         str-set : IsSet (RawFrameStr ℓ₁ ℓ₂ A)
-        str-set =
-          Σ-set (isOfHLevelΣ 2 OrderStr-set (prop⇒set ∘ poset-axioms-props A)) λ _ →
-          isOfHLevelΣ 2 A-set₀ λ _ →
-          isOfHLevelΣ 2 (∏-set (λ x → ∏-set λ y → A-set₀)) λ _ → ∏-set λ ℱ → A-set₀
+        str-set = Σ-set (PosetStr-set ℓ₁ A) λ _ →
+                  Σ-set A-set₀ λ _ →
+                  Σ-set (∏-set λ _ → ∏-set λ _ → A-set₀) λ _ → ∏-set λ _ → A-set₀
 
         ret : (eq : F ≡ G) → f (g eq) ≡ eq
         ret eq = str-set F G (f (g eq)) eq
