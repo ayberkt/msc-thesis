@@ -146,37 +146,40 @@ Projection for the underlying function of a monotonic map.
 _$ₘ_ = π₀
 ```
 
-Monotonic function composition.
+The identity monotonic map and composition of monotonic maps.
 
 ```
-_∘m_ : {P : Poset ℓ₀ ℓ₁} {Q : Poset ℓ₀′ ℓ₁′} {R : Poset ℓ₀′′ ℓ₁′′}
-     → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
-(g , pg) ∘m (f , pf) = g ∘ f , λ x y p → pg (f x) (f y) (pf x y p)
-
 𝟏m : (P : Poset ℓ₀ ℓ₁) → P ─m→ P
 𝟏m P = id , (λ x y x⊑y → x⊑y)
 
-↓[_]_ : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-↓[ P ] a = Σ ∣ P ∣ₚ (λ b → b ⊑[ P ] a is-true)
+_∘m_ : {P : Poset ℓ₀ ℓ₁} {Q : Poset ℓ₀′ ℓ₁′} {R : Poset ℓ₀′′ ℓ₁′′}
+     → (Q ─m→ R) → (P ─m→ Q) → (P ─m→ R)
+(g , pg) ∘m (f , pf) = g ∘ f , λ x y p → pg (f x) (f y) (pf x y p)
 ```
 
 ## Downward-closure
 
+We denote by `↓[ P ] x` the type of everything in `P` that is below `x`.
+
 ```
-IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → (𝒫 ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁)
-IsDownwardClosed P@(X , _) D =
-  ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true) , prop
+↓[_]_ : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
+↓[ P ] a = Σ[ b ∈ ∣ P ∣ₚ ] (b ⊑[ P ] a is-true)
+```
+
+```
+IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → 𝒫 ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
+IsDownwardClosed P U =
+  ((x y : ∣ P ∣ₚ) → x ∈ U is-true → y ⊑[ P ] x is-true → y ∈ U is-true) , prop
   where
-    prop : IsProp ((x y : X) → D x is-true → y ⊑[ P ] x is-true → D y is-true)
-    prop = ∏-prop λ _ → ∏-prop λ x → ∏-prop λ _ → ∏-prop λ _ →
-           is-true-prop (D x)
+    prop : IsProp ((x y : ∣ P ∣ₚ) → U x is-true → y ⊑[ P ] x is-true → U y is-true)
+    prop = ∏-prop λ _ → ∏-prop λ x → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (x ∈ U)
 
 DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Type (suc ℓ₀ ⊔ ℓ₁)
-DownwardClosedSubset P = Σ (𝒫 ∣ P ∣ₚ) (λ S → IsDownwardClosed P S is-true)
+DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] IsDownwardClosed P U is-true
 
 DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → IsSet (DownwardClosedSubset P)
 DownwardClosedSubset-set P =
-  Σ-set (𝒫-set ∣ P ∣ₚ) λ x → prop⇒set (is-true-prop (IsDownwardClosed P x))
+  Σ-set (𝒫-set ∣ P ∣ₚ) λ U → prop⇒set (is-true-prop (IsDownwardClosed P U))
 ```
 
 ## Product of two posets
