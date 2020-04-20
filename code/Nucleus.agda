@@ -8,7 +8,6 @@ open import Basis
 open import Family
 open import Poset
 open import Frame
-import AlgebraicProperties
 
 -- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Type (ℓ₀ ⊔ ℓ₁)
@@ -90,15 +89,13 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
     _≤_ : 𝔽 → 𝔽 → hProp ℓ₁
     (a , _) ≤ (b , _) = a ⊑[ P ] b is-true , is-true-prop (a ⊑[ P ] b)
 
-    open AlgebraicProperties 𝔽-set _≤_
-
-    ≤-refl : IsReflexive is-true
+    ≤-refl : isReflexive _≤_ is-true
     ≤-refl (x , _) = ⊑[ P ]-refl x
 
-    ≤-trans : IsTransitive is-true
+    ≤-trans : isTransitive _≤_ is-true
     ≤-trans (x , _) (y , _) (z , _) x≤y y≤x = ⊑[ P ]-trans x y z x≤y y≤x
 
-    ≤-antisym : IsAntisym is-true
+    ≤-antisym : isAntisym 𝔽-set _≤_ is-true
     ≤-antisym (x , _) (y , _) x≤y y≤x =
       ΣProp≡ (λ z → A-set (j z) z) (⊑[ P ]-antisym x y x≤y y≤x)
 

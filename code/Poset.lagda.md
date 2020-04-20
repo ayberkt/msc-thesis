@@ -5,7 +5,6 @@ module Poset where
 
 open import Basis
 open import Powerset
-import AlgebraicProperties
 ```
 
 ## Definition of poset
