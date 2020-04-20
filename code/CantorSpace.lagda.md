@@ -30,7 +30,7 @@ xs ≤ ys = (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs) , prop
 
 ```
 cantor-poset : Poset ℓ-zero ℓ-zero
-cantor-poset = ℂ , ((_≤_ , ℂ-set) , (≤-refl , ≤-trans , ≤-antisym))
+cantor-poset = ℂ , _≤_ , ℂ-set , ≤-refl , ≤-trans , ≤-antisym
   where
     ≤-refl : (xs : ℂ) → xs ≤ xs is-true
     ≤-refl xs = [] , refl
