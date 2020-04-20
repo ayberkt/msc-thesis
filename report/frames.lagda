@@ -352,7 +352,7 @@ the type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone
   \end{align*}
 \end{proof}
 
-In the next chapter, we will make use of nuclei to a generate frame from a formal
+In the next chapter, we will make use of nuclei to a generate a frame from a formal
 topology.
 
 \section{Comparison to the Agda formalisation}
