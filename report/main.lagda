@@ -17,6 +17,17 @@
 
 \keywords{topology, domain theory}
 
+\definecolor{darkgreen}{rgb}{0,0.45,0}
+\definecolor{darkred}{rgb}{0.45,0,0}
+\definecolor{hottviolet}{rgb}{0.45,0,0.45}
+\definecolor{hottblue}{rgb}{0,0.45,0.45}
+
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = darkgreen,
+  citecolor  = hottblue
+}
+
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\nats}{\mathbb{N}}
 \newcommand{\bool}{\mathbf{Bool}}
@@ -50,7 +61,7 @@
 \newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
 \newcommand{\univ}{\mathcal{U}}
 \newcommand{\isaprop}[1]{\mathsf{IsProp}\left(#1\right)}
-\newcommand{\hprop}{\mathsf{hProp}}
+\newcommand{\hprop}{Ω}
 \newcommand{\isaset}[1]{\mathsf{IsSet}\left(#1\right)}
 \newcommand{\abs}[1]{\left| #1 \right|}
 \newcommand{\trunc}[1]{\left\| #1 \right\|}
@@ -79,8 +90,24 @@
 \newcommand{\ismonotonicnm}{\mathsf{IsMonotonic}}
 \newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
 
+\newcommand{\hasmono}[1]{\mathsf{hasMono}\left(#1\right)}
+\newcommand{\hassim}[1]{\mathsf{hasSim}\left(#1\right)}
+
+\newcommand{\vermono}{\hyperref[defn:mono]{monotonicity}}
+\newcommand{\versim}{{\color{black} \hyperref[defn:sim]{simulation}}}
+\newcommand{\vernucleus}{\hyperref[defn:nucleus]{nucleus}}
+\newcommand{\verframe}{\hyperref[defn:frame]{frame}}
+\newcommand{\verposet}{\hyperref[defn:poset]{poset}}
+\newcommand{\verintrsys}{\hyperref[defn:intr-sys]{interaction system}}
+
+\newcommand{\ruledir}{{\color{darkred} \mathsf{dir}}}
+\newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
+\newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
+
 \newcommand{\monotonicmapnm}{\rightarrow_m}
 \newcommand{\monotonicmap}[2]{#1 \rightarrow_m #2}
+
+\newcommand{\isflat}[1]{\mathsf{isFlat}\left(#1\right)}
 
 \newcommand{\framestrnm}{\mathsf{FrameStr}}
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
@@ -113,6 +140,7 @@
 
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bG}{\mathbf{G}}
+\newcommand{\McF}{\mathcal{F}}
 
 \newcommand{\is}{:\equiv}
 
