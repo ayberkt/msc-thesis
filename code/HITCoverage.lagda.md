@@ -75,11 +75,11 @@ module Test (P     : Type ℓ)
             c : out b
             c = π₀ (π₁ (sim a′ a h b) c′)
 
-  lem4 : (a : P) (U : P → Type ℓ) (V : P → Type ℓ)
-       → a <| U → ((u : P) → U u → u <| V) → a <| V
-  lem4 a U V (squash p₀ p₁ i) h = squash (lem4 a U V p₀ h) (lem4 a U V p₁ h) i
-  lem4 a U V (dir p)          h = h a p
-  lem4 a U V (branch b f)     h = branch b (λ c → lem4 (rev c) U V (f c) h)
+  lem4 : (U : P → Type ℓ) (V : P → Type ℓ)
+       → ((u : P) → U u → u <| V) → (a : P) → a <| U → a <| V
+  lem4 U V h a (squash p₀ p₁ i) = squash (lem4 U V h a p₀) (lem4 U V h a p₁) i
+  lem4 U V h a (dir p)          = h a p
+  lem4 U V h a (branch b f)     = branch b (λ c → lem4  U V h (rev c) (f c))
 
   module _ {U : P → Type ℓ} {V : P → Type ℓ}
            (U-down : IsDownwardClosed U) (V-down : IsDownwardClosed V) where
