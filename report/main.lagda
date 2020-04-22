@@ -3,6 +3,12 @@
 
 \usepackage{ebproof}
 \usepackage{wasysym}
+\usepackage{tikz-cd}
+
+\tikzcdset{
+  arrow style=tikz,
+  diagrams={>={Straight Barb[scale=0.8]}}
+}
 
 \title{Formal Topology in Univalent Foundations}
 \author{Ayberk Tosun}

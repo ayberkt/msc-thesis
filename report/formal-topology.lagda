@@ -495,10 +495,21 @@ In our case, we will of course be interested in monotonic maps whose codomains a
   \end{align*}
 \end{defn}
 
+\begin{figure}
+  \centering
+  \caption{The universal property}
+  \begin{tikzcd}[row sep=40pt, column sep=40pt]\label{fig:comm-diag}
+    \McF{} \arrow[swap, rd, "f"] \arrow[r, "\eta"] & L \arrow[d, dashed, "g"] \\
+                                                & R
+  \end{tikzcd}
+\end{figure}
+
 Using flat monotonic maps, the universal property can now be stated.
 
 \begin{thm}[Universal property for formal topologies]
-  Given any formal topology $\McF{}$, frame $R$, flat monotonic map $f : A_{\McF{}} \rightarrow
-  \abs{R}$ from the underlying \verposet{} of $\McF{}$ to the underlying \verposet{}
-  of $R$, that \hyperref[defn:rep]{represents} $\McF{}$ in $R$, there exists a unique
+  Given any formal topology $\McF{}$, frame $R$, flat monotonic map $f : A_{\McF{}} \rightarrow R$
+  from the underlying \verposet{} of $\McF{}$ to the underlying \verposet{} of $R$, that
+  \hyperref[defn:rep]{represents} $\McF{}$ in $R$, there exists a unique \textbf{frame
+    homomorphism} $\oftyI{g}{L \rightarrow R}$ such that $f = g \circ \eta$, as summarised in
+  Fig.~\ref{fig:comm-diag}
 \end{thm}
