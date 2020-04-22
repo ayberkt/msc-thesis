@@ -512,4 +512,22 @@ Using flat monotonic maps, the universal property can now be stated.
   \hyperref[defn:rep]{represents} $\McF{}$ in $R$, there exists a unique \textbf{frame
     homomorphism} $\oftyI{g}{L \rightarrow R}$ such that $f = g \circ \eta$, as summarised in
   Fig.~\ref{fig:comm-diag}
+
+  We express this fully formally as follows:
+  \begin{align*}
+    \pity{\McF{}}{\mathsf{FT}_{n, n}}{
+      &\pity{R}{\mathsf{Frame}_{n+1, n, n}}{
+         \pity{f}{P \rightarrow_m R}{
+           \isflat{f} \rightarrow \mathsf{represents}\left( \McF{} , F , f \right) \rightarrow\\
+             &\iscontr{\sigmaty{g}{L \rightarrow_f R}{f = g \circ \eta}}
+        }
+      }
+    }.
+  \end{align*}
 \end{thm}
+\begin{proof}
+  Let $\McF{}$ be a formal topology and $R$ a frame. Let $\oftyI{f}{P \rightarrow_m R}$ be a
+  \emph{flat} monotonic map that represents $\McF{}$ in $R$
+  (as defined in Defn.~\ref{defn:rep}). We will show the \emph{unique existence} of a
+  \emph{frame homomorphism} $\oftyI{g}{L \rightarrow_f R}$ such that $f = g \circ \eta$.
+\end{proof}
