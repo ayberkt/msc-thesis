@@ -273,11 +273,8 @@ Proof.
     gm∘ηm~f : (x : 𝔉) → gm $ₘ (ηm $ₘ x) ≡ fm $ₘ x
     gm∘ηm~f x = ⊑[ pos R ]-antisym _ _ down (⋃[ R ]-upper _ _ ((x , x◀x↓ x) , refl))
       where
-        lem′ : (o : ∣ R ∣F) → o ε (∃ (π₀ (e x)) , f ∘ π₀) → o ⊑[ pos R ] f x is-true
-        lem′ o ((y , φ) , fy=o) = subst (λ - → - ⊑[ pos R ] f x is-true) fy=o (lem y φ)
-
         down : (⋃[ R ] (∃ π₀ (e x) , f ∘ π₀)) ⊑[ pos R ] f x is-true
-        down = ⋃[ R ]-least _ _ lem′
+        down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem y φ) }
 
     g∘η=f : gm∘ηm ≡ fm
     g∘η=f = to-subtype-≡ _ fm (IsMonotonic-prop P (pos R)) (fn-ext _ _ gm∘ηm~f)
