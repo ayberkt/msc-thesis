@@ -58,7 +58,7 @@ nothing but the map `U ↦ - <| U`.
   _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
   x << y = x ⊑[ pos F↓ ] y
 
-  ◀-antisym = ⊑[ pos F↓ ]-antisym
+  <<-antisym = ⊑[ pos F↓ ]-antisym
 
   𝕛-nuclear : IsNuclear F↓ 𝕛
   𝕛-nuclear = N₀ , N₁ , N₂
@@ -67,7 +67,7 @@ nothing but the map `U ↦ - <| U`.
       -- in (u) (𝕛 a₀) ⊓ (𝕛 a₁) ⊑ 𝕛 (a₀ ⊓ a₁).
       N₀ : (𝔘 𝔙 : ∣ F↓ ∣F) → 𝕛 (𝔘 ⊓[ F↓ ] 𝔙) ≡ (𝕛 𝔘) ⊓[ F↓ ] (𝕛 𝔙)
       N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) =
-        ◀-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) d u
+        <<-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) d u
         where
           U′ = _is-true ∘ U
           V′ = _is-true ∘ V
