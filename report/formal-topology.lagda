@@ -323,6 +323,12 @@ by $U$ ($\_ \LHD U$) is itself downwards-closed.
   \end{itemize}
 \end{proof}
 
+\begin{prop}\label{prop:lem1}
+\end{prop}
+\begin{proof}
+  \todo{Complete}.
+\end{proof}
+
 \begin{prop}\label{prop:lem3}
 \end{prop}
 \begin{proof}
@@ -404,6 +410,41 @@ to the proof.
       $\mathsf{squash}$ rule.
   \end{itemize}
 \end{proof}
+
+\section{Generating a frame from a formal topology}
+
+Now that we have shown the nuclearity of the covering relation $\covers{\_}{\_}$, we have
+everything we need for the procedure of generating a \verframe{} from a formal topology.
+
+Let $\McF{}$ be a formal topology. We know by Theorem~\ref{thm:down-set-frame} that the
+set of downwards-closed subsets of the underlying poset of $\McF{}$ is a frame; denote
+this by $\McF{}\downarrow$. As we know that $\covers{\_}{\_}$ is a nucleus on this frame (by
+Theorem~\ref{thm:covering-nucleus}), we know that the set of fixed points for
+$\covers{\_}{\_}$ is a frame as well; denote this by $L$. Now, notice that we can define
+a map $\eta : A_{\McF{}} \rightarrow \abs{L}$ as follows:
+\begin{align*}
+  \eta    \quad&:\quad A_{\McF{}} \rightarrow \pow{A_{\McF{}}}\\
+  \eta(x) \quad&\is\quad \covers{\_}{x\downarrow}
+\end{align*}
+where $x\downarrow$ denotes the \emph{downwards-closure} of $x$: $\{ y~|~y \sqsubseteq x \}$. So $y \in \eta(x) \equiv
+\covers{y}{x\downarrow}$ is to say ``$y$ leads to a ramification of $x$''. In fact, one can see
+that $\eta(x)$ is downwards-closed and a fixed point for $\covers{\_}{\_}$, meaning its type
+can be refined to $\oftyI{\eta}{A_{\McF{}} \rightarrow \abs{L}}$.
+
+\begin{defn}[$\eta$]
+  Let $\McF{}$ be a formal topology and denote its cover relation by $\covers{\_}{\_}$.
+  Let $L \is \fix{\dcsubset{A}}{\_\RHD\_}$. There exists a monotonic map from the
+  underlying poset of $P$ of $\McF{}$ to the underlying poset of $L$:
+  \begin{align*}
+    \eta    \quad&:\quad P \rightarrow_m (\abs{L}, \_\sqsubseteq_L\_)\\
+    \eta(a) \quad&\is\quad \covers{\_}{a\downarrow}.
+  \end{align*}
+  The fact that $\eta$ is monotonic follows from Proposition~\ref{prop:lem1}. It remains to
+  be shown that it is a fixed point for $\_\RHD\_$. Let $\oftyI{a}{A_{\McF{}}}$. We need
+  to show that $\covers{\_}{(\covers{\_}{a})} = \covers{\_}{a}$. We proceed by
+  antisymmetry. $\covers{\_}{a\downarrow} \subseteq \covers{\_}{(\covers{\_}{a\downarrow})}$ follows by $N_1$. The
+  other direction is a direct application of Proposition~\ref{prop:lem4}.
+\end{defn}
 
 \section{Formal topologies present}
 

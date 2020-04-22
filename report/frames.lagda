@@ -222,7 +222,7 @@ where the relation is the subset inclusion relation. We will now construct the
 \emph{frame} of downwards-closed subsets, in which the meet is subset intersection and the
 join is subset union.
 
-\begin{thm}
+\begin{thm}\label{thm:down-set-frame}
   Given a poset $P$, the poset of downwards-closed subsets of $P$ (as constructed in
   Theorem~\ref{thm:dc-poset}), is a frame.
 \end{thm}
@@ -245,8 +245,22 @@ join is subset union.
   \end{align*}
   which follows by antisymmetry.
 
+  We will denote the frame of downwards-closed subsets of poset $P$ as $P\downarrow$.
+
   \todo{revise and expand}.
 \end{proof}
+
+There is a map from poset $P$ to $P\downarrow$ that takes every element to the set of elements
+below it.
+
+\begin{defn}[Downwards-closure of an element]\label{defn:down-clos}
+  Given a poset $P$, some $\oftyI{x}{P}$, the downwards-closure of $x$ is defined as:
+  \begin{align*}
+    \_\downarrow \quad&:\quad P \rightarrow P\downarrow                   \\
+    x\downarrow  \quad&\is\quad \_ \sqsubseteq x  .
+  \end{align*}
+  This of course a downwards-closed set by construction.
+\end{defn}
 
 \section{Nuclei and their fixed points}\label{sec:nuclei}
 
@@ -351,6 +365,9 @@ the type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone
       &\quad\equiv\quad \bigvee_i x \wedge \bG{}_i
   \end{align*}
 \end{proof}
+
+We can also notice now that the codomain of the $_\downarrow$ map (Defn.~\ref{defn:down-clos}) is
+restricted
 
 In the next chapter, we will make use of nuclei to a generate a frame from a formal
 topology.

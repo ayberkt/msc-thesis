@@ -104,6 +104,8 @@
 \newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
 \newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
 
+\newcommand{\fix}[2]{\mathsf{fix}\left(#1, #2\right)}
+
 \newcommand{\monotonicmapnm}{\rightarrow_m}
 \newcommand{\monotonicmap}[2]{#1 \rightarrow_m #2}
 
