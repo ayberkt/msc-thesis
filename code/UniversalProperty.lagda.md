@@ -275,7 +275,7 @@ Proof.
         lem′ : (o : ∣ R ∣F) → o ε (∃ (π₀ (e x)) , f ∘ π₀) → o ⊑[ pos R ] f x is-true
         lem′ o ((y , φ) , fy=o) = subst (λ - → - ⊑[ pos R ] f x is-true) fy=o (lem y φ)
 
-        down : (⋃[ R ] (∃ (π₀ (e x)) , f ∘ π₀)) ⊑[ pos R ] f x is-true
+        down : (⋃[ R ] (∃ π₀ (e x) , f ∘ π₀)) ⊑[ pos R ] f x is-true
         down = ⋃[ R ]-least _ _ lem′
 
     g∘η=f : gm∘ηm ≡ fm
