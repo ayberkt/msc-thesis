@@ -260,16 +260,14 @@ Proof.
       where
         open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
         lem : (y : 𝔉) → y <| (_is-true ∘ π₀ (↓-clos x)) → f y ⊑[ pos R ] f x is-true
-        lem y (squash α β i) = is-true-prop (f y ⊑[ pos R ] f x) (lem y α) (lem y β) i
+        lem y (squash p q i) = is-true-prop (f y ⊑[ pos R ] f x) (lem y p) (lem y q) i
         lem y (dir    y⊑x)   = f-mono y x y⊑x
         lem y (branch b h)   =
-          fm $ₘ y                                       ⊑⟨ rep y b            ⟩
+          fm $ₘ y                                       ⊑⟨ rep y b               ⟩
           ⋃[ R ] (outcome D b , (λ c → fm $ₘ next D c)) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
           fm $ₘ x                                       ■
           where
-            isUB : (z : ∣ R ∣F)
-                 → z ε (outcome D b , (λ c → fm $ₘ next D c))
-                 → z ⊑[ pos R ] (fm $ₘ x) is-true
+            isUB : ∀ z → z ε (outcome D b , f ∘ next D) → z ⊑[ pos R ] f x is-true
             isUB z (c , p) = z                ⊑⟨ ≡⇒⊑ (pos R) (sym p)  ⟩
                              fm $ₘ (next D c) ⊑⟨ lem (next D c) (h c) ⟩
                              fm $ₘ x          ■
