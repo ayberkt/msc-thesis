@@ -382,54 +382,55 @@ this section.
 The definition of posets corresponds directly to the one Sec.~\ref{sec:poset}. Note that
 we adopt the convention of using $\mathscr{l}_0$ for the level of the carrier set and
 $\mathscr{l}_1$ for the level of relation result.
-\begin{code}
-{-# OPTIONS --cubical #-}
 
-open import basis
+%% \begin{code}
+%% {-# OPTIONS --cubical #-}
 
-Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-Order ℓ₁ A = A → A → hProp ℓ₁
+%% open import basis
 
-isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-isReflexive {A = X} _⊑_ =
-  ((x : X) → x ⊑ x is-true) , ∏-prop λ x → is-true-prop (x ⊑ x)
+%% Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
+%% Order ℓ₁ A = A → A → hProp ℓ₁
 
-isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
-  where
-    φ        : Type (ℓ₀ ⊔ ℓ₁)
-    φ        = (x y z : X) → (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z) is-true
-    φ-prop   : isProp φ
-    φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z →
-                 is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
+%% isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+%% isReflexive {A = X} _⊑_ =
+%%   ((x : X) → x ⊑ x is-true) , ∏-prop λ x → is-true-prop (x ⊑ x)
 
-isAntisym : {A : Type ℓ₀} → IsSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
-  where
-    φ        : Type (ℓ₀ ⊔ ℓ₁)
-    φ        = (x y : X) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y
-    φ-prop   : isProp φ
-    φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ p → ∏-prop λ q → A-set x y
+%% isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+%% isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
+%%   where
+%%     φ        : Type (ℓ₀ ⊔ ℓ₁)
+%%     φ        = (x y z : X) → (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z) is-true
+%%     φ-prop   : isProp φ
+%%     φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z →
+%%                  is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
 
-PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = φ , φ-prop
-  where
-    isPartial  : IsSet A → hProp (ℓ₀ ⊔ ℓ₁)
-    isPartial  = λ hset → isReflexive _⊑_ ∧ isTransitive _⊑_ ∧ isAntisym hset _⊑_
-    φ          = Σ[ A-set ∈ IsSet A ] (isPartial A-set) is-true
-    φ-prop     = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
+%% isAntisym : {A : Type ℓ₀} → IsSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+%% isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
+%%   where
+%%     φ        : Type (ℓ₀ ⊔ ℓ₁)
+%%     φ        = (x y : X) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y
+%%     φ-prop   : isProp φ
+%%     φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ p → ∏-prop λ q → A-set x y
 
-PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+%% PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+%% PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = φ , φ-prop
+%%   where
+%%     isPartial  : IsSet A → hProp (ℓ₀ ⊔ ℓ₁)
+%%     isPartial  = λ hset → isReflexive _⊑_ ∧ isTransitive _⊑_ ∧ isAntisym hset _⊑_
+%%     φ          = Σ[ A-set ∈ IsSet A ] (isPartial A-set) is-true
+%%     φ-prop     = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
 
-Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
-Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
-\end{code}
+%% PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
+%% PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
 
-The {\color{AgdaFunction} \texttt{add-to-structure}} function is imported from the
-\texttt{cubical} library. It is a direct implementation of Mart\'{i}n Escard\'{o}'s
-SIP~\cite[Sec.~3.33.1]{escardo-uf-intro}.
+%% Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
+%% Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
+%% \end{code}
 
-It would have been more idiomatic to use records to represent posets in Agda. $\sum$ types
-have been used to avoid repeating h-level theorems such as
-Proposition~\ref{prop:sigma-set}.
+%% The {\color{AgdaFunction} \texttt{add-to-structure}} function is imported from the
+%% \texttt{cubical} library. It is a direct implementation of Mart\'{i}n Escard\'{o}'s
+%% SIP~\cite[Sec.~3.33.1]{escardo-uf-intro}.
+
+%% It would have been more idiomatic to use records to represent posets in Agda. $\sum$ types
+%% have been used to avoid repeating h-level theorems such as
+%% Proposition~\ref{prop:sigma-set}.
