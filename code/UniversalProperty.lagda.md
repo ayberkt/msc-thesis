@@ -253,20 +253,18 @@ Proof.
 ### `g` makes the diagram commute
 
 ```
-    lem : {x : 𝔉} (y : 𝔉) → y <| (_is-true ∘ π₀ (↓-clos x)) → f y ⊑[ pos R ] f x is-true
-    lem y (squash p q i) = is-true-prop (f y ⊑[ pos R ] f _) (lem y p) (lem y q) i
-    lem y (dir    y⊑x)   = f-mono y _ y⊑x
-    lem y (branch b h)   =
-      fm $ₘ y                                       ⊑⟨ rep y b               ⟩
-      ⋃[ R ] (outcome D b , (λ c → fm $ₘ next D c)) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
-      fm $ₘ _                                       ■
+    lem : (x y : 𝔉) → y <| (_is-true ∘ π₀ (↓-clos x)) → f y ⊑[ pos R ] f x is-true
+    lem x y (squash p q i) = is-true-prop (f y ⊑[ pos R ] f _) (lem x y p) (lem x y q) i
+    lem x y (dir    y⊑x)   = f-mono y _ y⊑x
+    lem x y (branch b h)   = f y                               ⊑⟨ rep y b               ⟩
+                             ⋃[ R ] (outcome D b , f ∘ next D) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
+                             f x                               ■
       where
         open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
-
         isUB : ∀ z → z ε (outcome D b , f ∘ next D) → z ⊑[ pos R ] f _ is-true
-        isUB z (c , p) = z                 ⊑⟨ ≡⇒⊑ (pos R) (sym p)  ⟩
-                          fm $ₘ (next D c) ⊑⟨ lem (next D c) (h c) ⟩
-                          fm $ₘ _          ■
+        isUB z (c , p) = z            ⊑⟨ ≡⇒⊑ (pos R) (sym p)    ⟩
+                         f (next D c) ⊑⟨ lem x (next D c) (h c) ⟩
+                         f x          ■
 
     gm∘ηm = _∘m_ {P = P} {Q = pos L} {R = pos R} gm ηm
 
@@ -274,7 +272,7 @@ Proof.
     gm∘ηm~f x = ⊑[ pos R ]-antisym _ _ down (⋃[ R ]-upper _ _ ((x , x◀x↓ x) , refl))
       where
         down : (⋃[ R ] (∃ π₀ (e x) , f ∘ π₀)) ⊑[ pos R ] f x is-true
-        down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem y φ) }
+        down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem x y φ) }
 
     g∘η=f : gm∘ηm ≡ fm
     g∘η=f = to-subtype-≡ _ fm (IsMonotonic-prop P (pos R)) (fn-ext _ _ gm∘ηm~f)
