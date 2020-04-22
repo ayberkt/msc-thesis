@@ -6,3 +6,7 @@ references.bib:
 
 main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda.sty
 	tectonic main.tex
+
+.PHONY: clean
+clean:
+	rm -f main.pdf
