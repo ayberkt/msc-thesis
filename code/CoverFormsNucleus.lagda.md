@@ -114,7 +114,6 @@ We denote by `L` the frame of fixed points for `𝕛`.
 Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
 
 ```
-
   ↓-clos : stage D → ∣ F↓ ∣F
   ↓-clos x = x↓ , down-DC
     where
@@ -144,9 +143,7 @@ x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
   fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
     where
       NTS : ∀ y → π₀ (𝕛 (e x)) y is-true → π₀ (e x) y is-true
-      NTS y (dir p)        = p
-      NTS y (branch b f)   = branch b (λ c → NTS (next D c) (f c))
-      NTS y (squash p q i) = squash (NTS y p) (NTS y q) i
+      NTS = lem4 (_is-true ∘ (π₀ (e x))) (_is-true ∘ π₀ (↓-clos x)) (λ _ q → q)
       up : e x ⊑[ P↓ ] 𝕛 (e x) is-true
       up = π₀ (π₁ 𝕛-nuclear) (e x)
 
