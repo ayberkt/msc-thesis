@@ -530,4 +530,43 @@ Using flat monotonic maps, the universal property can now be stated.
   \emph{flat} monotonic map that represents $\McF{}$ in $R$
   (as defined in Defn.~\ref{defn:rep}). We will show the \emph{unique existence} of a
   \emph{frame homomorphism} $\oftyI{g}{L \rightarrow_f R}$ such that $f = g \circ \eta$.
+
+  We choose
+  \begin{align*}
+    g    \quad&:\quad \abs{L} \rightarrow \abs{R} \\
+    g(U) \quad&\is\quad \bigvee^R f(U)        .
+  \end{align*}
+  To show that the diagram commutes, it suffices by Proposition~\ref{prop:funext} to show
+  $f(x) = g(\eta(x))$ for every $\oftyI{x}{A_{\McF{}}}$. Let $\oftyI{x}{A_{\McF{}}}$; we
+  proceed by antisymmetry. The $f(x) \sqsubseteq g(\eta(x))$ direction is easy: $g(\eta(x)) = \bigvee^R f(\eta(x))$
+  and $\bigvee^R$ is an upper bound of $f(\eta(x)$ so it suffices to show $f(x) \in f(\eta(x))$. This is
+  immediate since $x \in \eta(x)$.
+
+  The other direction is the interesting one. First, we prove a lemma in preparation:
+  \emph{given any $\oftyII{a}{a'}{A_{\McF{}}}$ such that $\covers{a'}{a\downarrow}$, $f(a') \sqsubseteq f(a)$}.
+  Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{a}$. We proceed by induction on
+  the proof of $\covers{a'}{a}$.
+  \begin{itemize}
+    \item Case: $\ruledir{}$. It must be that $a' \in a \downarrow$ i.e., $a' \sqsubseteq a$. We are done by
+      the monotonicity of $f$.
+    \item Case: $\rulebranch{}$. There must be some $\oftyI{b}{B_{\McF{}}(a')}$ and a
+      function $h$ such that $\oftyI{h(c)}{\covers{d(a', b, c)}{a\downarrow}}$ for any
+      $\oftyI{c}{C(a', b)}$. Notice that $f(a') \sqsubseteq \bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ by
+      the assumption that $f$ \emph{represents} (Defn.~\ref{defn:rep}) so it remains to be
+      shown $$\bigvee_{\oftyI{c}{C(a', b)}}d(a, b, c) \sqsubseteq f(a).$$ As
+      $\bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ is a LUB, it suffices to show that $f(a)$ is an
+      upper bound of the subset of $A_{\McF{}}$ delineated by $f(d(a', b, \_))$.
+      Consider $f(d(a', b, c))$ for some $c$. We have that $\oftyI{h(c)}{\covers{d(a', b,
+          c)}{a\downarrow}}$ meaning $f(d(a', b, c)) \sqsubseteq f(a)$ by the inductive hypothesis.
+    \item Case $\rulesquash{}$. We combine the inductive hypotheses using the fact that
+      the result type $f(a') \sqsubseteq f(a)$ is propositional.
+  \end{itemize}
+
+  Now, we want to show that $\bigvee^R f(\eta(x)) \sqsubseteq f(x)$. Since $\bigvee^R$ is a LUB it suffices to
+  show that $f(x)$ is an upper bound of $\img{f}{\eta(x)}$. Let $f(y) \epsilon \img{f}{\eta(x)}$.
+  We need to show that $f(y) \sqsubseteq f(x)$. By the lemma we have just proven, it suffices to
+  show that $\covers{y}{x\downarrow}$ and this holds directly because $f(y) \epsilon \img{f}{\eta(x)}$.
+
+  There are two more things that have to be shown (1) $g$ is a frame homomorphism and (2)
+  $g$ is unique.
 \end{proof}
