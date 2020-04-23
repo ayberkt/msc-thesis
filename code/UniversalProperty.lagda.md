@@ -72,13 +72,13 @@ Before the proof we will need some lemmas.
 ```
 
 ```
-  main-lemma : (𝔘 : ∣ L ∣F) → 𝔘 ≡ ⋃[ L ] (η ⊚ (∃ ⦅ 𝔘 ⦆ , π₀))
+  main-lemma : (𝔘 : ∣ L ∣F) → 𝔘 ≡ ⋃[ L ] ⁅ η u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆
   main-lemma 𝔘@((U , U-dc) , U-fix) = ⊑[ pos L ]-antisym _ _ down up
     where
-      down : 𝔘 ⊑[ pos L ] (⋃[ L ] (∃ U , λ { (x , _) → η x })) is-true
+      down : 𝔘 ⊑[ pos L ] (⋃[ L ] ⁅ η x ∣ x ∈ U ⁆) is-true
       down x xεU = dir ∣ (x , xεU) , dir (⊑[ P ]-refl x) ∣
 
-      up : (⋃[ L ] (∃ U , η ∘ π₀)) ⊑[ pos L ] 𝔘 is-true
+      up : (⋃[ L ] ⁅ η x ∣ x ∈ U ⁆) ⊑[ pos L ] 𝔘 is-true
       up x (dir xε⋁) = ∥∥-rec (is-true-prop (U x)) NTS xε⋁
         where
           NTS : Σ[ y ∈ _ ] x ∈ ⦅ η (π₀ y) ⦆ is-true → x ∈ U is-true
@@ -214,7 +214,7 @@ Proof.
       ⋃[ R ] (g ⊚ ℱ)
         ∎
       where
-        LHS = ⋃[ R ] (f ⊚ ⟪ ⦅ ⋃[ L ] ℱ ⦆ ⟫)
+        LHS = ⋃[ R ] ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆
         RHS = ⋃[ R ] (Σ I (λ - → ∃ ⦅ U - ⦆) , (λ { (x , y) → f (π₀ y) }))
 
         down : LHS ⊑[ pos R ] RHS is-true
