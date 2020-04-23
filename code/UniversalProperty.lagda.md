@@ -253,18 +253,19 @@ Proof.
 ### `g` makes the diagram commute
 
 ```
-    lem : (x y : 𝔉) → y <| (_is-true ∘ π₀ (↓-clos x)) → f y ⊑[ pos R ] f x is-true
-    lem x y (squash p q i) = is-true-prop (f y ⊑[ pos R ] f _) (lem x y p) (lem x y q) i
-    lem x y (dir    y⊑x)   = f-mono y _ y⊑x
-    lem x y (branch b h)   = f y                               ⊑⟨ rep y b               ⟩
-                             ⋃[ R ] (outcome D b , f ∘ next D) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
-                             f x                               ■
+    lem : (a a′ : 𝔉) → a′ <| (_is-true ∘ π₀ (↓-clos a)) → f a′ ⊑[ pos R ] f a is-true
+    lem a a′ (squash p q i) = is-true-prop (f a′ ⊑[ pos R ] f a) (lem _ _ p) (lem _ _ q) i
+    lem a a′ (dir    a′⊑a)  = f-mono a′ a a′⊑a
+    lem a a′ (branch b h)   =
+      f a′                              ⊑⟨ rep a′ b              ⟩
+      ⋃[ R ] (outcome D b , f ∘ next D) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
+      f a                               ■
       where
         open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
-        isUB : ∀ z → z ε (outcome D b , f ∘ next D) → z ⊑[ pos R ] f _ is-true
-        isUB z (c , p) = z            ⊑⟨ ≡⇒⊑ (pos R) (sym p)    ⟩
-                         f (next D c) ⊑⟨ lem x (next D c) (h c) ⟩
-                         f x          ■
+        isUB : ∀ a₀ → a₀ ε (outcome D b , f ∘ next D) → a₀ ⊑[ pos R ] f a is-true
+        isUB a₀ (c , p) = a₀           ⊑⟨ ≡⇒⊑ (pos R) (sym p)    ⟩
+                          f (next D c) ⊑⟨ lem a (next D c) (h c) ⟩
+                          f a          ■
 
     gm∘ηm = _∘m_ {P = P} {Q = pos L} {R = pos R} gm ηm
 
