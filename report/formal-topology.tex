@@ -482,7 +482,7 @@ which we can do by requiring the following conditions:
 \end{enumerate}
 
 In our case, we will of course be interested in monotonic maps whose codomains are frames.
-\begin{defn}[Flat monotonic map]
+\begin{defn}[Flat monotonic map]\label{defn:flat}
   Let $P$ be a \verposet{} and $F$ a \verframe{}. Denote by $I$ the type
   $\sigmaty{z}{\abs{F}}{z \sqsubseteq x \times z \sqsubseteq y}$.
   A monotonic map $f : P \rightarrow F$ from $P$
@@ -506,7 +506,7 @@ In our case, we will of course be interested in monotonic maps whose codomains a
 
 Using flat monotonic maps, the universal property can now be stated.
 
-\begin{thm}[Universal property for formal topologies]
+\begin{thm}[Universal property for formal topologies]\label{thm:univ-prop}
   Given any formal topology $\McF{}$, frame $R$, flat monotonic map $f : A_{\McF{}} \rightarrow R$
   from the underlying \verposet{} of $\McF{}$ to the underlying \verposet{} of $R$, that
   \hyperref[defn:rep]{represents} $\McF{}$ in $R$, there exists a unique \textbf{frame
@@ -525,7 +525,27 @@ Using flat monotonic maps, the universal property can now be stated.
     }.
   \end{align*}
 \end{thm}
+
+Before proceeding to the proof, let us first prove a lemma of key importance.
+
+\begin{lemma}
+  Let $\McF{}$ be a formal topology. Denote by $L$ the set of downwards-closed subsets of
+  $A_{\McF{}}$ that are fixed points for its covering nucleus. For any $\oftyI{U}{L}$,
+  it is the case that:
+  \begin{equation*}
+    U = \bigvee^L \setof{ \eta(u) ~|~ u \in U }.
+  \end{equation*}
+\end{lemma}
 \begin{proof}
+  Let $\oftyI{U}{L}$. We proceed by antisymmetry. The $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \in U }$
+  direction is immediate by an application for the $\ruledir{}$ rule. For the other
+  direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
+  $a \in \bigvee^L \setof{ \eta(u) ~|~ u \in U }$. Recall that the join operation is defined by
+  applying the nucleus in the fixed point frame (Theorem \ref{thm:fixed-point-frame}).
+  This is to say that we have $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
   Let $\McF{}$ be a formal topology and $R$ a frame. Let $\oftyI{f}{P \rightarrow_m R}$ be a
   \emph{flat} monotonic map that represents $\McF{}$ in $R$
   (as defined in Defn.~\ref{defn:rep}). We will show the \emph{unique existence} of a
@@ -569,4 +589,22 @@ Using flat monotonic maps, the universal property can now be stated.
 
   There are two more things that have to be shown (1) $g$ is a frame homomorphism and (2)
   $g$ is unique.
+
+  Let us first address (1). The fact that $g$ preserves the top element of $L$ is given
+  by the flatness assumption: $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$ by
+  flatness (Defn.~\ref{defn:flat}). $g$ can also be seen to preserve binary meets by
+  the following reasoning: let $\oftyII{U}{V}{L}$;
+  \begin{align*}
+    g(U \cap V) &\equiv \bigvee^R \{ f(a) ~|~ a \in U \cap V \} \\
+             &= \bigvee^R \setof{ \bigvee \{ w ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ u \in U, v \in V }
+               && \text{[flatness]}                                                 \\
+             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ u \in, v \in V }
+               &&\text{[Prop.~\ref{prop:distr}]}                                    \\
+             &= \left( \bigvee^R \img{f}{U} \right) \wedge \left( \bigvee^R \img{f}{V} \right)       \\
+             &\equiv g(U) \wedge g(V)                                                         .
+  \end{align*}
+  Let us now show that $g$ respects joins. Let $U_i$ be an $I$-indexed family of
+  inhabitants of $\abs{L}$.
+  \begin{align*}
+  \end{align*}
 \end{proof}
