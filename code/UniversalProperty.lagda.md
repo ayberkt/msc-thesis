@@ -68,9 +68,7 @@ Before the proof we will need some lemmas.
 ```
   cover+ : {x y : 𝔉} ((U , _) : ∣ F↓ ∣F)
          → x ∈ ⦅ η y ⦆ is-true → y ∈ U is-true → x <| (_is-true ∘ U)
-  cover+ U↓ (dir x⊑y)      yεU = lem1 (λ x₁ x₂ → π₁ U↓ _ _ x₁ x₂) x⊑y (dir yεU)
-  cover+ U↓ (branch b f)   yεU = branch b (λ c → cover+ U↓ (f c) yεU)
-  cover+ U↓ (squash φ ψ i) yεU = squash (cover+ U↓ φ yεU) (cover+ U↓ ψ yεU) i
+  cover+ {y = y} (_ , U-dc) x∈ηy y∈U = lem4 _ _ (λ z z⊑y → dir (U-dc y z y∈U z⊑y)) _ x∈ηy
 ```
 
 ```
