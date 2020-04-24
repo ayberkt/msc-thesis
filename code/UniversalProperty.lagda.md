@@ -194,8 +194,8 @@ Proof.
     g-resp-⊔ ℱ@(I , U) =
       ⋃[ R ] ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆
         ≡⟨ ⊑[ pos R ]-antisym _ _ down up ⟩
-      ⋃[ R ] (Σ I (λ - → ∃ ⦅ U - ⦆) , λ { (x , y) → f (π₀ y) })
-        ≡⟨ flatten R I (λ i → ∃ ⦅ U i ⦆) (λ _ j → f (π₀ j))   ⟩
+        ⋃[ R ] ((Σ[ i ∈ I ] ∃ ⦅ U i ⦆) , λ { (_ , y) → f (π₀ y) })
+        ≡⟨ flatten R I (λ - → ∃ ⦅ U - ⦆) (λ _ j → f (π₀ j))   ⟩
       ⋃[ R ] (g ⊚ ℱ)
         ∎
       where
@@ -205,7 +205,7 @@ Proof.
         down : LHS ⊑[ pos R ] RHS is-true
         down = ⋃[ R ]-least _ _ ψ
           where
-            ψ : (o : ∣ R ∣F) → o ε (f ⊚ ⟪ ⦅ ⋃[ L ] ℱ ⦆ ⟫) → o ⊑[ pos R ] RHS is-true
+            ψ : (o : ∣ R ∣F) → o ε ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆ → o ⊑[ pos R ] RHS is-true
             ψ o ((x , foo) , eq) = subst (λ - → - ⊑[ pos R ] RHS is-true) eq (ϑ x foo)
               where
                 open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
