@@ -67,7 +67,7 @@ Before the proof we will need some lemmas.
 
 ```
   cover+ : {x y : 𝔉} ((U , _) : ∣ F↓ ∣F)
-         → x ∈ ⦅ η y ⦆ is-true → y ∈ U is-true → x <| (_is-true ∘ U)
+         → x ∈ ⦅ η y ⦆ is-true → y ∈ U is-true → x <| U
   cover+ {y = y} (_ , U-dc) x∈ηy y∈U = lem4 _ _ (λ z z⊑y → dir (U-dc y z y∈U z⊑y)) _ x∈ηy
 ```
 
@@ -241,7 +241,7 @@ Proof.
 ### `g` makes the diagram commute
 
 ```
-    lem : (a a′ : 𝔉) → a′ <| (_is-true ∘ π₀ (↓-clos a)) → f a′ ⊑[ pos R ] f a is-true
+    lem : (a a′ : 𝔉) → a′ <| π₀ (↓-clos a) → f a′ ⊑[ pos R ] f a is-true
     lem a a′ (squash p q i) = is-true-prop (f a′ ⊑[ pos R ] f a) (lem _ _ p) (lem _ _ q) i
     lem a a′ (dir    a′⊑a)  = f-mono a′ a a′⊑a
     lem a a′ (branch b h)   =

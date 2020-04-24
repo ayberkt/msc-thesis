@@ -4,7 +4,7 @@
 module CoverFormsNucleus where
 
 open import Basis          hiding (A)
-open import Poset          renaming (IsDownwardClosed to IsDownwardClosed′)
+open import Poset
 open import Frame
 open import HITCoverage
 open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame; idem)
@@ -38,7 +38,7 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
     mono    = π₁ D
     _⊑_     = λ (x y : stage D) → x ⊑[ P ] y
 
-  open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono) sim public
+  open Test F public
 ```
 
 Now, we define the *covering nucleus* which we denote by `𝕛`. At its heart, this is
@@ -46,14 +46,14 @@ nothing but the map `U ↦ - <| U`.
 
 ```
   𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
-  𝕛 (U , U-down) = U₀ , λ _ _ → down-closed
+  𝕛 (U , U-down) = U₀ , U₀-dc
     where
       -- This is not  h-propositional unless we force it to be using the HIT definition.
       U₀ : stage D → hProp ℓ₀
-      U₀ = λ a → a <| (_is-true ∘ U) , <|-prop a (_is-true ∘ U)
+      U₀ = λ a → a <| U , squash
 
-      down-closed : IsDownwardClosed (λ - → - <| (_is-true ∘ U))
-      down-closed aεU₁ a₀⊑a = lem1 (U-down _ _) a₀⊑a aεU₁
+      U₀-dc : IsDownwardClosed P (λ - → (- <| U) , squash) is-true
+      U₀-dc a a₀ aεU₁ a₀⊑a = lem1 U-down a₀⊑a aεU₁
 
   _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
   x << y = x ⊑[ pos F↓ ] y
@@ -69,15 +69,6 @@ nothing but the map `U ↦ - <| U`.
       N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) =
         <<-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) d u
         where
-          U′ = _is-true ∘ U
-          V′ = _is-true ∘ V
-
-          U-down′ : IsDownwardClosed (_is-true ∘ U)
-          U-down′ = U-down _ _
-
-          V-down′ : IsDownwardClosed (_is-true ∘ V)
-          V-down′ = V-down _ _
-
           d : 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) is-true
           d a (dir p)        = dir (π₀ p) , dir (π₁ p)
           d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
@@ -90,15 +81,13 @@ nothing but the map `U ↦ - <| U`.
               IH₁ = d a q
 
           u : (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) is-true
-          u a p = lem3 U′ V′ U-down′ V-down′ a a (⊑[ P ]-refl a) (π₀ p) (π₁ p)
+          u a p = lem3 U V U-down V-down a a (⊑[ P ]-refl a) (π₀ p) (π₁ p)
 
       N₁ : (𝔘 : ∣ F↓ ∣F) → 𝔘 << (𝕛 𝔘) is-true
       N₁ _ a₀ a∈U = dir a∈U
 
       N₂ : (𝔘 : ∣ F↓ ∣F) → π₀ (𝕛 (𝕛 𝔘)) ⊆ π₀ (𝕛 𝔘) is-true
-      N₂ 𝔘@(U , _) = lem4 (λ - → π₀ (𝕛 𝔘) - is-true) U′ (λ _ q → q)
-        where
-          U′ = _is-true ∘ U
+      N₂ 𝔘@(U , _) = lem4 (π₀ (𝕛 𝔘)) U (λ _ q → q)
 ```
 
 We denote by `L` the frame of fixed points for `𝕛`.
@@ -118,10 +107,10 @@ Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
   ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
-      down-DC : IsDownwardClosed′ P x↓ is-true
+      down-DC : IsDownwardClosed P x↓ is-true
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
 
-  x◀x↓ : (x : stage D) → x <| (λ - → - ⊑[ P ] x is-true)
+  x◀x↓ : (x : stage D) → x <| (λ - → - ⊑[ P ] x)
   x◀x↓ x = dir (⊑[ P ]-refl x)
 ```
 
@@ -129,10 +118,10 @@ By composing this with the covering nucleus, we define a map `e` from `F` to `F�
 
 ```
   e : stage D → ∣ F↓ ∣F
-  e z = (λ a → (a <| (_is-true ∘ (π₀ (↓-clos z)))) , squash) , NTS
+  e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
     where
-      NTS : IsDownwardClosed′ P (λ a → (a <| (λ - → - ⊑[ P ] z is-true)) , squash) is-true
-      NTS x y p q = lem1 (λ p q → ⊑[ P ]-trans _ _ z q p) q p
+      NTS : IsDownwardClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) is-true
+      NTS _ _ x y = lem1 (λ _ _ x⊑y y⊑z → ⊑[ P ]-trans _ _ z y⊑z x⊑y) y x
 ```
 
 We can further refine the codomain of `e` to `L`. In other words, we can prove that `j (e
@@ -143,7 +132,7 @@ x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
   fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
     where
       NTS : ∀ y → π₀ (𝕛 (e x)) y is-true → π₀ (e x) y is-true
-      NTS = lem4 (_is-true ∘ (π₀ (e x))) (_is-true ∘ π₀ (↓-clos x)) (λ _ q → q)
+      NTS = lem4 (π₀ (e x)) (π₀ (↓-clos x)) (λ _ q → q)
       up : e x ⊑[ P↓ ] 𝕛 (e x) is-true
       up = π₀ (π₁ 𝕛-nuclear) (e x)
 

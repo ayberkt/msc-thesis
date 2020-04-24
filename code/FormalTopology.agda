@@ -65,4 +65,4 @@ module _ (D : Discipline ℓ₀ ℓ₁) where
         (c₀ : outcome b₀) → Σ (outcome b) (λ c → next c₀ ⊑[ pos D ] next c is-true))
 
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
-FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] HasSimulation D
+  FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] HasSimulation D
