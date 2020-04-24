@@ -68,7 +68,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
   lem4 U V h a (dir p)          = h a p
   lem4 U V h a (branch b f)     = branch b (λ c → lem4  U V h (next D c) (f c))
 
-  module _ {U : 𝒫 ∣ P ∣ₚ} {V : 𝒫 ∣ P ∣ₚ} (V-dc : IsDownwardClosed P V is-true) where
+  module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ) (V-dc : IsDownwardClosed P V is-true) where
 ```
 
 ```
@@ -83,7 +83,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
 
     lem3 : (a a′ : ∣ P ∣ₚ) → a′ ⊑[ P ] a is-true → a′ <| U → a <| V → a′ <| (U ∩ V)
     lem3 a a′ h (squash p₀ p₁ i) q = squash (lem3 a a′ h p₀ q) (lem3 a a′ h p₁ q) i
-    lem3 a a′ h (dir p)          q = <|-∩-comm a′ (lem2 {U = V} {V = U} U-dc (lem1 V-dc h q) p)
+    lem3 a a′ h (dir p)          q = <|-∩-comm a′ (lem2 V U U-dc (lem1 V-dc h q) p)
     lem3 a a′ h (branch b f)     q = branch b g
       where
         g : (c : out D b) → next D c <| (U ∩ V)
