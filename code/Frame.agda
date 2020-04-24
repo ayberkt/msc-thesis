@@ -21,12 +21,17 @@ isGLB P _⟨f⟩_ = φ , φ-prop
   where
     φ = -- x ⟨f⟩ y is _lower_ than both x and y.
         ((x y    : ∣ P ∣ₚ) → (x ⟨f⟩ y) ⊑[ P ] x ∧ (x ⟨f⟩ y) ⊑[ P ] y is-true)
-        -- Given any other z that is lower than both x and y, x ⟨f⟩ y is _greater_ than that.
+        -- Given any other z that is lower than both x and y, x ⟨f⟩ y is _greater_ than
+        -- that.
       × ((x y z  : ∣ P ∣ₚ) → (z ⊑[ P ] x ∧ z ⊑[ P ] y) ⇒ (z ⊑[ P ] (x ⟨f⟩ y)) is-true)
 
     φ-prop : IsProp φ
-    φ-prop = isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → is-true-prop ((x ⟨f⟩ y) ⊑[ P ] x ∧ (x ⟨f⟩ y) ⊑[ P ] y)) λ _ →
-            ∏-prop λ x → ∏-prop λ y → ∏-prop λ z → is-true-prop ((z ⊑[ P ] x ∧ z ⊑[ P ] y) ⇒ (z ⊑[ P ] (x ⟨f⟩ y)))
+    φ-prop = isOfHLevelΣ 1
+               (∏-prop λ x → ∏-prop λ y →
+                 is-true-prop ((x ⟨f⟩ y) ⊑[ P ] x ∧ (x ⟨f⟩ y) ⊑[ P ] y)) λ _ →
+               ∏-prop λ x → ∏-prop λ y →
+                 ∏-prop λ z → is-true-prop ((z ⊑[ P ] x ∧ z ⊑[ P ] y) ⇒
+                                              (z ⊑[ P ] (x ⟨f⟩ y)))
 
 isLUB : (P : Poset ℓ₀ ℓ₁) → (Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
@@ -34,14 +39,17 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
     -- We write down the property φ, expressing that f is the LUB, and couple it with the
     -- proof (φ-prop) that it is propositional.
     φ = ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) → ∀[ x ε ℱ ] (x ⊑[ P ] (⋁ ℱ)) is-true)
-      × ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ (⋁ ℱ) ⊑[ P ] x is-true)
+      × ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) →
+           (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ (⋁ ℱ) ⊑[ P ] x is-true)
         -- f ℱ is is the _upper_ bound of ℱ i.e., above every x ε ℱ.
         -- Given any other x that is an upper bound of ℱ, f ℱ is _lower_ than x.
 
     φ-prop : IsProp φ
     φ-prop = isOfHLevelΣ 1
-              (λ ψ ϑ → fn-ext ψ ϑ λ ℱ → is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] (⋁ ℱ))) (ψ ℱ) (ϑ ℱ)) λ _ →
-              ∏-prop λ ℱ → ∏-prop λ x → is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] x) ⇒ (⋁ ℱ) ⊑[ P ] x)
+              (λ ψ ϑ → fn-ext ψ ϑ λ ℱ →
+                is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] (⋁ ℱ))) (ψ ℱ) (ϑ ℱ)) λ _ →
+              ∏-prop λ ℱ → ∏-prop λ x →
+                is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] x) ⇒ (⋁ ℱ) ⊑[ P ] x)
 
 isDist : (P : Poset ℓ₀ ℓ₁)
        → (∣ P ∣ₚ → ∣ P ∣ₚ → ∣ P ∣ₚ)
@@ -118,7 +126,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
   ⋃[_]-least : (ℱ : Sub ℓ₂ ∣ F ∣F) (x : ∣ F ∣F)
             → (∀[ y ε ℱ ] (y ⊑[ pos F ] x) is-true)
             → (⋃[ F ] ℱ) ⊑[ pos F ] x is-true
-  ⋃[_]-least = let (_ , _ , str) = F in π₁ (proj₁ (proj₂ (proj₂ str))) 
+  ⋃[_]-least = let (_ , _ , str) = F in π₁ (proj₁ (proj₂ (proj₂ str)))
 
 
   dist : (o : ∣ F ∣F) (ℱ : Sub ℓ₂ ∣ F ∣F)
@@ -464,7 +472,8 @@ frame-iso-prop F G i =
 frame-iso-Ω : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ M ≃ π₀ N → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-iso-Ω M N i = frame-iso M N i , frame-iso-prop M N i
 
-frame-axioms-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A) → IsProp ((frame-axioms A str) is-true)
+frame-axioms-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A)
+                   → IsProp ((frame-axioms A str) is-true)
 frame-axioms-props A str = is-true-prop (frame-axioms A str)
 
 frame-is-SNS' : SNS' {ℓ = ℓ} (FrameStr ℓ₁ ℓ₂) frame-iso

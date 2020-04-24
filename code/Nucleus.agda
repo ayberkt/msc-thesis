@@ -106,7 +106,8 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
                           ∣ nuclear-fixed-point-poset L N ∣ₚ
   , (strₚ (nuclear-fixed-point-poset L N) , (𝟏[ L ] , 𝟏-fixed) , _⊓_ , ⊔_)
   , top
-  , ((λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y) , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
+  , ( (λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y)
+    , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
   , ((⊔-upper , ⊔-least) , distr)
   where
     𝒜 = π₀ (nuclear-fixed-point-poset L N)
