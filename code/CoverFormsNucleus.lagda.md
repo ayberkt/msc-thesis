@@ -36,7 +36,7 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
     P↓      = pos F↓
     sim     = π₁ F
     mono    = π₁ D
-    _⊑_     = λ (x y : stage D) → x ⊑[ P ] y is-true
+    _⊑_     = λ (x y : stage D) → x ⊑[ P ] y
 
   open Test (stage D) _⊑_ (exp D) (outcome D) (next D) (π₁ mono) sim public
 ```

@@ -11,23 +11,23 @@ open import Basis
 
 ```
 module Test (P     : Type ℓ)
-            (_⊑_   : P → P → Type ℓ′)
+            (_⊑_   : P → P → hProp ℓ′)
             -- (refl  : (a        : P) → a ⊑ a)
             -- (trans : (a₀ a₁ a₂ : P) → a₀ ⊑ a₁ → a₁ ⊑ a₂ → a₀ ⊑ a₂)
             (exp   : P → Type ℓ)
             (out   : {a : P} → exp a → Type ℓ)
             (rev   : {a : P} → {b : exp a} → out b → P)
-            (mono  : (a : P) → (b : exp a) → (c : out b) → rev c ⊑ a)
+            (mono  : (a : P) → (b : exp a) → (c : out b) → rev c ⊑ a is-true)
             (sim   : (a₀ a : P)
-                   → a₀ ⊑ a
+                   → a₀ ⊑ a is-true
                    → (b : exp a)
                    → Σ (exp a₀)
                        (λ b₀ → (c₀ : out b₀) →
-                         Σ (out b) (λ c → (rev c₀) ⊑ (rev c))))
+                         Σ (out b) (λ c → (rev c₀) ⊑ (rev c) is-true)))
             where
 
   IsDownwardClosed : (P → Type ℓ₀) → Type (ℓ ⊔ ℓ′ ⊔ ℓ₀)
-  IsDownwardClosed U = {a₀ a : P} → U a → a₀ ⊑ a → U a₀
+  IsDownwardClosed U = {a₀ a : P} → U a → a₀ ⊑ a is-true → U a₀
 
   data _<|_ (a : P) (U : P → Type ℓ) : Type ℓ where
     dir    : U a → a <| U
@@ -61,7 +61,7 @@ module Test (P     : Type ℓ)
 
   module _ {U : P → Type ℓ} (U-down : IsDownwardClosed U) where
 
-    lem1 : {a a′ : P} → a′ ⊑ a →  a <| U → a′ <| U
+    lem1 : {a a′ : P} → a′ ⊑ a is-true →  a <| U → a′ <| U
     lem1 {_}     {_}  h (squash p₀ p₁ i) = squash (lem1 h p₀) (lem1 h p₁) i
     lem1 {_}     {_}  h (dir q)          = dir (U-down q h)
     lem1 {a = a} {a′} h (branch b f)     = branch b′ g
@@ -94,7 +94,7 @@ module Test (P     : Type ℓ)
   module _ (U : P → Type ℓ) (V : P → Type ℓ)
            (U-down : IsDownwardClosed U) (V-down : IsDownwardClosed V) where
 
-    lem3 : (a a′ : P) → a′ ⊑ a → a′ <| U → a <| V → a′ <| (U ∩ V)
+    lem3 : (a a′ : P) → a′ ⊑ a is-true → a′ <| U → a <| V → a′ <| (U ∩ V)
     lem3 a a′ h (squash p₀ p₁ i) q = squash (lem3 a a′ h p₀ q) (lem3 a a′ h p₁ q) i
     lem3 a a′ h (dir p)          q = <|-∩-comm a′ (lem2 V-down U-down (lem1 V-down h q) p)
     lem3 a a′ h (branch b f)     q = branch b g

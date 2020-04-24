@@ -134,7 +134,7 @@ cantor = (ℂ-pos , IS , ℂ-mono) , ℂ-sim
 from which we get a covering relation
 
 ```
-open Test ℂ (λ xs ys → xs ≤ ys is-true) ℂ-exp ℂ-out (λ {xs} → ℂ-rev {xs}) ℂ-mono ℂ-sim
+open Test ℂ _≤_ ℂ-exp ℂ-out (λ {xs} → ℂ-rev {xs}) ℂ-mono ℂ-sim
   renaming (_<|_ to _◀_) hiding (IsDownwardClosed)
 
 _ : ℂ → (ℂ → Type zero) → Type zero
