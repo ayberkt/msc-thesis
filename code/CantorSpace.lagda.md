@@ -186,7 +186,10 @@ We will now prove this.
 ```
 U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ)
        → U ⊆ V is-true → xs ◀ (_is-true ∘ U) → xs ◀ (_is-true ∘ V)
-U⊆V⇒◀U⊆◀V xs U V U⊆V xs◀U = lem4 xs _ _ xs◀U λ ys ys∈U → dir (U⊆V ys ys∈U)
+U⊆V⇒◀U⊆◀V xs U V U⊆V = lem4 (_is-true ∘ U) (_is-true ∘ V) NTS xs
+  where
+    NTS : (u : ℂ) → u ∈ U is-true → u ◀ (_is-true ∘ V)
+    NTS u u∈U = dir (U⊆V u u∈U)
 
 ↓-++-left : (xss yss : List ℂ) → (λ - → - ↓ xss) ⊆ (λ - → - ↓ (xss ^ yss)) is-true
 ↓-++-left []         yss _ ()
