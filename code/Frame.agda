@@ -178,9 +178,9 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
             → (⋃[ F ] ℱ) ⊑ w is-true
       least w f = ⋃[ _ ]-least _ λ o oεℱ → f o (π₀ (h o) oεℱ)
 
-  flatten : (I : Type ℓ₂) (J : I → Type ℓ₂) (f : (i : I) → J i → ∣ F ∣F)
-          → ⋃[ F ] (Σ I J , λ { (x , y) → f x y })
-          ≡ ⋃[ F ] (I , λ i → ⋃[ F ] (J i , λ y → f i y))
+  flatten : (A : Type ℓ₂) (B : A → Type ℓ₂) (f : (i : A) → B i → ∣ F ∣F)
+          → ⋃[ F ] (Σ A B , λ { (x , y) → f x y })
+          ≡ ⋃[ F ] (A , λ i → ⋃[ F ] (B i , λ y → f i y))
   flatten I J f = ⊑[ pos F ]-antisym _ _ down up
     where
       open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
@@ -213,6 +213,44 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
             where
               isUB′ : (z : ∣ F ∣F) → z ε (J i , (λ y → f i y)) → z ⊑[ pos F ] LHS is-true
               isUB′ z (j , eq′) = ⋃[_]-upper _ _ ((i , j) , eq′)
+
+  sym-distr : (ℱ 𝒢 : Sub ℓ₂ ∣ F ∣F)
+            → (⋃[ F ] ℱ) ⊓[ F ] (⋃[ F ] 𝒢)
+            ≡ ⋃[ F ] ((index ℱ × index 𝒢) , λ { (i , j) → (ℱ € i) ⊓[ F ] (𝒢 € j) })
+  sym-distr ℱ 𝒢 =
+    (⋃[ F ] ℱ) ⊓[ F ] (⋃[ F ] 𝒢)                                            ≡⟨ dist (⋃[ F ] ℱ) 𝒢 ⟩
+    ⋃[ F ] ((λ - → (⋃[ F ] ℱ) ⊓[ F ] -) ⊚ 𝒢)                                ≡⟨ cong (λ - → ⋃[ F ] (- ⊚ 𝒢)) NTS₀ ⟩
+    ⋃[ F ] ((λ x → x ⊓[ F ] (⋃[ F ] ℱ)) ⊚ 𝒢)                                ≡⟨ cong (λ - → ⋃[ F ] (- ⊚ 𝒢)) NTS₁ ⟩
+    ⋃[ F ] ((λ x → ⋃[ F ] ((λ y → x ⊓[ F ] y) ⊚ ℱ)) ⊚ 𝒢)                    ≡⟨ sym (flatten (index 𝒢) (λ _ → index ℱ) λ j i →  (𝒢 € j) ⊓[ F ] (ℱ € i))  ⟩
+    ⋃[ F ] ((index 𝒢 × index ℱ) , (λ { (j , i) → (𝒢 € j) ⊓[ F ] (ℱ € i) })) ≡⟨ family-iff NTS₂  ⟩
+    ⋃[ F ] ((index ℱ × index 𝒢) , (λ { (i , j) → (ℱ € i) ⊓[ F ] (𝒢 € j) })) ∎
+    where
+      open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
+
+      NTS₀ : (λ - → (⋃[ F ] ℱ) ⊓[ F ] -) ≡ (λ - → - ⊓[ F ] (⋃[ F ] ℱ))
+      NTS₀ = fn-ext _ _ λ x → comm (⋃[ F ] ℱ) x
+
+      NTS₁ : (λ - → - ⊓[ F ] (⋃[ F ] ℱ)) ≡ (λ - → ⋃[ F ] ((λ y → - ⊓[ F ] y) ⊚ ℱ))
+      NTS₁ = fn-ext _ _ λ x → dist x ℱ
+
+      NTS₂ : (x : ∣ F ∣F) →
+               (x ε
+                ((index 𝒢 × index ℱ) ,
+                 (λ { (j , i) → glb-of F (𝒢 € j) (ℱ € i) })) →
+                x ε
+                ((index ℱ × index 𝒢) , (λ { (i , j) → glb-of F (ℱ € i) (𝒢 € j) })))
+               ×
+               (x ε
+                ((index ℱ × index 𝒢) ,
+                 (λ { (i , j) → glb-of F (ℱ € i) (𝒢 € j) })) →
+                x ε
+                ((index 𝒢 × index ℱ) , (λ { (j , i) → glb-of F (𝒢 € j) (ℱ € i) })))
+      NTS₂ x = down , up
+        where
+          down : x ε ((index 𝒢 × index ℱ) , (λ { (j , i) → glb-of F (𝒢 € j) (ℱ € i) })) → x ε ((index ℱ × index 𝒢) , (λ { (i , j) → glb-of F (ℱ € i) (𝒢 € j) }))
+          down ((j , i) , eq) = subst (λ - → x ε ((index ℱ × index 𝒢) , -)) (fn-ext _ _ (λ { (i′ , j′) → comm (𝒢 € j′) (ℱ € i′) })) ((i , j) , eq)
+          up : x ε ((index ℱ × index 𝒢) , (λ { (i , j) → glb-of F (ℱ € i) (𝒢 € j) })) → x ε ((index 𝒢 × index ℱ) , (λ { (j , i) → glb-of F (𝒢 € j) (ℱ € i) }))
+          up ((i , j) , eq) = subst (λ - → x ε ((index 𝒢 × index ℱ) , -)) (fn-ext _ _ (λ { (j′ , i′) → comm (ℱ € i′) (𝒢 € j′) })) ((j , i) , eq)
 
 -- Frame homomorphisms.
 IsFrameHomomorphism : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
