@@ -22,7 +22,8 @@ and Synek~\cite{tree-sets}), and \emph{indexed containers}~\cite{indexed-contain
 idea of doing formal topology with interaction systems is due to Coquand~\cite{coq-posets}
 who was inspired by Dragalin~\cite{dragalin}.
 
-This chapter corresponds to the Agda module \texttt{TreeType} in the formal development.
+This chapter corresponds to the Agda module {\color{hottviolet} \texttt{TreeType}} in the
+formal development.
 
 \section{Interaction systems}
 
@@ -528,7 +529,7 @@ Using flat monotonic maps, the universal property can now be stated.
 
 Before proceeding to the proof, let us first prove a lemma of key importance.
 
-\begin{lemma}
+\begin{lemma}\label{lem:main}
   Let $\McF{}$ be a formal topology. Denote by $L$ the set of downwards-closed subsets of
   $A_{\McF{}}$ that are fixed points for its covering nucleus. For any $\oftyI{U}{L}$,
   it is the case that:
@@ -596,15 +597,38 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   the following reasoning: let $\oftyII{U}{V}{L}$;
   \begin{align*}
     g(U \cap V) &\equiv \bigvee^R \{ f(a) ~|~ a \in U \cap V \} \\
-             &= \bigvee^R \setof{ \bigvee \{ w ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ u \in U, v \in V }
+             &= \bigvee^R \setof{ \bigvee \{ w ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \in U \times V }
                && \text{[flatness]}                                                 \\
-             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ u \in, v \in V }
+             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \in U \times V }
                &&\text{[Prop.~\ref{prop:distr}]}                                    \\
              &= \left( \bigvee^R \img{f}{U} \right) \wedge \left( \bigvee^R \img{f}{V} \right)       \\
              &\equiv g(U) \wedge g(V)                                                         .
   \end{align*}
-  Let us now show that $g$ respects joins. Let $U_i$ be an $I$-indexed family of
-  inhabitants of $\abs{L}$.
+  Let us now show that $g$ respects joins. Let $U$ be a family of inhabitants of
+  $\abs{L}$.
   \begin{align*}
+    g(\bigvee^L_i U_i) &\equiv \bigvee^R \setof{ f(a) ~|~ a \in \bigvee^L_i U_i } \\
+         &= ...                                          &&\text{[Lemma~\ref{lem:flatten}]} \\
+         &= \bigvee^R \setof{ \bigvee^L \img{f}{U_i} ~|~ U_i \in U } \\
+         &\equiv \bigvee^R_i g(U_i)
+  \end{align*}
+
+  Finally, we conclude the proof by showing uniqueness of $g$: let $g'$ be a frame
+  homomorphism from $L$ to $R$ that makes the diagram commute. We need to show that
+  $g = g'$. Let $\oftyI{U}{\abs{L}}$. $g(U) = g'(U)$ by the following equational proof:
+  \begin{align*}
+    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \in U }
+            &&\text{[Lemma~\ref{lem:main}]} \\
+         &= g \left( \bigvee^L \setof{ \eta(u) ~|~ u \in U } \right) 
+            &&\text{[$g$ is a frame homomorphism]} \\
+         &= \bigvee^L \setof{ g(\eta(u)) ~|~ u \in U }
+            &&\text{[$g \circ \eta = f$]} \\
+         &= \bigvee^L \setof{ f(u) ~|~ u \in U }
+            &&\text{[$g' \circ \eta = f$]} \\
+         &= \bigvee^L \setof{ g'(\eta(u)) ~|~ u \in U }
+            &&\text{[$g'$ is a frame homomorphism]} \\
+         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \in U } \right)
+            &&\text{[Lemma~\ref{lem:main}]} \\
+         &= g'(U).
   \end{align*}
 \end{proof}

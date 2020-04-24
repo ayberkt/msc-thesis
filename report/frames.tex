@@ -207,6 +207,13 @@ possibly ambiguous contexts.
 \end{proof}
 
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
+  Let $\oftyI{F}{\mathsf{Frame}_{m, n, o}}$ and let $\oftyI{f}{\pity{a}{A}{B(a) \rightarrow \abs{F}}}$
+  for some $\oftyI{A}{\univ{}_o}$ and $\oftyI{B}{A \rightarrow \univ{}_o}$. The following equality
+  holds:
+  \begin{equation*}
+      \bigvee^F \setof{ \bigvee^F \setof{ f(a, b) ~|~ b \in B(a) } ~|~ \oftyI{a}{A}       }
+    = \bigvee^F \setof{ f(a, b)             ~|~ \oftyI{(a, b)}{\sigmaty{x}{A}{B}} }.
+  \end{equation*}
 \end{lemma}
 
 \begin{prop}\label{prop:distr}
