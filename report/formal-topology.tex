@@ -325,39 +325,29 @@ by $U$ ($\_ \LHD U$) is itself downwards-closed.
 \end{proof}
 
 \begin{prop}\label{prop:lem1}
+  Given a formal topology $\McF{}$, $\oftyII{a}{a'}{A_{\McF{}}}$ such that $a' \sqsubseteq a$, and a
+  downwards-closed subset $U$ of $A_{\McF{}}$, if $\covers{a}{U}$ then $\covers{a'}{U}$.
 \end{prop}
-\begin{proof}
-  \todo{Complete}.
+\begin{proof}[Proof sketch]
+  Follows by straightforward induction where the downwards-closedness of $U$ is used
+  in the base case and the simulation property is used in the inductive case.
 \end{proof}
 
 \begin{prop}\label{prop:lem3}
+  Given a formal topology $\McF{}$, $\oftyII{a}{a'}{A_{\McF{}}}$ such that $a' \sqsubseteq a$, and
+  downwards-closed subsets $U$ and $V$ of $A_{\McF{}}$, if $\covers{a'}{U}$ and
+  $\covers{a}{V}$ then $\covers{a'}{U \cap V}$.
 \end{prop}
 \begin{proof}
-  \todo{Complete}
+  \todo{Complete}.
 \end{proof}
 
 \begin{prop}\label{prop:lem4}
   Let $\mathcal{F}$ be an \verintrsys{} and $U, V$ be subsets of its underlying poset. If
   $U \subseteq \_ \LHD V$ then $\_ \LHD U \subseteq \_ \LHD V$.
 \end{prop}
-\begin{proof}
-  Let $U, V$ be be subsets of $A$ such that $U \subseteq \_ V$. Let $x \LHD U$. We must show that
-  $x \LHD V$. Our proof proceeds by induction on the proof of $x \LHD U$.
-  \begin{itemize}
-    \item Case: $\mathsf{dir}$. It must be that $x \in U$. We are done since
-      $U \subseteq \_ \LHD V$.
-    \item Case: $\mathsf{branch}$. By the premises we have an experiment $b$ and a
-      function $f$ that gives us $d(a, b, c) \LHD U$ for any outcome $c$ of $b$. By
-      appealing to the $\mathsf{branch}$ rule on experiment $b$, we will be done if we can
-      exhibit a function
-      \begin{equation*}
-        \oftyI{g}{\pity{c}{C(x, b)}{d(a, b, c) \LHD V}}.
-      \end{equation*}
-      Let $\oftyI{c}{C(x, b)}$. $\oftyI{f(c)}{d(x, b, c) \LHD U}$ and hence by the IH:
-      $d(x, b, c) \LHD V$.
-    \item Case: $\mathsf{squash}$. We combine both inductive hypotheses by the
-      $\mathsf{squash}$ rule.
-  \end{itemize}
+\begin{proof}[Proof sketch]
+  Follows by straightforward induction on the covering proof.
 \end{proof}
 
 Our method of obtaining a frame out of a formal topology comprises four steps.
@@ -394,7 +384,7 @@ to the proof.
   The covering relation satisfies the nuclearity axioms.
 \end{thm}
 \begin{proof}
-  $N_1$ is direct using the $\mathsf{dir}$ rule. $N_2$ is a direct application of
+  $N_1$ is direct using the $\ruledir{}$ rule. $N_2$ is a direct application of
   Proposition~\ref{prop:lem4}.
 
   For $N_0$, we construct a proof by induction. Let $\oftyII{U}{V}{\pow{A}}$. We will show
@@ -403,11 +393,11 @@ to the proof.
   other direction, let $\oftyI{a}{A}$ such that $a \LHD U \cap V$. We proceed by induction on
   this proof.
   \begin{itemize}
-    \item Case $\mathsf{dir}$. $a \in U \cap V$ meaning $a \in U$ and $a \in V$ hence we are done
+    \item Case $\ruledir{}$. $a \in U \cap V$ meaning $a \in U$ and $a \in V$ hence we are done
       by an two applications of $\mathsf{dir}$.
-    \item Case $\mathsf{branch}$. Two appeals to the inductive hypothesis, followed by
+    \item Case $\rulebranch{}$. Two appeals to the inductive hypothesis, followed by
       applications of the $\mathsf{branch}$ rule.
-    \item Case $\mathsf{squash}$. We combine the two inductive hypothesis using the
+    \item Case $\rulesquash{}$. We combine the two inductive hypothesis using the
       $\mathsf{squash}$ rule.
   \end{itemize}
 \end{proof}
@@ -604,13 +594,13 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
              &= \left( \bigvee^R \img{f}{U} \right) \wedge \left( \bigvee^R \img{f}{V} \right)       \\
              &\equiv g(U) \wedge g(V)                                                         .
   \end{align*}
-  Let us now show that $g$ respects joins. Let $U$ be a family of inhabitants of
+  Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
   $\abs{L}$.
   \begin{align*}
-    g(\bigvee^L_i U_i) &\equiv \bigvee^R \setof{ f(a) ~|~ a \in \bigvee^L_i U_i } \\
-         &= ...                                          &&\text{[Lemma~\ref{lem:flatten}]} \\
-         &= \bigvee^R \setof{ \bigvee^L \img{f}{U_i} ~|~ U_i \in U } \\
-         &\equiv \bigvee^R_i g(U_i)
+    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \in \bigvee^L_i U_i } \\
+             &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \in U_i}}} } &&\text{[Lemma~\ref{lem:flatten}]} \\
+             &= \bigvee^R \setof{ \bigvee^L \img{f}{U_i} ~|~ U_i \in U } \\
+             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \in U }.
   \end{align*}
 
   Finally, we conclude the proof by showing uniqueness of $g$: let $g'$ be a frame
