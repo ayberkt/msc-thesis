@@ -255,31 +255,30 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
               (fn-ext _ _ (λ { (j′ , i′) → comm (ℱ € i′) (𝒢 € j′) })) ((j , i) , eq)
 
 -- Frame homomorphisms.
-IsFrameHomomorphism : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
+isFrameHomomorphism : (F : Frame ℓ₀ ℓ₁ ℓ₂) (G : Frame ℓ₀′ ℓ₁′ ℓ₂)
                     → (m : pos F ─m→ pos G)
-                    → Type (ℓ₀ ⊔ suc ℓ₂)
-IsFrameHomomorphism {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G m =
-  resp-𝟏 × resp-⊓ × resp-⋃
+                    → Type (ℓ₀ ⊔ suc ℓ₂ ⊔ ℓ₀′)
+isFrameHomomorphism {ℓ₂ = ℓ₂} F G (f , _) = resp-𝟏 × resp-⊓ × resp-⋃
   where
-    resp-𝟏 : Type ℓ₀
-    resp-𝟏 = m $ₘ 𝟏[ F ] ≡ 𝟏[ G ]
+    resp-𝟏 : Type _
+    resp-𝟏 = f 𝟏[ F ] ≡ 𝟏[ G ]
 
-    resp-⊓ : Type ℓ₀
-    resp-⊓ = (x y : ∣ F ∣F) → m $ₘ (x ⊓[ F ] y) ≡ (m $ₘ x) ⊓[ G ] (m $ₘ y)
+    resp-⊓ : Type _
+    resp-⊓ = (x y : ∣ F ∣F) → f (x ⊓[ F ] y) ≡ (f x) ⊓[ G ] (f y)
 
-    resp-⋃ : Type (ℓ₀ ⊔ suc ℓ₂)
-    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → m $ₘ (⋃[ F ] ℱ) ≡ ⋃[ G ] (π₀ m ⊚ ℱ)
+    resp-⋃ : Type _
+    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → f (⋃[ F ] ℱ) ≡ ⋃[ G ] (f ⊚ ℱ)
 
-IsFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
+isFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
                          → (m : pos F ─m→ pos G)
-                         → IsProp (IsFrameHomomorphism F G m)
-IsFrameHomomorphism-prop F G m =
+                         → IsProp (isFrameHomomorphism F G m)
+isFrameHomomorphism-prop F G m =
   isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
   isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → carrier-is-set (pos G) _ _) λ _ →
     ∏-prop λ ℱ → carrier-is-set (pos G) _ _
 
 _─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-_─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (IsFrameHomomorphism F G)
+_─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (isFrameHomomorphism F G)
 
 _$f_ : {F G : Frame ℓ₀ ℓ₁ ℓ₂} → F ─f→ G → ∣ F ∣F → ∣ G ∣F
 (m , _) $f x = m $ₘ x
