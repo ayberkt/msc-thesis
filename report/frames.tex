@@ -171,15 +171,15 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
   This raw structure must be subject to the following axioms.
   \begin{align*}
     \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad
-      \mathsf{isTop}(\top) \times \mathsf{isGLB}(\wedge) \times \mathsf{isLUB}\left( \bigvee \right)
-      \times \mathsf{isDistr}(\wedge, \bigvee)\\
+      \mathsf{isTop}(\top) \times \mathsf{isGLB}(\wedge) \times \mathsf{isLUB}\left( \bigvee \right)\\
+      &\times \mathsf{isDistr}(\wedge, \bigvee)\\
     \mathsf{isTop}(\top) \quad&\is\quad \pity{x}{A}{x \sqsubseteq \top}\\
     \mathsf{isGLB}(\wedge) \quad&\is\quad \pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
                        &\hspace{0.55em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
     \mathsf{isLUB}\left(\bigvee\right) \quad&\is\quad
          \pity{F}{\sub{n}{A}}{\pity{x}{A}{\memfam{x}{F} \rightarrow x \sqsubseteq \bigvee_i F_i}}\\
          &\hspace{0.55em}\times \pity{F}{\sub{n}{A}}{\pity{x}{A}{
-               \left( \pity{y}{A}{\memfam{y}{F} \rightarrow y \sqsubseteq x}\right) \rightarrow \bigvee_i F \sqsubseteq x
+               \left( \pity{y}{A}{\memfam{y}{F} \rightarrow y \sqsubseteq x}\right) \rightarrow\\ &\bigvee_i F \sqsubseteq x
              }}\\
     \mathsf{isDistr}(\wedge, \bigvee) \quad&\is\quad
       \pity{x}{A}{\pity{F}{\sub{n}{A}}{
