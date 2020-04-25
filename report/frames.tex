@@ -249,9 +249,16 @@ interesting and involves a non-trivial amount of bureaucracy. It can be found in
 named \fnname{flatten}.
 
 \begin{prop}[Symmetric distributivity]\label{prop:distr}
-  \todo{state}.
+  Let $\oftyI{F}{\framety{m}{n}{o}}$ and $\oftyII{U}{V}{\sub{o}{\abs{F}}}$. Call the index
+  types of $U$ and $V$, $I$ and $J$, respectively. The following equality holds:
+  \begin{equation*}
+      \left( \bigvee_i U_i \right) \wedge \left( \bigvee_i V_i \right)
+    = \bigvee \setof{ U_i \wedge V_j ~|~ \oftyI{(i, j)}{I \times J} }.
+  \end{equation*}
 \end{prop}
 \begin{proof}[Proof sketch]
+  Apply the distributivity law, use commutativity (\todo{reference}), apply the
+  distributivity law again, and then flatten (using Lemma~\ref{lem:flatten}).
 \end{proof}
 
 \section{Isomorphic frames are equal}\label{sec:frame-univ}
