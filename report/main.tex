@@ -77,24 +77,35 @@
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
 
-\newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{DownwardsClosed}}}
+\newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
 \newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
-\newcommand{\dcsubsetnm}{\mathsf{DCSubset}}
+\newcommand{\dcsubsetnm}{\hyperref[defn:dc-subset]{\mathsf{DCSubset}}}
 \newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
 
 \newcommand{\ordernm}{\mathsf{Order}}
 \newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
 
-\newcommand{\posetstrnm}{\mathsf{PosetStr}}
+\newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
 \newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
 
-\newcommand{\posetaxnm}{\mathsf{PosetAx}}
+\newcommand{\memfam}[2]{#1~\epsilon~#2}
+
+\newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
 
 \newcommand{\poset}{\mathsf{Poset}}
 
-\newcommand{\ismonotonicnm}{\mathsf{IsMonotonic}}
+\newcommand{\posof}[1]{\mathsf{pos}\left(#1\right)}
+
+\newcommand{\ismonotonicnm}{\hyperref[defn:mono]{\mathsf{isMonotonic}}}
 \newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
+\newcommand{\mono}[2]{#1 \hyperref[defn:mono]{\rightarrow_m} #2}
+
+\newcommand{\isframehomonm}{\hyperref[defn:frame-homo]{\mathsf{isFrameHomo}}}
+\newcommand{\isframehomo}[1]{\isframehomonm{}\left(#1\right)}
+
+\newcommand{\framehomonm}{\hyperref[defn:frame-homo]{\mathsf{FrameHomo}}}
+\newcommand{\framehomo}[2]{\framehomonm{}\left(#1, #2\right)}
 
 \newcommand{\hasmono}[1]{\mathsf{hasMono}\left(#1\right)}
 \newcommand{\hassim}[1]{\mathsf{hasSim}\left(#1\right)}
@@ -105,6 +116,9 @@
 \newcommand{\verframe}{\hyperref[defn:frame]{frame}}
 \newcommand{\verposet}{\hyperref[defn:poset]{poset}}
 \newcommand{\verintrsys}{\hyperref[defn:intr-sys]{interaction system}}
+\newcommand{\veragda}{\textsc{Agda}}
+
+\newcommand{\modname}[1]{{\color{AgdaModule} \texttt{#1}}}
 
 \newcommand{\ruledir}{{\color{darkred} \mathsf{dir}}}
 \newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
@@ -112,14 +126,11 @@
 
 \newcommand{\fix}[2]{\mathsf{fix}\left(#1, #2\right)}
 
-\newcommand{\monotonicmapnm}{\rightarrow_m}
-\newcommand{\monotonicmap}[2]{#1 \rightarrow_m #2}
-
 \newcommand{\isflat}[1]{\mathsf{isFlat}\left(#1\right)}
 
 \newcommand{\framestrnm}{\mathsf{FrameStr}}
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
-\newcommand{\frameax}[1]{\mathsf{FrameAx}\left(#1\right)}
+\newcommand{\frameax}[1]{\hyperref[defn:frame]{\mathsf{FrameAx}}\left(#1\right)}
 
 \newcommand{\treestrnm}{\mathsf{TreeStr}}
 \newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
@@ -132,7 +143,7 @@
 \newcommand{\disciplinestrnm}{\mathsf{DisciplineStr}}
 \newcommand{\disciplinestr}[1]{\disciplinestrnm{}\left(#1\right)}
 
-\newcommand{\rawframestrnm}{\mathsf{RawFrameStr}}
+\newcommand{\rawframestrnm}{\hyperref[defn:frame]{\mathsf{RawFrameStr}}}
 \newcommand{\rawframestr}[3]{\rawframestrnm{}_{#1, #2}\left(#3\right)}
 
 \newcommand{\isnuclearnm}{\mathsf{isNuclear}}
@@ -155,6 +166,7 @@
 \newcommand{\MfU}{\mathfrak{U}}
 
 \newcommand{\is}{:\equiv}
+\newcommand{\idnm}{~=~}
 
 %% Names.
 \newcommand{\UF}{Univalent Foundations}

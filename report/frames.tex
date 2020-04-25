@@ -1,8 +1,8 @@
 \chapter{Frames}\label{chap:frames}
 
-In this chapter, we develop the notion of a frame in \UF{}. In Chapter~\ref{chap:intro},
-we explained that a frame is the algebra of a logic of finitely verifiable properties.
-Recall that a frame consists of the following:
+We develop in this chapter the lattice-theoretic notion of a \emph{frame}. In
+Chapter~\ref{chap:intro}, we explained that a frame is the algebra of a logic of finitely
+verifiable properties. Recall that a frame consists of the following:
 \begin{itemize}
   \item a set $O$ of \emph{opens},
   \item a partial order $\_\sqsubseteq\_ \subseteq O \times O$, corresponding to the set-inclusion order of the
@@ -12,44 +12,38 @@ Recall that a frame consists of the following:
 \end{itemize}
 
 In addition to these, there is a law that is needed to ensure the correct interplay
-between meets and joins. Suppose that we have the observable property $\phi$ and the family
-of observable properties $\psi_0, \psi_1, \cdots$. Consider the expression:
+between meets and joins. Suppose that we have a set $A$ and a family of sets $B_0, B_1,
+\cdots$. Consider the expression:
 \begin{equation*}
   A \cap (\bigcup_i B_i).
 \end{equation*}
-where $A$ is a set and $B$ is a family of sets. By set-theoretic reasoning, this is the
-same thing as:
+By set-theoretic reasoning, this is the same as:
 \begin{equation*}
   \bigvee_i (\phi \wedge \psi_i).
 \end{equation*}
 As we are trying to characterise the behaviour of open ``sets'' without defining them as
 sets of points, we have to explicitly add this distributivity law into the definition of
-frame:
+frame. Put simply:
 \begin{center}
-  \emph{binary meets must distribute over arbitrary joins.}
+  \emph{binary meets must distribute over arbitrary joins in a frame.}
 \end{center}
 
-As a brief digression, let us note that it is natural to consider the question: what
-happens if we leave out this requirement of distributivity? The resulting structure is
-called a \emph{basic topology} and is studied in the work of Sambin
-
-\paragraphsummary{Structure of chapter.}
 We now start presenting our formal development of frames. We start with partially ordered
 sets in Section~\ref{sec:poset}, which underlie frames. In Section~\ref{sec:frame}, we
 present the definition of a frame. In Section~\ref{sec:frame-univ}, we present an
 important theorem unique to \UF{}: isomorphic frames are equal. In Sections
 \ref{sec:down-set-frame} and \ref{sec:nuclei}, we prove two important theorems in
-preparation for the succeeding Chapter~\ref{chap:formal-topo} on formal topology: (1) the
-set of downward-closed subsets of a poset forms a frame and (2) given a nucleus (a
-technical notion to be introduced) on a frame, its set of fixed points is itself a frame.
+preparation for the Chapter~\ref{chap:formal-topo} on formal topology: (1) the set of
+downwards-closed subsets of a poset forms a frame and (2) given a nucleus (a technical
+notion to be introduced) on a frame, its set of fixed points is itself a frame.
 
 \section{Partially ordered sets}\label{sec:poset}
 
+This section corresponds to the \modname{Poset} module in the \veragda{} development.
+
 \begin{defn}[Poset]\label{defn:poset}
-  Given some $\oftyI{A}{\univ{}_m}$, let $\order{n}{A} \is A \rightarrow A \rightarrow \hprop{}_n$. Notice the
-  generality of the universes: the codomain of the relation is permitted to be on a level
-  different than that of the carrier set. A poset at carrier level $m$ and relation level
-  $n$ is then defined as:
+  Given some $\oftyI{A}{\univ{}_m}$, let $\order{n}{A} \is A \rightarrow A \rightarrow \hprop{}_n$. A poset at
+  carrier level $m$ and relation level $n$ is then defined as:
   \begin{equation*}
     \mathsf{Poset}_{m, n} \quad\is\quad \sigmaty{A}{\univ_m}{\posetstr{n}{A}},
   \end{equation*}
@@ -57,64 +51,67 @@ technical notion to be introduced) on a frame, its set of fixed points is itself
   where
   \end{center}
   \begin{align*}
-    \posetstr{n}{A} \quad\is&\quad \sigmaty{R}{\order{n}{A}}{\posetax{A, R}}\\
-    \posetaxnm \quad:&\quad \pity{A}{\univ{}_m}{\order{n}{A} \rightarrow \univ_{\max(m, n)}}\\
-    \posetax{A, R} \quad\is&\quad ~\pity{x}{A}{R(x, x)}\\
-                      \times&~\pity{x~y~z}{A}{R(x, y) \rightarrow R(y, z) \rightarrow R(x, z)}\\
-                      \times&~\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}\\
-                      \times&~\isaset{A}
+    \posetstr{n}{A} \quad&\is\quad \sigmaty{R}{\order{n}{A}}{\posetax{A, R}}              \\
+    \posetaxnm \quad&:\quad \pity{A}{\univ{}_m}{\order{n}{A} \rightarrow \univ_{\max(m, n)}}           \\
+    \posetax{A, R} \quad&\is\quad ~~\pity{x}{A}{R(x, x)}                      \\
+                    &\hspace{0.6em}\times \pity{x~y~z}{A}{R(x, y) \rightarrow R(y, z) \rightarrow R(x, z)} \\
+                    &\hspace{0.6em}\times \hspace{0.3em}\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}   \\
+                    &\hspace{0.6em}\times \isaset{A}
   \end{align*}
+
+  From now on, we will make levels implicit unless they are relevant to the discussion.
 \end{defn}
 
-\paragraphsummary{Clarify notation.}
 Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in cases where there might
 be ambiguity) and the underlying set of $P$ as $\abs{P}$. Notice that the fourth component
-of $\posetax{A, R}$ requires the carrier set to be an \hyperref[defn:hset]{h-set}.
+of $\posetax{A, R}$ requires the carrier set to be an \hyperref[defn:hset]{h-set}
+(Defn.~\ref{defn:hset}).
 
 Given a poset $P$ we will talk about its \emph{downward-closed subsets}: sets that include
 all elements below their elements. This notion embodies the idea of verification at a
 certain stage of information. Take a certain element $x : \abs{P}$, that we view as a
 stage of information. For some other $y~:~\abs{P}$, $y \sqsubseteq x$ expresses the idea that $y$ is
-a \emph{more refined} stage of information i.e., it contains more information hence ruling
-out more approximations meaning it admits \emph{less}. Let $U$ be a subset of $\abs{P}$.
-The property that $U$ is downward-closed is then expressed as:
+a \emph{finer} stage of information i.e., it contains more information hence admitting
+\emph{less}. Let $U$ be a subset of $\abs{P}$. The property that $U$ is downward-closed is
+then nothing but:
 \begin{equation*}
-  x \epsilon U \rightarrow y \sqsubseteq x \rightarrow y \epsilon U,
+  x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U,
 \end{equation*}
 the intuitive reading of which is: $U$ contains all stages that are ramifications of the
-stages it contains. This means that $U$ is an \emph{observable} property: it is secured at
-a certain stage in the sense that the reception of more information does not disrupt it.
-Let us write this down formally.
+stages it contains. This is another way of saying that $U$ is an \emph{observable}
+property: when we find an element $x$ contained in $U$, all possible ways $x$ can proceed
+are guaranteed to stay in $U$ i.e, the reception of more information does not disrupt the
+property $U$.
+
+Let us summarise this in formal terms.
 \begin{defn}[Downward-closed subset]\label{defn:dc-subset}
   We first define a predicate expressing that a given subset of $P$ is downwards-closed:
   \begin{align*}
-    \isdcnm{}   &\quad:\quad  Poset_{m, n} \rightarrow \pow{\abs{P}} \rightarrow \Omega\\
+    \isdcnm{}   &\quad:\quad  Poset_{m, n} \rightarrow \pow{\abs{P}} \rightarrow \Omega_{\max(m, n)}\\
     \isdc{P, U} &\quad\is{}\quad \pity{x~y}{\abs{P}}{x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U}.
   \end{align*}
-  By multiple appeals to Proposition~\ref{prop:pi-prop}, it suffices to show that the
-  inner-most expression inside the nested $\prod$ type is propositional which is immediate
-  since the codomain of $U$ is \hyperref[defn:hprop]{propositional}. We then define the
-  type of downwards-closed subsets of a poset as:
+  The propositionality follows by Proposition~\ref{prop:pi-prop}.
+
+  We then define the type of downwards-closed subsets of a poset as:
   \begin{align*}
-    \dcsubsetnm{} &\quad:\quad \mathsf{Poset}_{m, n} \rightarrow \univ_{\max(m+1, n)}\\
-    \dcsubset{P}  &\quad\is{}\quad \sigmaty{U}{\pow{\abs{P}}}{\isdc{P, U}}.
+    \dcsubsetnm{} &\quad:\quad \mathsf{Poset} \rightarrow \univ{}                     \\
+    \dcsubset{P}  &\quad\is{}\quad \sigmaty{U}{\pow{\abs{P}}}{\isdc{P, U}}  .
   \end{align*}
 \end{defn}
 
 So far we have dealt with two notions of \emph{observable property} throughout the
 development:
 \begin{enumerate}
-  \item element of a poset which we will eventually view like pointless versions of an
-    open set with the order corresponding to the subset-inclusion order, and
+  \item elements of a poset which we will view as opens when we get to frames, and
   \item the notion of downwards-closed subset which expresses that a property of the poset
-    of opens behaves like an observational property.
+    of opens behaves like an observable property.
 \end{enumerate}
 We will now start relating these two by showing that the set of downwards-closed subsets
 of a poset is itself a poset, and indeed, we will prove later (in
 Sec.~\ref{sec:down-set-frame}) that it actually forms a frame meaning downwards-closed
 subsets satisfy our expectations from properties we view as observable.
 
-Let us start by showing that $\dcsubset{P}$ is a set.
+Let us start by showing that $\dcsubset{P}$ is always a set.
 \begin{prop}\label{isSetDCSubset}
   $\dcsubset{P}$ is a set for every poset $P$.
 \end{prop}
@@ -126,33 +123,32 @@ Let us start by showing that $\dcsubset{P}$ is a set.
 \end{proof}
 
 Now we can proceed to construct the poset of downwards-closed subsets.
-\begin{thm}(Poset of downward-closed subsets)\label{thm:dc-poset}
+\begin{prop}(Poset of downward-closed subsets)\label{prop:dc-poset}
   Let $P$ be a poset. The type $\dcsubset{P}$ forms a poset under the
   inclusion relation.
-\end{thm}
+\end{prop}
 \begin{proof}
   The fact that $\dcsubset{P}$ is a set is given by Proposition~\ref{isSetDCSubset} so it
   suffices to show that the poset axioms are satisfied. Reflexivity and transitivity are
   immediate. For antisymmetry, let $U, V \in \pow{\abs{P}}$ and assume $U \subseteq V$, $V \subseteq U$. By
-  function extensionality, it suffices to show that for every $x : \abs{P}$, $U(x) =
-  V(x)$. Since $\oftyII{U(x)}{V(x)}{\Omega}$, it is sufficient to show $U(x) \leftrightarrow V(x)$ which is
-  immediate
-  by assumptions.
+  function extensionality, it suffices to show, for every $x : \abs{P}$, $U(x) = V(x)$.
+  Since $\oftyII{U(x),}{V(x)}{\Omega}$, it is sufficient to show $U(x) \leftrightarrow V(x)$ which is
+  immediate by assumptions.
 \end{proof}
 
 \subsection{Monotonic functions}
 
-The morphisms between two partially ordered sets are monotonic functions.
-
-\begin{defn}[Monotonic function]
+Let us now write down the arrows between posets: monotonic maps.
+\begin{defn}[Monotonic function]\label{defn:mono}
   Let $P, Q$ be posets. A function $f : \abs{P} \rightarrow \abs{Q}$ is monotonic if the following
   type is inhabited:
   \begin{equation*}
     \ismonotonic{f} \quad\is\quad \pity{x~y}{\abs{P}}{x \sqsubseteq_P y \rightarrow f(x) \sqsubseteq_Q f(y)}.
   \end{equation*}
+
   We collect the type of monotonic functions between $P$ and $Q$ in the following type:
   \begin{equation*}
-    \monotonicmap{P}{Q} \quad\is\quad \sigmaty{f}{\abs{P} \rightarrow \abs{Q}}{\ismonotonic{f}}
+    \mono{P}{Q} \quad\is\quad \sigmaty{f}{\abs{P} \rightarrow \abs{Q}}{\ismonotonic{f}}
   \end{equation*}
 \end{defn}
 
@@ -162,26 +158,28 @@ The morphisms between two partially ordered sets are monotonic functions.
 
 \section{Definition of a frame}\label{sec:frame}
 
-We now proceed to define frames.
+We now proceed to define frames as discussed. The constructions presented here can be
+found in the \modname{Frame} module in the \veragda{} formalisation.
 \begin{defn}[Frame]\label{defn:frame}
-  A frame structure on some type $A$ consists of (1) a poset structure, (2) a top element
+  A frame structure on some type $A$ consists of (1) a poset structure, (2) a top element,
   (3) a binary meet operation, and (4) a join operation of arbitrary arity, which we
-  define using families:
+  define using families. A \emph{raw} frame structure (i.e., the data involved in defining
+  a frame, without the axioms) with relation level $n$ and index level $o$ is defined as:
   \begin{equation*}
     \rawframestr{n}{o}{A} \quad\is\quad \posetstr{n}{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{o}{A} \rightarrow A).
   \end{equation*}
-  This raw structure must be subject to the following axioms
+  This raw structure must be subject to the following axioms.
   \begin{align*}
     \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad
-      \mathsf{IsTop}(\top) \times \mathsf{IsGLB}(\wedge) \times \mathsf{IsLUB}\left( \bigvee \right)
-      \mathsf{IsDistr}(\wedge, \bigvee)\\
+      \mathsf{isTop}(\top) \times \mathsf{isGLB}(\wedge) \times \mathsf{isLUB}\left( \bigvee \right)
+      \times \mathsf{isDistr}(\wedge, \bigvee)\\
     \mathsf{isTop}(\top) \quad&\is\quad \pity{x}{A}{x \sqsubseteq \top}\\
     \mathsf{isGLB}(\wedge) \quad&\is\quad \pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
-                       &\hspace{0.5em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
+                       &\hspace{0.55em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
     \mathsf{isLUB}\left(\bigvee\right) \quad&\is\quad
-         \pity{F}{\sub{n}{A}}{\pity{x}{A}{x \epsilon F \rightarrow x \sqsubseteq \bigvee_i F_i}}\\
-         &\hspace{0.5em}\times \pity{F}{\sub{n}{A}}{\pity{x}{A}{
-               \left( \pity{y}{A}{y \epsilon F \rightarrow y \sqsubseteq x}\right) \rightarrow \bigvee_i F \sqsubseteq x
+         \pity{F}{\sub{n}{A}}{\pity{x}{A}{\memfam{x}{F} \rightarrow x \sqsubseteq \bigvee_i F_i}}\\
+         &\hspace{0.55em}\times \pity{F}{\sub{n}{A}}{\pity{x}{A}{
+               \left( \pity{y}{A}{\memfam{y}{F} \rightarrow y \sqsubseteq x}\right) \rightarrow \bigvee_i F \sqsubseteq x
              }}\\
     \mathsf{isDistr}(\wedge, \bigvee) \quad&\is\quad
       \pity{x}{A}{\pity{F}{\sub{n}{A}}{
@@ -191,8 +189,8 @@ We now proceed to define frames.
 \end{defn}
 
 We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
-do for posets. Similarly, we will refer to the underlying partial order as $\_\sqsubseteq_F\_$, in
-possibly ambiguous contexts.
+do for posets. Similarly, we will refer to the underlying partial order as $\_\sqsubseteq_F\_$, the
+join operator as $\bigvee^F$ and the meet operator as $\wedge_F$.
 
 \begin{prop}
   For every raw frame structure $(\sqsubseteq, \top, \wedge, \bigvee)$, $\frameax{\sqsubseteq, \top, \wedge, \bigvee}$ is a proposition.
@@ -206,6 +204,23 @@ possibly ambiguous contexts.
   Definition~\ref{defn:poset}).
 \end{proof}
 
+\begin{defn}[Frame homomorphism]\label{defn:frame-homo}
+  Let $F$ and $G$ be a frames with the same index level. A frame homomorphism from $F$ to
+  $G$ is a monotonic map (Defn.~\ref{defn:mono}) from the underlying poset of $F$ to the
+  underlying poset of $G$ that preserves the top element, the meets, and the joins.
+  Formally,
+  \begin{alignat*}{5}
+    \isframehomo{f} \quad&\is\quad &&  &&f(\top_F) &&\idnm{} &&f(\top_G) \\
+                     &\hspace{0.75em}\times\quad &&\pity{x~y}{\abs{F}}{&&f(x \wedge_F y) &&\idnm{} &&f(x) \wedge_G f(y)} \\
+                     &\hspace{0.75em}\times\quad &&\pity{U}{\sub{o}{\abs{F}}}{&&f(\bigvee^F U) &&\idnm{} &&\bigvee^G \setof{ f(x) ~|~ x \in U }}.
+  \end{alignat*}
+
+  The type of frame homomorphisms between $F$ and $G$ is then just:
+  \begin{equation*}
+    \framehomo{F}{G} \quad\is\quad \sigmaty{f}{\mono{\posof{F}}{\posof{G}}}{\isframehomo{f}}.
+  \end{equation*}
+\end{defn}
+
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
   Let $\oftyI{F}{\mathsf{Frame}_{m, n, o}}$ and let $\oftyI{f}{\pity{a}{A}{B(a) \rightarrow \abs{F}}}$
   for some $\oftyI{A}{\univ{}_o}$ and $\oftyI{B}{A \rightarrow \univ{}_o}$. The following equality
@@ -217,7 +232,10 @@ possibly ambiguous contexts.
 \end{lemma}
 
 \begin{prop}[Symmetric distributivity]\label{prop:distr}
+  \todo{state}.
 \end{prop}
+\begin{proof}[Proof sketch]
+\end{proof}
 
 \section{Isomorphic frames are equal}\label{sec:frame-univ}
 
