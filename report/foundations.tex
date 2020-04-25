@@ -295,14 +295,14 @@ words, we add the means to define a type not just with its points but also with 
 between the points, paths between those paths, and then paths between those and so on.
 Such an inductive type is called a \emph{higher inductive type} (HIT for short).
 
-Let us give an example of what an HIT definition might look like. The usual $\unit{}$
+Let us give an example of what an HIT definition might look like. The usual $\unitty{}$
 type would be inductively defined by the specification of a single constructor:
 \begin{equation*}
   \begin{prooftree}
-    \infer0{\oftyI{\star}{\unit{}}}
+    \infer0{\oftyI{\star}{\unitty{}}}
   \end{prooftree}
 \end{equation*}
-whose only equality is the trivial one: $\oftyI{\mathsf{refl}_\star}{\star =_{\unit{}} \star}$.
+whose only equality is the trivial one: $\oftyI{\mathsf{refl}_\star}{\star =_{\unitty{}} \star}$.
 
 Using HITs, we can add, for instance, a non-trivial equality of $\star$ to itself. The
 resulting type is called the $\mathsf{Circle}$
