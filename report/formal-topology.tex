@@ -183,25 +183,8 @@ Now, we will define the cover relation on a given formal topology. However, our
 presentation will recapitulate our development: we first explain our naive attempt, that
 we found out to not work in \UF{}, and its remedied form that circumvents this problem by
 using an HIT.
-\begin{defn}[Cover relation (naive)]
-  Given a formal topology
-  $\mathcal{F}$ on type $A$, and given $\oftyI{a}{A}$, $U : \pow{A}$, the type
-  $\covers{a}{U}$ may be inhabited via the following rules.
-  \[
-  \begin{prooftree}
-    \hypo{ a \epsilon U }
-    \infer1[\textsf{dir}]{\covers{a}{U}}
-  \end{prooftree}
-  \qquad
-  \begin{prooftree}
-    \hypo{ \left(
-      \pity{b}{B(a)}{
-        \pity{c}{B(a, b)}{\covers{d(a, b, c)}{U}} \right) \rightarrow \covers{a}{U}
-      }
-    }
-    \infer1[\textsf{branch}]{\covers{a}{U}}
-  \end{prooftree}
-  \]
+\begin{defn}[Foo]
+  \todo{define.}
 \end{defn}
 
 One way of reading $\covers{a}{U}$ is as a relaxation of $a \in U$ to ``it is eventually the
