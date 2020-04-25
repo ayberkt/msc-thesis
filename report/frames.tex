@@ -234,14 +234,19 @@ to preserve this structure.
 \section{Some properties of frames}
 
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
-  Let $\oftyI{F}{\mathsf{Frame}_{m, n, o}}$ and let $\oftyI{f}{\pity{a}{A}{B(a) \rightarrow \abs{F}}}$
-  for some $\oftyI{A}{\univ{}_o}$ and $\oftyI{B}{A \rightarrow \univ{}_o}$. The following equality
+  Let $\oftyI{F}{\framety{m}{n}{o}}$ and let $\oftyI{f}{\pity{a}{A}{B(a) \rightarrow \abs{F}}}$ for
+  some $\oftyI{A}{\univ{}_o}$ and $\oftyI{B}{A \rightarrow \univ{}_o}$. The following equality
   holds:
   \begin{equation*}
-      \bigvee^F \setof{ \bigvee^F \setof{ f(a, b) ~|~ b \in B(a) } ~|~ \oftyI{a}{A}       }
-    = \bigvee^F \setof{ f(a, b)             ~|~ \oftyI{(a, b)}{\sigmaty{x}{A}{B}} }.
+      \bigvee^F \setof{ \bigvee^F \setof{ f(a, b) ~|~ b \in B(a) } ~|~ \oftyI{a}{A}          }
+    = \bigvee^F \setof{ f(a, b)             ~|~ \oftyI{(a, b)}{\sigmaty{x}{A}{B(x)}} }.
   \end{equation*}
 \end{lemma}
+
+We omit the proof of Lemma~\ref{lem:flatten} as its content is not particularly
+interesting and involves a non-trivial amount of bureaucracy. It can be found in the
+\veragda{} formalisation, in the \modname{Frame} module; the constructed inhabitant is
+named \fnname{flatten}.
 
 \begin{prop}[Symmetric distributivity]\label{prop:distr}
   \todo{state}.
