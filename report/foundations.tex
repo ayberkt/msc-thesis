@@ -264,6 +264,15 @@ write this as $x \in U \is U(x)$ for subsets.
   \end{equation*}
 \end{defn}
 
+\begin{defn}[Full subset]\label{defn:entire-subset}
+  Given a type $\oftyI{A}{\univ{}_n}$, the subset containing the entirety of inhabitants
+  of $A$ is defined as the constant function $\lambda\_.~\unitty{}$.
+
+  Notice that, by the definition of $\pownm{}$, the type has to live in the same universe
+  as $A$. It is for this reason that our definition of $\unitty{}$ takes as argument
+  the universe level we would like it to inhabit.
+\end{defn}
+
 \begin{defn}\label{defn:intersection}
   Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the subset
   delineating those elements that are in \emph{both} of $U$ and $V$ is defined as:
