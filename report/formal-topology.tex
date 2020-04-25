@@ -294,16 +294,16 @@ by $U$ ($\covers{\_}{U}$) is itself downwards-closed.
     \item Case $\mathsf{dir}$. It must be that $x \in U$ and hence by the downwards-closure
       of $U$, $y \in U$ meaning $\covers{y}{U}$ by $\mathsf{dir}$.
     \item Case $\mathsf{branch}$. We have some experiment $b$ on $x$ and a function
-      $$\oftyI{f}{\pity{c}{C(a, b)}{d(a, b, c) \LHD U}}.$$
+      $$\oftyI{f}{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}.$$
       Using the $\mathsf{branch}$ rule, we are done if we can exhibit some experiment
       $\oftyI{b'}{B(y)}$ along with a function
-      $$\oftyI{g}{\pity{c'}{C(a, b')}{d(y, b', c') \LHD U}}.$$
+      $$\oftyI{g}{\pity{c'}{C(a, b')}{\covers{d(y, b', c')}{U}}}.$$
       Pick $b'$ to be the experiment given by appealing to the \versim{} property with
-      $b$. Let $\oftyI{c'}{C(a, b')}$. It remains to be shown that $d(y, b', c') \LHD U$.
+      $b$. Let $\oftyI{c'}{C(a, b')}$. It remains to be shown that $\covers{d(y, b', c')}{U}$.
       By the inductive hypothesis, we are done if we can show that $z \sqsubseteq d(y, b', c')$
-      for some $z \LHD U$. Pick $z \is d(x, b, c)$ where $c$ is the outcome of $b$ given
+      for some $\covers{z}{U}$. Pick $z \is d(x, b, c)$ where $c$ is the outcome of $b$ given
       by the \versim{} property. We have $d(x, b, c) \sqsubseteq d(y, b', c')$, directly by the
-      \versim{} property and that $d(x, b, c) \LHD U$ by $f(c)$.
+      \versim{} property and that $\covers{d(x, b, c)}{U}$ by $f(c)$.
     \item Case $\mathsf{squash}$. We are done by appealing to the $\mathsf{squash}$ rule
       with both of the inductive hypothesis.
   \end{itemize}
@@ -329,7 +329,7 @@ by $U$ ($\covers{\_}{U}$) is itself downwards-closed.
 
 \begin{prop}\label{prop:lem4}
   Let $\mathcal{F}$ be an \verintrsys{} and $U, V$ be subsets of its underlying poset. If
-  $U \subseteq \_ \LHD V$ then $\_ \LHD U \subseteq \_ \LHD V$.
+  $U \subseteq \covers{\_}{V}$ then $\covers{\_}{U} \subseteq \covers{\_}{V}$.
 \end{prop}
 \begin{proof}[Proof sketch]
   Follows by straightforward induction on the covering proof.
@@ -360,9 +360,9 @@ The natural question to be asked is then: is this a \vernucleus{} on the frame o
 downwards-closed subsets of $A$? Let us recapitulate what this means before we proceed
 to the proof.
 \begin{itemize}
-  \item $N_0$: $\pity{a}{A}{a \LHD U \cap V = (a \LHD U) \cap (a \LHD V)}$,
-  \item $N_1$: $U \subseteq \_ \LHD U$, and
-  \item $N_2$: $\_ \LHD (\_ \LHD U) \subseteq \_ \LHD U$.
+  \item $N_0$: $\pity{a}{A}{\covers{a}{U \cap V} = (\covers{a}{U}) \cap (\covers{a}{V})}$,
+  \item $N_1$: $U \subseteq \_ \covernm{} U$, and
+  \item $N_2$: $\_ \covernm{} (\_ \covernm{} U) \subseteq \_ \covernm{} U$.
 \end{itemize}
 
 \begin{thm}\label{thm:covering-nucleus}
@@ -373,9 +373,9 @@ to the proof.
   Proposition~\ref{prop:lem4}.
 
   For $N_0$, we construct a proof by induction. Let $\oftyII{U}{V}{\pow{A}}$. We will show
-  that $\_ \LHD (U \cap V) = (\_ \LHD U) \cap (\_ \LHD V)$ by antisymmetry. The $(\_ \LHD U) \cap
-  (\_ \LHD V) \subseteq \_ \LHD (U \cap V)$ direction follows by Proposition~\ref{prop:lem3}. For the
-  other direction, let $\oftyI{a}{A}$ such that $a \LHD U \cap V$. We proceed by induction on
+  that $\_ \covernm{} (U \cap V) = (\_ \covernm{} U) \cap (\_ \covernm{} V)$ by antisymmetry. The $(\_ \covernm{} U) \cap
+  (\_ \covernm{} V) \subseteq \_ \covernm{} (U \cap V)$ direction follows by Proposition~\ref{prop:lem3}. For the
+  other direction, let $\oftyI{a}{A}$ such that $a \covernm{} U \cap V$. We proceed by induction on
   this proof.
   \begin{itemize}
     \item Case $\ruledir{}$. $a \in U \cap V$ meaning $a \in U$ and $a \in V$ hence we are done
