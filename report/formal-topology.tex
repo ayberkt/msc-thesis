@@ -128,9 +128,10 @@ property. Let us first provide its formal definition.
   Given an interaction system $\mathcal{I}$, we will say that it satisfies the simulation
   property if the following type is inhabited:
   \begin{align*}
-    &\mathsf{HasSim}\left( \mathcal{I} \right) \quad\is\\
+    &\mathsf{HasSim}\left( \mathcal{I} \right) \quad\is \\
     &\pity{x~x'}{\abs{D}}{
-      x' \sqsubseteq x \rightarrow \pity{y}{B(x)}{
+      x' \sqsubseteq x \rightarrow\\
+      &\pity{y}{B(x)}{
         \sigmaty{y'}{B(x')}{
           \pity{z'}{C(x', y')}{
             \sigmaty{z}{C(x, y)}{
