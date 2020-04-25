@@ -329,14 +329,14 @@ nucleus that will allow us to describe the topological structure of our frame by
 us specify laws that are expected to hold in the resulting frame.
 \begin{defn}[Nucleus]\label{defn:nucleus}
   Let $F : \mathsf{Frame}_{m, n, o}$ and $j : \abs{F} \rightarrow \abs{F}$ and endofunction on it.
-  We say that $F$ is \emph{nuclear} if the following condition holds:
-  \begin{align*}
-    \isnuclearnm{}\quad&:\quad (\abs{F} \rightarrow \abs{F}) \rightarrow \Omega                   \\
+  We say that $j$ is \emph{nuclear} if the following condition holds:
+  \begin{alignat*}{4}
+    \isnuclearnm{}\quad&:\quad &&(\abs{F} \rightarrow \abs{F}) \rightarrow \Omega && &&              \\
     \isnuclear{j} \quad&\is\quad
-       \pity{x~y}{\abs{F}}{j(\meet{x}{y}) = \meet{j(x)}{j(y)}}  \\
-      &\hspace{0.55em}\times\quad \pity{x~~}{\abs{F}}{x \sqsubseteq j(x)}          \\
-      &\hspace{0.55em}\times\quad \pity{x~~}{\abs{F}}{j(j(x)) \sqsubseteq j(x)}.
-  \end{align*}
+       &&\pity{x~y}{\abs{F}}{j(\meet{x}{y}) &&~=~ &&\meet{j(x)}{j(y)}}  \\
+      &\hspace{0.3em}\times\quad &&\pity{x~~}{\abs{F}}{x &&~\sqsubseteq~ &&j(x)}           \\
+      &\hspace{0.3em}\times\quad &&\pity{x~~}{\abs{F}}{j(j(x)) &&~\sqsubseteq~ &&j(x)}.
+  \end{alignat*}
   The propositionality is, as usual, a consequence of Proposition~\ref{prop:sigma-prop},
   Proposition~\ref{prop:pi-prop}, and the fact that the carrier set is a set (by the
   definition of $\posetaxnm{}$ from Defn.~\ref{defn:poset}).
