@@ -181,11 +181,11 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
     \mathsf{isGLB}(\wedge) \quad&\is\quad &&\pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
                        &\hspace{0.55em}\times &&\pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
     \mathsf{isLUB}\left(\bigvee\right) \quad&\is\quad
-         &&\pity{U}{\sub{n}{A}}{\pity{x}{A}{\memfam{x}{U} \rightarrow x \sqsubseteq \bigvee_i U_i}}\\
-         &\hspace{0.55em}\times &&\pity{U}{\sub{n}{A}}{\pity{x}{A}{
+         &&\pity{U}{\sub{o}{A}}{\pity{x}{A}{\memfam{x}{U} \rightarrow x \sqsubseteq \bigvee_i U_i}}\\
+         &\hspace{0.55em}\times &&\pity{U}{\sub{o}{A}}{\pity{x}{A}{
         \left( \pity{y}{A}{\memfam{y}{U} \rightarrow y \sqsubseteq x}\right) \rightarrow \bigvee U \sqsubseteq x }}\\
     \mathsf{isDistr}(\wedge, \bigvee) \quad&\is\quad
-      &&\pity{x}{A}{\pity{U}{\sub{n}{A}}{
+      &&\pity{x}{A}{\pity{U}{\sub{o}{A}}{
           x \wedge \bigvee_i U_i} =_A \bigvee_i \left( x \wedge U_i \right)
       }
   \end{alignat*}
