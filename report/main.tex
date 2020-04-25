@@ -101,7 +101,8 @@
 
 \newcommand{\ismonotonicnm}{\hyperref[defn:mono]{\mathsf{isMonotonic}}}
 \newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
-\newcommand{\mono}[2]{#1 \hyperref[defn:mono-map]{\rightarrow_m} #2}
+\DeclareMathOperator{\mononm}{\hyperref[defn:mono-map]{\rightarrow_m}}
+\newcommand{\mono}[2]{#1 \mononm{} #2}
 
 \newcommand{\isframehomonm}{\hyperref[defn:frame-homo]{\mathsf{isFrameHomo}}}
 \newcommand{\isframehomo}[1]{\isframehomonm{}\left(#1\right)}
