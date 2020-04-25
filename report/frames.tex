@@ -215,14 +215,14 @@ As we have just introduced a new structure, we shall define what it means for a 
 to preserve this structure.
 
 \begin{defn}[Frame homomorphism]\label{defn:frame-homo}
-  Let $F$ and $G$ be a frames with the same index level. A frame homomorphism from $F$ to
+  Let $F$ and $G$ be frames with the same index level. A frame homomorphism from $F$ to
   $G$ is a monotonic map (Defn.~\ref{defn:mono}) from the underlying poset of $F$ to the
   underlying poset of $G$ that preserves the top element, the meets, and the joins.
   Formally,
   \begin{alignat*}{5}
-    \isframehomo{f} \quad&\is\quad &&  &&f(\top_F) &&\idnm{} &&f(\top_G) \\
-                     &\hspace{0.75em}\times\quad &&\pity{x~y}{\abs{F}}{&&f(x \wedge_F y) &&\idnm{} &&f(x) \wedge_G f(y)} \\
-                     &\hspace{0.75em}\times\quad &&\pity{U}{\sub{o}{\abs{F}}}{&&f(\bigvee^F U) &&\idnm{} &&\bigvee^G \setof{ f(x) ~|~ x \in U }}.
+    \isframehomo{f} \quad&\is\quad && &&f(\top_F) &&\idnm{} &&f(\top_G) \\
+      &\hspace{0.55em}\times\quad  &&\pity{x~y}{\abs{F}}{&&f(x \wedge_F y) &&\idnm{} &&f(x) \wedge_G f(y)} \\
+      &\hspace{0.55em}\times\quad  &&\pity{U}{\sub{o}{\abs{F}}}{&&f(\bigvee^F U) &&\idnm{} &&\bigvee^G \setof{ f(x) ~|~ x \in U }}.
   \end{alignat*}
 
   The type of frame homomorphisms between $F$ and $G$ is then just:
