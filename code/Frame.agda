@@ -7,6 +7,7 @@ module Frame where
 open import Basis
 open import Family
 open import Truncation
+open import Data.Product using (uncurry)
 open import Poset
 open import Powerset
 
@@ -178,9 +179,9 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
             → (⋃[ F ] ℱ) ⊑ w is-true
       least w f = ⋃[ _ ]-least _ λ o oεℱ → f o (π₀ (h o) oεℱ)
 
-  flatten : (A : Type ℓ₂) (B : A → Type ℓ₂) (f : (i : A) → B i → ∣ F ∣F)
-          → ⋃[ F ] (Σ A B , λ { (x , y) → f x y })
-          ≡ ⋃[ F ] (A , λ i → ⋃[ F ] (B i , λ y → f i y))
+  flatten : (A : Type ℓ₂) (B : A → Type ℓ₂) (f : (a : A) → B a → ∣ F ∣F)
+          → ⋃[ F ] (Σ A B , uncurry f)
+          ≡ ⋃[ F ] (A , λ a → ⋃[ F ] (B a , λ b → f a b))
   flatten I J f = ⊑[ pos F ]-antisym _ _ down up
     where
       open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
