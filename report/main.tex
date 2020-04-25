@@ -107,8 +107,8 @@
 \newcommand{\isframehomonm}{\hyperref[defn:frame-homo]{\mathsf{isFrameHomo}}}
 \newcommand{\isframehomo}[1]{\isframehomonm{}\left(#1\right)}
 
-\newcommand{\framehomonm}{\hyperref[defn:frame-homo]{\mathsf{FrameHomo}}}
-\newcommand{\framehomo}[2]{\framehomonm{}\left(#1, #2\right)}
+\DeclareMathOperator{\framehomonm}{\hyperref[defn:frame-homo]{\rightarrow_f}}
+\newcommand{\framehomo}[2]{#1 \framehomonm{} #2}
 
 \newcommand{\hasmono}[1]{\hyperref[defn:mono]{\mathsf{hasMono}}\left(#1\right)}
 \newcommand{\hassim}[1]{\mathsf{hasSim}\left(#1\right)}
