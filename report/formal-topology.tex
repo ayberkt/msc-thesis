@@ -272,15 +272,16 @@ the revised form.
 \end{defn}
 
 When trying to prove the idempotence law with this, we get from the inductive hypothesis a
-family $\pity{c}{C(a, b)}{d(a, b, c) \LHD V}$ where $d(a, b, c) \LHD V$ is still
-``squashed'', but this squashing is an integral part of $\LHD$ rather than a truncation
-that is imposed extrinsically upon it. This is sufficient for circumventing the problem
-that would have required the axiom of countable choice, and allows us to successfully
-complete the idempotence proof. The type of $\_\LHD\_$ can be seen directly to be
-$\pow{A} \rightarrow \pow{A} \rightarrow \Omega$ by the existence of the $\mathsf{squash}$ constructor.
+family $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is still
+``squashed'', but this squashing is an integral part of $\covers{}{}$ rather than a
+truncation that is imposed extrinsically upon it. This is sufficient for circumventing the
+problem that would have required the axiom of countable choice, and allows us to
+successfully complete the idempotence proof. The type of $\covers{\_}{\_}$ can be seen
+directly to be $\pow{A} \rightarrow \pow{A} \rightarrow \Omega$ by the existence of the $\mathsf{squash}$
+constructor.
 
 Notice that, given a downwards-closed subset $U$, the subset of elements that are covered
-by $U$ ($\_ \LHD U$) is itself downwards-closed.
+by $U$ ($\covers{\_}{U}$) is itself downwards-closed.
 \begin{prop}
   Let $\mathcal{F}$ be an \verintrsys{} and $U$ a downwards-closed subset of its
   underlying poset. $\covers{\_}{U}$ is a downwards-closed subset.
