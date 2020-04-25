@@ -558,10 +558,10 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
       the result type $f(a') \sqsubseteq f(a)$ is propositional.
   \end{itemize}
 
-  Now, we want to show that $\bigvee^R f(\eta(x)) \sqsubseteq f(x)$. Since $\bigvee^R$ is a LUB it suffices to
-  show that $f(x)$ is an upper bound of $\img{f}{\eta(x)}$. Let $f(y) \epsilon \img{f}{\eta(x)}$.
-  We need to show that $f(y) \sqsubseteq f(x)$. By the lemma we have just proven, it suffices to
-  show that $\covers{y}{x\downarrow}$ and this holds directly because $f(y) \epsilon \img{f}{\eta(x)}$.
+  Now, we want to show that $\bigvee^R f(\eta(x)) \sqsubseteq f(x)$. Since $\bigvee^R$ is a LUB it suffices to show
+  that $f(x)$ is an upper bound of $\img{f}{\eta(x)}$. Let $$f(y) \epsilon \img{f}{\eta(x)}.$$ We need
+  to show that $f(y) \sqsubseteq f(x)$. By the lemma we have just proven, it suffices to show that
+  $\covers{y}{x\downarrow}$ and this holds directly because $f(y) \epsilon \img{f}{\eta(x)}$.
 
   There are two more things that have to be shown (1) $g$ is a frame homomorphism and (2)
   $g$ is unique.
