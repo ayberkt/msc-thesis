@@ -169,23 +169,26 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
     \rawframestr{n}{o}{A} \quad\is\quad \posetstr{n}{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{o}{A} \rightarrow A).
   \end{equation*}
   This raw structure must be subject to the following axioms.
-  \begin{align*}
-    \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad
-      \mathsf{isTop}(\top) \times \mathsf{isGLB}(\wedge) \times \mathsf{isLUB}\left( \bigvee \right)\\
-      &\times \mathsf{isDistr}(\wedge, \bigvee)\\
-    \mathsf{isTop}(\top) \quad&\is\quad \pity{x}{A}{x \sqsubseteq \top}\\
-    \mathsf{isGLB}(\wedge) \quad&\is\quad \pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
-                       &\hspace{0.55em}\times\quad \pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
+  \begin{alignat*}{2}
+    \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad             &&\mathsf{isTop}(\top) \times
+                                              \mathsf{isGLB}(\wedge) \times
+                                              \mathsf{isLUB}\left( \bigvee \right)\\
+                          &\hspace{0.55em}\times &&\mathsf{isDistr}\left( \wedge, \bigvee \right)
+  \end{alignat*}
+  where
+  \begin{alignat*}{2}
+    \mathsf{isTop}(\top) \quad&\is\quad &&\pity{x}{A}{x \sqsubseteq \top}\\
+    \mathsf{isGLB}(\wedge) \quad&\is\quad &&\pity{x~y}{A}{(x \wedge y \sqsubseteq x) \times (x \wedge y \sqsubseteq y)}\\
+                       &\hspace{0.55em}\times &&\pity{z~~}{A}{(z \sqsubseteq x) \times (z \sqsubseteq y) \rightarrow z \sqsubseteq x \wedge y}\\
     \mathsf{isLUB}\left(\bigvee\right) \quad&\is\quad
-         \pity{F}{\sub{n}{A}}{\pity{x}{A}{\memfam{x}{F} \rightarrow x \sqsubseteq \bigvee_i F_i}}\\
-         &\hspace{0.55em}\times \pity{F}{\sub{n}{A}}{\pity{x}{A}{
-               \left( \pity{y}{A}{\memfam{y}{F} \rightarrow y \sqsubseteq x}\right) \rightarrow\\ &\bigvee_i F \sqsubseteq x
-             }}\\
+         &&\pity{U}{\sub{n}{A}}{\pity{x}{A}{\memfam{x}{U} \rightarrow x \sqsubseteq \bigvee_i U_i}}\\
+         &\hspace{0.55em}\times &&\pity{U}{\sub{n}{A}}{\pity{x}{A}{
+        \left( \pity{y}{A}{\memfam{y}{U} \rightarrow y \sqsubseteq x}\right) \rightarrow \bigvee U \sqsubseteq x }}\\
     \mathsf{isDistr}(\wedge, \bigvee) \quad&\is\quad
-      \pity{x}{A}{\pity{F}{\sub{n}{A}}{
-          x \wedge \bigvee_i F_i} =_A \bigvee_i \left( x \wedge F_i \right)
+      &&\pity{x}{A}{\pity{U}{\sub{n}{A}}{
+          x \wedge \bigvee_i U_i} =_A \bigvee_i \left( x \wedge U_i \right)
       }
-  \end{align*}
+  \end{alignat*}
 \end{defn}
 
 We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
