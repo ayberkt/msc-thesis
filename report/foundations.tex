@@ -266,11 +266,11 @@ write this as $x \in U \is U(x)$ for subsets.
 
 \begin{defn}\label{defn:intersection}
   Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the subset
-  delineating those elements that are in \emph{both} of $U$ and $V$ are:
-  \begin{equation*}
-    \_\cap\_ : \pow{A} \rightarrow \pow{A} \rightarrow \pow{A}
-    U \cap V \quad\is\quad \pity{x}{A}{x \in U \times x \in V}.
-  \end{equation*}
+  delineating those elements that are in \emph{both} of $U$ and $V$ is defined as:
+  \begin{align*}
+    \_\cap\_  \quad&:\quad   \pow{A} \rightarrow \pow{A} \rightarrow \pow{A} \\
+    U \cap V  \quad&\is\quad \lambda x.~ x \in U \times x \in V  .
+  \end{align*}
   We note that $x \in U \cap V$ is propositional by the propositionality of $x \in U$ and $x \in V$
   combined via Proposition~\ref{prop:sigma-prop}.
 \end{defn}
