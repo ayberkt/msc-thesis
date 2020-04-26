@@ -385,14 +385,14 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
                → F ⊑[ 𝔻ₚ ] D is-true → F ⊑[ 𝔻ₚ ] E is-true → F ⊑[ 𝔻ₚ ] (D ⊓ E) is-true
     ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
-    distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , λ i → D ⊓ (ℱ € i))
-    distr D ℱ = ⊑[ 𝔻ₚ ]-antisym (D ⊓ (⊔ ℱ)) (⊔ (index ℱ , λ i → D ⊓ (ℱ € i))) down up
+    distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⋁⟨ i ⟩ (D ⊓ (ℱ € i))
+    distr D ℱ = ⊑[ 𝔻ₚ ]-antisym _ _ down up
       where
         LHS = ∣ D ⊓ (⊔ ℱ) ∣𝔻
         RHS = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
 
         down : LHS ⊆ RHS is-true
-        down x x∈𝒜@(x∈D , x∈⊔ℱ) =
+        down x (x∈D , x∈⊔ℱ) =
           ∥∥-rec (∥∥-prop _) (λ { (i , x∈ℱᵢ) → ∣ i , x∈D , x∈ℱᵢ ∣ }) x∈⊔ℱ
 
         up : RHS ⊆ LHS is-true
