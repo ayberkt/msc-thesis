@@ -18,7 +18,7 @@ infixr 7 _€_
 
 -- Membership for families.
 _ε_ : A → Sub ℓ₁ A → Type _
-x ε S = Σ (index S) (λ i → (S € i) ≡ x)
+x ε (_ , f) = fiber f x
 
 -- Composition of a family with a function.
 _⊚_ : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → (ℱ : Sub ℓ₂ X) → Sub ℓ₂ Y
