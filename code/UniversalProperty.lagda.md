@@ -14,7 +14,7 @@ open import FormalTopology hiding (pos)
 open import CoverFormsNucleus
 
 compr : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → 𝒫 X → Sub ℓ₀ Y
-compr g U = (index ⟪ U ⟫) , g ∘ (_€_ ⟪ U ⟫)
+compr g U = (index ⟪ U ⟫) , g ∘ (_$_ ⟪ U ⟫)
 
 syntax compr (λ x → e) ℱ = ⁅ e ∣ x ∈ ℱ ⁆
 

@@ -58,7 +58,7 @@ isDist : (P : Poset ℓ₀ ℓ₁)
        → hProp (ℓ₀ ⊔ suc ℓ₂)
 isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
   where
-    φ = (x : ∣ P ∣ₚ) (ℱ : Sub ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ € i))
+    φ = (x : ∣ P ∣ₚ) (ℱ : Sub ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ $ i))
 
     φ-prop : IsProp φ
     φ-prop p q = fn-ext p q λ x → fn-ext _ _ λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
@@ -180,7 +180,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       ub o (i , p) = subst
                        (λ - → - ⊑[ pos F ] (⋃[ F ] ℱ) is-true)
                        p
-                       (⋃[ _ ]-upper _ (π₁ (h (𝒢 € i)) (i , refl)))
+                       (⋃[ _ ]-upper _ (π₁ (h (𝒢 $ i)) (i , refl)))
       least : (w : ∣ F ∣F)
             → ((o : ∣ F ∣F) → o ε 𝒢 → o ⊑ w is-true)
             → (⋃[ F ] ℱ) ⊑ w is-true
@@ -224,7 +224,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
 
   sym-distr : (ℱ 𝒢 : Sub ℓ₂ ∣ F ∣F)
             → (⋃[ F ] ℱ) ⊓[ F ] (⋃[ F ] 𝒢)
-            ≡ ⋃[ F ] ((index ℱ × index 𝒢) , λ { (i , j) → (ℱ € i) ⊓[ F ] (𝒢 € j) })
+            ≡ ⋃[ F ] ((index ℱ × index 𝒢) , λ { (i , j) → (ℱ $ i) ⊓[ F ] (𝒢 $ j) })
   sym-distr ℱ 𝒢 =
     (⋃[ F ] ℱ) ⊓[ F ] (⋃[ F ] 𝒢)
       ≡⟨ dist (⋃[ F ] ℱ) 𝒢 ⟩
@@ -233,10 +233,10 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     ⋃[ F ] ((λ x → x ⊓[ F ] (⋃[ F ] ℱ)) ⊚ 𝒢)
       ≡⟨ cong (λ - → ⋃[ F ] (- ⊚ 𝒢)) NTS₁ ⟩
     ⋃[ F ] ((λ x → ⋃[ F ] ((λ y → x ⊓[ F ] y) ⊚ ℱ)) ⊚ 𝒢)
-      ≡⟨ sym (flatten (index 𝒢) (λ _ → index ℱ) λ j i →  (𝒢 € j) ⊓[ F ] (ℱ € i))  ⟩
-    ⋃[ F ] ((index 𝒢 × index ℱ) , (λ { (j , i) → (𝒢 € j) ⊓[ F ] (ℱ € i) }))
+      ≡⟨ sym (flatten (index 𝒢) (λ _ → index ℱ) λ j i →  (𝒢 $ j) ⊓[ F ] (ℱ $ i))  ⟩
+    ⋃[ F ] ((index 𝒢 × index ℱ) , (λ { (j , i) → (𝒢 $ j) ⊓[ F ] (ℱ $ i) }))
       ≡⟨ family-iff NTS₂  ⟩
-    ⋃[ F ] ((index ℱ × index 𝒢) , (λ { (i , j) → (ℱ € i) ⊓[ F ] (𝒢 € j) }))
+    ⋃[ F ] ((index ℱ × index 𝒢) , (λ { (i , j) → (ℱ $ i) ⊓[ F ] (𝒢 $ j) }))
       ∎
     where
       open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
@@ -254,13 +254,13 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
           down ((j , i) , eq) =
             subst
               (λ - → x ε (_ , -))
-              (fn-ext _ _ (λ { (i′ , j′) → comm (𝒢 € j′) (ℱ € i′) })) ((i , j) , eq)
+              (fn-ext _ _ (λ { (i′ , j′) → comm (𝒢 $ j′) (ℱ $ i′) })) ((i , j) , eq)
 
           up : _
           up ((i , j) , eq) =
             subst
               (λ - → x ε (_ , -))
-              (fn-ext _ _ (λ { (j′ , i′) → comm (ℱ € i′) (𝒢 € j′) })) ((j , i) , eq)
+              (fn-ext _ _ (λ { (j′ , i′) → comm (ℱ $ i′) (𝒢 $ j′) })) ((j , i) , eq)
 
 -- Frame homomorphisms.
 isFrameHomomorphism : (F : Frame ℓ₀ ℓ₁ ℓ₂) (G : Frame ℓ₀′ ℓ₁′ ℓ₂)
@@ -350,14 +350,14 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
     in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Type ℓ₀
-    in-some-set-of ℱ x = Σ[ i ∈ index ℱ ] x ∈ ∣ ℱ € i ∣𝔻 is-true
+    in-some-set-of ℱ x = Σ[ i ∈ index ℱ ] x ∈ ∣ ℱ $ i ∣𝔻 is-true
 
     ⊔_ : Sub ℓ₀ 𝔻 → 𝔻
     ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
       where
         ind : (x y : X)
             → y ⊑[ (X , P) ] x is-true → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
-        ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , π₁ (ℱ € i) x y x∈ℱᵢ y⊑x ∣
+        ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , π₁ (ℱ $ i) x y x∈ℱᵢ y⊑x ∣
 
         ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) is-true
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
@@ -373,7 +373,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (π₁ (∣ D ∣𝔻 x)) ind x∈⊔S
       where
         ind : in-some-set-of ℱ x → ∣ D ∣𝔻 x is-true
-        ind (i , x∈ℱᵢ) = φ (ℱ € i) (i , refl) x x∈ℱᵢ
+        ind (i , x∈ℱᵢ) = φ (ℱ $ i) (i , refl) x x∈ℱᵢ
 
     ⊓-lower₀ : (D E : 𝔻) → (D ⊓ E) ⊑[ 𝔻ₚ ] D is-true
     ⊓-lower₀ D E x (x∈D , _) = x∈D
@@ -385,11 +385,11 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
                → F ⊑[ 𝔻ₚ ] D is-true → F ⊑[ 𝔻ₚ ] E is-true → F ⊑[ 𝔻ₚ ] (D ⊓ E) is-true
     ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
-    distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⋁⟨ i ⟩ (D ⊓ (ℱ € i))
+    distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ⊓ (⊔ ℱ) ≡ ⋁⟨ i ⟩ (D ⊓ (ℱ $ i))
     distr D ℱ = ⊑[ 𝔻ₚ ]-antisym _ _ down up
       where
         LHS = ∣ D ⊓ (⊔ ℱ) ∣𝔻
-        RHS = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ € i))) ∣𝔻
+        RHS = ∣ ⊔ (index ℱ , (λ i → D ⊓ (ℱ $ i))) ∣𝔻
 
         down : LHS ⊆ RHS is-true
         down x (x∈D , x∈⊔ℱ) =
@@ -398,7 +398,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
         up : RHS ⊆ LHS is-true
         up x = ∥∥-rec (is-true-prop (x ∈ LHS)) φ
           where
-            φ : in-some-set-of (index ℱ , λ j → D ⊓ (ℱ € j)) x
+            φ : in-some-set-of (index ℱ , λ j → D ⊓ (ℱ $ j)) x
               → (∣ D ∣𝔻 x is-true) × ∣ ⊔ ℱ ∣𝔻 x is-true
             φ (i , x∈D , x∈ℱᵢ) = x∈D , ∣ i , x∈ℱᵢ ∣
 
@@ -477,7 +477,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
             ϑ x y =
               subst (λ { (_ , _ , _-_ , _) → 𝒻 (x - y) ≡ (𝒻 x) ⊓₁ (𝒻 y) }) (sym eq) refl
 
-            ξ : (ℱ : Sub ℓ₂ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ € i))
+            ξ : (ℱ : Sub ℓ₂ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ $ i))
             ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ ⋃₁ (𝒻 ⊚ ℱ) }) (sym eq) refl
 
         str-set : IsSet (RawFrameStr ℓ₁ ℓ₂ A)
@@ -636,7 +636,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
                   x ⊓[ F ] y         ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _))               ⟩
                   g (f (x ⊓[ F ] y)) ■₁
 
-    ⋃-eq : (ℱ : Sub ℓ₂ ∣ F ∣F) →  f (⋃[ F ] ℱ) ≡ ⋃[ G ] (index ℱ , λ i → f (ℱ € i))
+    ⋃-eq : (ℱ : Sub ℓ₂ ∣ F ∣F) →  f (⋃[ F ] ℱ) ≡ ⋃[ G ] (index ℱ , λ i → f (ℱ $ i))
     ⋃-eq ℱ = ⋃-unique G (f ⊚ ℱ) (f (⋃[ F ] ℱ)) NTS₀ NTS₁
       where
         NTS₀ : (o : ∣ G ∣F) → o ε (f ⊚ ℱ) → o ⊑[ pos G ] (f (⋃[ F ] ℱ)) is-true
@@ -648,7 +648,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
              g (f (⋃[ F ] ℱ)) ■₁)
           where
             I : g o ε ℱ
-            I = i , (ℱ € i ≡⟨ sym (sec _) ⟩ g (f (ℱ € i)) ≡⟨ cong g p ⟩ g o ∎)
+            I = i , (ℱ $ i ≡⟨ sym (sec _) ⟩ g (f (ℱ $ i)) ≡⟨ cong g p ⟩ g o ∎)
 
         NTS₁ : (z′ : ∣ G ∣F)
              → ((o : ∣ G ∣F) → o ε (f ⊚ ℱ) → rel (pos G) o z′ is-true)
@@ -667,7 +667,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
                 (f o ⊑⟨ p (f o) foεf⊚ℱ ⟩ z′ ⊑⟨ ≡⇒⊑ (pos G) (sym (ret _)) ⟩ f (g z′) ■)
               where
                 foεf⊚ℱ : f o ε (f ⊚ ℱ)
-                foεf⊚ℱ = i , (f ⊚ ℱ € i ≡⟨ refl ⟩ f (ℱ € i) ≡⟨ cong f εℱ ⟩ f o ∎)
+                foεf⊚ℱ = i , (f ⊚ ℱ $ i ≡⟨ refl ⟩ f (ℱ $ i) ≡⟨ cong f εℱ ⟩ f o ∎)
 
 _≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] poset-iso (pos F) (pos G) i
