@@ -284,6 +284,104 @@ write this as $x \in U \is U(x)$ for subsets.
   combined via Proposition~\ref{prop:sigma-prop}.
 \end{defn}
 
+\section{Families}
+
+In type theory, we have two notions of ``subset of a type''. One of these is powersets
+as we have presented in Sec.~\ref{sec:pow}. We now briefly summarise the other approach
+in which view a subset of a type $A$ as an $A$-valued function (on some domain).
+
+\begin{defn}[Family]\label{defn:fam}
+  Given a type $A$, a family of inhabitants of $A$ with index set $I$ is simply a
+  function: $I \rightarrow A$. We collect the type of all families on $A$ in the following type:
+  \begin{equation*}
+    \sub{o}{A} \quad\is\quad \sigmaty{I}{\univ{}_o}{I \rightarrow A}.
+  \end{equation*}
+  Notice that this is parameterised by a level $o$, being the level of the index type.
+  Given a family $\oftyI{x}{\sub{o}{A}}$, we will denote the evaluation of it at
+  $\oftyI{i}{I}$ as $x_i$.
+\end{defn}
+
+\paragraph*{Notational clarification.} An inhabitant of $\sub{o}{A}$ has the form
+$(I, f)$ as defined in Defn.~\ref{defn:fam}. However, we will use some more suggestive
+notation for pairs of this form. It is quite convenient to be able to talk about a family
+as though it were a concrete set, so we will use the notation $\{ x_i ~|~ i \in I \}$ as a
+substitute for ``$I$-indexed family whose $i$th projection is denoted $x_i$''. Furthermore,
+we will talk quite often about join operators $\oftyI{\bigvee\_}{\sub{o}{A} \rightarrow A}$. Instead of
+writing, $\bigvee (I, \lambda i.~e(i))$ for the application of a join operator to a family, we will
+use the more familiar notation of
+\begin{equation}\label{eqn:join-syntax}
+  \bigvee_i e
+\end{equation}
+What is meant by such notational sugar is expected to be obvious to the reader.
+
+In the \veragda{} formalisation, we use similar notational conventions. For instance,
+the syntax we have exemplified in (\ref{eqn:join-syntax}), is implemented in \veragda{},
+in the \modname{JoinSyntax} submodule of the \modname{Frame} module.
+\begin{code}%
+\>[0]\AgdaKeyword{module}\AgdaSpace{}%
+\AgdaModule{JoinSyntax}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{Type}\AgdaSpace{}%
+\AgdaGeneralizable{ℓ₀}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{ℓ₂}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaPostulate{Level}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{join}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{Fam}\AgdaSpace{}%
+\AgdaBound{ℓ₂}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaKeyword{where}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+\>[0][@{}l@{\AgdaIndent{0}}]%
+\>[2]\AgdaFunction{join-of}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{I}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{Type}\AgdaSpace{}%
+\AgdaBound{ℓ₂}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{I}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{A}\<%
+\\
+%
+\>[2]\AgdaFunction{join-of}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaArgument{I}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaBound{I}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaBound{f}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaBound{join}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{I}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaBound{f}\AgdaSymbol{)}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+%
+\>[2]\AgdaKeyword{syntax}\AgdaSpace{}%
+\AgdaFunction{join-of}\AgdaSpace{}%
+\AgdaSymbol{(λ}\AgdaSpace{}%
+\AgdaBound{i}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{e}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{⋁⟨}\AgdaSpace{}%
+\AgdaBound{i}\AgdaSpace{}%
+\AgdaFunction{⟩}\AgdaSpace{}%
+\AgdaBound{e}\<%
+\end{code}
+
+The bracketed index $\mathtt{⟨~i~⟩}$ is intended to be a plain text approximation of
+subscripting.
 
 \section{Higher Inductive Types (HITs)}
 
