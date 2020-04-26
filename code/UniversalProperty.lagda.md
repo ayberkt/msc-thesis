@@ -234,7 +234,7 @@ Proof.
 ### `g` is a frame homomorphism
 
 ```
-    g-frame-homo : IsFrameHomomorphism L R gm
+    g-frame-homo : isFrameHomomorphism L R gm
     g-frame-homo = g-resp-𝟏 , (g-resp-⊓ , g-resp-⊔)
 ```
 
@@ -316,7 +316,7 @@ Proof.
 
         II : (gm , g-frame-homo) ≡ (g′m , g′-frame-homo)
         II = ΣProp≡
-               (IsFrameHomomorphism-prop L R)
+               (isFrameHomomorphism-prop L R)
                (ΣProp≡ (IsMonotonic-prop (pos L) (pos R)) (fn-ext _ _ g~g′))
 ```
 
