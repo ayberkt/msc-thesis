@@ -362,11 +362,13 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
         ⊔ℱ↓ : IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) is-true
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
 
+    open JoinSyntax 𝔻 ⊔_
+
     ⊔-upper : (ℱ : Sub ℓ₀ 𝔻) (D : 𝔻) → D ε ℱ → D ⊑[ 𝔻ₚ ] (⊔ ℱ) is-true
     ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , subst (λ V → ∣ V ∣𝔻 x is-true) (sym p) x∈D ∣
 
     ⊔-least : (ℱ : Sub ℓ₀ 𝔻) (z : 𝔻)
-            → ((o : 𝔻) → o ε ℱ → (o ⊑[ 𝔻ₚ ] z) is-true)
+            → ∀[ o ε ℱ ] (o ⊑[ 𝔻ₚ ] z) is-true
             → (⊔ ℱ) ⊑[ 𝔻ₚ ] z is-true
     ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (π₁ (∣ D ∣𝔻 x)) ind x∈⊔S
       where
