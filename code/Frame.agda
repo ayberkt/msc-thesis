@@ -350,7 +350,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
     in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Type ℓ₀
-    in-some-set-of ℱ x = Σ (index ℱ) (λ i → ∣ ℱ € i ∣𝔻 x is-true)
+    in-some-set-of ℱ x = Σ[ i ∈ index ℱ ] x ∈ ∣ ℱ € i ∣𝔻 is-true
 
     ⊔_ : Sub ℓ₀ 𝔻 → 𝔻
     ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
