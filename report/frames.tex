@@ -241,6 +241,11 @@ to preserve this structure.
 
 \section{Some properties of frames}
 
+\begin{prop}[Meet commutativity]\label{prop:comm}
+  In any frame $F$, $x \wedge_F y = y \wedge_F x$ for all $\oftyII{x}{y}{\abs{F}}$.
+\end{prop}
+The proof is trivial and therefore omitted.
+
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
   Let $\oftyI{F}{\framety{m}{n}{o}}$ and let $\oftyI{f}{\pity{a}{A}{B(a) \rightarrow \abs{F}}}$ for
   some $\oftyI{A}{\univ{}_o}$ and $\oftyI{B}{A \rightarrow \univ{}_o}$. The following equality
@@ -265,7 +270,7 @@ named \fnname{flatten}.
   \end{equation*}
 \end{prop}
 \begin{proof}[Proof sketch]
-  Apply the distributivity law, use commutativity (\todo{reference}), apply the
+  Apply the distributivity law, use commutativity (Prop.~\ref{prop:comm}), apply the
   distributivity law again, and then flatten (using Lemma~\ref{lem:flatten}).
 \end{proof}
 
