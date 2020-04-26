@@ -13,25 +13,27 @@ open import Frame
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Type (ℓ₀ ⊔ ℓ₁)
 IsNuclear L j = N₀ × N₁ × N₂
   where
-    N₀ = (a b : ∣ L ∣F) → j (a ⊓[ L ] b) ≡ (j a) ⊓[ L ] (j b)
-    N₁ = (a   : ∣ L ∣F) → a ⊑[ pos L ] (j a) is-true
-    N₂ = (a   : ∣ L ∣F) → j (j a) ⊑[ pos L ] j a is-true
+    N₀ = (x y : ∣ L ∣F) → j (x ⊓[ L ] y) ≡ (j x) ⊓[ L ] (j y)
+    N₁ = (x   : ∣ L ∣F) → x ⊑[ pos L ] (j x) is-true
+    N₂ = (x   : ∣ L ∣F) → j (j x) ⊑[ pos L ] j x is-true
 
 -- The type of nuclei.
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
+-- Every nucleus is idempotent.
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
      → (N : Nucleus L)
      → let j = π₀ N in (x : ∣ L ∣F) → j (j x) ≡ j x
-idem L (j , n₀ , n₁ , n₂) x = ⊑[ pos L ]-antisym (j (j x)) (j x) (n₂ x) (n₁ (j x))
+idem L (j , N₀ , N₁ , N₂) x = ⊑[ pos L ]-antisym _ _ (N₂ x) (N₁ (j x))
 
+-- Every nucleus is monotonic.
 mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L)
      → let j = π₀ N
        in (x y : ∣ L ∣F) → x ⊑[ pos L ] y is-true → (j x) ⊑[ pos L ] (j y) is-true
-mono L (j , n₀ , n₁ , n₂) x y x⊑y =
+mono L (j , N₀ , N₁ , N₂) x y x⊑y =
   j x             ⊑⟨ ≡⇒⊑ (pos L) (cong j x≡x⊓y) ⟩
-  j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)       ⟩
+  j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)       ⟩
   j x ⊓[ L ] j y  ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y)  ⟩
   j y         ■
   where
@@ -40,7 +42,7 @@ mono L (j , n₀ , n₁ , n₂) x y x⊑y =
     x⊑x⊓y : x ⊑[ pos L ] (x ⊓[ L ] y) is-true
     x⊑x⊓y = ⊓[ L ]-greatest x y x (⊑[ pos L ]-refl x) x⊑y
 
-    x≡x⊓y : x ≡ (x ⊓[ L ] y)
+    x≡x⊓y : x ≡ x ⊓[ L ] y
     x≡x⊓y = ⊑[ pos L ]-antisym x (x ⊓[ L ] y) x⊑x⊓y (⊓[ L ]-lower₀ x y)
 
 -- The set of fixed points for nucleus `j` is equivalent hence equal to its image.
