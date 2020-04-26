@@ -189,6 +189,14 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
           x \wedge \bigvee_i U_i} =_A \bigvee_i \left( x \wedge U_i \right)
       }
   \end{alignat*}
+
+  We collect all frames in the following type:
+  \begin{equation*}
+    \framety{m}{n}{o} \quad\is\quad
+      \sigmaty{A}{\univ{}_m}{
+        \sigmaty{S}{\rawframestr{n}{o}{A}}{\frameax{S}}
+      }.
+  \end{equation*}
 \end{defn}
 
 We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
