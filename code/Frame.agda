@@ -95,6 +95,13 @@ syntax glb-of F o p = o ⊓[ F ] p
 ⋃[_]_ : (F : Frame ℓ₀ ℓ₁ ℓ₂) → Sub ℓ₂ ∣ F ∣F → ∣ F ∣F
 ⋃[ (_ , (_ , (_ , _ , ⋃_)) , _) ] ℱ = ⋃ ℱ
 
+module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Sub ℓ₂ A → A) where
+
+  join-of : {I : Type ℓ₂} → (I → A) → A
+  join-of {I = I} f = join (I , f)
+
+  syntax join-of (λ i → e) = ⋁⟨ i ⟩ e
+
 module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
 
   private
