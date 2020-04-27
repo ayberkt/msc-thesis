@@ -35,7 +35,8 @@
   linktoc    = page,
   colorlinks = true,
   linkcolor  = darkgreen,
-  citecolor  = hottblue
+  citecolor  = hottblue,
+  urlcolor   = hottviolet
 }
 
 \newcommand{\reals}{\mathbb{R}}
@@ -74,7 +75,7 @@
 \newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
 \newcommand{\univ}{\mathcal{U}}
 \newcommand{\isaprop}[1]{\mathsf{IsProp}\left(#1\right)}
-\newcommand{\hprop}{Ω}
+\newcommand{\hprop}{\hyperref[defn:omega]{Ω}}
 \newcommand{\isaset}[1]{\mathsf{IsSet}\left(#1\right)}
 \newcommand{\abs}[1]{\left| #1 \right|}
 \newcommand{\trunc}[1]{\left\| #1 \right\|}
@@ -103,7 +104,7 @@
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
 
-\newcommand{\poset}{\mathsf{Poset}}
+\newcommand{\poset}{\hyperref[defn:poset]{\mathsf{Poset}}}
 
 \newcommand{\posof}[1]{\mathsf{pos}\left(#1\right)}
 
@@ -119,10 +120,10 @@
 \newcommand{\framehomo}[2]{#1 \framehomonm{} #2}
 
 \newcommand{\hasmono}[1]{\hyperref[defn:mono]{\mathsf{hasMono}}\left(#1\right)}
-\newcommand{\hassim}[1]{\mathsf{hasSim}\left(#1\right)}
+\newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
 
-\newcommand{\vermono}{\hyperref[defn:mono]{monotonicity}}
-\newcommand{\versim}{{\color{black} \hyperref[defn:sim]{simulation}}}
+\newcommand{\vermono}{monotonicity}
+\newcommand{\versim}{simulation}
 \newcommand{\vernucleus}{\hyperref[defn:nucleus]{nucleus}}
 \newcommand{\verframe}{\hyperref[defn:frame]{frame}}
 \newcommand{\verposet}{\hyperref[defn:poset]{poset}}
@@ -136,9 +137,9 @@
 \newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
 \newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
 
-\newcommand{\fix}[2]{\mathsf{fix}\left(#1, #2\right)}
+\newcommand{\fix}[2]{\hyperref[thm:fixed-point-frame]{\mathsf{fix}}\left(#1, #2\right)}
 
-\newcommand{\isflat}[1]{\mathsf{isFlat}\left(#1\right)}
+\newcommand{\isflat}[1]{\hyperref[defn:flat]{\mathsf{isFlat}}\left(#1\right)}
 
 \newcommand{\framestrnm}{\mathsf{FrameStr}}
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
@@ -146,8 +147,9 @@
 \newcommand{\framenm}{\hyperref[defn:frame]{\mathsf{Frame}}}
 \newcommand{\framety}[3]{\framenm{}_{#1, #2, #3}}
 
-\newcommand{\treestrnm}{\mathsf{TreeStr}}
+\newcommand{\treestrnm}{\hyperref[defn:intr-sys]{\mathsf{IntrStr}}}
 \newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
+\newcommand{\intrsys}{\hyperref[defn:intr-sys]{\mathsf{IntrSys}}}
 
 \newcommand{\stumpnm}{\mathsf{Stump}}
 \newcommand{\stump}[1]{\stumpnm\left(#1\right)}
@@ -174,6 +176,9 @@
 
 \newcommand{\setof}[1]{\left\{ #1 \right\}}
 \newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ a \in #2 }}
+
+\newcommand{\representsnm}{\hyperref[defn:rep]{\mathsf{represents}}}
+\newcommand{\represents}[3]{\representsnm{}\left(#1, #2, #3\right)}
 
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bG}{\mathbf{G}}

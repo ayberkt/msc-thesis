@@ -11,16 +11,18 @@ are freely generated.
 
 Our definition of a formal topology will make use of the notion of an interaction system,
 first formulated by Petersson and Synek~\cite{tree-sets}, the motivation of whom was to
-generalise $\mathsf{W}$ types to be able to accommodate mutual recursion. Other names for
-interaction systems include \emph{tree set constructors} (which is the name that Petersson
-and Synek~\cite{tree-sets}), and \emph{indexed containers}~\cite{indexed-containers}. The
+generalise $\mathsf{W}$ types to be able to accommodate mutual induction. Other names for
+interaction systems are \emph{tree set constructors} (which is the name that Petersson and
+Synek~\cite{tree-sets} use), and \emph{indexed containers}~\cite{indexed-containers}. The
 idea of doing formal topology with interaction systems is due to Coquand~\cite{coq-posets}
 who was inspired by Dragalin~\cite{dragalin}.
 
-This chapter corresponds to the Agda module {\color{hottviolet} \texttt{TreeType}} in the
-formal development.
+This chapter corresponds to several modules in the \veragda{} formalisation. Sections
+\ref{sec:intr-sys}, \ref{sec:cover}, \ref{sec:cover-nucleus}, and \ref{sec:universal-prop}
+correspond, respectively, to modules \modname{FormalTopology}, \modname{Cover},
+\modname{CoverFormsNucleus}, and \modname{UniversalProperty}.
 
-\section{Interaction systems}
+\section{Interaction systems}\label{sec:intr-sys}
 
 \paragraphsummary{Explain the idea of the tree type.}
 The fundamental idea of an interaction system is simple. Consider the progression of a
@@ -29,7 +31,7 @@ two-player game. First, there is a type of \emph{game states}; call it $A$:
   A~:~\univ.
 \end{equation*}
 At each state of the game, there are certain moves the player can take. In other words,
-for every game state $\oftyI{x}{A}$, there is a type of possible moves the player may take.
+for every game state $\oftyI{a}{A}$, there is a type of possible moves the player may take.
 Formally, this is a function:
 \begin{equation*}
   \oftyI{B}{A \rightarrow \univ}.
@@ -37,100 +39,139 @@ Formally, this is a function:
 Furthermore, for every move the player may take, the opponent can take certain
 counter-moves in response. Formally:
 \begin{equation*}
-  \oftyI{C}{\pity{x}{A}{B(x) \rightarrow \univ}}.
+  \oftyI{C}{\pity{a}{A}{B(a) \rightarrow \univ}}.
 \end{equation*}
 Finally, given the counter-move in response to a certain move at some state, we proceed to
 a new game state. This is given by some function:
 \begin{equation*}
-  \oftyI{d}{\pity{x}{A}{\pity{y}{B(x)}{C(x, y) \rightarrow A}}}.
+  \oftyI{d}{\pity{a}{A}{\pity{b}{B(a)}{C(a, b) \rightarrow A}}}.
 \end{equation*}
 
 In four pieces, namely $(A, B, C, d)$, we characterise structures that involve some kind
 of ``interaction''. Even though the game analogy is useful, interaction systems are more
-general than that games: they express anything that is like a dialogue i.e., involving
-two parties interacting with each other.
+general than games: they express anything that can be viewed as a \emph{dialogue} i.e.,
+involving two parties interacting with each other.
+Hancock~\cite{hancock-interaction-systems} provides a table providing various structures
+that can be viewed as interaction systems. We reproduce this (with minor notational
+modifications) in Table~\ref{tab:hancock}.
 
-\paragraphsummary{Explain how we will use the tree type.}
-To define a formal topology, we will require the type of states ($A$) to be not just a
-set, but a poset. The idea of this is the same as in the case of frames, we would like to
-view these states as stages of information ranked with respect to how refined they are.
+\begin{table}[]
+  \centering
+  \caption{%
+    Peter Hancock's~\cite{hancock-interaction-systems} table (with notational
+    modifications) providing a list of examples of interaction systems.
+  }
+  \label{tab:hancock}
+  \begin{tabular}{l | l | l | l}
+    $\oftyI{a}{A}$ & $\oftyI{b}{B(a)}$ & $\oftyI{c}{C(a, b)}$ & $\oftyI{d(a, b, c)}{A}$ \\\hline
+    sort           & constructor       & selector             & component sort          \\
+    statement      & inference         & premise              & premise statement       \\
+    neighbourhood  & partition         & part                 & new neighbourhood       \\
+    game           & attack            & defence              & new state               \\
+    interrogation  & question          & answer               & new state               \\
+    interface      & call              & return               & new state               \\
+    universe       & observation       & reading              & new state               \\
+    knowledge      & experience        & result               & new state               \\
+    dialogue       & thesis            & antithesis           & synthesis               \\
+  \end{tabular}
+\end{table}
+
+To define the notion of a formal topology, we will require the type $A$ of states to be
+not just a set, but a poset. The idea is the same as in the case of frames: we would like
+to view these states as stages of information ranked with respect to how refined they are.
 In addition, we will expect such a poset equipped with an interaction system to satisfy
 the following two properties:
 \begin{enumerate}
-\item the monotonicity property: for every state $\oftyI{x}{A}$, experiment
-  $y$ on $x$, and outcome $z$ of $y$, $d(x, y, z) \sqsubseteq x$.
-  \item the simulation property which states that at any state we simulate the previous
-    states.
+\item the \textbf{monotonicity} property: for every state $\oftyI{a}{A}$, move
+  $b$ at state $a$, and counter-move $c$ in response to $b$, $d(a, b, c) \sqsubseteq a$.
+  \item the \textbf{simulation} property which states that at any state, we can simulate
+    the previous states (in a sense that we will explain in detail later).
 \end{enumerate}
 
 Once we have imposed the requirement that the set of stages be a poset, it makes sense to
-use some more suggestive terminology due to Martin-Löf\footnote{Attributed to
-  Martin-Löf in the note~\cite{coq-posets}}.
+use some more suggestive terminology due to Per Martin-Löf
+\footnote{%
+  Attributed to Martin-Löf in the note~\cite{coq-posets}.
+}%
+$^{,}$%
+\footnote{%
+  Although this terminology is due to Martin-Löf, it is the present author's opinion that
+  it is particularly sensible to use this terminology in the context where we are imposing
+  an ordering on states that satisfies the monotonicity property. This terminology is
+  freely used for \emph{all} interaction systems in the literature (as exemplified by
+  Table~\ref{tab:hancock} as well). Our justification is that it makes no sense to call
+  $B$ a type of experiments if the experiments might be \emph{taking away} existing
+  knowledge i.e., not satisfying the monotonicity property.
+}.
 \begin{itemize}
   \item $A$: a type of stages of \emph{knowledge}.
-  \item $\oftyI{B}{A \rightarrow \univ{}}$: a type of \emph{experiments} $B(x)$ that one can perform at a
-    certain stage $x$.
-  \item $\oftyI{C}{\pity{x}{A}{B(x) \rightarrow \univ{}}}$: a type of \emph{outcomes} of an
-    experiment $\oftyI{y}{B(x)}$ for some stage of knowledge $x$.
-  \item $d$: a function that expresses the act of \emph{revising} one's belief state based
-    on the outcome from an experiment performed at a stage of knowledge.
+  \item $\oftyI{B}{A \rightarrow \univ{}}$: a type of \emph{experiments} $B(a)$ that one can perform
+    at a certain stage of knowledge $a$.
+  \item $\oftyI{C}{\pity{a}{A}{B(a) \rightarrow \univ{}}}$: a type of \emph{outcomes} of an
+    experiment $\oftyI{b}{B(a)}$ at some stage of knowledge $a$.
+  \item $d$: a function that expresses the act of \emph{revising} one's knowledge state
+    based on the outcome of an experiment performed at a stage of knowledge.
 \end{itemize}
-Once we adopt this view, what the monotonicity property says becomes much more clear: if
-we perform an experiment $y$ while we have knowledge $x$ and revise our knowledge based on
-some outcome $z$ of $y$, the new knowledge we arrive at must contain at least as much
-information. In fact, if we would like to view things sensibly as experiments, it makes
-sense to reserve this terminology to interaction structures that satisfy this monotonicity
-property as experiments must always increase the knowledge state, if they have any effect
-at all.
 
-Now, to proceed towards the definition of formal topology, let us first formally define
+Once we adopt this view, what the monotonicity property says becomes much more clear: if
+we perform an experiment $b$ while we have knowledge $a$ and revise our knowledge based on
+some outcome $c$ of $b$, the new state of knowledge we arrive at must contain at least as
+much information. In fact, if we would like to view things sensibly as experiments, it
+makes sense to reserve this terminology to interaction structures that have an ordering
+that satisfies the monotonicity property
+
+Now, to proceed towards the definition of a formal topology, let us first formally define
 interaction systems.
-\paragraphsummary{Formally define the tree type.}
-Let us now formally define the tree type.
 \begin{defn}[Interaction system]\label{defn:intr-sys}
-  For simplicity, we will require all types to be at the same level $m$ and omit this fact
+  For simplicity, we will require all types to be at the same level and omit the level
   in the notation.
   \begin{align*}
     \treestr{A} &\quad\is\quad
       \sigmaty{B}{A \rightarrow \univ}{
-        \sigmaty{C}{\pity{x}{A}{B(x) \rightarrow C}}{
-          \pity{x}{A}{\pity{y}{B(x)}{C(x, y) \rightarrow A}}
+        \sigmaty{C}{\pity{a}{A}{B(a) \rightarrow C}}{
+          \pity{a}{A}{\pity{b}{B(a)}{C(a, b) \rightarrow A}}
         }
       }\\
-    \mathsf{IntrSys} &\quad\is\quad \sigmaty{A}{~~~~\univ}{\treestr{A}}
+    \intrsys{} &\quad\is\quad \sigmaty{A}{~~~~\univ}{\treestr{A}}
   \end{align*}
   Given an interaction system $\mathcal{I}$, we will refer to its components as
-  $B_{\mathcal{I}}, C_{\mathcal{I}}$, and $d_{\mathcal{I}}$ in context where the possibility of
-  ambiguity is present.
+  $A_{\mathcal{I}}$, $B_{\mathcal{I}}$, $C_{\mathcal{I}}$, and $d_{\mathcal{I}}$ in
+  contexts where the possibility of ambiguity is present.
 \end{defn}
 
 Given an interaction system $\mathcal{I}$, the monotonicity property is then formally
-expressed as in the following definition.
+expressed as in Definition~\ref{defn:mono}.
 \begin{defn}[Monotonicity property of an interaction system]\label{defn:mono}
-  Given an interaction system $\mathcal{I}$, it is said to have the monotonicity property
-  if the following type is inhabited
+  An interaction system $\mathcal{I}$, whose type $A_{\mathcal{I}}$ of stages is equipped
+  with a poset structure, is said to have the monotonicity property if the following type
+  is inhabited:
   \begin{equation*}
-    \hasmono{\mathcal{I}} \quad\is\quad
-      \pity{x}{A_{\mathcal{I}}}{\pity{y}{B_{\mathcal{I}}(x)}{\pity{z}{C_{\mathcal{I}}(x, y)}{
-        d(x, y, z) \sqsubseteq x}}.
-      }
+    \hasmono{\mathcal{I}, \sqsubseteq} \quad\is\quad
+      \pity{a}{A_{\mathcal{I}}}{%
+        \pity{b}{B_{\mathcal{I}}(a)}{%
+          \pity{c}{C_{\mathcal{I}}(a, b)}{%
+              d(a, b, c) \sqsubseteq a
+          }
+        }
+      }.
   \end{equation*}
 \end{defn}
 
-Unlike the simpler monotonicity property, we have not yet fully explained the simulation
-property. Let us first provide its formal definition.
+We have not yet fully explained the simulation property. Let us first provide its formal
+definition.
 \begin{defn}[Simulation property]\label{defn:sim}
-  Given an interaction system $\mathcal{I}$, we will say that it satisfies the simulation
-  property if the following type is inhabited:
+  Given an interaction system $\mathcal{I}$, whose type $A_{\mathcal{I}}$ of stages is a
+  poset, we will say that it satisfies the simulation property if the following type is
+  inhabited:
   \begin{align*}
-    &\mathsf{HasSim}\left( \mathcal{I} \right) \quad\is \\
-    &\pity{x~x'}{\abs{D}}{
-      x' \sqsubseteq x \rightarrow\\
-      &\pity{y}{B(x)}{
-        \sigmaty{y'}{B(x')}{
-          \pity{z'}{C(x', y')}{
-            \sigmaty{z}{C(x, y)}{
-              d(x', y', z') \sqsubseteq d(x, y, z)
+    &\hassim{\mathcal{I}, \sqsubseteq} \quad\is \\
+    &\hspace{2em}\pity{a~a'}{A}{%
+      a' \sqsubseteq a \rightarrow\\
+      &\hspace{4em}\pity{b}{B(a)}{
+        \sigmaty{b'}{B(a')}{
+          \pity{z'}{C(a', b')}{
+            \sigmaty{z}{C(a, b)}{
+              d(a', b', c') \sqsubseteq d(a, b, c)
             }
           }
         }
@@ -138,57 +179,78 @@ property. Let us first provide its formal definition.
     }.
   \end{align*}
 \end{defn}
-What does this say intuitively? At more refined stages we can always find a counterpart to
-any experiment from a less refined stage, in the sense that that experiment will lead to a
-finer stage. In other words, as we perform certain experiments and proceed to more refined
-stages, we do not lose the ability to perform the experiments we previously did not
-perform.
+What does this say intuitively? It says that at more refined stages we can always find a
+counterpart to any experiment from a less refined stage, in the sense that that experiment
+will lead to a finer stage. In other words, as we choose to perform certain experiments
+and proceed to more refined stages, we do not lose the ability to perform the experiments
+we previously chose not to perform.
 
 \begin{defn}[Formal Topology]\label{defn:formal-topo}
-  A \emph{formal topology} is simply an interaction system satisfying the \vermono{} and
-  \versim{} properties.
+  A \emph{formal topology} is simply an interaction system, whose type $A$ of stages is a
+  poset, that satisfies the monotonicity and simulation properties.
   \begin{align*}
-    \mathsf{FT} \quad\is\quad \sigmaty{\mathcal{I}}{\mathsf{IntrSys}}{
-        \hasmono{\mathcal{I}} \times \hassim{\mathcal{I}}
+    \mathsf{FT} \quad\is\quad \sigmaty{P}{\poset{}_{n, n}}{%
+      \sigmaty{\mathcal{I}}{\treestr{\abs{P}}}
+        \hasmono{\mathcal{I}, \sqsubseteq_P} \times \hassim{\mathcal{I}, \sqsubseteq_P}
     }
   \end{align*}
 \end{defn}
 
-\section{Cover relation}
+\section{Cover relation}\label{sec:cover}
 
 The real reason we are interested in formal topologies is that the structure they contain,
-along with the \vermono{} and \versim{} properties, induces a \emph{covering relation}.
-This is a method going back Johnstone's~\cite{stone-spaces} adaptation of the notion of a
-Grothendieck topology to the context of locale theory, that was subsequently developed by
-Martin-L\"{o}f and Sambin~\cite{int-formal-spaces}.
+along with the \vermono{} and \versim{} properties, induces a well-behaved \emph{covering
+  relation}. This is a method going back Johnstone's~\cite{stone-spaces} adaptation of the
+notion of a Grothendieck topology~\cite{artin} to the context of locale theory, that was
+subsequently developed by Martin-L\"{o}f and Sambin~\cite{int-formal-spaces}.
 
 The idea is as follows: given a set $A$ that we view like a set of \emph{basic opens}
-(i.e., opens not made up using the join operator) we require a relation $\_\covernm{}\_ : A \rightarrow
-\pow{A} \rightarrow \Omega$. This relation is expected to pointlessly express the relation of being an
-\emph{open cover} i.e., $x \covernm{} V$ iff $V$ is an open cover of $x$: $x = \bigcup_i V_i$. In
-other words, we are specifying which basic opens can be expressed as the union of which
-others. The information contained by this relation is sufficient to generate the opens.
-In our case, the covering relation will be determined by the interaction system.
+(i.e., opens not made up using the join operator), we require a relation:
+\begin{equation*}
+  \_\covernm{}\_ : A \rightarrow \pow{A} \rightarrow \hprop{}
+\end{equation*}
+that is expected to pointlessly express the relation of being an \emph{open cover} i.e.,
+$x \covernm{} U$ iff $U$ is an open cover of $x$: $x = \bigvee_i U_i$. In other words, we are
+specifying which basic opens can be expressed as the join of which others. The information
+contained by this relation is sufficient to generate the topology (i.e., the frame).
 
-The original formulation of formal topology by Sambin suffered from the problem that it
-was not possible to define the coproduct of two frames using it. This problem was solved
-by Coquand et al.~\cite{coq-sambin} by defining the covering relation inductively.
+The original formulation of formal topology by Sambin suffered a particular problem: it
+was not possible to define, predicatively, the coproduct of two frames using it. This
+problem was solved by Coquand, Sambin et al.~\cite{coq-sambin} by defining the covering
+relation inductively. We follow this approach in our development. In fact, as we will
+explain later, we will define this relation not just as an inductive type but as a
+\emph{higher} inductive one.
 
-Now, we will define the cover relation on a given formal topology. However, our
-presentation will recapitulate our development: we first explain our naive attempt, that
-we found out to not work in \UF{}, and its remedied form that circumvents this problem by
-using an HIT.
-\begin{defn}[Foo]
-  \todo{define.}
+We will now proceed to define the cover relation on a given formal topology. However, our
+presentation will recapitulate the progression our development: we first explain our naive
+attempt, that we found out not to work in \UF{}, and after that its remedied form (thanks
+to a suggestion by Thierry Coquand~\cite{another-way-out}) that circumvents this problem
+through the use of HITs.
+\begin{defn}[Naive cover relation]\label{defn:naive-cover}
+  Given a formal topology
+  $\mathcal{F}$ on type $A$, and given $\oftyI{a}{A}$, $U : \pow{A}$, the type
+  $\covers{a}{U}$ is inductively defined with the following two constructors.
+  \[
+  \begin{prooftree}
+    \hypo{ a \in U }
+    \infer1[$\ruledir{}$]{\covers{a}{U}}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \hypo{\oftyI{b}{B(a)}}
+    \hypo{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}
+    \infer2[$\rulebranch{}$]{\covers{a}{U}}
+  \end{prooftree}
+  \]
 \end{defn}
 
 One way of reading $\covers{a}{U}$ is as a relaxation of $a \in U$ to ``it is eventually the
-case that $a \in U$''. In other words, it might not be that $a \in U$ but once the knowledge
-at level $a$ has been attained, paths that do not lead to $U$ have been ruled out:
-regardless of what experiments are run, they will eventually lead to a stage in $U$.
+case that $a \in U$''. In other words, it might not be that $a \in U$ but once stage $a$ has
+been reached, all paths that do not lead to $U$ have been ruled out: regardless of what
+experiments are run, they will eventually lead to a stage in $U$.
 
-Let us consider the how we will go from a formal topology to a frame via its cover
-relation. The cover relation has the following type:
+Let us now turn our attention to the question of how we will go from a formal topology to
+a frame via its cover relation. The cover relation has the following type:
 \begin{equation*}
   \_\covernm{}\_ : A \rightarrow \pow{A} \rightarrow \univ{},
 \end{equation*}
@@ -201,18 +263,19 @@ to write it like:
 \begin{equation*}
   \_\RHD\_ : \pow{A} \rightarrow \pow{A},
 \end{equation*}
-but it does not as it has two constructors. We could then restrict this to get an
-endofunction on the set of downwards-closed subsets:
+but this is not the case as the relation has been defined using more than one
+constructors. We could then restrict this to get an endofunction on the set of
+downwards-closed subsets:
 \begin{equation*}
-  \_\RHD\_ : \dcsubset{A} \rightarrow \dcsubset{A}.
+  \_\RHD\_ : \dcsubset{A} \rightarrow \dcsubset{A}
 \end{equation*}
 which of course requires us to show that given a downwards-closed subset $U$,
 $\covers{\_}{U}$ is a subset that is downwards-closed. But first, we have to deal with the
-problem that the codomain of $\covers{}{}$ is not $\hprop{}$.
+problem that the result type of $\covers{}{}$ is not $\hprop{}$.
 
-It is tempting to try to achieve this by truncating $\covers{}{}$. When we do this, it
-becomes impossible to prove the idempotence law for the purported nucleus $\RHD :
-\dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? To prove the idempotence law:
+It is tempting to try to achieve this by truncating $\covers{\_}{\_}$. When we do this,
+however, it becomes impossible to prove the idempotence law for the purported nucleus
+$\RHD : \dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? To prove the idempotence law
 \begin{equation*}
   \trunc{\covers{a}{\trunc{\covers{-}{U}}}} \rightarrow \trunc{\covers{a}{U}},
 \end{equation*}
@@ -221,8 +284,8 @@ we need a lemma that says, given any $a$, and subsets $U, V$,
   if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$, for every $a'$, then
   $\trunc{\covers{a}{V}}$.
 \end{center}
-The $\mathsf{dir}$ case is easily verified. The $\mathsf{branch}$ case, however, results
-in a situation where we are trying to show
+The $\ruledir{}$ case is easily verified. The $\rulebranch{}$ case, however, results in a
+situation where we are trying to show
 \begin{equation*}
   \trunc{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}}
 \end{equation*}
@@ -231,15 +294,16 @@ whereas all we get from the inductive hypothesis is
   \pity{c}{C(a, b)}{\trunc{\covers{d(a, b, c)}{V}}}.
 \end{equation*}
 An inference of the former from the latter would require the use of a well-studied
-classical reasoning principle: the axiom of countable choice~\cite{axiom-of-choice}:
+classical reasoning principle: the axiom of countable choice~\cite{axiom-of-choice},
+which says:
 \begin{equation*}
-  \pity{x}{A}{\trunc{B(x)}} \rightarrow \trunc{\pity{x}{A}{B(x)}}
+  \pity{x}{A}{\trunc{B(x)}} \rightarrow \trunc{\pity{x}{A}{B(x)}}.
 \end{equation*}
 
-A remedy for this situation was proposed by the supervisor. Instead of truncating the
-naive form of the cover relation, we add a higher constructor that \emph{squashes} the
-difference between the $\mathsf{dir}$ and $\mathsf{branch}$ constructors. We now provide
-the revised form.
+To remedy this, we will refrain from truncating the naive form of the cover relation, and
+we will instead add a higher constructor that \emph{squashes} the difference between the
+$\ruledir{}$ and $\rulebranch{}$ constructors. We now provide the revised form (we repeat
+the rules from Defn.~\ref{defn:naive-cover} for the sake of self-containment).
 \begin{defn}[Cover relation]\label{defn:covering}
   Given a formal topology
   $\mathcal{F}$ on type $A$, and given $\oftyI{a}{A}$, $U : \pow{A}$, the type
@@ -253,7 +317,7 @@ the revised form.
   \begin{prooftree}
     \hypo{\oftyI{b}{B(a)}}
     \hypo{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}
-    \infer2[$\rulebranch{}$]{\covers{a}{U}}
+    \infer2[$\rulebranch{}$.]{\covers{a}{U}}
   \end{prooftree}
   \]
   In addition to the constructors, the type $\covers{a}{U}$ contains the following path:
@@ -261,46 +325,51 @@ the revised form.
     \begin{prooftree}
       \hypo{\oftyI{p}{\covers{a}{U}}}
       \hypo{\oftyI{q}{\covers{a}{U}}}
-      \infer2[$\rulesquash{}$]{p =_{\covers{a}{U}} q}
+      \infer2[$\rulesquash{}$.]{p =_{\covers{a}{U}} q}
     \end{prooftree}
   \end{equation*}
 \end{defn}
 
+The definition of this cover relation can be found in the module \modname{Cover} in the
+\veragda{} formalisation.
+
 When trying to prove the idempotence law with this, we get from the inductive hypothesis a
 family $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is still
-``squashed'', but this squashing is an integral part of $\covers{}{}$ rather than a
+``squashed'', but this squashing is an integral part of $\covers{\_}{\_}$ rather than a
 truncation that is imposed extrinsically upon it. This is sufficient for circumventing the
 problem that would have required the axiom of countable choice, and allows us to
 successfully complete the idempotence proof. The type of $\covers{\_}{\_}$ can be seen
-directly to be $\pow{A} \rightarrow \pow{A} \rightarrow \Omega$ by the existence of the $\mathsf{squash}$
-constructor.
+\emph{directly} to be $\pow{A} \rightarrow \pow{A} \rightarrow \hprop{}$ by the existence of the
+$\rulesquash{}$ constructor.
 
 Notice that, given a downwards-closed subset $U$, the subset of elements that are covered
 by $U$ ($\covers{\_}{U}$) is itself downwards-closed.
 \begin{prop}
-  Let $\mathcal{F}$ be an \verintrsys{} and $U$ a downwards-closed subset of its
-  underlying poset. $\covers{\_}{U}$ is a downwards-closed subset.
+  Let $\mathcal{F}$ be a formal topology and $U$ a downwards-closed subset of it.
+  $\covers{\_}{U}$ is a downwards-closed subset.
 \end{prop}
 \begin{proof}
-  Let $\oftyII{x}{y}{A}$ such that $\covers{x}{U}$ and $y \sqsubseteq x$. We need to show
-  $\covers{y}{U}$. Our proof proceeds by (higher) induction on the proof of
-  $\covers{x}{U}$.
+  Let $\oftyII{a}{a'}{A}$ such that $\covers{a}{U}$ and $a' \sqsubseteq a$. We need to show
+  $\covers{a'}{U}$. Our proof proceeds by (higher) induction on the proof of
+  $\covers{a}{U}$.
   \begin{itemize}
-    \item Case $\mathsf{dir}$. It must be that $x \in U$ and hence by the downwards-closure
-      of $U$, $y \in U$ meaning $\covers{y}{U}$ by $\mathsf{dir}$.
-    \item Case $\mathsf{branch}$. We have some experiment $b$ on $x$ and a function
-      $$\oftyI{f}{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}.$$
-      Using the $\mathsf{branch}$ rule, we are done if we can exhibit some experiment
-      $\oftyI{b'}{B(y)}$ along with a function
-      $$\oftyI{g}{\pity{c'}{C(a, b')}{\covers{d(y, b', c')}{U}}}.$$
-      Pick $b'$ to be the experiment given by appealing to the \versim{} property with
-      $b$. Let $\oftyI{c'}{C(a, b')}$. It remains to be shown that $\covers{d(y, b', c')}{U}$.
-      By the inductive hypothesis, we are done if we can show that $z \sqsubseteq d(y, b', c')$
-      for some $\covers{z}{U}$. Pick $z \is d(x, b, c)$ where $c$ is the outcome of $b$ given
-      by the \versim{} property. We have $d(x, b, c) \sqsubseteq d(y, b', c')$, directly by the
-      \versim{} property and that $\covers{d(x, b, c)}{U}$ by $f(c)$.
-    \item Case $\mathsf{squash}$. We are done by appealing to the $\mathsf{squash}$ rule
-      with both of the inductive hypothesis.
+    \item Case $\ruledir{}$. It must be that $a \in U$ and hence, by the downwards-closure of
+      $U$, $a' \in U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
+    \item Case $\rulebranch{}$. We have some experiment $b$ on $a$ and a function
+      $$\oftyI{f}{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}.$$ Using the $\rulebranch{}$
+      rule, we are done if we can exhibit some experiment $\oftyI{b'}{B(a')}$ along with a
+      function
+      \begin{equation*}
+        \oftyI{g}{\pity{c'}{C(a, b')}{\covers{d(a', b', c')}{U}}}.
+      \end{equation*}
+      Pick $b'$ to be the experiment obtained by appealing to the \versim{} property with
+      $b$. Let $\oftyI{c'}{C(a, b')}$. It remains to be shown that
+      $\covers{d(a', b', c')}{U}$. By the inductive hypothesis, we are done if we can show that
+      $a_0 \sqsubseteq d(a', b', c')$ for some $\covers{a_0}{U}$. Pick $a_0 \is d(a, b, c)$ where $c$ is the
+      outcome of $b$ given by the \versim{} property. We have $d(a, b, c) \sqsubseteq d(a', b', c')$,
+      directly by the \versim{} property and that $\covers{d(a, b, c)}{U}$ by $f(c)$.
+    \item Case $\rulesquash{}$. We are done by appealing to the $\rulesquash{}$ rule with
+      both of the inductive hypothesis.
   \end{itemize}
 \end{proof}
 
@@ -319,18 +388,19 @@ by $U$ ($\covers{\_}{U}$) is itself downwards-closed.
   $\covers{a}{V}$ then $\covers{a'}{U \cap V}$.
 \end{prop}
 \begin{proof}
-  \todo{Complete}.
+  \todo{complete}.
 \end{proof}
 
 \begin{prop}\label{prop:lem4}
-  Let $\mathcal{F}$ be an \verintrsys{} and $U, V$ be subsets of its underlying poset. If
+  Let $\mathcal{F}$ be a formal topology and $U, V$ be subsets of its underlying poset. If
   $U \subseteq \covers{\_}{V}$ then $\covers{\_}{U} \subseteq \covers{\_}{V}$.
 \end{prop}
 \begin{proof}[Proof sketch]
   Follows by straightforward induction on the covering proof.
 \end{proof}
 
-Our method of obtaining a frame out of a formal topology comprises four steps.
+Let us now summarise our method of obtaining a frame out of a formal topology which
+comprises four steps.
 \begin{enumerate}
   \item Start with a formal topology $\mathcal{T}$ on type $A$.
   \item $\mathcal{T}$ has an underlying poset $P$; construct its frame of downwards-closed
@@ -343,17 +413,17 @@ Our method of obtaining a frame out of a formal topology comprises four steps.
 The only missing step is (3): we have not yet shown that the covering relation is a
 nucleus. We will do exactly this in the following section.
 
-\section{The covering relation is a nucleus}
+\section{The covering relation is a nucleus}\label{sec:cover-nucleus}
 
-$\_\RHD\_ : \pow{A} \rightarrow \pow{A}$ is a endofunction on the powerset of $A$. By restricting
-our attention to subsets that are downwards-closed, we can view as an endofunction on a
-frame
+$\_\RHD\_ : \pow{A} \rightarrow \pow{A}$ is an endofunction on the powerset of $A$. By restricting
+our attention to subsets that are downwards-closed, we can view this as an endofunction on
+the frame of downwards-closed subsets:
 \begin{equation*}
   \oftyI{\_\RHD\_}{\dcsubset{A} \rightarrow \dcsubset{A}}.
 \end{equation*}
-The natural question to be asked is then: is this a \vernucleus{} on the frame of
-downwards-closed subsets of $A$? Let us recapitulate what this means before we proceed
-to the proof.
+The natural question to be asked is then: is this a nucleus (Defn.~\ref{defn:nucleus}) on
+the frame of downwards-closed subsets of $A$? Let us recapitulate what this means before
+we answer the question positively.
 \begin{itemize}
   \item $N_0$: $\pity{a}{A}{\covers{a}{U \cap V} = (\covers{a}{U}) \cap (\covers{a}{V})}$,
   \item $N_1$: $U \subseteq \_ \covernm{} U$, and
@@ -373,19 +443,19 @@ to the proof.
   other direction, let $\oftyI{a}{A}$ such that $a \covernm{} U \cap V$. We proceed by induction on
   this proof.
   \begin{itemize}
-    \item Case $\ruledir{}$. $a \in U \cap V$ meaning $a \in U$ and $a \in V$ hence we are done
-      by an two applications of $\mathsf{dir}$.
+    \item Case $\ruledir{}$. $a \in \intersect{U}{V}$ meaning $a \in U$ and $a \in V$ hence we
+      are done by two applications of $\ruledir{}$.
     \item Case $\rulebranch{}$. Two appeals to the inductive hypothesis, followed by
-      applications of the $\mathsf{branch}$ rule.
+      applications of the $\rulebranch{}$ rule.
     \item Case $\rulesquash{}$. We combine the two inductive hypothesis using the
-      $\mathsf{squash}$ rule.
+      $\rulesquash{}$ rule.
   \end{itemize}
 \end{proof}
 
 \section{Generating a frame from a formal topology}
 
 Now that we have shown the nuclearity of the covering relation $\covers{\_}{\_}$, we have
-everything we need for the procedure of generating a \verframe{} from a formal topology.
+everything we need for the procedure of generating a frame from a formal topology.
 
 Let $\McF{}$ be a formal topology. We know by Theorem~\ref{thm:down-set-frame} that the
 set of downwards-closed subsets of the underlying poset of $\McF{}$ is a frame; denote
@@ -417,23 +487,23 @@ can be refined to $\oftyI{\eta}{A_{\McF{}} \rightarrow \abs{L}}$.
   other direction is a direct application of Proposition~\ref{prop:lem4}.
 \end{defn}
 
-\section{Formal topologies present}
+\section{Formal topologies present}\label{sec:universal-prop}
 
 \paragraphsummary{Explain the aim.} We are now ready to shift our focus on what can be
 called main theorem of this thesis: our notion of a formal topology is capable of
 presenting a frame. Let $\mathcal{F}$ be a formal topology and $F$ a frame. Consider a
 monotonic function $f : A_{\mathcal{F}} \rightarrow \abs{F}$ on the underlying posets. We will
-define a notion of $f$ representing $F$ in $L$.
+define a notion of $f$ representing $\McF{}$ in $F$.
 
 \begin{defn}[Representation]\label{defn:rep}
   Given a formal topology $\mathcal{F} = (A, B, C, d)$, a frame $F$, and a function
-  $\oftyI{f}{A \rightarrow \abs{F}}$ we say that $f$ represents $\mathcal{F}$ in $F$ if the
+  $\oftyI{f}{A \rightarrow \abs{F}}$, we say that $f$ represents $\mathcal{F}$ in $F$ if the
   following type is inhabited:
   \begin{equation*}
-    \mathsf{represents}\left(\mathcal{F}, F, f\right) \quad\is\quad
-      \pity{x}{A}{
-        \pity{y}{B(x)}{
-          f(x) \sqsubseteq \bigvee_{\oftyI{z}{C(x, y)}} f(d(x, y, z)).
+    \represents{\mathcal{F}}{F}{f} \quad\is\quad
+      \pity{a}{A}{
+        \pity{b}{B(x)}{
+          f(a) \sqsubseteq \bigvee_{\oftyI{z}{C(a, b)}} f(d(a, b, c)).
         }
       }
   \end{equation*}
@@ -442,28 +512,24 @@ define a notion of $f$ representing $F$ in $L$.
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case
 where the categories we are working with are posets. Consider a monotonic map $f : P \rightarrow Q$,
-where $Q$ has (finite) products but $P$ does not. We would like to assert somehow that $f$
-preserves finite meets but we cannot mention the meets of $P$ because they do not exist.
-So what we want to do is to state that $f$ preserves products that \emph{do not exist yet}
-which we can do by requiring the following conditions:
+where $Q$ has finite meets but $P$ does not. We would like to assert somehow that $f$
+preserves these finite meets but we cannot mention the meets of $P$ as they do not
+exist. So what we want to do is to state that $f$ preserves those meets that \emph{do not
+exist yet} which we can do by requiring the following conditions:
 \begin{enumerate}
-  \item $\top_Q = \bigvee f(P)$, and
-  \item $\pity{a~b}{P}{f(a) \wedge f(b) =
-           \bigvee f \left( \left\{ z~|~ z \sqsubseteq x\ \text{and}\ z \sqsubseteq y \right\} \right)}$
+  \item $\top_Q = \bigvee \img{f}{P}$, and
+  \item $\pity{x~y}{P}{f(x) \wedge f(y) = \bigvee \setof{ f(z) ~|~ z \sqsubseteq x\ \text{and}\ z \sqsubseteq y }}$.
 \end{enumerate}
-
 In our case, we will of course be interested in monotonic maps whose codomains are frames.
+
 \begin{defn}[Flat monotonic map]\label{defn:flat}
-  Let $P$ be a \verposet{} and $F$ a \verframe{}. Denote by $I$ the type
-  $\sigmaty{z}{\abs{F}}{z \sqsubseteq x \times z \sqsubseteq y}$.
-  A monotonic map $f : P \rightarrow F$ from $P$
-  to the underlying poset of the frame is called \emph{flat} if the following type is
-  inhabited: 
-  \begin{align*}
-    \isflat{f} \quad&\is\quad \top_F = \bigvee f(P)\\
-                &\hspace{0.6em}\times
-                \pity{a~b}{P}{f(a) \wedge f(b) = \bigvee_{\oftyI{(i, p)}{I}} f(i)}.
-  \end{align*}
+  Let $P$ be a poset and $F$ a frame. Denote by $I$ the type $\sigmaty{z}{\abs{F}}{z \sqsubseteq x \times
+    z \sqsubseteq y}$. A monotonic map $f : P \rightarrow F$ from $P$ to the underlying poset of the frame is
+  called \emph{flat} if the following type is inhabited:
+  \begin{alignat*}{5}
+    \isflat{f} \quad&\is\quad && &&\top_F &&= &&\bigvee f(P)\\
+      &\hspace{0.4em}\times &&\pity{a~b}{P}{&&f(a) \wedge f(b) &&= &&\bigvee_{\oftyI{(i, p)}{I}} f(i)}.
+  \end{alignat*}
 \end{defn}
 
 \begin{figure}
@@ -479,17 +545,16 @@ Using flat monotonic maps, the universal property can now be stated.
 
 \begin{thm}[Universal property for formal topologies]\label{thm:univ-prop}
   Given any formal topology $\McF{}$, frame $R$, flat monotonic map $f : A_{\McF{}} \rightarrow R$
-  from the underlying \verposet{} of $\McF{}$ to the underlying \verposet{} of $R$, that
-  \hyperref[defn:rep]{represents} $\McF{}$ in $R$, there exists a unique \textbf{frame
-    homomorphism} $\oftyI{g}{L \rightarrow R}$ such that $f = g \circ \eta$, as summarised in
-  Fig.~\ref{fig:comm-diag}
+  from the underlying poset of $\McF{}$ to the underlying poset of $R$, that represents
+  $\McF{}$ in $R$, there exists a unique \textbf{frame homomorphism} $\oftyI{g}{L \rightarrow R}$
+  such that $f = g \circ \eta$, as summarised in Fig.~\ref{fig:comm-diag}
 
   We express this fully formally as follows:
   \begin{align*}
     \pity{\McF{}}{\mathsf{FT}_{n, n}}{
-      &\pity{R}{\mathsf{Frame}_{n+1, n, n}}{
-         \pity{f}{P \rightarrow_m R}{
-           \isflat{f} \rightarrow \mathsf{represents}\left( \McF{} , F , f \right) \rightarrow\\
+      &\pity{R}{\framety{n+1}{n}{n}}{
+         \pity{f}{\mono{P}{R}}{
+           \isflat{f} \rightarrow \represents{\McF{}}{F}{f} \rightarrow\\
              &\iscontr{\sigmaty{g}{L \rightarrow_f R}{f = g \circ \eta}}
         }
       }
