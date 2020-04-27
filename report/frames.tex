@@ -301,41 +301,42 @@ downwards-closed subsets of a given poset. We will now show that this poset form
   Theorem~\ref{prop:dc-poset}), is a frame.
 \end{thm}
 \begin{proof}
-  We start by defining the following $\top, \wedge, and \bigvee$ operations:
+  The top element and the meet operator are just those of the subset-inclusion order
+  (definitions \ref{defn:entire-subset} and \ref{defn:intersection}). The join operator is
+  defined as follows: let $U$ be a family of downwards-closed subsets with index set $I$;
   \begin{align*}
-    \top       \quad&\is\quad \top_A   && \text{(as in Defn.~\ref{defn:entire-subset})} \\
-    U \wedge V   \quad&\is\quad \intersect{U}{V} && \text{(as in Defn.~\ref{defn:intersection})}\\
-    \bigvee \bF{} \quad&\is\quad \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}
-                         && \text{(using truncation as defined in Defn.~\ref{defn:truncation})}
+    \bigvee U \quad\is\quad \lambda x.~ \trunc{\sigmaty{i}{I}{x \in U_i}}
+      && \text{(using truncation as given in Defn.~\ref{defn:truncation})}.
   \end{align*}
   $\top$ and $\cap$ are propositional by construction whereas $\bigvee$ requires a truncation to be
   forced to be propositional. Downwards-closure and the LUB/GLB properties are easy to
-  verify. We focus on showing that the distributivity law is satisfied. Let $U$ be a
-  downwards-closed subset and $\bF{}$, a family of downward-closed subsets. We must show
+  verify. For the distributivity law, let $U$ be a downwards-closed subset and $V$, a
+  family (with index set $I$) of downward-closed subsets. We must show
   \begin{align*}
-    U \cap \left(\lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right)
-      &= \bigvee \left( U \cap \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}}\right) \right)\\
-      &\equiv \bigvee \left( \lambda x.~ \trunc{\sigmaty{i}{\indexset{\bF{}}}{x \epsilon \bF{}_i}} \times x \epsilon U \right)
+    \intersect{U}{\bigvee_i V_i}
+      \quad&\equiv\quad \intersect{U}{\left(\lambda x.~ \trunc{\sigmaty{i}{I}{x \epsilon V_i}}\right)}\\
+      \quad&=\quad \bigvee_i \left(\intersect{U}{V_i} \right)\\
+      \quad&\equiv\quad \lambda x.~ \trunc{\sigmaty{i}{I}{x \in (U \cap V_i)}}.
   \end{align*}
-  which follows by antisymmetry.
-
-  We will denote the frame of downwards-closed subsets of poset $P$ as $P\downarrow$.
-
-  \todo{revise and expand}.
+  This follows easily using the induction principle of truncation
+  (Defn.~\ref{defn:truncation}), the incantation of which is made possible by the
+  propositionality of both sides of the equality. We will denote the frame of
+  downwards-closed subsets of a poset $P$ as $\dcframe{P}$.
 \end{proof}
 
-There is an obvious ``lifting'' (monotonic) map from poset $P$ to $P\downarrow$ that takes an
-element of $P$ to the set of elements below it.
+%% There is an obvious ``lifting'' (monotonic) map from poset $P$ to $\dcframe{P}$ that takes
+%% an element of $P$ to the set of elements below it.
 
 \begin{defn}[Downwards-closure of an element]\label{defn:down-clos}
-  Given a poset $P$, some $\oftyI{x}{P}$, the downwards-closure of $x$ is defined as:
-  \begin{align*}
-    \_\downarrow \quad&:\quad P \rightarrow P\downarrow                   \\
-    x\downarrow  \quad&\is\quad \_ \sqsubseteq x  .
-  \end{align*}
-  This of course a downwards-closed set by construction.
+  foo.
+%%   Given a poset $P$ and some $\oftyI{x}{\abs{P}}$, the downwards-closure of $x$ is defined
+%%   as:
+%%   \begin{align*}
+%%     \_\downarrow \quad&:\quad P \rightarrow P\downarrow   \\
+%%     x\downarrow  \quad&\is\quad \_ \sqsubseteq x .
+%%   \end{align*}
 
-  \todo{prove monotonicity.}
+%%   \todo{prove monotonicity.}
 \end{defn}
 
 \section{Nuclei and their fixed points}\label{sec:nuclei}
