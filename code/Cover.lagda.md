@@ -1,7 +1,7 @@
 ```
 {-# OPTIONS --cubical --safe #-}
 
-module HITCoverage where
+module Cover where
 
 open import Level
 open import FormalTopology

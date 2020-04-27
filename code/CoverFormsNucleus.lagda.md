@@ -6,7 +6,7 @@ module CoverFormsNucleus where
 open import Basis          hiding (A)
 open import Poset
 open import Frame
-open import HITCoverage
+open import Cover
 open import Nucleus        using  (IsNuclear; Nucleus; nuclear-fixed-point-frame; idem)
 open import Family         using  (Sub; _⟨$⟩_; _$_; _ε_; index)
 open import Truncation     renaming (squash to squash′)
