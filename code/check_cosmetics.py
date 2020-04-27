@@ -1,24 +1,45 @@
 #!/usr/bin/env python3
 import sys
 
-line_num = 1
+files = [ "FormalTopology.agda",
+          "Cover.lagda.md",
+          "CoverFormsNucleus.lagda.md",
+          "Nucleus.agda",
+          "Poset.lagda.md",
+          "SnocList.agda",
+          "CantorSpace.lagda.md",
+          "Frame.agda",
+          "ProductTopology.agda"
+        ]
 
-with open(sys.argv[1], encoding="utf-8") as f:
-  for line in f:
-    if len(line) > 91:
-      print("Line {} is longer than 90 characters.".format(line_num))
+def check_cosmetics_of_file(fname):
+  print("* Checking cosmetics of {}...".format(fname), end="")
+
+  line_num = 1
+
+  with open(fname, encoding="utf-8") as f:
+    for line in f:
+      if len(line) > 91:
+        print("\n  - Line {} is longer than 90 characters.".format(line_num))
+        return False
+
+      if not (line == "\n"):
+        if(line[-2].isspace()):
+          print("\n  - Line {} has trailing spaces.".format(line_num))
+          return False
+
+      if " Set " in line:
+        print("  - Line {} uses the name `Set`.".format(line_num))
+        return False
+
+      line_num += 1
+
+  print("  OK")
+  return True
+
+if __name__ == "__main__":
+  for fname in files:
+    if not check_cosmetics_of_file(fname):
       sys.exit(1)
 
-    if not (line == "\n"):
-      if(line[-2].isspace()):
-        print("Line {} has trailing spaces.".format(line_num))
-        sys.exit(1)
-
-    if " Set " in line:
-      print("Line {} uses the name `Set`.".format(line_num))
-      sys.exit(1)
-
-    line_num += 1
-
-print("OK.")
-sys.exit(0)
+  sys.exit(0)

@@ -24,12 +24,4 @@ pages:
 cosmetics:
   script:
   - export LC_ALL=C.UTF-8
-  - ./check_cosmetics.py FormalTopology.agda
-  - ./check_cosmetics.py Cover.lagda.md
-  - ./check_cosmetics.py CoverFormsNucleus.lagda.md
-  - ./check_cosmetics.py Nucleus.agda
-  - ./check_cosmetics.py Poset.lagda.md
-  - ./check_cosmetics.py SnocList.agda
-  - ./check_cosmetics.py CantorSpace.lagda.md
-  - ./check_cosmetics.py Frame.agda
-  - ./check_cosmetics.py ProductTopology.agda
+  - ./check_cosmetics.py
