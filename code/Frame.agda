@@ -110,6 +110,8 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     _⊑_ : ∣ F ∣F → ∣ F ∣F → hProp ℓ₁
     x ⊑ y = x ⊑[ P ] y
 
+    open JoinSyntax ∣ F ∣F (λ - → ⋃[ F ] -)
+
   𝟏[_]-top : (o : ∣ F ∣F) → o ⊑[ pos F ] 𝟏[ F ] is-true
   𝟏[_]-top = let (_ , _ , frame-str) = F in proj₁ frame-str
 
@@ -138,7 +140,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
 
 
   dist : (o : ∣ F ∣F) (ℱ : Sub ℓ₂ ∣ F ∣F)
-       → o ⊓[ F ] (⋃[ F ] ℱ) ≡ ⋃[ F ] ((λ - → o ⊓[ F ] -) ⟨$⟩ ℱ)
+       → o ⊓[ F ] (⋁⟨ i ⟩ (ℱ $ i)) ≡ ⋁⟨ i ⟩ (o ⊓[ F ] (ℱ $ i))
   dist = let (_ , _ , str) = F in proj₂ (proj₂ (proj₂ str))
 
   top-unique : (z : ∣ F ∣F)
