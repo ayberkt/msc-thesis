@@ -24,6 +24,11 @@ x ε (_ , f) = fiber f x
 _⟨$⟩_ : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → (ℱ : Sub ℓ₂ X) → Sub ℓ₂ Y
 g ⟨$⟩ ℱ = (index ℱ) , g ∘ (_$_ ℱ)
 
+fmap : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → (ℱ : Sub ℓ₂ X) → Sub ℓ₂ Y
+fmap = _⟨$⟩_
+
+syntax fmap (λ x → e) ℱ = ⁅ e ∣ x ε ℱ ⁆
+
 -- Forall quantification for families.
 fam-forall : {X : Type ℓ₀} (ℱ : Sub ℓ₂ X) → (X → hProp ℓ₁) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
 fam-forall {X = X} ℱ P = ((x : X) → x ε ℱ → P x is-true) , prop
