@@ -21,8 +21,8 @@ _ε_ : A → Sub ℓ₁ A → Type _
 x ε (_ , f) = fiber f x
 
 -- Composition of a family with a function.
-_⊚_ : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → (ℱ : Sub ℓ₂ X) → Sub ℓ₂ Y
-g ⊚ ℱ = (index ℱ) , g ∘ (_$_ ℱ)
+_⟨$⟩_ : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → (ℱ : Sub ℓ₂ X) → Sub ℓ₂ Y
+g ⟨$⟩ ℱ = (index ℱ) , g ∘ (_$_ ℱ)
 
 -- Forall quantification for families.
 fam-forall : {X : Type ℓ₀} (ℱ : Sub ℓ₂ X) → (X → hProp ℓ₁) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
