@@ -1,9 +1,16 @@
-\input{template/template}
+\input{/home/ayberkt/academic/thesis/report/template/template}
+\usepackage{agda}
 
 \usepackage{ebproof}
-\usepackage{wasysym}
+\usepackage{tikz-cd}
+
+\tikzcdset{
+  arrow style=tikz,
+  diagrams={>={Straight Barb[scale=0.8]}}
+}
 
 \title{Formal Topology in Univalent Foundations}
+\multilinetitle{Formal Topology\\ in Univalent Foundations}
 \author{Ayberk Tosun}
 
 \supervisor{Thierry Coquand}
@@ -14,7 +21,23 @@
 
 \division{Logic and Types}
 
-\keywords{topology, domain theory}
+\keywords{
+  topology, formal topology, pointless topology, formal space, locale, locale theory,
+  frame, homotopy type theory, univalent foundations
+}
+
+\definecolor{darkgreen}{rgb}{0,0.45,0}
+\definecolor{darkred}{rgb}{0.45,0,0}
+\definecolor{hottviolet}{rgb}{0.45,0,0.45}
+\definecolor{hottblue}{rgb}{0,0.45,0.45}
+
+\hypersetup{
+  linktoc    = page,
+  colorlinks = true,
+  linkcolor  = darkgreen,
+  citecolor  = hottblue,
+  urlcolor   = hottviolet
+}
 
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\nats}{\mathbb{N}}
@@ -22,48 +45,113 @@
 \newcommand{\ball}[2]{\mathfrak{A}(#1, #2)}
 \newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
 
+\newcommand{\oftyI}[2]{#1\hspace{0.1mm}:\hspace{0.1mm}#2}
+\newcommand{\oftyII}[3]{#1~#2:#3}
+\newcommand{\refl}{\mathsf{refl}}
+\newcommand{\zero}{\mathsf{zero}}
+\newcommand{\suc}[1]{\mathsf{suc}\left(#1\right)}
+
+\newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
+\newcommand{\isequiv}[1]{\hyperref[defn:equiv]{\mathsf{isEquiv}}\left(#1\right)}
+\newcommand{\idtoeqvnm}{\mathsf{idToEquiv}}
+\newcommand{\idtoeqv}[1]{\idtoeqvnm{}\left(#1\right)}
+\newcommand{\isdec}[1]{\mathsf{isDecidable}\left(#1\right)}
+\newcommand{\isdisc}[1]{\mathsf{isDiscrete}\left(#1\right)}
+\newcommand{\typequiv}[2]{#1 \simeq #2}
+\newcommand{\logequiv}[2]{#1 \leftrightarrow #2}
+
+\newcommand{\unitty}{\mathsf{Unit}}
+
+%% Homotopy levels.
+\newcommand{\iscontr}[1]{\hyperref[defn:contr]{\mathsf{isContr}}\left(#1\right)}
+\newcommand{\isprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
+\newcommand{\isset}[1]{\mathsf{isSet}\left(#1\right)}
+\newcommand{\isofhlevel}[2]{%
+  \hyperref[defn:hlevel]{\mathsf{isOfHLevel}}\left(#1, #2\right)
+}
+
+\newcommand{\intersectnm}{\hyperref[defn:intersection]{\cap}}
+\newcommand{\intersect}[2]{#1 \intersectnm{} #2}
+
 \newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
 \newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
 \newcommand{\univ}{\mathcal{U}}
-\newcommand{\isaprop}[1]{\mathsf{IsProp}\left(#1\right)}
-\newcommand{\hprop}{\mathsf{hProp}}
+\newcommand{\isaprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
+\newcommand{\hprop}{\hyperref[defn:omega]{Ω}}
 \newcommand{\isaset}[1]{\mathsf{IsSet}\left(#1\right)}
 \newcommand{\abs}[1]{\left| #1 \right|}
 \newcommand{\trunc}[1]{\left\| #1 \right\|}
-\newcommand{\pow}[1]{\mathcal{P}\left(#1\right)}
-\newcommand{\sub}[2]{\mathsf{Fam}_{#1}\left(#2\right)}
+\newcommand{\pownm}{\hyperref[defn:pow]{\mathcal{P}}}
+\newcommand{\pow}[1]{\pownm{}\left(#1\right)}
+\newcommand{\sub}[2]{\hyperref[defn:fam]{\mathsf{Fam}}_{#1}\left(#2\right)}
 \newcommand{\indexnm}{\mathsf{index}}
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
 
-\newcommand{\isdcnm}{\mathsf{DownwardsClosed}}
+\newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
 \newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
-\newcommand{\dcsubsetnm}{\mathsf{DCSubset}}
+\newcommand{\dcsubsetnm}{\hyperref[defn:dc-subset]{\mathsf{DCSubset}}}
 \newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
+\newcommand{\dcframe}[1]{#1\hyperref[thm:down-set-frame]{\downarrow}}
 
 \newcommand{\ordernm}{\mathsf{Order}}
 \newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
 
-\newcommand{\posetstrnm}{\mathsf{PosetStr}}
+\newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
 \newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
 
-\newcommand{\posetaxnm}{\mathsf{PosetAx}}
+\DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\mathtt{\epsilon}}}
+\newcommand{\memfam}[2]{#1 \memfamnm #2}
+
+\newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
 
-\newcommand{\poset}{\mathsf{Poset}}
+\newcommand{\poset}{\hyperref[defn:poset]{\mathsf{Poset}}}
 
-\newcommand{\ismonotonicnm}{\mathsf{IsMonotonic}}
+\newcommand{\posof}[1]{\mathsf{pos}\left(#1\right)}
+
+\newcommand{\ismonotonicnm}{\hyperref[defn:mono]{\mathsf{isMonotonic}}}
 \newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
+\DeclareMathOperator{\mononm}{\hyperref[defn:mono-map]{\rightarrow_m}}
+\newcommand{\mono}[2]{#1 \mononm{} #2}
 
-\newcommand{\monotonicmapnm}{\rightarrow_m}
-\newcommand{\monotonicmap}[2]{#1 \rightarrow_m #2}
+\newcommand{\isframehomonm}{\hyperref[defn:frame-homo]{\mathsf{isFrameHomo}}}
+\newcommand{\isframehomo}[1]{\isframehomonm{}\left(#1\right)}
+
+\DeclareMathOperator{\framehomonm}{\hyperref[defn:frame-homo]{\rightarrow_f}}
+\newcommand{\framehomo}[2]{#1 \framehomonm{} #2}
+
+\newcommand{\hasmono}[1]{\hyperref[defn:mono]{\mathsf{hasMono}}\left(#1\right)}
+\newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
+
+\newcommand{\vermono}{monotonicity}
+\newcommand{\versim}{simulation}
+\newcommand{\vernucleus}{\hyperref[defn:nucleus]{nucleus}}
+\newcommand{\verframe}{\hyperref[defn:frame]{frame}}
+\newcommand{\verposet}{\hyperref[defn:poset]{poset}}
+\newcommand{\verintrsys}{\hyperref[defn:intr-sys]{interaction system}}
+\newcommand{\veragda}{\textsc{Agda}}
+
+\newcommand{\modname}[1]{{\color{AgdaModule} \texttt{#1}}}
+\newcommand{\fnname}[1]{{\color{AgdaFunction} \texttt{#1}}}
+
+\newcommand{\ruledir}{{\color{darkred} \mathsf{dir}}}
+\newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
+\newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
+
+\newcommand{\fix}[2]{\hyperref[thm:fixed-point-frame]{\mathsf{fix}}\left(#1, #2\right)}
+
+\newcommand{\isflat}[1]{\hyperref[defn:flat]{\mathsf{isFlat}}\left(#1\right)}
 
 \newcommand{\framestrnm}{\mathsf{FrameStr}}
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
-\newcommand{\frameax}[1]{\mathsf{FrameAx}\left(#1\right)}
+\newcommand{\frameax}[1]{\hyperref[defn:frame]{\mathsf{FrameAx}}\left(#1\right)}
+\newcommand{\framenm}{\hyperref[defn:frame]{\mathsf{Frame}}}
+\newcommand{\framety}[3]{\framenm{}_{#1, #2, #3}}
 
-\newcommand{\treestrnm}{\mathsf{TreeStr}}
+\newcommand{\treestrnm}{\hyperref[defn:intr-sys]{\mathsf{IntrStr}}}
 \newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
+\newcommand{\intrsys}{\hyperref[defn:intr-sys]{\mathsf{IntrSys}}}
 
 \newcommand{\stumpnm}{\mathsf{Stump}}
 \newcommand{\stump}[1]{\stumpnm\left(#1\right)}
@@ -73,22 +161,34 @@
 \newcommand{\disciplinestrnm}{\mathsf{DisciplineStr}}
 \newcommand{\disciplinestr}[1]{\disciplinestrnm{}\left(#1\right)}
 
-\newcommand{\rawframestrnm}{\mathsf{RawFrameStr}}
+\newcommand{\rawframestrnm}{\hyperref[defn:frame]{\mathsf{RawFrameStr}}}
 \newcommand{\rawframestr}[3]{\rawframestrnm{}_{#1, #2}\left(#3\right)}
 
-\newcommand{\isnuclearnm}{\mathsf{IsNuclear}}
+\newcommand{\isnuclearnm}{\hyperref[defn:nucleus]{\mathsf{isNuclear}}}
 \newcommand{\isnuclear}[1]{\isnuclearnm{}\left(#1\right)}
+\newcommand{\nucleus}{\hyperref[defn:nucleus]{\mathsf{Nucleus}}}
 
 \newcommand{\meet}[2]{#1 \wedge #2}
 \newcommand{\joinnm}[3]{\bigvee}
 \newcommand{\join}[3]{\joinnm{}_{#1~:~#2} #3}
 
-\newcommand{\covernm}{\LHD}
+\newcommand{\RHD}{\scalebox{1.2}{{\tt ▶}}}
+\DeclareMathOperator{\covernm}{\scalebox{1.2}{{\tt ◀}}}
 \newcommand{\covers}[2]{#1 \covernm{} #2}
 
+\newcommand{\setof}[1]{\left\{ #1 \right\}}
+\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ a \in #2 }}
+
+\newcommand{\representsnm}{\hyperref[defn:rep]{\mathsf{represents}}}
+\newcommand{\represents}[3]{\representsnm{}\left(#1, #2, #3\right)}
+
 \newcommand{\bF}{\mathbf{F}}
+\newcommand{\bG}{\mathbf{G}}
+\newcommand{\McF}{\mathcal{F}}
+\newcommand{\MfU}{\mathfrak{U}}
 
 \newcommand{\is}{:\equiv}
+\newcommand{\idnm}{~=~}
 
 %% Names.
 \newcommand{\UF}{Univalent Foundations}
@@ -96,11 +196,11 @@
 %% \newcommand{\paragraphsummary}[1]{{\color{orange} \textsc{#1}}}
 \newcommand{\paragraphsummary}[1]{}
 \newcommand{\todo}[1]{
-  {\color{red} \texttt{TODO: #1}}
+  {\color{red} \textsf{TODO: #1}}
 }
 
-\setmainfont{XITS}
-\setmathfont{XITS Math}
+%% \setmainfont{XITS}
+%% \setmathfont{XITS Math}
 \setmonofont[Scale=0.85]{PragmataPro Mono Liga}
 
 \begin{document}
@@ -125,7 +225,9 @@
 
 \input{formal-topology}
 
-\input{domain-theory}
+%% \input{examples}
+
+\input{conclusion}
 
 \makebackmatter{}
 

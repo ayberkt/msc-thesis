@@ -4,5 +4,9 @@ all: main.pdf
 references.bib:
 	wget http://127.0.0.1:23119/better-bibtex/collection?/1/Thesis//Core.bibtex -O $@
 
-main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex
-	tectonic $<
+main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda.sty
+	tectonic main.tex
+
+.PHONY: clean
+clean:
+	rm -f main.pdf

@@ -10,7 +10,7 @@ open import Data.List                 using (List; _∷_; []; [_]) renaming (_++
 open import Cubical.Foundations.Logic using ()                   renaming (⊥ to bot)
 open import Data.Sum                  using (_⊎_; inj₁; inj₂)
 open import Powerset                  hiding (U)
-open import HITCoverage
+open import Cover
 open import Truncation
 open import Poset
 open import FormalTopology
@@ -43,7 +43,7 @@ As `_≤_` is a partial order, we package it up as a poset.
 
 ```
 ℂ-pos : Poset zero zero
-ℂ-pos = ℂ , ((_≤_ , ℂ-set) , (≤-refl , ≤-trans , ≤-antisym))
+ℂ-pos = ℂ , _≤_ , ℂ-set , ≤-refl , ≤-trans , ≤-antisym
   where
     ≤-refl : (xs : ℂ) → xs ≤ xs is-true
     ≤-refl xs = [] , refl
@@ -134,10 +134,9 @@ cantor = (ℂ-pos , IS , ℂ-mono) , ℂ-sim
 from which we get a covering relation
 
 ```
-open Test ℂ (λ xs ys → xs ≤ ys is-true) ℂ-exp ℂ-out (λ {xs} → ℂ-rev {xs}) ℂ-mono ℂ-sim
-  renaming (_<|_ to _◀_) hiding (IsDownwardClosed)
+open Test cantor renaming (_<|_ to _◀_)
 
-_ : ℂ → (ℂ → Type zero) → Type zero
+_ : ℂ → (ℂ → hProp zero) → Type zero
 _ = _◀_
 ```
 
@@ -174,9 +173,9 @@ The statement of compactness then is as follows.
 
 ```
 compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : IsDownwardClosed ℂ-pos U is-true)
-        → xs ◀ (_is-true ∘ U)
+        → xs ◀ U
         → ∥ Σ[ yss ∈ List ℂ ]
-              (xs ◀ (λ - → - ↓ yss is-true) × ((λ - → - ↓ yss) ⊆ U is-true)) ∥
+              (xs ◀ (λ - → - ↓ yss) × ((λ - → - ↓ yss) ⊆ U is-true)) ∥
 ```
 
 We will now prove this.
@@ -184,9 +183,11 @@ We will now prove this.
 ### Two little lemmas
 
 ```
-U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ)
-       → U ⊆ V is-true → xs ◀ (_is-true ∘ U) → xs ◀ (_is-true ∘ V)
-U⊆V⇒◀U⊆◀V xs U V U⊆V xs◀U = lem4 xs _ _ xs◀U λ ys ys∈U → dir (U⊆V ys ys∈U)
+U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → U ⊆ V is-true → xs ◀ U → xs ◀ V
+U⊆V⇒◀U⊆◀V xs U V U⊆V = lem4 U V NTS xs
+  where
+    NTS : (u : ℂ) → u ∈ U is-true → u ◀ V
+    NTS u u∈U = dir (U⊆V u u∈U)
 
 ↓-++-left : (xss yss : List ℂ) → (λ - → - ↓ xss) ⊆ (λ - → - ↓ (xss ^ yss)) is-true
 ↓-++-left []         yss _ ()
@@ -232,7 +233,7 @@ The proof is by induction on the proof of `xs ◀ U`.
 ```
 compact xs U U-dc (dir xs∈U) = ∣ [ xs ] , NTS₀ , NTS₁ ∣
   where
-    NTS₀ : xs ◀ (λ - → - ↓ [ xs ] is-true)
+    NTS₀ : xs ◀ (λ - → - ↓ [ xs ])
     NTS₀ = dir ∣ inj₁ (⊑[ ℂ-pos ]-refl xs) ∣
 
     NTS₁ : (λ - → - ↓ [ xs ]) ⊆ U is-true
@@ -244,20 +245,20 @@ compact xs U U-dc (dir xs∈U) = ∣ [ xs ] , NTS₀ , NTS₁ ∣
 compact xs U U-dc (branch b f) =
   let
     IH₀ : ∥ Σ[ yss₀ ∈ List ℂ ]
-              ((xs ⌢ true) ◀ (λ - → - ↓ yss₀ is-true)) × (down yss₀ ⊆ U) is-true ∥
+              ((xs ⌢ true) ◀ (λ - → - ↓ yss₀)) × (down yss₀ ⊆ U) is-true ∥
     IH₀ = compact (xs ⌢ true) U U-dc (f true)
     IH₁ : ∥ Σ[ yss ∈ List ℂ ]
-              ((xs ⌢ false) ◀ (λ - → - ↓ yss is-true) × (down yss ⊆ U) is-true) ∥
+              ((xs ⌢ false) ◀ (λ - → - ↓ yss) × (down yss ⊆ U) is-true) ∥
     IH₁ = compact (xs ⌢ false) U U-dc (f false)
   in
     ∥∥-rec (∥∥-prop _) (λ φ → ∥∥-rec (∥∥-prop _) (λ ψ → ∣ NTS φ ψ ∣) IH₁) IH₀
   where
-    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀ is-true) × down yss₀ ⊆ U is-true
-        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁ is-true) × down yss₁ ⊆ U is-true
-        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss is-true) × down yss ⊆ U is-true
+    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀) × down yss₀ ⊆ U is-true
+        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁) × down yss₁ ⊆ U is-true
+        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss) × down yss ⊆ U is-true
     NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch b g , NTS′
       where
-        g : (c : ℂ-out b) → (xs ⌢ c) ◀ (λ - → down (yss ^ zss) - is-true)
+        g : (c : ℂ-out b) → (xs ⌢ c) ◀ (λ - → down (yss ^ zss) -)
         g false = U⊆V⇒◀U⊆◀V _ (down zss) (down (yss ^ zss)) (↓-++-right yss zss) ψ
         g true  = U⊆V⇒◀U⊆◀V _ (down yss) (down (yss ^ zss)) (↓-++-left  yss zss) φ
 

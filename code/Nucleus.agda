@@ -8,31 +8,32 @@ open import Basis
 open import Family
 open import Poset
 open import Frame
-import AlgebraicProperties
 
 -- A predicate expressing whether a function is a nucleus.
 IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Type (ℓ₀ ⊔ ℓ₁)
 IsNuclear L j = N₀ × N₁ × N₂
   where
-    N₀ = (a b : ∣ L ∣F) → j (a ⊓[ L ] b) ≡ (j a) ⊓[ L ] (j b)
-    N₁ = (a   : ∣ L ∣F) → a ⊑[ pos L ] (j a) is-true
-    N₂ = (a   : ∣ L ∣F) → j (j a) ⊑[ pos L ] j a is-true
+    N₀ = (x y : ∣ L ∣F) → j (x ⊓[ L ] y) ≡ (j x) ⊓[ L ] (j y)
+    N₁ = (x   : ∣ L ∣F) → x ⊑[ pos L ] (j x) is-true
+    N₂ = (x   : ∣ L ∣F) → j (j x) ⊑[ pos L ] j x is-true
 
 -- The type of nuclei.
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
+-- Every nucleus is idempotent.
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
      → (N : Nucleus L)
      → let j = π₀ N in (x : ∣ L ∣F) → j (j x) ≡ j x
-idem L (j , n₀ , n₁ , n₂) x = ⊑[ pos L ]-antisym (j (j x)) (j x) (n₂ x) (n₁ (j x))
+idem L (j , N₀ , N₁ , N₂) x = ⊑[ pos L ]-antisym _ _ (N₂ x) (N₁ (j x))
 
+-- Every nucleus is monotonic.
 mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L)
      → let j = π₀ N
        in (x y : ∣ L ∣F) → x ⊑[ pos L ] y is-true → (j x) ⊑[ pos L ] (j y) is-true
-mono L (j , n₀ , n₁ , n₂) x y x⊑y =
+mono L (j , N₀ , N₁ , N₂) x y x⊑y =
   j x             ⊑⟨ ≡⇒⊑ (pos L) (cong j x≡x⊓y) ⟩
-  j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)       ⟩
+  j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)       ⟩
   j x ⊓[ L ] j y  ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y)  ⟩
   j y         ■
   where
@@ -41,7 +42,7 @@ mono L (j , n₀ , n₁ , n₂) x y x⊑y =
     x⊑x⊓y : x ⊑[ pos L ] (x ⊓[ L ] y) is-true
     x⊑x⊓y = ⊓[ L ]-greatest x y x (⊑[ pos L ]-refl x) x⊑y
 
-    x≡x⊓y : x ≡ (x ⊓[ L ] y)
+    x≡x⊓y : x ≡ x ⊓[ L ] y
     x≡x⊓y = ⊑[ pos L ]-antisym x (x ⊓[ L ] y) x⊑x⊓y (⊓[ L ]-lower₀ x y)
 
 -- The set of fixed points for nucleus `j` is equivalent hence equal to its image.
@@ -76,7 +77,7 @@ nuclear-image L j N@(n₀ , n₁ , n₂) = isoToPath (iso f g sec-f-g ret-f-g)
 -- The set of fixed points for a nucleus `j` forms a poset.
 nuclear-fixed-point-poset : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Poset ℓ₀ ℓ₁
 nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) =
-  𝔽 , (_≤_ , 𝔽-set) , ≤-refl , ≤-trans , ≤-antisym
+  𝔽 , _≤_ , 𝔽-set , ≤-refl , ≤-trans , ≤-antisym
   where
     P = pos L
     A-set = carrier-is-set (pos L)
@@ -90,15 +91,13 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
     _≤_ : 𝔽 → 𝔽 → hProp ℓ₁
     (a , _) ≤ (b , _) = a ⊑[ P ] b is-true , is-true-prop (a ⊑[ P ] b)
 
-    open AlgebraicProperties 𝔽-set _≤_
-
-    ≤-refl : IsReflexive is-true
+    ≤-refl : isReflexive _≤_ is-true
     ≤-refl (x , _) = ⊑[ P ]-refl x
 
-    ≤-trans : IsTransitive is-true
+    ≤-trans : isTransitive _≤_ is-true
     ≤-trans (x , _) (y , _) (z , _) x≤y y≤x = ⊑[ P ]-trans x y z x≤y y≤x
 
-    ≤-antisym : IsAntisym is-true
+    ≤-antisym : isAntisym 𝔽-set _≤_ is-true
     ≤-antisym (x , _) (y , _) x≤y y≤x =
       ΣProp≡ (λ z → A-set (j z) z) (⊑[ P ]-antisym x y x≤y y≤x)
 
@@ -106,15 +105,15 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
 -- The join of this frame is define as ⊔ᵢ ℱᵢ := j (⊔′ᵢ ℱᵢ) where ⊔′ denotes the join of L.
 nuclear-fixed-point-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
 nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
-    ∣ nuclear-fixed-point-poset L N ∣ₚ
-  , (strₚ (nuclear-fixed-point-poset L N)
-  , (𝟏[ L ] , 𝟏-fixed)
-  , _⊓_ , ⊔_)
-  , top , ⊓-lower₀ , ⊓-lower₁ , ⊓-greatest , ⊔-upper , ⊔-least , distr
+                          ∣ nuclear-fixed-point-poset L N ∣ₚ
+  , (strₚ (nuclear-fixed-point-poset L N) , (𝟏[ L ] , 𝟏-fixed) , _⊓_ , ⊔_)
+  , top
+  , ( (λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y)
+    , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
+  , ((⊔-upper , ⊔-least) , distr)
   where
     𝒜 = π₀ (nuclear-fixed-point-poset L N)
 
-    P          = pos L
     _⊑_ : ∣ pos L ∣ₚ → ∣ pos L ∣ₚ → hProp ℓ₁
     _⊑_        = λ x y → x ⊑[ pos L ] y
 
@@ -128,20 +127,20 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     A-set      = carrier-is-set (nuclear-fixed-point-poset L N)
 
     𝟏-fixed : j 𝟏[ L ] ≡ 𝟏[ L ]
-    𝟏-fixed = ⊑[ pos L ]-antisym (j 𝟏[ L ]) 𝟏[ L ] (𝟏[ L ]-top (j 𝟏[ L ])) (n₁ 𝟏[ L ])
+    𝟏-fixed = ⊑[ pos L ]-antisym _ _ (𝟏[ L ]-top (j 𝟏[ L ])) (n₁ 𝟏[ L ])
 
     open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
 
     _⊓_ : 𝒜 → 𝒜 → 𝒜
     _⊓_ (x , x-f) (y , y-f) =
-      x ⊓[ L ] y , ⊑[ P ]-antisym (j (x ⊓[ L ] y)) (x ⊓[ L ] y) φ (n₁ (x ⊓[ L ] y))
+      x ⊓[ L ] y , ⊑[ pos L ]-antisym _ _ φ (n₁ (x ⊓[ L ] y))
       where
         ⊑jx : j (x ⊓[ L ] y) ⊑ j x is-true
-        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y)            ⟩
+        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)      ⟩
               j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₀ (j x) (j y) ⟩
               j x ■
         ⊑jy : j (x ⊓[ L ] y) ⊑ j y is-true
-        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ P (n₀ x y)            ⟩
+        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (n₀ x y)      ⟩
               j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y) ⟩
               j y ■
 
@@ -158,7 +157,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
       where
         𝒢 = I , π₀ ∘ F
         j⊔L-fixed : j (j (⋃[ L ] 𝒢)) ≡ j (⋃[ L ] 𝒢)
-        j⊔L-fixed = ⊑[ P ]-antisym _ _ (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
+        j⊔L-fixed = ⊑[ pos L ]-antisym _ _ (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
 
     top : (o : 𝒜) → (o ⊑N (𝟏[ L ] , 𝟏-fixed)) is-true
     top = 𝟏[ L ]-top ∘ π₀
@@ -172,51 +171,44 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     ⊓-greatest : (o p q : 𝒜) → q ⊑N o is-true → q ⊑N p is-true → q ⊑N (o ⊓ p) is-true
     ⊓-greatest (o , _) (p , _) (q , _) q⊑o q⊑p = ⊓[ L ]-greatest o p q q⊑o q⊑p
 
-    ⊔-least : (ℱ : Sub ℓ₂ 𝒜) (p : 𝒜)
-            → ((o : 𝒜) → o ε ℱ → o ⊑N p is-true) → ((⊔ ℱ) ⊑N p) is-true
-    ⊔-least ℱ p@(p′ , eq) ℱ⊑p = φ
+    ⊔-least : (ℱ : Sub ℓ₂ 𝒜) (u : 𝒜) → ∀[ x ε ℱ ] (x ⊑N u) is-true → (⊔ ℱ) ⊑N u is-true
+    ⊔-least ℱ (u , fix) ℱ⊑u = subst (λ - → j (⋃[ L ] 𝒢) ⊑ - is-true) fix NTS₀
       where
-        𝒢 : Sub ℓ₂ ∣ P ∣ₚ
-        𝒢 = index ℱ , λ i → π₀ (ℱ € i)
+        𝒢 : Sub ℓ₂ ∣ pos L ∣ₚ
+        𝒢 = π₀ ⟨$⟩ ℱ
 
-        ϑ : (o : ∣ P ∣ₚ) → o ε 𝒢 → o ⊑ p′ is-true
-        ϑ o o∈𝒢@(i , eq′) = o     ⊑⟨ ≡⇒⊑ P (sym eq′)                     ⟩
-                            𝒢 € i ⊑⟨ ℱ⊑p (𝒢 € i , π₁ (ℱ € i)) (i , refl) ⟩
-                            p′    ■
+        𝒢⊑u : ∀[ o ε 𝒢 ] (o ⊑ u) is-true
+        𝒢⊑u o (i , eq′) = o     ⊑⟨ ≡⇒⊑ (pos L) (sym eq′)               ⟩
+                          𝒢 $ i ⊑⟨ ℱ⊑u (𝒢 $ i , π₁ (ℱ $ i)) (i , refl) ⟩
+                          u     ■
 
-        ψ : j (⋃[ L ] 𝒢) ⊑ (j p′) is-true
-        ψ = mono L N (⋃[ L ] 𝒢) p′ (⋃[ L ]-least 𝒢 p′ ϑ)
+        NTS₀ : j (⋃[ L ] 𝒢) ⊑ j u is-true
+        NTS₀ = mono L N (⋃[ L ] 𝒢) u (⋃[ L ]-least 𝒢 u 𝒢⊑u)
 
-        φ : j (⋃[ L ] 𝒢) ⊑ p′ is-true
-        φ = subst (λ k → (j (⋃[ L ] 𝒢) ⊑ k) is-true) eq ψ
-
-    ⊔-upper : (ℱ : Sub ℓ₂ 𝒜) (o : 𝒜) → o ε ℱ → (o ⊑N (⊔ ℱ)) is-true
-    ⊔-upper ℱ (o , _) o∈ℱ@(i , eq) =
-      o               ⊑⟨ φ ⟩
-      ⋃[ L ] (π₀ ⊚ ℱ) ⊑⟨ n₁ (⋃[ L ] (π₀ ⊚ ℱ)) ⟩
-      j (⋃[ L ] (π₀ ⊚ ℱ)) ■
+    ⊔-upper : (ℱ : Sub ℓ₂ 𝒜) (x : 𝒜) → x ε ℱ → (x ⊑N (⊔ ℱ)) is-true
+    ⊔-upper ℱ (x , _) o∈ℱ@(i , eq) =
+      x                   ⊑⟨ NTS                  ⟩
+      ⋃[ L ] (π₀ ⟨$⟩ ℱ)     ⊑⟨ n₁ (⋃[ L ] (π₀ ⟨$⟩ ℱ)) ⟩
+      j (⋃[ L ] (π₀ ⟨$⟩ ℱ)) ■
       where
-        φ : o ⊑ (⋃[ L ] (π₀ ⊚ ℱ)) is-true
-        φ = ⋃[ L ]-upper (π₀ ⊚ ℱ) o (i , λ j → π₀ (eq j))
+        NTS : x ⊑ (⋃[ L ] (π₀ ⟨$⟩ ℱ)) is-true
+        NTS = ⋃[ L ]-upper (π₀ ⟨$⟩ ℱ) x (i , λ j → π₀ (eq j))
 
-    distr : (o : 𝒜) (ℱ : Sub ℓ₂ 𝒜) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ € i)))
-    distr o@(o′ , jo′=o′) ℱ@(I , F) =
+    distr : (o : 𝒜) (ℱ : Sub ℓ₂ 𝒜) → o ⊓ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ⊓ (ℱ $ i)))
+    distr 𝒶@(o , jo=o) ℱ@(I , F) =
       sigmaPath→pathSigma _ _ (φ , carrier-is-set (pos L) _ _ _ _)
       where
-        𝒢 : Sub ℓ₂ ∣ P ∣ₚ
-        𝒢 = π₀ ⊚ ℱ
+        𝒢 : Sub ℓ₂ ∣ pos L ∣ₚ
+        𝒢 = π₀ ⟨$⟩ ℱ
 
-        o′=jo′ : o′ ≡ j o′
-        o′=jo′ = sym jo′=o′
-
-        φ :  π₀ (o ⊓ (⊔ ℱ)) ≡ π₀ (⊔ (I , (λ i → o ⊓ (ℱ € i))))
+        φ :  π₀ (𝒶 ⊓ (⊔ ℱ)) ≡ π₀ (⊔ (I , (λ i → 𝒶 ⊓ (ℱ $ i))))
         φ =
-          π₀ (o ⊓ (⊔ ℱ))                   ≡⟨ refl                                  ⟩
-          o′ ⊓[ L ] j (⋃L 𝒢)               ≡⟨ cong (λ - → - ⊓[ L ] j (⋃L 𝒢)) o′=jo′ ⟩
-          j o′ ⊓[ L ] (j (⋃L 𝒢))           ≡⟨ sym (n₀ o′ (⋃[ L ] 𝒢))                ⟩
-          j (o′ ⊓[ L ] (⋃L 𝒢))             ≡⟨ cong j (dist L o′ 𝒢)                  ⟩
-          j (⋃L ((λ - → o′ ⊓[ L ] -) ⊚ 𝒢)) ≡⟨ refl                                  ⟩
-          π₀ (⊔ (I , λ i → o ⊓ (ℱ € i)))   ∎
+          π₀ (𝒶 ⊓ (⊔ ℱ))                    ≡⟨ refl                                      ⟩
+          o ⊓[ L ] j (⋃L 𝒢)                 ≡⟨ cong (λ - → - ⊓[ L ] j (⋃L 𝒢)) (sym jo=o) ⟩
+          j o ⊓[ L ] j (⋃L 𝒢)               ≡⟨ sym (n₀ o (⋃[ L ] 𝒢))                     ⟩
+          j (o ⊓[ L ] (⋃L 𝒢))               ≡⟨ cong j (dist L o 𝒢)                       ⟩
+          j (⋃L ((λ - → o ⊓[ L ] -) ⟨$⟩ 𝒢)) ≡⟨ refl                                      ⟩
+          π₀ (⊔ (I , λ i → 𝒶 ⊓ (ℱ $ i)))    ∎
 
 -- --}
 -- --}
