@@ -15,7 +15,7 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             )
 open import Cubical.Data.Prod               public using    (_,_; proj₁; proj₂)
                                                    renaming (_×_ to _××_)
-open import Cubical.Data.Sigma.Properties   public using    ( Σ≡)
+open import Cubical.Data.Sigma.Properties   public using    ( Σ≡; ΣProp≡ )
 open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; subst
                                                             ; cong; refl; sym
@@ -28,29 +28,12 @@ open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; isProp→isSet to prop⇒set )
 open import Cubical.Foundations.Transport   public using    ( transportEquiv )
 open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; secEq; retEq; fiber)
-open import Cubical.Foundations.SIP         public using    ( SNS; SNS'; join-SNS'
-                                                            ; SNS''
-                                                            ; SNS'''
-                                                            ; SNS'≡SNS''
-                                                            ; SNS→SNS'
-                                                            ; SNS''→SNS'''
-                                                            ; add-to-structure
-                                                            ; add-to-iso
-                                                            ; add-axioms-SNS'
-                                                            ; pointed-structure
-                                                            ; Pointed-Type
-                                                            ; pointed-iso
-                                                            ; pointed-is-SNS'
-                                                            ; sip
-                                                            ; SIP
-                                                            ; _≃[_]_)
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
                                                             ; isPropIsSet
                                                             ; isOfHLevelΣ
-                                                            ; ΣProp≡
-                                                            ; hLevelSuc )
+                                                            ; isOfHLevelSuc )
 open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
                                                             ; pathSigma→sigmaPath )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section; retract)
