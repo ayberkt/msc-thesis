@@ -52,7 +52,7 @@
 \newcommand{\suc}[1]{\mathsf{suc}\left(#1\right)}
 
 \newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
-\newcommand{\isequiv}[1]{\mathsf{isEquiv}\left(#1\right)}
+\newcommand{\isequiv}[1]{\hyperref[defn:equiv]{\mathsf{isEquiv}}\left(#1\right)}
 \newcommand{\idtoeqvnm}{\mathsf{idToEquiv}}
 \newcommand{\idtoeqv}[1]{\idtoeqvnm{}\left(#1\right)}
 \newcommand{\isdec}[1]{\mathsf{isDecidable}\left(#1\right)}
@@ -63,10 +63,12 @@
 \newcommand{\unitty}{\mathsf{Unit}}
 
 %% Homotopy levels.
-\newcommand{\iscontr}[1]{\mathsf{isContr}\left(#1\right)}
-\newcommand{\isprop}[1]{\mathsf{isProp}\left(#1\right)}
+\newcommand{\iscontr}[1]{\hyperref[defn:contr]{\mathsf{isContr}}\left(#1\right)}
+\newcommand{\isprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
 \newcommand{\isset}[1]{\mathsf{isSet}\left(#1\right)}
-\newcommand{\isofhlevel}[2]{\mathsf{isOfHLevel}\left(#1, #2\right)}
+\newcommand{\isofhlevel}[2]{%
+  \hyperref[defn:hlevel]{\mathsf{isOfHLevel}}\left(#1, #2\right)
+}
 
 \newcommand{\intersectnm}{\hyperref[defn:intersection]{\cap}}
 \newcommand{\intersect}[2]{#1 \intersectnm{} #2}
@@ -74,7 +76,7 @@
 \newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
 \newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
 \newcommand{\univ}{\mathcal{U}}
-\newcommand{\isaprop}[1]{\mathsf{IsProp}\left(#1\right)}
+\newcommand{\isaprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
 \newcommand{\hprop}{\hyperref[defn:omega]{Ω}}
 \newcommand{\isaset}[1]{\mathsf{IsSet}\left(#1\right)}
 \newcommand{\abs}[1]{\left| #1 \right|}

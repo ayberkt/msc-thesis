@@ -1,17 +1,20 @@
 \chapter{Foundations}\label{chap:foundations}
 
-We present in this chapter basics of \UF{}, that are central to the foundational
-framework in which we will be carrying out our development. We assume that the
-author is familiar with standard (intensional) type theory and refrain from
-building the formal calculus from scratch. Instead, we summarise the additions
-that must be made to type theory to make it a suitable context for the pursuit
-of \emph{univalent} mathematics.
+We present in this chapter basics of \UF{}. We assume that the author is
+familiar with standard (intensional) type theory and refrain from building the
+formal calculus from scratch. Instead, we summarise the additions that must be
+made to type theory to make it a suitable context for the pursuit of
+\emph{univalent} mathematics.
 
 \section{Notation}
 
+\todo{%
+  Explain that we will be using the same notations from the HoTT book.
+}
+
 \section{Equivalence of types and univalence}
 
-\begin{defn}[Contractible]
+\begin{defn}[Contractible]\label{defn:contr}
   A type $A$ is called contractible if it has exactly one inhabitant:
   \begin{equation*}
     \iscontr{A} \quad\is\quad \sigmaty{c}{A}{\pity{y}{A}{c =_A y}}.
@@ -19,16 +22,16 @@ of \emph{univalent} mathematics.
 \end{defn}
 
 \begin{defn}[Fiber]\label{defn:fiber}
-  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function
-  $f : A \rightarrow B$, and some $\oftyI{y}{B}$, the fiber of $f$ is the type of all inhabitants
-  of $A$ that are mapped by $f$ to $y$:
+  Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function $f : A
+  \rightarrow B$, and some $\oftyI{y}{B}$, the fiber of $f$ over $y$ is the type of all
+  inhabitants of $A$ that are mapped by $f$ to $y$:
   \begin{equation*}
     \fiber{f}{y} \quad\is\quad \sigmaty{x}{A}{f(x) =_B y}.
   \end{equation*}
 \end{defn}
 
 The following definition of type equivalence was first formulated by Voevodsky.
-\begin{defn}[Type equivalence]\label{defn:equiv}
+\begin{defn}[Equivalence]\label{defn:equiv}
   Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, a function $f : A \rightarrow B$ is an
   \emph{equivalence} if $\fiber{f}{y}$ is a contractible type for every $\oftyI{y}{B}$:
   \begin{equation*}
@@ -37,15 +40,15 @@ The following definition of type equivalence was first formulated by Voevodsky.
 \end{defn}
 
 We will denote by $A \simeq B$ the type of equivalences between types $A$ and $B$.
-\begin{defn}
+\begin{defn}[Equivalence of types]
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$,
   \begin{equation*}
     A \simeq B \quad\is\quad \sigmaty{f}{A \rightarrow B}{\isequiv{f}}
   \end{equation*}
 \end{defn}
 
-Given two types $\oftyI{A~B}{\univ{}_n}$ and a proof that they are equal
-$A = B$, we can clearly prove that they are equivalent.
+Given two types $\oftyI{A~B}{\univ{}_n}$ and a proof $\oftyI{p}{A = B}$ that
+they are equal, we can clearly prove that they are equivalent.
 \begin{defn}
   \begin{equation*}
     \oftyI{\mathsf{idToEquiv}}{A = B \rightarrow A \simeq B}
@@ -67,7 +70,8 @@ The consequences of adding this simple axiom into type theory are quite remarkab
 Perhaps most importantly, it allows us to \emph{prove} function extensionality.
 \begin{defn}[Extensional equality]\label{defn:exteq}
   Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, and functions
-  $\oftyII{f}{g}{A \rightarrow B}$, $f$ and $g$ are said to be extensionally equal if:
+  $\oftyII{f}{g}{A \rightarrow B}$, $f$ and $g$ are said to be extensionally equal if
+  the following type is inhabited:
   \begin{equation*}
     f \sim g \quad\is\quad \pity{x}{A}{f(x) = g(x)}.
   \end{equation*}
@@ -89,8 +93,9 @@ called a homotopy $n$-type (or said to be of homotopy level $n$).
 
 We then recursively define a predicate expressing that a given type has homotopy level
 $n$. The idea is that we increase the dimension by one at each step.
-\begin{defn}[Homotopy level]
+\begin{defn}[Homotopy level]\label{defn:hlevel}
   We will say that the homotopy level of a type $A$ is $\oftyI{n}{\mathbb{N}}$ if
+  $\isofhlevel{A}{n}$ as inhabited:
   \begin{align*}
     \isofhlevel{A}{\zero{}} &\quad\is\quad \iscontr{A}\\
     \isofhlevel{A}{\suc{n}} &\quad\is\quad \pity{x~y}{A}{\isofhlevel{x =_A y}{n}}.
@@ -104,8 +109,8 @@ propositions in the sense that their own proof structure is trivial: they are in
 at most one term.
 
 \begin{defn}[Proposition]\label{defn:prop'}
-  A type $A$ is a proposition (sometimes disambiguated as \emph{h-proposition}) if it has
-  a homotopy level of one:
+  A type $A$ is a proposition (sometimes disambiguated as an \emph{h-proposition}) if it
+  has a homotopy level of one:
   \begin{equation*}
     \isprop{A} \quad\is\quad \isofhlevel{A}{1}.
   \end{equation*}
@@ -114,19 +119,26 @@ at most one term.
 An equivalent way of expressing propositionality would be the following.
 \begin{defn}[Proposition (official)]\label{defn:hprop}
   \begin{equation*}
-    \isprop{A} \quad\is\quad \pity{x~y}{A}{x =_A y}
+    \isprop{A} \quad\is\quad \pity{x~y}{A}{x =_A y}.
   \end{equation*}
 \end{defn}
 
-The class of propositional types is collected in the following type $\Omega$.
+\begin{prop}
+  Definitions \ref{defn:prop'} and \ref{defn:hprop} are equivalent.
+\end{prop}
+\begin{proof}
+  \todo{prove.}
+\end{proof}
+
+We collect all propositional types in the type $\hprop{}$.
 \begin{defn}[$\Omega$]\label{defn:omega}
   $\Omega_n$ is the type of all types at universe $n$ that are propositional:
   \begin{equation*}
-    \Omega_n \quad\is\quad \sigmaty{A}{\univ{}_n}{\isprop{A}}.
+    \hprop{}_n \quad\is\quad \sigmaty{A}{\univ{}_n}{\isprop{A}}.
   \end{equation*}
 \end{defn}
 
-When asserting that a proposition $\oftyI{A}{\Omega_n}$ is inhabited, we have to project out
+When asserting that a proposition $\oftyI{A}{\hprop{}_n}$ is inhabited, we have to project out
 the first component to be completely precise. We will engage in the excusable notational
 abuse of denoting this projection by $A$ itself.
 
@@ -142,7 +154,7 @@ Now, let us state some simple facts about the class of propositional types.
 
 \begin{prop}\label{prop:pi-prop}
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
-  is a proposition whenever every $B(x)$ is a proposition.
+  is a proposition whenever $B(x)$ is a proposition for every $\oftyI{x}{A}$.
 \end{prop}
 \begin{proof}
   Let $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$ and assume that $B(x)$ is a
@@ -173,8 +185,9 @@ establish equivalence between propositional types.
 \end{prop}
 
 \begin{prop}\label{prop:sigma-prop}
-  Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an h-prop and
-  $B(a)$ is an h-prop for every $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-prop.
+  Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an
+  h-proposition and $B(a)$ is an h-proposition for every $\oftyI{a}{A}$, then
+  $\sigmaty{x}{A}{B}$ is an h-proposition.
 \end{prop}
 \begin{proof}
   \todo{Complete.}
@@ -193,13 +206,13 @@ a set are equal to each other in \emph{at most one way}.
   \end{equation*}
 \end{defn}
 
-Most of the structures presented in this thesis will be based on an underlying partially
-ordered \emph{set}. When formalising these in \UF{}, these will be required to be h-sets,
-since a poset whose carrier bears higher dimensional homotopy structure does not
-correspond to the usual notion of a poset. It would be more accurate to call such a
-structure an \emph{$\infty$-poset}.
+The structures presented in this thesis will be based on an underlying partially ordered
+\emph{set}. When formalising these in \UF{}, they will be required to be h-sets, since a
+poset whose carrier bears higher dimensional homotopy structure does not correspond to the
+usual notion of a poset; it would be more accurate to call such a structure an
+\emph{$\infty$-poset}.
 
-A highly useful sufficient condition of setness was given by Michael Hedberg in
+A highly useful sufficient condition for setness was given by Michael Hedberg in
 1998~\cite{hedberg}: every type with decidable equality is a set.
 \begin{defn}[Decidability]
   A type $A$ is decidable if it is either provable of refutable:
@@ -225,13 +238,20 @@ Hedberg's theorem can then be stated simply as follows.
 
 \begin{prop}\label{prop:sigma-set}
   Given some type $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an h-set
-  and $B(a)$ is an h-set for ever $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-set.
+  and $B(a)$ is an h-set for every $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-set.
 \end{prop}
+\begin{proof}
+  \todo{%
+    prove that $\sum$ types actually preserve all h-levels and remark that this is but
+    a corollary
+  }
+\end{proof}
 
 \begin{prop}\label{prop:prop-is-set}
   Every proposition is a set.
 \end{prop}
 \begin{proof}
+  \todo{prove using Hedberg's theorem.}
 \end{proof}
 
 \section{Powersets}\label{sec:pow}
@@ -254,6 +274,7 @@ write this as $x \in U \is U(x)$ for subsets.
   Given \emph{any} type $A$, $\pow{A}$ is an h-set.
 \end{prop}
 \begin{proof}
+  \todo{complete.}
 \end{proof}
 
 \begin{defn}\label{defn:inclusion}
@@ -269,8 +290,8 @@ write this as $x \in U \is U(x)$ for subsets.
   of $A$ is defined as the constant function $\lambda\_.~\unitty{}$.
 
   Notice that, by the definition of $\pownm{}$, the type has to live in the same universe
-  as $A$. It is for this reason that our definition of $\unitty{}$ takes as argument
-  the universe level we would like it to inhabit.
+  as $A$. It is for this reason that $\unitty{}$, as we have defined it, takes as argument
+  the universe level we would like it to inhabit and inhabits that universe.
 \end{defn}
 
 \begin{defn}\label{defn:intersection}
@@ -297,8 +318,8 @@ in which view a subset of a type $A$ as an $A$-valued function (on some domain).
     \sub{o}{A} \quad\is\quad \sigmaty{I}{\univ{}_o}{I \rightarrow A}.
   \end{equation*}
   Notice that this is parameterised by a level $o$, being the level of the index type.
-  Given a family $\oftyI{x}{\sub{o}{A}}$, we will denote the evaluation of it at
-  $\oftyI{i}{I}$ as $x_i$.
+  Given a family $\oftyI{U \equiv (I, f)}{\sub{o}{A}}$, we will denote the evaluation of it at
+  $\oftyI{i}{I}$ as $U_i$.
 \end{defn}
 
 \paragraph*{Notational clarification.} An inhabitant of $\sub{o}{A}$ has the form
@@ -314,9 +335,9 @@ use the more familiar notation of
 \end{equation}
 What is meant by such notational sugar is expected to be obvious to the reader.
 
-In the \veragda{} formalisation, we use similar notational conventions. For instance,
-the syntax we have exemplified in (\ref{eqn:join-syntax}), is implemented in \veragda{},
-in the \modname{JoinSyntax} submodule of the \modname{Frame} module.
+In the \veragda{} formalisation, we use similar notational conventions. For instance, the
+syntax we have exemplified in (\ref{eqn:join-syntax}) is implemented in the \veragda{},
+formalisation in the \modname{JoinSyntax} submodule of the \modname{Frame} module.
 \begin{code}%
 \>[0]\AgdaKeyword{module}\AgdaSpace{}%
 \AgdaModule{JoinSyntax}\AgdaSpace{}%
@@ -433,8 +454,8 @@ resulting type is called the $\mathsf{Circle}$
 \end{equation*}
 
 HITs turn out to be immensely useful and in fact we will explain later that they are used
-in a crucial way in this thesis: the main theorem we prove in
-Chapter~\ref{chap:formal-topo} could not have been proven without them.
+in a crucial way in this thesis: the main construction of Chapter~\ref{chap:formal-topo}
+would not have possible without them.
 
 \section{Truncation}
 
