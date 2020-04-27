@@ -342,14 +342,19 @@ downwards-closed subsets of a given poset. We will now show that this poset form
 \section{Nuclei and their fixed points}\label{sec:nuclei}
 
 To prepare for formal topology, we will now define a technical notion called a
-\emph{nucleus}. Nuclei are used to describe quotient frames of a frame, which one views as
-subspaces of the space corresponding to that frame. They are presented by Johnstone
-in~\cite[Sec.~II.2]{stone-spaces}.
+\emph{nucleus}. Nuclei describe quotient frames of a frame, which one views as subspaces
+of the space corresponding to that frame. They are presented by Johnstone
+in~\cite[Sec.~II.2]{stone-spaces}. In the general case of a topos, nuclei correspond to
+Lawvere-Tierney topologies~\cite{nlab-nucleus}.
 
 The reason we are interested in nuclei is that in Chapter~\ref{chap:formal-topo} we will
-be focusing on a particular nucleus on the frame of downward-closed subsets. It is this
-nucleus that will allow us to describe the topological structure of our frame by letting
-us specify laws that are expected to hold in the resulting frame.
+be focusing on a particular nucleus on the frame of downward-closed subsets: the covering
+relation. It is this nucleus that will allow us to describe a topology by letting us
+specify laws that are expected to hold in the resulting frame.
+
+The development presented in this section corresponds to the \modname{Nucleus} module
+in the \veragda{} formalisation.
+
 \begin{defn}[Nucleus]\label{defn:nucleus}
   Let $F : \mathsf{Frame}_{m, n, o}$ and $j : \abs{F} \rightarrow \abs{F}$ and endofunction on it.
   We say that $j$ is \emph{nuclear} if the following condition holds:
@@ -360,22 +365,21 @@ us specify laws that are expected to hold in the resulting frame.
       &\hspace{0.3em}\times\quad &&\pity{x~~}{\abs{F}}{x &&~\sqsubseteq~ &&j(x)}           \\
       &\hspace{0.3em}\times\quad &&\pity{x~~}{\abs{F}}{j(j(x)) &&~\sqsubseteq~ &&j(x)}.
   \end{alignat*}
-  The propositionality is, as usual, a consequence of Proposition~\ref{prop:sigma-prop},
-  Proposition~\ref{prop:pi-prop}, and the fact that the carrier set is a set (by the
-  definition of $\posetaxnm{}$ from Defn.~\ref{defn:poset}).
+  The propositionality follows by propositions~\ref{prop:sigma-prop} and
+  \ref{prop:pi-prop}, and the fact that the carrier set is a set (by the definition of
+  $\posetaxnm{}$ from Defn.~\ref{defn:poset}).
 
   The type of nuclei is then just the $\sum$ type collecting all nuclear endofunctions on a
   frame:
   \begin{equation*}
-    \mathsf{Nucleus} \quad\is\quad \sigmaty{j}{\abs{F} \rightarrow \abs{F}}{\isnuclear{j}}.
+    \nucleus{} \quad\is\quad \sigmaty{j}{\abs{F} \rightarrow \abs{F}}{\isnuclear{j}}.
   \end{equation*}
 \end{defn}
 
+A notational clarification before we proceed: in a context involving a nucleus, we will
+simply refer to these three nuclearity properties as $N_0$, $N_1$, and $N_2$.
 
-A notation clarification before we proceed: in a context involving a nucleus, we will
-simply refer to these three nuclearity properties as $N_0$, $N_1$ and $N_2$.
-
-Notice that everyy nucleus is monotonic.
+Notice that every nucleus is monotonic.
 \begin{prop}\label{prop:nucleus-mono}
   Every nucleus is monotonic.
 \end{prop}
@@ -386,18 +390,21 @@ Notice that everyy nucleus is monotonic.
   \meet{x}{y}$ as $\meet{x}{y}$ is greater than any other lower bound and $x$ is a lower
   bound as it is less than both itself and $y$.
   \begin{align*}
-    j(x) &\quad\sqsubseteq\quad j(\meet{x}{y})                 && [x = \meet{x}{y}]                      \\
-         &\quad\sqsubseteq\quad \meet{j(x)}{j(y)}              && [\text{nuclei preserve meets}]         \\
+    j(x) &\quad=\quad j(\meet{x}{y})                 && [x = \meet{x}{y}]                      \\
+         &\quad=\quad \meet{j(x)}{j(y)}              && [N_0]                                  \\
          &\quad\sqsubseteq\quad {j(y)}                         && [\text{$\meet{}{}$ is a lower bound}]  .
   \end{align*}
 \end{proof}
 
-We will be interested in the type of inhabitants of a frame that are \emph{fixed} points
-for a given nucleus on the frame, i.e., given a frame $F$ and a nucleus $j$ on it,
-the type $$\sigmaty{x}{F}{j(x) = x}.$$
+Given a nucleus $\oftyI{j}{\abs{F} \rightarrow \abs{F}}$ on a frame $F$, we will be interested in
+those inhabitants of $\abs{F}$ that are $j$-closed i.e., that are fixed points of $j$.
+Starting with a frame $F$, its subset consisting of $j$-closed elements (for some nucleus
+$j$) is itself a frame, being the quotient frame described by $j$.
 
+To prove this fact, let us first construct the underlying poset of this frame.
 \begin{prop}
-  The set of fixed points of a nucleus forms a poset.
+  Given a frame $F$ and a nucleus $\oftyI{j}{\abs{F} \rightarrow \abs{F}}$, the type
+  \[\sigmaty{x}{\abs{F}}{j(x) = x}\] of $j$-closed elements forms a poset.
 \end{prop}
 \begin{proof}[Proof sketch]
   The proof amounts to forgetting the information of being a fixed point. For
@@ -406,9 +413,11 @@ the type $$\sigmaty{x}{F}{j(x) = x}.$$
   Defn.~\ref{defn:poset}).
 \end{proof}
 
-Now, we are ready to prove the main theorem of this section: this poset of fixed points
-for a nucleus on a frame is itself a frame. The proof we will present has been adapted to
-the type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone-spaces}.
+Now, we are ready to prove the main theorem of this section: this poset of $j$-closed
+elements of a frame is itself a frame. The proof we present has been adapted to the
+type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone-spaces}. The
+corresponding \veragda{} proof can be found the \modname{Frame} module by the name
+\fnname{downward-subset-frame}.
 
 \begin{thm}\label{thm:fixed-point-frame}
   The set of fixed points for a nucleus $j$ on some frame $F$ forms a frame.
@@ -422,37 +431,37 @@ the type-theoretic setting from Johnstone's proof in \cite[II.2.2, pg.~49]{stone
   y) = j(x) \wedge j(y) \sqsubseteq j(y) = y$. This means that $j(x \wedge y)$ is an upper bound of $x$ and
   $y$ hence $j(x \wedge y) \sqsubseteq x \wedge y$.
 
-  We define the LUB on a family $\mathbf{G}$, making use of the LUB $\bigvee^F$ of $F$ but
-  applying $j$ on the result:
+  We define the join on a family $\{ x \}_{i \in I}$ using $\bigvee^F$ but applying $j$ on the
+  result:
   \begin{equation*}
-    \bigvee \mathbf{G} \quad\is\quad j \left( \bigvee^F \mathbf{G} \right).
+    \bigvee_i x_i \quad\is\quad j \left( \bigvee^F_i x_i \right).
   \end{equation*}
-  Notice that this is a LUB operator. Let $\bG{}$ be a family of fixed points for $j$ and
-  let $x~\epsilon~\bG{}$. $\bigvee^F \mathbf{G}$ is an upper bound of $\bG{}$ so $x \sqsubseteq \bigvee^F \mathbf{G}$.
-  Notice also that $\bigvee^F \mathbf{G} \sqsubseteq j \left( \bigvee^F \mathbf{G} \right)$ by ($N_1$). This
-  means that $\bigvee$ is an upper operator. Let $u$ be some other upper bound of $\bG{}$ such
-  that $j(u) = u$. We need to show that $j \left( \bigvee^F \mathbf{G} \right) \sqsubseteq u$. Since $u =
-  j(u)$ it suffices by the monotonicity of $j$ (Prop.~\ref{prop:nucleus-mono}) to show
-  $\bigvee^F \mathbf{G} \sqsubseteq u$. As $\bigvee^F \bG{}$ is a LUB, we are done since $u$ is an upper bound
-  of $\bG{}$
+  Notice that this gives a LUB. Let $\{ x_i ~|~ i \in I \}$ be a family of $j$-closed
+  elements and let $\oftyI{i}{I}$. We have
+  \begin{equation*}
+    x_i \sqsubseteq \bigvee^F_i x_i \sqsubseteq j\left( \bigvee^F_i x_i \right)
+  \end{equation*}
+  by $N_1$ meaning it is an upper bound. To see that it is the least such, let $u$ be some
+  other upper bound of $\{ x_i ~|~ i \in I \}$ such that $j(u) = u$. We need to show that $j
+  \left( \bigvee^F_k x_k \right) \sqsubseteq u$. Since $u = j(u)$ it suffices by the monotonicity of $j$
+  (Prop.~\ref{prop:nucleus-mono}) to show $\bigvee^F_i x_i \sqsubseteq u$. We are done since $u$ is an
+  upper bound of $\{ x_i ~|~ i \in I \}$
 
   It remains to be shown that the infinite distributivity law is satisfied. Let
-  $\oftyI{x}{\abs{F}}$ such that $j(x) = x$ and let $\bG{}$ be a family.
+  $\oftyI{x}{\abs{F}}$ such that $j(x) = x$ and let $\{ y_i ~|~ i \in I \}$ be a family.
   \begin{align*}
-    x \wedge \left( \bigvee \bG{} \right)
-      &\quad\equiv\quad x    \wedge j\left( \bigvee^F \bG{} \right)      && [x = j(x)]                     \\
-      &\quad=\quad j(x) \wedge j\left( \bigvee^F \bG{} \right)      && [N_1]                          \\
-      &\quad=\quad j \left( x \wedge \bigvee^F \bG{} \right)        && [\text{distributivity of}\ F]  \\
-      &\quad=\quad j \left( \bigvee^F_i x \wedge \bG{}_i \right)                                      \\
-      &\quad\equiv\quad \bigvee_i x \wedge \bG{}_i
+    x \wedge \bigvee_i y_i
+      &\quad\equiv\quad x    \wedge j\left( \bigvee^F_i y_i \right)      && [x = j(x)]                     \\
+      &\quad=\quad j(x) \wedge j\left( \bigvee^F_i y_i \right)      && [N_1]                          \\
+      &\quad=\quad j \left( x \wedge \bigvee^F_i y_i \right)        && [\text{distributivity of}\ F]  \\
+      &\quad=\quad j \left( \bigvee^F_i y \wedge x_i \right)                                      \\
+      &\quad\equiv\quad \bigvee_i x \wedge y_i.
   \end{align*}
 \end{proof}
 
-We can also notice now that the codomain of the $_\downarrow$ map (Defn.~\ref{defn:down-clos}) is
-restricted
-
-In the next chapter, we will make use of nuclei to a generate a frame from a formal
-topology.
+In the next chapter, we will make use of nuclei to a generate the ``freest'' frame (i.e.,
+not constrained by any rules except those we have deliberately imposed upon it) from a
+formal topology.
 
 %% \begin{code}
 %% {-# OPTIONS --cubical #-}
