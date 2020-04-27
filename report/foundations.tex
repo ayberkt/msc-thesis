@@ -383,6 +383,13 @@ in the \modname{JoinSyntax} submodule of the \modname{Frame} module.
 The bracketed index $\mathtt{⟨~i~⟩}$ is intended to be a plain text approximation of
 subscripting.
 
+\begin{defn}[Family membership]\label{defn:fam-mem}
+  Given a type $A$, some $\oftyI{x}{A}$, and a family $U \equiv (I, f)$, we say
+  that $x$ is a member of $U$ if the fiber of $f$ over $x$ is inhabited:
+  \begin{equation*}
+    \memfam{x}{U} \quad\is\quad \fiber{f}{x}.
+  \end{equation*}
+\end{defn}
 \section{Higher Inductive Types (HITs)}
 
 In ordinary type theory, the inductive definition of a type amounts to a specification of
