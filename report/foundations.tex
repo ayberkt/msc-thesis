@@ -390,6 +390,13 @@ subscripting.
     \memfam{x}{U} \quad\is\quad \fiber{f}{x}.
   \end{equation*}
 \end{defn}
+
+\begin{defn}[Image over a family]\label{defn:fam-img}
+  Given a type $A$, some family $U \equiv (I, f)$, and a function $\oftyI{g}{A \rightarrow B}$, the
+  image of $g$ over $U$ is nothing but the family $(I, g \circ f)$.
+  We will denote this $\img{g}{U}$ or $\setof{ g(f(i)) ~|~ i \in I }$.
+\end{defn}
+
 \section{Higher Inductive Types (HITs)}
 
 In ordinary type theory, the inductive definition of a type amounts to a specification of
