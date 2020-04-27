@@ -4,6 +4,7 @@
 module Poset where
 
 open import Basis
+open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
 open import Powerset
 ```
 
@@ -11,7 +12,42 @@ open import Powerset
 
 ```
 Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-Order {ℓ = ℓ} ℓ₁ A = (A → A → hProp ℓ₁)
+Order {ℓ = ℓ} ℓ₁ A = A → A → hProp ℓ₁
+
+order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
+order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
+  (x y : A) → (x ⊑₀ y ⇔ f x ⊑₁ f y) is-true
+  where
+    f = equivFun eqv
+
+isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → IsSet (Order ℓ₁ A)
+isSet-Order ℓ₁ A = ∏-set λ _ → ∏-set λ _ → isSetHProp
+
+Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
+Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
+  where
+    f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
+    f i = fn-ext _ _ λ x → fn-ext _ _ λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
+
+    ⇔-prop : IsProp ((x y : X) → (x ⊑₀ y ⇔ x ⊑₁ y) is-true)
+    ⇔-prop = ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
+
+    f-equiv : isEquiv f
+    f-equiv = record { equiv-proof = λ eq → (g eq , sec eq) , h eq }
+      where
+        g : (eq : _⊑₀_ ≡ _⊑₁_)
+          → (x y : X)
+          → (x ⊑₀ y is-true → x ⊑₁ y is-true) × (x ⊑₁ y is-true → x ⊑₀ y is-true)
+        g eq x y = subst (λ { _⊑⋆_ → x ⊑⋆ y is-true }) eq
+                 , subst (λ { _⊑⋆_ → (x ⊑⋆ y) is-true }) (sym eq)
+
+        sec : section f g
+        sec p = isSet-Order _ X _⊑₀_ _⊑₁_ (f (g p)) p
+
+        h : (p : _⊑₀_ ≡ _⊑₁_) → (fib : fiber f p) → (g p , sec p) ≡ fib
+        h p (i , _) = ΣProp≡
+                        (λ i′ → isOfHLevelSuc 2 (isSet-Order ℓ₁ X) _⊑₀_ _⊑₁_ (f i′) p)
+                        (⇔-prop (g p) i)
 
 isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isReflexive {A = X} _⊑_ =
@@ -48,7 +84,8 @@ A poset structure with level `ℓ₁`.
 
 ```
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
+PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → PosetAx ℓ₁ A _⊑_ is-true
+
 
 PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → IsSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
@@ -212,11 +249,6 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
 ## Equality of isomorphic posets
 
 ```
-order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
-order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
-  (x y : A) → (x ⊑₀ y ⇔ f x ⊑₁ f y) is-true
-  where
-    f = equivFun eqv
 
 RP-iso-prop : (P Q : Σ (Type ℓ₀) (Order ℓ₁))
             → (i : π₀ P ≃ π₀ Q) → IsProp (order-iso P Q i)
@@ -225,76 +257,20 @@ RP-iso-prop (A , _⊑₀_) (B , _⊑₁_) i =
   where
     f = equivFun i
 
--- TODO: they already have this result in `cubical`.
-××=× : (A B : Type ℓ) → (A × B) ≡ A ×× B
-××=× A B = isoToPath {A = A × B} {B = A ×× B} (iso f g sec ret)
-  where
-    f : A × B → A ×× B
-    f = λ { (x , y ) → (x , y) }
-
-    g : A ×× B → A × B
-    g = λ { (x , y ) → (x , y) }
-
-    sec : section f g
-    sec (x , y) = refl
-
-    ret : retract f g
-    ret (x , y) = refl
-
-raw-poset-is-SNS : SNS {ℓ = ℓ} (Order ℓ₁) order-iso
-raw-poset-is-SNS {ℓ₁ = ℓ₁} {X = X} _⊑₀_ _⊑₁_ = invEquiv (f , f-equiv)
-  where
-    f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
-    f i = fn-ext _ _ λ x → fn-ext _ _ λ y → ⇔toPath (proj₁ (i x y)) (proj₂ (i x y))
-
-    f-equiv : isEquiv f
-    f-equiv = record { equiv-proof = λ eq → (g eq , right-inv eq) , h eq }
-      where
-        g : (eq : _⊑₀_ ≡ _⊑₁_)
-          → (x y : X)
-          → (x ⊑₀ y is-true → x ⊑₁ y is-true)
-            ×× (x ⊑₁ y is-true → x ⊑₀ y is-true)
-        g eq x y =
-            (λ x⊑₀y → subst (λ { _⊑⋆_ → x ⊑⋆ y is-true }) eq x⊑₀y)
-          , λ x⊑₁y → subst (λ { _⊑⋆_ → (x ⊑⋆ y) is-true }) (sym eq) x⊑₁y
-
-        rel-set : IsSet (X → X → hProp ℓ)
-        rel-set = ∏-set λ _ → ∏-set λ _ → isSetHProp
-
-        iff-prop : IsProp ((x y : X) → (x ⊑₀ y ⇔ x ⊑₁ y) is-true)
-        iff-prop = ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
-
-        right-inv : (eq : _⊑₀_ ≡ _⊑₁_) → f (g eq) ≡ eq
-        right-inv eq = rel-set _⊑₀_ _⊑₁_ (f (g eq)) eq
-
-        h : (eq : _⊑₀_ ≡ _⊑₁_)
-          → (fib : fiber f eq) → (g eq , right-inv eq) ≡ fib
-        h eq (i , snd) = ΣProp≡
-                           (λ x → hLevelSuc 2 (Order ℓ₁ X) rel-set _⊑₀_ _⊑₁_ (f x) eq)
-                           (iff-prop (g eq) i)
-
-raw-poset-is-SNS' : SNS' {ℓ = ℓ} (Order ℓ₁) order-iso
-raw-poset-is-SNS' {ℓ₁ = ℓ₁} = SNS→SNS' (Order ℓ₁) order-iso raw-poset-is-SNS
-
 poset-iso : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso {ℓ₁ = ℓ₁} = add-to-iso _ order-iso λ A str → PosetAx ℓ₁ A str is-true
+poset-iso {ℓ₁ = ℓ₁} = add-to-iso order-iso (λ A _⊑_ → PosetAx ℓ₁ A _⊑_ is-true)
 
 poset-axioms-props : (A : Type ℓ₀) (str : Order ℓ₁ A)
                    → IsProp (PosetAx ℓ₁ A str is-true)
 poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx ℓ₁ A str)
 
-poset-is-SNS' : SNS' {ℓ = ℓ} (PosetStr ℓ₁) poset-iso
-poset-is-SNS' {ℓ₁ = ℓ₁} =
-  add-axioms-SNS' _ _
-    (λ A str → PosetAx ℓ₁ A str is-true)
-    poset-axioms-props
-    raw-poset-is-SNS'
 
-poset-is-SNS'' : SNS'' {ℓ = ℓ} (PosetStr ℓ₁) poset-iso
-poset-is-SNS'' = subst id (sym (SNS'≡SNS'' _ poset-iso)) poset-is-SNS'
+poset-is-SNS : SNS {ℓ} (PosetStr ℓ₁) poset-iso
+poset-is-SNS {ℓ₁ = ℓ₁} =
+  SNS-PathP→SNS-≡ (PosetStr ℓ₁) poset-iso (add-axioms-SNS _ poset-axioms-props (SNS-≡→SNS-PathP order-iso Order-is-SNS))
 
-poset-is-SNS''' : SNS''' {ℓ = ℓ₀} (PosetStr ℓ₁) poset-iso
-poset-is-SNS''' = SNS''→SNS''' poset-is-SNS''
+poset-is-SNS-PathP : SNS-PathP {ℓ} (PosetStr ℓ₁) poset-iso
+poset-is-SNS-PathP = SNS-≡→SNS-PathP poset-iso poset-is-SNS
 
 poset-SIP : (A : Type ℓ₀) (B : Type ℓ₀) (eqv : A ≃ B)
             (P : PosetStr ℓ₁ A) (Q : PosetStr ℓ₁ B)
@@ -303,7 +279,7 @@ poset-SIP : (A : Type ℓ₀) (B : Type ℓ₀) (eqv : A ≃ B)
 poset-SIP {ℓ₁ = ℓ₁} A B eqv P Q i = foo (eqv , i)
   where
     foo : (A , P) ≃[ poset-iso ] (B , Q) → (A , P) ≡ (B , Q)
-    foo = equivFun (SIP (PosetStr ℓ₁) poset-iso poset-is-SNS''' (A , P) (B , Q))
+    foo = equivFun (SIP poset-is-SNS-PathP (A , P) (B , Q))
 
 _≃ₚ_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
 _≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso P Q i
