@@ -50,7 +50,7 @@
 \newcommand{\zero}{\mathsf{zero}}
 \newcommand{\suc}[1]{\mathsf{suc}\left(#1\right)}
 
-\newcommand{\fiber}[2]{\mathsf{fiber}\left(#1, #2\right)}
+\newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
 \newcommand{\isequiv}[1]{\mathsf{isEquiv}\left(#1\right)}
 \newcommand{\idtoeqvnm}{\mathsf{idToEquiv}}
 \newcommand{\idtoeqv}[1]{\idtoeqvnm{}\left(#1\right)}
@@ -80,7 +80,7 @@
 \newcommand{\trunc}[1]{\left\| #1 \right\|}
 \newcommand{\pownm}{\hyperref[defn:pow]{\mathcal{P}}}
 \newcommand{\pow}[1]{\pownm{}\left(#1\right)}
-\newcommand{\sub}[2]{\mathsf{Fam}_{#1}\left(#2\right)}
+\newcommand{\sub}[2]{\hyperref[defn:fam]{\mathsf{Fam}}_{#1}\left(#2\right)}
 \newcommand{\indexnm}{\mathsf{index}}
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
@@ -89,6 +89,7 @@
 \newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
 \newcommand{\dcsubsetnm}{\hyperref[defn:dc-subset]{\mathsf{DCSubset}}}
 \newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
+\newcommand{\dcframe}[1]{#1\hyperref[thm:down-set-frame]{\downarrow}}
 
 \newcommand{\ordernm}{\mathsf{Order}}
 \newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
@@ -96,7 +97,8 @@
 \newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
 \newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
 
-\newcommand{\memfam}[2]{#1~\epsilon~#2}
+\DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\mathtt{\epsilon}}}
+\newcommand{\memfam}[2]{#1 \memfamnm #2}
 
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
