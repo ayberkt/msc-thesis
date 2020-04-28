@@ -103,10 +103,10 @@ and simulation properties (given in `ℂ-mono` and `ℂ-sim`).
 IS : InteractionStr ℂ
 IS = ℂ-exp , ℂ-out , λ {xs} → ℂ-rev {xs}
 
-ℂ-mono : HasMonotonicity ℂ-pos IS
+ℂ-mono : hasMonotonicity ℂ-pos IS
 ℂ-mono _ _ c = [] ⌢ c , refl
 
-ℂ-sim : HasSimulation (ℂ-pos , IS , ℂ-mono)
+ℂ-sim : hasSimulation (ℂ-pos , IS , ℂ-mono)
 ℂ-sim xs ys xs≤ys@([] , p)     tt = tt , λ c₀ → c₀ , [] , cong (λ - → - ⌢ c₀) p
 ℂ-sim xs ys xs≤ys@(zs ⌢ z , p) tt = tt , NTS
   where

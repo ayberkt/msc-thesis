@@ -34,11 +34,11 @@ module _ (𝔉 𝔊 : FormalTopology ℓ₀ ℓ₀) where
       IS : InteractionStr ∣ P ×ₚ Q ∣ₚ
       IS = ×-exp , ×-out , λ {a} {b} c → ×-next {b = b} c
 
-      mono : HasMonotonicity (P ×ₚ Q) IS
+      mono : hasMonotonicity (P ×ₚ Q) IS
       mono (a₀ , a₁) (inj₁ b) c = (monoF a₀ b c)   , ⊑[ Q ]-refl a₁
       mono (a₀ , a₁) (inj₂ b) c = (⊑[ P ]-refl a₀) , monoG a₁ b c
 
-      sim : HasSimulation (P ×ₚ Q , IS , mono)
+      sim : hasSimulation (P ×ₚ Q , IS , mono)
       sim (a₀ , a₁) (a , a′) (a₀⊑a , a₁⊑a′) b with b
       ... | inj₁ b₀ = let (b₀ , p) = simF _ _ a₀⊑a b₀
                       in inj₁ b₀ , λ c₀ → π₀ (p c₀) , π₁ (p c₀) , a₁⊑a′
