@@ -78,8 +78,6 @@ Unit-prop : {ℓ : Level} → isProp (Unit ℓ)
 Unit-prop tt tt = refl
 ```
 
-## Function extensionality
-
 ## Propositions
 
 ```
@@ -99,8 +97,6 @@ is-true-prop (P , P-prop) = P-prop
 ∃_ : {A : Type ℓ₀} → (A → hProp ℓ₁) → Type (ℓ₀ ⊔ ℓ₁)
 ∃_ {A = A} P = Σ[ x ∈ A ] [ P x ]
 ```
-
-## Univalence
 
 ## Extensional equality
 
