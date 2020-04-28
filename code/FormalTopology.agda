@@ -25,7 +25,7 @@ reaction (_ , _ , C , _) = C
 
 HasMonotonicity : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
 HasMonotonicity P i =
-  (a : state IS) (b : action IS a) (c : reaction IS b) → δ IS c ⊑[ P ] a is-true
+  (a : state IS) (b : action IS a) (c : reaction IS b) → [ δ IS c ⊑[ P ] a ]
   where
     IS : InteractionSys _
     IS = ∣ P ∣ₚ , i
@@ -60,9 +60,9 @@ module _ (D : Discipline ℓ₀ ℓ₁) where
 
   HasSimulation : Type (ℓ₀ ⊔ ℓ₁)
   HasSimulation =
-    (a₀ a : ∣ P ∣ₚ) → a₀ ⊑[ pos D ] a is-true →
+    (a₀ a : ∣ P ∣ₚ) → [ a₀ ⊑[ pos D ] a ] →
       (b : exp a) → Σ (exp a₀) (λ b₀ →
-        (c₀ : outcome b₀) → Σ (outcome b) (λ c → next c₀ ⊑[ pos D ] next c is-true))
+        (c₀ : outcome b₀) → Σ (outcome b) (λ c → [ next c₀ ⊑[ pos D ] next c ]))
 
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] HasSimulation D

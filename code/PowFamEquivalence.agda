@@ -11,7 +11,7 @@ idToEquiv : {A B : Type ℓ} → A ≡ B → A ≃ B
 idToEquiv {A = A} {B = B} p = subst (λ A′ → A′ ≃ B) (sym p) (idEquiv B)
 
 ⟪_⟫ : {A : Type ℓ₀} → (A → hProp ℓ₁) → Sub (ℓ₀ ⊔ ℓ₁) A
-⟪_⟫ {A = A} U = (Σ[ x ∈ A ] (U x is-true)) , π₀
+⟪_⟫ {A = A} U = (Σ[ x ∈ A ] [ U x ]) , π₀
 
 {--
 

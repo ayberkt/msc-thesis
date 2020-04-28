@@ -1,7 +1,7 @@
 {-# OPTIONS --cubical --safe #-}
 
 open import Basis
-open import Cubical.Data.Empty.Base using (⊥; ⊥-elim)
+open import Cubical.Data.Empty.Base using (⊥; rec)
 open import Cubical.Relation.Nullary.DecidableEq using (Discrete→isSet)
 open import Cubical.Relation.Nullary using (Discrete; yes; no; Dec; ¬_)
 
@@ -46,7 +46,7 @@ SnocList-discrete (xs ⌢ x) (ys ⌢ y)
                          P = λ xs′ → Dec (xs′ ⌢ x  ≡ ys ⌢ y)
                          Q = λ x′  → Dec (ys  ⌢ x′ ≡ ys ⌢ y)
 
-SnocList-set : IsSet SnocList
+SnocList-set : isSet SnocList
 SnocList-set = Discrete→isSet SnocList-discrete
 
 _++_ : SnocList → SnocList → SnocList
@@ -71,13 +71,13 @@ assoc xs ys (zs ⌢ z) = cong (λ - → - ⌢ z) (assoc xs ys zs)
 
 xs≠xs⌢y : {xs : SnocList} {y : Z} → ¬ (xs ≡ xs ⌢ y)
 xs≠xs⌢y {[]}     p = subst (λ { [] → Unit zero ; (_ ⌢ _) → ⊥ }) p tt
-xs≠xs⌢y {xs ⌢ x} p = ⊥-elim (xs≠xs⌢y (⌢-eq-left p))
+xs≠xs⌢y {xs ⌢ x} p = rec (xs≠xs⌢y (⌢-eq-left p))
 
 xs≰xs⌢y : {xs ys : SnocList} {x : Z} → ¬ (xs ≡ (xs ⌢ x) ++ ys)
 xs≰xs⌢y {[]} {[]} {y} p = subst (λ { (_ ⌢ _) → ⊥ ; [] → Unit zero }) p tt
 xs≰xs⌢y {[]} {ys ⌢ _} {y} p = subst (λ { (_ ⌢ _) → ⊥ ; [] → Unit zero }) p tt
-xs≰xs⌢y {xs ⌢ x} {[]} {y} p = ⊥-elim (xs≠xs⌢y (⌢-eq-left p))
-xs≰xs⌢y {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (xs≰xs⌢y NTS)
+xs≰xs⌢y {xs ⌢ x} {[]} {y} p = rec (xs≠xs⌢y (⌢-eq-left p))
+xs≰xs⌢y {xs ⌢ x} {ys ⌢ y} {y′} p = rec (xs≰xs⌢y NTS)
   where
     NTS : xs ≡ (xs ⌢ x) ++ (([] ⌢ y′) ++ ys)
     NTS = xs                            ≡⟨ ⌢-eq-left p                       ⟩
@@ -85,14 +85,14 @@ xs≰xs⌢y {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (xs≰xs⌢y NTS)
           (xs ⌢ x) ++ (([] ⌢ y′) ++ ys) ∎
 
 lemma3 : {xs : SnocList} {ys : SnocList} {y : Z} → ¬ (xs ≡ xs ++ (ys ⌢ y))
-lemma3 {[]}     {ys}     {y}  p = ⊥-elim (⌢≠[] NTS)
+lemma3 {[]}     {ys}     {y}  p = rec (⌢≠[] NTS)
   where
     NTS : ys ⌢ y ≡ []
     NTS = (ys ⌢ y)       ≡⟨ sym (cong (λ - → - ⌢ y) (++-left-id ys)) ⟩
           ([] ++ ys) ⌢ y ≡⟨ sym p ⟩
           []             ∎
-lemma3 {xs ⌢ x} {[]}     {y}  p = ⊥-elim (lemma3 (⌢-eq-left p))
-lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
+lemma3 {xs ⌢ x} {[]}     {y}  p = rec (lemma3 (⌢-eq-left p))
+lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = rec (lemma3 NTS)
   where
     NTS : xs ≡ (xs ++ (([] ⌢ x) ++ ys)) ⌢ y
     NTS = xs                         ≡⟨ ⌢-eq-left p              ⟩
@@ -107,11 +107,11 @@ lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
                                      [] ++ zs₁ ≡⟨ ++-left-id zs₁ ⟩
                                      zs₁       ∎
 ++-lemma {[]} {ys ⌢ y} {[]} {[]} p q = refl
-++-lemma {[]} {ys ⌢ y} {[]} {zs₁ ⌢ x} p q = ⊥-elim (⌢≠[] (sym p))
-++-lemma {[]} {ys ⌢ y} {zs₀ ⌢ x} {[]} p q = ⊥-elim (⌢≠[] (sym q))
-++-lemma {[]} {ys ⌢ y} {zs₀ ⌢ x} {zs₁ ⌢ x₁} p q = ⊥-elim (⌢≠[] (sym p))
-++-lemma {xs ⌢ x} {[]} {[]} {zs₁} p q = ⊥-elim (⌢≠[] p)
-++-lemma {xs ⌢ x} {[]} {zs₀ ⌢ z₀} {[]} p q = ⊥-elim (⌢≠[] q)
+++-lemma {[]} {ys ⌢ y} {[]} {zs₁ ⌢ x} p q = rec (⌢≠[] (sym p))
+++-lemma {[]} {ys ⌢ y} {zs₀ ⌢ x} {[]} p q = rec (⌢≠[] (sym q))
+++-lemma {[]} {ys ⌢ y} {zs₀ ⌢ x} {zs₁ ⌢ x₁} p q = rec (⌢≠[] (sym p))
+++-lemma {xs ⌢ x} {[]} {[]} {zs₁} p q = rec (⌢≠[] p)
+++-lemma {xs ⌢ x} {[]} {zs₀ ⌢ z₀} {[]} p q = rec (⌢≠[] q)
 ++-lemma {xs ⌢ x} {[]} {zs₀ ⌢ z₀} {zs₁ ⌢ z₁} p q =
   zs₀ ⌢ z₀         ≡⟨ cong (λ - → - ⌢ z₀) (sym (++-left-id zs₀)) ⟩
   ([] ++ zs₀) ⌢ z₀ ≡⟨ sym p ⟩
@@ -119,11 +119,11 @@ lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
   ([] ++ zs₁) ⌢ z₁ ≡⟨ cong (λ - → - ⌢ z₁) (++-left-id zs₁) ⟩
   zs₁ ⌢ z₁         ∎
 ++-lemma {xs ⌢ x} {ys ⌢ y} {[]} {[]} p q = refl
-++-lemma {xs ⌢ x} {ys ⌢ y} {[]} {zs₁ ⌢ z₁} p q = ⊥-elim (xs≰xs⌢y (⌢-eq-left NTS))
+++-lemma {xs ⌢ x} {ys ⌢ y} {[]} {zs₁ ⌢ z₁} p q = rec (xs≰xs⌢y (⌢-eq-left NTS))
   where
     NTS : ys ⌢ y ≡ ((ys ⌢ y) ++ zs₁) ⌢ z₁
     NTS = ys ⌢ y ≡⟨ sym p ⟩ xs ⌢ x ≡⟨ q ⟩ ((ys ⌢ y) ++ zs₁) ⌢ z₁ ∎
-++-lemma {xs ⌢ x} {ys ⌢ y} {zs₀ ⌢ z₀} {[]} p q = ⊥-elim (xs≰xs⌢y (⌢-eq-left NTS))
+++-lemma {xs ⌢ x} {ys ⌢ y} {zs₀ ⌢ z₀} {[]} p q = rec (xs≰xs⌢y (⌢-eq-left NTS))
   where
     NTS : ys ⌢ y ≡ ((ys ⌢ y) ++ zs₀) ⌢ z₀
     NTS = ys ⌢ y ≡⟨ sym q ⟩ xs ⌢ x ≡⟨ p ⟩ ((ys ⌢ y) ++ (zs₀ ⌢ z₀)) ∎
@@ -134,7 +134,7 @@ lemma3 {xs ⌢ x} {ys ⌢ y} {y′} p = ⊥-elim (lemma3 NTS)
                   where
                     IH : zs₀ ≡ zs₁
                     IH = ++-lemma (⌢-eq-left p) (⌢-eq-left q)
-... | no ¬p = ⊥-elim (¬p (⌢-eq-right NTS))
+... | no ¬p = rec (¬p (⌢-eq-right NTS))
               where
                 NTS : ((ys ⌢ y) ++ zs₀) ⌢ z₀ ≡ ((ys ⌢ y) ++ zs₁) ⌢ z₁
                 NTS = (ys ⌢ y) ++ zs₀ ⌢ z₀ ≡⟨ sym p ⟩ xs ⌢ x ≡⟨ q ⟩ (ys ⌢ y) ++ zs₁ ⌢ z₁ ∎
