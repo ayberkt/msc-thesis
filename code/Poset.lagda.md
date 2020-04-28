@@ -59,7 +59,8 @@ isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
     φ      : Type (ℓ₀ ⊔ ℓ₁)
     φ      = ((x y z : X) → [ x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z ])
     φ-prop : isProp φ
-    φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ z → is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
+    φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ z →
+               is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
 
 isAntisym : {A : Type ℓ₀} → isSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
