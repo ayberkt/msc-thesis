@@ -13,8 +13,6 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             ; isEquiv
                                                             ; equivProof
                                                             )
-open import Cubical.Data.Prod               public using    (_,_; proj₁; proj₂)
-                                                   renaming (_×_ to _××_)
 open import Cubical.Data.Sigma.Properties   public using    ( Σ≡; ΣProp≡ )
 open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; subst
@@ -27,22 +25,32 @@ open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; transportRefl
                                                             ; isContr)
 open import Cubical.Foundations.Transport   public using    ( transportEquiv )
-open import Cubical.Foundations.Equiv       public using    ( idEquiv; invEquiv; secEq; retEq; fiber)
+open import Cubical.Foundations.Equiv       public using    ( idEquiv
+                                                            ; invEquiv
+                                                            ; secEq
+                                                            ; retEq
+                                                            ; fiber
+                                                            )
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
                                                             ; isPropIsSet
                                                             ; isOfHLevelΣ
-                                                            ; isOfHLevelSuc )
+                                                            ; isOfHLevelSuc
+                                                            )
 open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
-                                                            ; pathSigma→sigmaPath )
-open import Cubical.Foundations.Isomorphism public using    ( isoToPath; iso; section; retract)
-open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath )
-                                                   renaming ( _⊓_ to _∧_)
-open import Data.Product                    public using    ( _×_; uncurry)
-                                                   renaming ( proj₁ to π₀
-                                                            ; proj₂ to π₁)
-open import Function                        public using    (_∘_; id)
+                                                            ; pathSigma→sigmaPath
+                                                            ; _×_
+                                                            ; _,_
+                                                            )
+                                                   renaming ( fst to π₀
+                                                            ; snd to π₁ )
+open import Cubical.Foundations.Isomorphism public using    ( isoToPath
+                                                            ; iso
+                                                            ; section
+                                                            ; retract)
+open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath ; _⊓_ ; [_])
+open import Function                        public using    ( _∘_; id )
 open import Level                           public
 ```
 
@@ -84,13 +92,8 @@ IsProp-prop {A = A} A-prop₀ A-prop₁ =
     rem = λ x → fn-ext (A-prop₀ x) (A-prop₁ x) λ y →
             isProp→isSet A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
 
-_is-true : hProp ℓ → Type ℓ
-(P , _) is-true = P
-
-is-true-prop : (P : hProp ℓ) → isProp (P is-true)
+is-true-prop : (P : hProp ℓ) → isProp [ P ]
 is-true-prop (P , P-prop) = P-prop
-
-infix 5 _is-true
 ```
 
 ```
@@ -100,7 +103,7 @@ infix 5 _is-true
 
 ```
 ∃_ : {A : Type ℓ₀} → (A → hProp ℓ₁) → Type (ℓ₀ ⊔ ℓ₁)
-∃_ {A = A} P = Σ[ x ∈ A ] (P x is-true)
+∃_ {A = A} P = Σ[ x ∈ A ] [ P x ]
 ```
 
 ## Sets

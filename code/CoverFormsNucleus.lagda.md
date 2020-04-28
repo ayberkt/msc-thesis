@@ -52,7 +52,7 @@ nothing but the map `U ↦ - <| U`.
       U₀ : stage D → hProp ℓ₀
       U₀ = λ a → a <| U , squash
 
-      U₀-dc : IsDownwardClosed P (λ - → (- <| U) , squash) is-true
+      U₀-dc : [ IsDownwardClosed P (λ - → (- <| U) , squash) ]
       U₀-dc a a₀ aεU₁ a₀⊑a = lem1 U-down a₀⊑a aεU₁
 
   _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
@@ -69,24 +69,24 @@ nothing but the map `U ↦ - <| U`.
       N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) =
         <<-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) d u
         where
-          d : 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) is-true
+          d : [ (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) ]
           d a (dir p)        = dir (π₀ p) , dir (π₁ p)
           d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
             where
-              IH : (c : outcome D b) → π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next D c) is-true
+              IH : (c : outcome D b) → [ π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next D c) ]
               IH c = d (next D c) (f c)
           d a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
             where
               IH₀ = d a p
               IH₁ = d a q
 
-          u : (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) is-true
+          u : [ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) ]
           u a p = lem3 U V U-down V-down a a (⊑[ P ]-refl a) (π₀ p) (π₁ p)
 
-      N₁ : (𝔘 : ∣ F↓ ∣F) → 𝔘 << (𝕛 𝔘) is-true
+      N₁ : (𝔘 : ∣ F↓ ∣F) → [ 𝔘 << (𝕛 𝔘) ]
       N₁ _ a₀ a∈U = dir a∈U
 
-      N₂ : (𝔘 : ∣ F↓ ∣F) → π₀ (𝕛 (𝕛 𝔘)) ⊆ π₀ (𝕛 𝔘) is-true
+      N₂ : (𝔘 : ∣ F↓ ∣F) → [ π₀ (𝕛 (𝕛 𝔘)) ⊆ π₀ (𝕛 𝔘) ]
       N₂ 𝔘@(U , _) = lem4 (π₀ (𝕛 𝔘)) U (λ _ q → q)
 ```
 
@@ -107,7 +107,7 @@ Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
   ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
-      down-DC : IsDownwardClosed P x↓ is-true
+      down-DC : [ IsDownwardClosed P x↓ ]
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
 
   x◀x↓ : (x : stage D) → x <| (λ - → - ⊑[ P ] x)
@@ -120,7 +120,7 @@ By composing this with the covering nucleus, we define a map `e` from `F` to `F�
   e : stage D → ∣ F↓ ∣F
   e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
     where
-      NTS : IsDownwardClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) is-true
+      NTS : [ IsDownwardClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
       NTS _ _ x y = lem1 (λ _ _ x⊑y y⊑z → ⊑[ P ]-trans _ _ z y⊑z x⊑y) y x
 ```
 
@@ -131,9 +131,9 @@ x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
   fixing : (x : stage D) → 𝕛 (e x) ≡ e x
   fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
     where
-      NTS : ∀ y → π₀ (𝕛 (e x)) y is-true → π₀ (e x) y is-true
+      NTS : ∀ y → [ π₀ (𝕛 (e x)) y ] → [ π₀ (e x) y ]
       NTS = lem4 (π₀ (e x)) (π₀ (↓-clos x)) (λ _ q → q)
-      up : e x ⊑[ P↓ ] 𝕛 (e x) is-true
+      up : [ e x ⊑[ P↓ ] 𝕛 (e x) ]
       up = π₀ (π₁ 𝕛-nuclear) (e x)
 
   η : stage (π₀ F) → ∣ L ∣F
