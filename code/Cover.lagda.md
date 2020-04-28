@@ -42,7 +42,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
       U∩V⇒V∩U (aεU , aεV) = aεV , aεU
 
   <|-∩-comm : {U : 𝒫 ∣ P ∣ₚ} {V : 𝒫 ∣ P ∣ₚ} (a : ∣ P ∣ₚ) → a <| (V ∩ U) → a <| (U ∩ V)
-  <|-∩-comm {U = U} {V} a (dir p)          = dir (proj₁ (∩-comm U V a) p)
+  <|-∩-comm {U = U} {V} a (dir p)          = dir (π₀ (∩-comm U V a) p)
   <|-∩-comm {U = U} {V} a (branch b f)     = branch b (λ c → <|-∩-comm (next D c) (f c))
   <|-∩-comm {U = U} {V} a (squash p₀ p₁ i) = squash (<|-∩-comm a p₀) (<|-∩-comm a p₁) i
 
