@@ -4,7 +4,7 @@
 module CantorSpace where
 
 open import Basis
-open import Cubical.Data.Empty.Base   using (⊥; ⊥-elim)
+open import Cubical.Data.Empty.Base   using (⊥; rec)
 open import Cubical.Data.Bool.Base    using (true; false; _≟_)   renaming (Bool to 𝔹)
 open import Data.List                 using (List; _∷_; []; [_]) renaming (_++_ to _^_)
 open import Cubical.Foundations.Logic using ()                   renaming (⊥ to bot)
@@ -63,7 +63,7 @@ As `_≤_` is a partial order, we package it up as a poset.
     ≤-antisym xs ys ([]     , p) (bs ⌢ x  , q) = p
     ≤-antisym xs ys (as ⌢ x , p) ([]      , q) = sym q
     ≤-antisym xs ys (as ⌢ a , p) (bs ⌢ b  , q) =
-      ⊥-elim (lemma3 NTS)
+      rec (lemma3 NTS)
       where
         NTS : xs ≡ xs ++ ((bs ⌢ b) ++ (as ⌢ a))
         NTS = xs                           ≡⟨ p                                ⟩
