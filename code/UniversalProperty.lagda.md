@@ -262,7 +262,7 @@ Proof.
         down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem x y φ) }
 
     g∘η=f : gm∘ηm ≡ fm
-    g∘η=f = to-subtype-≡ _ fm (IsMonotonic-prop P (pos R)) (funExt gm∘ηm~f)
+    g∘η=f = ΣProp≡ (IsMonotonic-prop P (pos R)) (funExt gm∘ηm~f)
 
     g∘η=f′ : g ∘ η ≡ f
     g∘η=f′ = subst (λ { (h , _) → h ≡ f }) (sym g∘η=f) refl

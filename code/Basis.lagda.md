@@ -115,10 +115,3 @@ id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
     G : f ≡ g → f ~ g
     G f=g = λ x i → f=g i x
 ```
-
-```
-to-subtype-≡ : (p q : Σ A B)
-             → ((x : A) → isProp (B x))
-             → π₀ p ≡ π₀ q → p ≡ q
-to-subtype-≡ _ _ B-prop eq = ΣProp≡ B-prop eq
-```
