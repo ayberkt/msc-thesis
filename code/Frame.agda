@@ -7,7 +7,8 @@ module Frame where
 open import Basis
 open import Family
 open import Truncation
-open import Data.Product using (uncurry)
+open import Data.Product            using    (uncurry)
+open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
 open import Poset
 open import Powerset
 
@@ -104,6 +105,7 @@ module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Sub ℓ₂ A → A)
 
 module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
 
+
   private
     P = pos F
 
@@ -113,35 +115,36 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     open JoinSyntax ∣ F ∣F (λ - → ⋃[ F ] -)
 
   𝟏[_]-top : (o : ∣ F ∣F) → o ⊑[ pos F ] 𝟏[ F ] is-true
-  𝟏[_]-top = let (_ , _ , frame-str) = F in proj₁ frame-str
+  𝟏[_]-top = let (_ , _ , frame-str) = F in π₀ frame-str
 
   ⊓[_]-lower₀ : (o p : ∣ F ∣F) → (o ⊓[ F ] p) ⊑[ pos F ] o is-true
   ⊓[_]-lower₀ =
-    let (_ , _ , str) = F in λ x y → proj₁ (π₀ (proj₁ (proj₂ str)) x y)
+    let (_ , _ , str) = F in λ x y → π₀ (π₀ (π₀ (π₁ str)) x y)
+
 
   ⊓[_]-lower₁ : (o p : ∣ F ∣F) → (o ⊓[ F ] p) ⊑[ pos F ] p is-true
   ⊓[_]-lower₁ =
-    let (_ , _ , str) = F in λ x y → proj₂ (π₀ (proj₁ (proj₂ str)) x y)
+    let (_ , _ , str) = F in λ x y → π₁ (π₀ (π₀ (π₁ str)) x y)
 
   ⊓[_]-greatest : (o p q : ∣ F ∣F)
                 → q ⊑[ pos F ] o is-true
                 → q ⊑[ pos F ] p is-true
                 → q ⊑[ pos F ] (o ⊓[ F ] p) is-true
   ⊓[_]-greatest =
-    let (_ , _ , str) = F in λ x y z z⊑x z⊑y → π₁ (proj₁ (proj₂ str)) x y z (z⊑x , z⊑y)
+    let (_ , _ , str) = F in λ x y z z⊑x z⊑y → π₁ (π₀ (π₁ str)) x y z (z⊑x , z⊑y)
 
   ⋃[_]-upper : (ℱ : Sub ℓ₂ ∣ F ∣F) (o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] (⋃[ F ] ℱ) is-true
-  ⋃[_]-upper = let (_ , _ , str) = F in π₀ (proj₁ (proj₂ (proj₂ str)))
+  ⋃[_]-upper = let (_ , _ , str) = F in π₀ (π₀ (π₁ (π₁ str)))
 
   ⋃[_]-least : (ℱ : Sub ℓ₂ ∣ F ∣F) (x : ∣ F ∣F)
             → (∀[ y ε ℱ ] (y ⊑[ pos F ] x) is-true)
             → (⋃[ F ] ℱ) ⊑[ pos F ] x is-true
-  ⋃[_]-least = let (_ , _ , str) = F in π₁ (proj₁ (proj₂ (proj₂ str)))
+  ⋃[_]-least = let (_ , _ , str) = F in π₁ (π₀ (π₁ (π₁ str)))
 
 
   dist : (o : ∣ F ∣F) (ℱ : Sub ℓ₂ ∣ F ∣F)
        → o ⊓[ F ] (⋁⟨ i ⟩ (ℱ $ i)) ≡ ⋁⟨ i ⟩ (o ⊓[ F ] (ℱ $ i))
-  dist = let (_ , _ , str) = F in proj₂ (proj₂ (proj₂ str))
+  dist = let (_ , _ , str) = F in π₁ (π₁ (π₁ str))
 
   top-unique : (z : ∣ F ∣F)
             → ((o : ∣ F ∣F) → o ⊑[ pos F ] z is-true) → z ≡ 𝟏[ F ]
@@ -406,9 +409,9 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 
 -- Frames form an SNS.
 
-RF-iso : (ℓ₁ ℓ₂ : Level) (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
+RF-iso : {ℓ₁ ℓ₂ : Level} (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
        → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-RF-iso {ℓ₀ = ℓ₀} ℓ₁ ℓ₂ (A , (P , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (Q , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
+RF-iso {ℓ₀ = ℓ₀} {ℓ₁} {ℓ₂} (A , (P , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (Q , _), 𝟏₁ , _⊓₁_ , ⋃₁) i =
     order-iso (A , P) (B , Q) i
   × f 𝟏₀ ≡ 𝟏₁
   × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
@@ -422,9 +425,9 @@ pos-of (A , ((RPS , _) , _)) = (A , RPS)
 top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
 top-of (_ , _ , 𝟏 , _) = 𝟏
 
-RF-is-SNS : SNS {ℓ = ℓ} (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂)
+RF-is-SNS : SNS {ℓ₀} (RawFrameStr ℓ₁ ℓ₂) RF-iso
 RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ , ⋃₀) G@(Q , 𝟏₁ , _⊓₁_ , ⋃₁) =
-  invEquiv (f , f-equiv)
+  f , f-equiv
   where
     C = RawFrameStr ℓ₁ ℓ₂ A
 
@@ -439,7 +442,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
     PS-A = π₀ P
     PS-B = π₀ Q
 
-    f : RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A) → F ≡ G
+    f : RF-iso (A , F) (A , G) (idEquiv A) → F ≡ G
     f (iₚ , eq-𝟏 , ⊓-xeq , ⋃-xeq) =
       P , 𝟏₀ , _⊓₀_ , ⋃₀   ≡⟨ cong (λ - → (P , - , _⊓₀_ , ⋃₀))              eq-𝟏 ⟩
       P , 𝟏₁ , _⊓₀_ , ⋃₀   ≡⟨ cong {B = λ _ → C} (λ - → P , 𝟏₁ , - , ⋃₀)    ⊓-eq ⟩
@@ -450,8 +453,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
         eq : P ≡ Q
         eq = ΣProp≡
                (poset-axioms-props A)
-               (fn-ext _ _ λ x → fn-ext _ _ λ y →
-                 ⇔toPath (proj₁ (iₚ x y)) (proj₂ (iₚ x y)))
+               (fn-ext _ _ λ x → fn-ext _ _ λ y → ⇔toPath (π₀ (iₚ x y)) (π₁ (iₚ x y)))
 
         ⊓-eq : _⊓₀_ ≡ _⊓₁_
         ⊓-eq = fn-ext _⊓₀_ _⊓₁_ (λ x → fn-ext (_⊓₀_ x) (_⊓₁_ x) λ y → ⊓-xeq x y)
@@ -462,7 +464,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
     f-equiv : isEquiv f
     f-equiv = record { equiv-proof = λ eq → (g eq , ret eq) , h eq }
       where
-        g : (eq : F ≡ G) → RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A)
+        g : (eq : F ≡ G) → RF-iso (A , F) (A , G) (idEquiv A)
         g eq = φ , ψ , ϑ , ξ
           where
             𝒻  = equivFun (idEquiv A)
@@ -490,7 +492,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
         ret : (eq : F ≡ G) → f (g eq) ≡ eq
         ret eq = str-set F G (f (g eq)) eq
 
-        RF-iso-prop : IsProp (RF-iso ℓ₁ ℓ₂ (A , F) (A , G) (idEquiv A))
+        RF-iso-prop : IsProp (RF-iso (A , F) (A , G) (idEquiv A))
         RF-iso-prop =
           isOfHLevelΣ 1 (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
           isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
@@ -499,16 +501,12 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
 
         h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
         h eq (i , p) =
-          ΣProp≡
-            (λ x → hLevelSuc 2 (RawFrameStr ℓ₁ ℓ₂ A) str-set F G (f x) eq)
-            (RF-iso-prop (g eq) i)
+          ΣProp≡ (λ x → isOfHLevelSuc 2 str-set F G (f x) eq) (RF-iso-prop (g eq) i)
 
-RF-is-SNS' : SNS' {ℓ = ℓ} (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂)
-RF-is-SNS' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = SNS→SNS' (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂) RF-is-SNS
 
 frame-iso : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
-  add-to-iso (RawFrameStr ℓ₁ ℓ₂) (RF-iso ℓ₁ ℓ₂) λ A RF → frame-axioms A RF is-true
+  add-to-iso RF-iso λ A RF → frame-axioms A RF is-true
 
 frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → IsProp (frame-iso M N i)
 frame-iso-prop F G i =
@@ -527,27 +525,27 @@ frame-axioms-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A)
                    → IsProp ((frame-axioms A str) is-true)
 frame-axioms-props A str = is-true-prop (frame-axioms A str)
 
-frame-is-SNS' : SNS' {ℓ = ℓ} (FrameStr ℓ₁ ℓ₂) frame-iso
-frame-is-SNS' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} = add-axioms-SNS' _ _ _ frame-axioms-props RF-is-SNS'
+frame-is-SNS : SNS {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
+frame-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
+  SNS-PathP→SNS-≡
+    (FrameStr ℓ₁ ℓ₂)
+    frame-iso
+    (add-axioms-SNS _ frame-axioms-props (SNS-≡→SNS-PathP RF-iso RF-is-SNS))
 
-frame-is-SNS'' : SNS'' {ℓ = ℓ} (FrameStr ℓ₁ ℓ₂) frame-iso
-frame-is-SNS'' {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
-  subst id (SNS'≡SNS'' (FrameStr ℓ₁ ℓ₂) frame-iso) frame-is-SNS'
-
-frame-is-SNS''' : SNS''' {ℓ = ℓ} (FrameStr ℓ₁ ℓ₂) frame-iso
-frame-is-SNS''' = SNS''→SNS''' frame-is-SNS''
+frame-is-SNS-PathP : SNS-PathP {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
+frame-is-SNS-PathP = SNS-≡→SNS-PathP frame-iso frame-is-SNS
 
 frame-SIP : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
           → (eqv : ∣ F ∣F ≃ ∣ G ∣F)
           → frame-iso F G eqv
           → F ≡ G
-frame-SIP {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G eqv i = foo (eqv , i)
+frame-SIP {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G eqv i = NTS (eqv , i)
   where
-    foo : F ≃[ frame-iso ] G → F ≡ G
-    foo = equivFun (SIP (FrameStr ℓ₁ ℓ₂) frame-iso frame-is-SNS''' F G)
+    NTS : F ≃[ frame-iso ] G → F ≡ G
+    NTS = equivFun (SIP frame-is-SNS-PathP F G)
 
 frame-iso→frame-iso' : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
-                         → poset-iso (pos F) (pos G) eqv → frame-iso F G eqv
+                     → poset-iso (pos F) (pos G) eqv → frame-iso F G eqv
 frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃-eq)
   where
     f = equivFun eqv
@@ -573,12 +571,12 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
 
         α : ((g x) ⊑[ pos F ] (g y) ⇒ x ⊑[ pos G ] y) is-true
         α p = x       ⊑⟨ ≡⇒⊑ (pos G) (sym (ret x))  ⟩
-              f (g x) ⊑⟨ proj₁ φ p                  ⟩
+              f (g x) ⊑⟨ π₀ φ p                     ⟩
               f (g y) ⊑⟨ ≡⇒⊑ (pos G) (ret y)        ⟩
               y       ■
 
         β : x ⊑[ pos G ] y ⇒ (g x) ⊑[ pos F ] (g y) is-true
-        β p = proj₂ φ eq
+        β p = π₁ φ eq
           where
             eq : f (g x) ⊑[ pos G ] f (g y) is-true
             eq = f (g x)  ⊑⟨ ≡⇒⊑ (pos G) (ret x)       ⟩
@@ -591,7 +589,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
     𝟏-eq = top-unique G (f 𝟏[ F ]) NTS
       where
         NTS : (o : ∣ G ∣F) → o ⊑[ pos G ] (f 𝟏[ F ]) is-true
-        NTS o = proj₂ (bar o (f 𝟏[ F ])) eq
+        NTS o = π₁ (bar o (f 𝟏[ F ])) eq
           where
             eq : g o ⊑[ pos F ] g (f 𝟏[ F ]) is-true
             eq = g o          ⊑₁⟨ 𝟏[ F ]-top (g o) ⟩
@@ -602,7 +600,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
     ⊓-eq x y = ⊓-unique G (f x) (f y) (f (x ⊓[ F ] y)) I II III
       where
         I : f (x ⊓[ F ] y) ⊑[ pos G ] f x is-true
-        I = proj₂ (bar (f (x ⊓[ F ] y)) (f x)) NTS
+        I = π₁ (bar (f (x ⊓[ F ] y)) (f x)) NTS
           where
             NTS : g (f (x ⊓[ F ] y)) ⊑[ pos F ] g (f x) is-true
             NTS = g (f (x ⊓[ F ] y)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _)       ⟩
@@ -611,7 +609,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
                   g (f x)            ■₁
 
         II : f (x ⊓[ F ] y) ⊑[ pos G ] f y is-true
-        II = proj₂ (bar (f (x ⊓[ F ] y)) (f y)) NTS
+        II = π₁ (bar (f (x ⊓[ F ] y)) (f y)) NTS
           where
             NTS : g (f (x ⊓[ F ] y)) ⊑[ pos F ] g (f y) is-true
             NTS = g (f (x ⊓[ F ] y)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _)       ⟩
@@ -623,15 +621,15 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
             → z′ ⊑[ pos G ] (f x) is-true
             → z′ ⊑[ pos G ] (f y) is-true
             → z′ ⊑[ pos G ] f (x ⊓[ F ] y) is-true
-        III z′ p q = proj₂ (bar z′ (f (x ⊓[ F ] y))) NTS
+        III z′ p q = π₁ (bar z′ (f (x ⊓[ F ] y))) NTS
           where
             gz′⊑x : g z′ ⊑[ pos F ] x is-true
             gz′⊑x =
-              proj₂ (foo (g z′) x) (f (g z′) ⊑⟨ ≡⇒⊑ (pos G) (ret z′) ⟩ z′ ⊑⟨ p ⟩ f x ■)
+              π₁ (foo (g z′) x) (f (g z′) ⊑⟨ ≡⇒⊑ (pos G) (ret z′) ⟩ z′ ⊑⟨ p ⟩ f x ■)
 
             gz′⊑y : g z′ ⊑[ pos F ] y is-true
             gz′⊑y =
-              proj₂ (foo (g z′) y) (f (g z′) ⊑⟨ ≡⇒⊑ (pos G) (ret z′) ⟩ z′ ⊑⟨ q ⟩ f y ■)
+              π₁ (foo (g z′) y) (f (g z′) ⊑⟨ ≡⇒⊑ (pos G) (ret z′) ⟩ z′ ⊑⟨ q ⟩ f y ■)
 
             NTS : g z′ ⊑[ pos F ] g (f (x ⊓[ F ] y)) is-true
             NTS = g z′               ⊑₁⟨ ⊓[ F ]-greatest x y (g z′) gz′⊑x gz′⊑y  ⟩
@@ -643,7 +641,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
       where
         NTS₀ : (o : ∣ G ∣F) → o ε (f ⟨$⟩ ℱ) → o ⊑[ pos G ] (f (⋃[ F ] ℱ)) is-true
         NTS₀ o (i , p) =
-          proj₂
+          π₁
             (bar o (f (⋃[ F ] ℱ)))
             (g o              ⊑₁⟨ ⋃[ F ]-upper ℱ (g o) I ⟩
              ⋃[ F ] ℱ         ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _)) ⟩
@@ -656,7 +654,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
              → ((o : ∣ G ∣F) → o ε (f ⟨$⟩ ℱ) → rel (pos G) o z′ is-true)
              → f (⋃[ F ] ℱ) ⊑[ pos G ] z′ is-true
         NTS₁ z′ p =
-          proj₂
+          π₁
             (bar (f (⋃[ F ] ℱ)) z′)
             (g (f (⋃[ F ] ℱ)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _)       ⟩
              ⋃[ F ] ℱ         ⊑₁⟨ ⋃[ F ]-least ℱ (g z′) NTS ⟩
@@ -664,7 +662,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
           where
             NTS : (o : ∣ F ∣F) → o ε ℱ → o ⊑[ pos F ] (g z′) is-true
             NTS o (i , εℱ) =
-              proj₂
+              π₁
                 (foo o (g z′))
                 (f o ⊑⟨ p (f o) foεf⟨$⟩ℱ ⟩ z′ ⊑⟨ ≡⇒⊑ (pos G) (sym (ret _)) ⟩ f (g z′) ■)
               where
@@ -675,8 +673,8 @@ _≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ
 F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] poset-iso (pos F) (pos G) i
 
 -- This is the weak form of univalence.
-frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
-frame-univ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso' F G eqv iso-f)
+≃f→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
+≃f→≡ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso' F G eqv iso-f)
 
 -- -}
 -- -}
