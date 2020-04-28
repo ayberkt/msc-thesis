@@ -104,14 +104,3 @@ is-true-prop (P , P-prop) = P-prop
 _~_ : (f g : (x : A) → B x) → Type _
 _~_ {A = A} f g = (x : A) → f x ≡ g x
 ```
-
-```
-id-∏ : (f g : (x : A) → B x) → (f ~ g) ≡ (f ≡ g)
-id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
-  where
-    F : f ~ g → f ≡ g
-    F f~g = λ i → λ x → f~g x i
-
-    G : f ≡ g → f ~ g
-    G f=g = λ x i → f=g i x
-```
