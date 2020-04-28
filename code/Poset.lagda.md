@@ -30,7 +30,7 @@ Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
     f i = funExt λ x → funExt λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
 
     ⇔-prop : isProp ((x y : X) → [ x ⊑₀ y ⇔ x ⊑₁ y ])
-    ⇔-prop = ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
+    ⇔-prop = isPropΠ λ x → isPropΠ λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
 
     f-equiv : isEquiv f
     f-equiv = record { equiv-proof = λ eq → (g eq , sec eq) , h eq }
@@ -51,7 +51,7 @@ Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
 
 isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isReflexive {A = X} _⊑_ =
-  ((x : X) → [ x ⊑ x ]) , ∏-prop (λ x → is-true-prop (x ⊑ x))
+  ((x : X) → [ x ⊑ x ]) , isPropΠ (λ x → is-true-prop (x ⊑ x))
 
 isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
@@ -59,7 +59,7 @@ isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
     φ      : Type (ℓ₀ ⊔ ℓ₁)
     φ      = ((x y z : X) → [ x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z ])
     φ-prop : isProp φ
-    φ-prop = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z → is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
+    φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ z → is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
 
 isAntisym : {A : Type ℓ₀} → isSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
@@ -67,8 +67,7 @@ isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
     φ      : Type (ℓ₀ ⊔ ℓ₁)
     φ      = ((x y : X) → [ x ⊑ y ] → [ y ⊑ x ] → x ≡ y)
     φ-prop : isProp φ
-    φ-prop = ∏-prop λ x → ∏-prop λ y →
-              ∏-prop λ p → ∏-prop λ q → A-set x y
+    φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ p → isPropΠ λ q → A-set x y
 
 PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = φ , φ-prop
@@ -170,7 +169,7 @@ IsMonotonic P Q f =
 IsMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f : ∣ P ∣ₚ → ∣ Q ∣ₚ)
                  → isProp (IsMonotonic P Q f)
 IsMonotonic-prop P Q f =
-  ∏-prop (λ x → ∏-prop λ y → ∏-prop λ _ → is-true-prop (f x ⊑[ Q ] f y))
+  isPropΠ (λ x → isPropΠ λ y → isPropΠ λ _ → is-true-prop (f x ⊑[ Q ] f y))
 ```
 
 ## Monotonic functions
@@ -212,7 +211,7 @@ IsDownwardClosed P U =
   ((x y : ∣ P ∣ₚ) → [ x ∈ U ] → [ y ⊑[ P ] x ] → [ y ∈ U ]) , prop
   where
     prop : isProp ((x y : ∣ P ∣ₚ) → [ U x ] → [ y ⊑[ P ] x ] → [ U y ])
-    prop = ∏-prop λ _ → ∏-prop λ x → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (x ∈ U)
+    prop = isPropΠ λ _ → isPropΠ λ x → isPropΠ λ _ → isPropΠ λ _ → is-true-prop (x ∈ U)
 
 DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Type (suc ℓ₀ ⊔ ℓ₁)
 DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] [ IsDownwardClosed P U ]
@@ -256,7 +255,7 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
 RP-iso-prop : (P Q : Σ (Type ℓ₀) (Order ℓ₁))
             → (i : π₀ P ≃ π₀ Q) → isProp (order-iso P Q i)
 RP-iso-prop (A , _⊑₀_) (B , _⊑₁_) i =
-  ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
+  isPropΠ λ x → isPropΠ λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
   where
     f = equivFun i
 

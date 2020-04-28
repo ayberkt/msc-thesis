@@ -16,7 +16,7 @@ RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc �
 RawFrameStr ℓ₁ ℓ₂ A = (PosetStr ℓ₁ A) × A × (A → A → A) × (Sub ℓ₂ A → A)
 
 isTop : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
-isTop P x = ((y : ∣ P ∣ₚ) → [ y ⊑[ P ] x ]) , ∏-prop λ y → is-true-prop (y ⊑[ P ] x)
+isTop P x = ((y : ∣ P ∣ₚ) → [ y ⊑[ P ] x ]) , isPropΠ λ y → is-true-prop (y ⊑[ P ] x)
 
 isGLB : (P : Poset ℓ₀ ℓ₁) → (∣ P ∣ₚ → ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁)
 isGLB P _⟨f⟩_ = φ , φ-prop
@@ -29,10 +29,10 @@ isGLB P _⟨f⟩_ = φ , φ-prop
 
     φ-prop : isProp φ
     φ-prop = isOfHLevelΣ 1
-               (∏-prop λ x → ∏-prop λ y →
+               (isPropΠ λ x → isPropΠ λ y →
                  is-true-prop ((x ⟨f⟩ y) ⊑[ P ] x ⊓ (x ⟨f⟩ y) ⊑[ P ] y)) λ _ →
-               ∏-prop λ x → ∏-prop λ y →
-                 ∏-prop λ z → is-true-prop ((z ⊑[ P ] x ⊓ z ⊑[ P ] y) ⇒
+               isPropΠ λ x → isPropΠ λ y →
+                 isPropΠ λ z → is-true-prop ((z ⊑[ P ] x ⊓ z ⊑[ P ] y) ⇒
                                               (z ⊑[ P ] (x ⟨f⟩ y)))
 
 isLUB : (P : Poset ℓ₀ ℓ₁) → (Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
@@ -49,7 +49,7 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
     φ-prop = isOfHLevelΣ 1
               (λ ψ ϑ → funExt λ ℱ →
                 is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] (⋁ ℱ))) (ψ ℱ) (ϑ ℱ)) λ _ →
-              ∏-prop λ ℱ → ∏-prop λ x →
+              isPropΠ λ ℱ → isPropΠ λ x →
                 is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] x) ⇒ (⋁ ℱ) ⊑[ P ] x)
 
 isDist : (P : Poset ℓ₀ ℓ₁)
@@ -286,8 +286,8 @@ isFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
                          → isProp (isFrameHomomorphism F G m)
 isFrameHomomorphism-prop F G m =
   isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → carrier-is-set (pos G) _ _) λ _ →
-    ∏-prop λ ℱ → carrier-is-set (pos G) _ _
+  isOfHLevelΣ 1 (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
+    isPropΠ λ ℱ → carrier-is-set (pos G) _ _
 
 _─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 _─f→_ {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G = Σ (pos F ─m→ pos G) (isFrameHomomorphism F G)
@@ -494,8 +494,8 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
         RF-iso-prop =
           isOfHLevelΣ 1 (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
           isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
-          isOfHLevelΣ 1 (∏-prop λ _ → ∏-prop λ _ → A-set₀ _ _) λ _ →
-          ∏-prop λ _ → A-set₀ _ _)
+          isOfHLevelΣ 1 (isPropΠ λ _ → isPropΠ λ _ → A-set₀ _ _) λ _ →
+          isPropΠ λ _ → A-set₀ _ _)
 
         h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
         h eq (i , p) =
@@ -510,8 +510,8 @@ frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N
 frame-iso-prop F G i =
   isOfHLevelΣ 1 (RP-iso-prop RP RQ i) λ _ →
   isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
-  isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → carrier-is-set (pos G) _ _) λ _ →
-                ∏-prop λ _ → carrier-is-set (pos G) _ _
+  isOfHLevelΣ 1 (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
+                isPropΠ λ _ → carrier-is-set (pos G) _ _
   where
     RP = ∣ F ∣F , π₀ (strₚ (pos F))
     RQ = ∣ G ∣F , π₀ (strₚ (pos G))

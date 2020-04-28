@@ -40,6 +40,7 @@ open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isOfHLevelSuc
                                                             ; isSetΣ
                                                             ; isSetΠ
+                                                            ; isPropΠ
                                                             )
 open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
                                                             ; pathSigma→sigmaPath
@@ -95,22 +96,8 @@ is-true-prop (P , P-prop) = P-prop
 ```
 
 ```
-∏-prop : ((x : A) → isProp (B x)) → isProp ((x : A) → B x)
-∏-prop B-prop x y = funExt λ x′ → B-prop x′ (x x′) (y x′)
-```
-
-```
 ∃_ : {A : Type ℓ₀} → (A → hProp ℓ₁) → Type (ℓ₀ ⊔ ℓ₁)
 ∃_ {A = A} P = Σ[ x ∈ A ] [ P x ]
-```
-
-## Sets
-
-```
-path-abs : A → A
-path-abs x = x
-
-syntax path-abs (λ i → e) = ⟨ i ⟩ e
 ```
 
 ## Univalence
@@ -127,10 +114,10 @@ id-∏ : (f g : (x : A) → B x) → (f ~ g) ≡ (f ≡ g)
 id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
   where
     F : f ~ g → f ≡ g
-    F f~g = ⟨ i ⟩ λ x → f~g x i
+    F f~g = λ i → λ x → f~g x i
 
     G : f ≡ g → f ~ g
-    G f=g = λ x → ⟨ i ⟩ f=g i x
+    G f=g = λ x i → f=g i x
 ```
 
 ```

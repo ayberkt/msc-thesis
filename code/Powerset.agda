@@ -23,7 +23,7 @@ _⊆_ : {A : Type ℓ} → 𝒫 A → 𝒫 A → hProp ℓ
 _⊆_ {A = A} U V = ((λ - → [ U - ]) ⊆⊆ (λ - → [ V - ])) , prop
   where
     prop : isProp ((x : A) → [ U x ] → [ V x ])
-    prop = ∏-prop λ x → ∏-prop λ _ → is-true-prop (V x)
+    prop = isPropΠ λ x → isPropΠ λ _ → is-true-prop (V x)
 
 ⊆-antisym : [ U ⊆ V ] → [ V ⊆ U ] → U ≡ V
 ⊆-antisym {U = U} {V} U⊆V V⊆V = funExt (λ x → ⇔toPath (U⊆V x) (V⊆V x))

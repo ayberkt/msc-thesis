@@ -34,6 +34,6 @@ fam-forall : {X : Type ℓ₀} (ℱ : Sub ℓ₂ X) → (X → hProp ℓ₁) →
 fam-forall {X = X} ℱ P = ((x : X) → x ε ℱ → [ P x ]) , prop
   where
     prop : isProp ((x : X) → x ε ℱ → [ P x ])
-    prop = ∏-prop λ x → ∏-prop λ _ → is-true-prop (P x)
+    prop = isPropΠ λ x → isPropΠ λ _ → is-true-prop (P x)
 
 syntax fam-forall ℱ (λ x → P) = ∀[ x ε ℱ ] P
