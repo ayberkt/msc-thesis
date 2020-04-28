@@ -15,6 +15,7 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             )
 open import Cubical.Data.Sigma.Properties   public using    ( Σ≡; ΣProp≡ )
 open import Cubical.Foundations.Prelude     public using    ( J
+                                                            ; funExt
                                                             ; subst
                                                             ; isProp
                                                             ; isSet
@@ -78,20 +79,15 @@ Unit-prop tt tt = refl
 
 ## Function extensionality
 
-```
-fn-ext : (f g : (x : A) → B x) → ((x : A) → f x ≡ g x) → f ≡ g
-fn-ext f g f~g i x = f~g x i
-```
-
 ## Propositions
 
 ```
 IsProp-prop : isProp (isProp A)
 IsProp-prop {A = A} A-prop₀ A-prop₁ =
-  fn-ext A-prop₀ A-prop₁ rem
+  funExt rem
   where
     rem : (x : A) → A-prop₀ x ≡ A-prop₁ x
-    rem = λ x → fn-ext (A-prop₀ x) (A-prop₁ x) λ y →
+    rem = λ x → funExt λ y →
             isProp→isSet A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
 
 is-true-prop : (P : hProp ℓ) → isProp [ P ]
@@ -100,7 +96,7 @@ is-true-prop (P , P-prop) = P-prop
 
 ```
 ∏-prop : ((x : A) → isProp (B x)) → isProp ((x : A) → B x)
-∏-prop B-prop x y = fn-ext x y λ x′ → B-prop x′ (x x′) (y x′)
+∏-prop B-prop x y = funExt λ x′ → B-prop x′ (x x′) (y x′)
 ```
 
 ```

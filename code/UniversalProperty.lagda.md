@@ -153,7 +153,7 @@ Proof.
       where
         II : (λ { ((u , _) , (v , _)) → ⋃[ R ] (f ⟨$⟩ ⟪ u ↓ v ↓ ⟫) })
            ≡ (λ { ((u , _) , (v , _)) → (f u) ⊓[ R ] (f v) }) 
-        II = sym (fn-ext _ _ λ { ((u , _) , (v , _)) → π₁ f-flat u v })
+        II = sym (funExt λ { ((u , _) , (v , _)) → π₁ f-flat u v })
         I  : _
         I  = ⊑[ pos R ]-antisym _ _ down up
           where
@@ -263,7 +263,7 @@ Proof.
         down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem x y φ) }
 
     g∘η=f : gm∘ηm ≡ fm
-    g∘η=f = to-subtype-≡ _ fm (IsMonotonic-prop P (pos R)) (fn-ext _ _ gm∘ηm~f)
+    g∘η=f = to-subtype-≡ _ fm (IsMonotonic-prop P (pos R)) (funExt gm∘ηm~f)
 
     g∘η=f′ : g ∘ η ≡ f
     g∘η=f′ = subst (λ { (h , _) → h ≡ f }) (sym g∘η=f) refl
@@ -316,7 +316,7 @@ Proof.
         II : (gm , g-frame-homo) ≡ (g′m , g′-frame-homo)
         II = ΣProp≡
                (isFrameHomomorphism-prop L R)
-               (ΣProp≡ (IsMonotonic-prop (pos L) (pos R)) (fn-ext _ _ g~g′))
+               (ΣProp≡ (IsMonotonic-prop (pos L) (pos R)) (funExt g~g′))
 ```
 
 ### The final proof

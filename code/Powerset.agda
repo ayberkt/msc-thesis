@@ -26,7 +26,7 @@ _⊆_ {A = A} U V = ((λ - → [ U - ]) ⊆⊆ (λ - → [ V - ])) , prop
     prop = ∏-prop λ x → ∏-prop λ _ → is-true-prop (V x)
 
 ⊆-antisym : [ U ⊆ V ] → [ V ⊆ U ] → U ≡ V
-⊆-antisym {U = U} {V} U⊆V V⊆V = fn-ext U V (λ x → ⇔toPath (U⊆V x) (V⊆V x))
+⊆-antisym {U = U} {V} U⊆V V⊆V = funExt (λ x → ⇔toPath (U⊆V x) (V⊆V x))
 
 _∩_ : 𝒫 A → 𝒫 A → 𝒫 A
 _∩_ {A = A} U V = λ x → ([ U x ] × [ V x ]) , prop x

@@ -27,7 +27,7 @@ Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
 Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
   where
     f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
-    f i = fn-ext _ _ λ x → fn-ext _ _ λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
+    f i = funExt λ x → funExt λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
 
     ⇔-prop : isProp ((x y : X) → [ x ⊑₀ y ⇔ x ⊑₁ y ])
     ⇔-prop = ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)

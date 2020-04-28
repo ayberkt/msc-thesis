@@ -47,7 +47,7 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
 
     φ-prop : isProp φ
     φ-prop = isOfHLevelΣ 1
-              (λ ψ ϑ → fn-ext ψ ϑ λ ℱ →
+              (λ ψ ϑ → funExt λ ℱ →
                 is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] (⋁ ℱ))) (ψ ℱ) (ϑ ℱ)) λ _ →
               ∏-prop λ ℱ → ∏-prop λ x →
                 is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] x) ⇒ (⋁ ℱ) ⊑[ P ] x)
@@ -61,7 +61,7 @@ isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
     φ = (x : ∣ P ∣ₚ) (ℱ : Sub ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ $ i))
 
     φ-prop : isProp φ
-    φ-prop p q = fn-ext p q λ x → fn-ext _ _ λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
+    φ-prop p q = funExt λ x → funExt λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
 
 frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} A (P-str@(_⊑_ , _) , 𝟏 , _∧_ , ⋃_) =
@@ -246,10 +246,10 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
 
       NTS₀ : (λ - → (⋃[ F ] ℱ) ⊓[ F ] -) ≡ (λ - → - ⊓[ F ] (⋃[ F ] ℱ))
-      NTS₀ = fn-ext _ _ λ x → comm (⋃[ F ] ℱ) x
+      NTS₀ = funExt λ x → comm (⋃[ F ] ℱ) x
 
       NTS₁ : (λ - → - ⊓[ F ] (⋃[ F ] ℱ)) ≡ (λ - → ⋃[ F ] ((λ y → - ⊓[ F ] y) ⟨$⟩ ℱ))
-      NTS₁ = fn-ext _ _ λ x → dist x ℱ
+      NTS₁ = funExt λ x → dist x ℱ
 
       NTS₂ : _
       NTS₂ x = down , up
@@ -258,13 +258,13 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
           down ((j , i) , eq) =
             subst
               (λ - → x ε (_ , -))
-              (fn-ext _ _ (λ { (i′ , j′) → comm (𝒢 $ j′) (ℱ $ i′) })) ((i , j) , eq)
+              (funExt (λ { (i′ , j′) → comm (𝒢 $ j′) (ℱ $ i′) })) ((i , j) , eq)
 
           up : _
           up ((i , j) , eq) =
             subst
               (λ - → x ε (_ , -))
-              (fn-ext _ _ (λ { (j′ , i′) → comm (ℱ $ i′) (𝒢 $ j′) })) ((j , i) , eq)
+              (funExt (λ { (j′ , i′) → comm (ℱ $ i′) (𝒢 $ j′) })) ((j , i) , eq)
 
 -- Frame homomorphisms.
 isFrameHomomorphism : (F : Frame ℓ₀ ℓ₁ ℓ₂) (G : Frame ℓ₀′ ℓ₁′ ℓ₂)
@@ -451,13 +451,13 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
         eq : P ≡ Q
         eq = ΣProp≡
                (poset-axioms-props A)
-               (fn-ext _ _ λ x → fn-ext _ _ λ y → ⇔toPath (π₀ (iₚ x y)) (π₁ (iₚ x y)))
+               (funExt λ x → funExt λ y → ⇔toPath (π₀ (iₚ x y)) (π₁ (iₚ x y)))
 
         ⊓-eq : _⊓₀_ ≡ _⊓₁_
-        ⊓-eq = fn-ext _⊓₀_ _⊓₁_ (λ x → fn-ext (_⊓₀_ x) (_⊓₁_ x) λ y → ⊓-xeq x y)
+        ⊓-eq = funExt (λ x → funExt λ y → ⊓-xeq x y)
 
         ⋃-eq : ⋃₀ ≡ ⋃₁
-        ⋃-eq = fn-ext ⋃₀ ⋃₁ λ ℱ → ⋃-xeq ℱ
+        ⋃-eq = funExt λ ℱ → ⋃-xeq ℱ
 
     f-equiv : isEquiv f
     f-equiv = record { equiv-proof = λ eq → (g eq , ret eq) , h eq }
