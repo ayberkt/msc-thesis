@@ -483,9 +483,9 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
             ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ ⋃₁ (𝒻 ⟨$⟩ ℱ) }) (sym eq) refl
 
         str-set : isSet (RawFrameStr ℓ₁ ℓ₂ A)
-        str-set = Σ-set (PosetStr-set ℓ₁ A) λ _ →
-                  Σ-set A-set₀ λ _ →
-                  Σ-set (∏-set λ _ → ∏-set λ _ → A-set₀) λ _ → ∏-set λ _ → A-set₀
+        str-set = isSetΣ (PosetStr-set ℓ₁ A) λ _ →
+                  isSetΣ A-set₀ λ _ →
+                  isSetΣ (∏-set λ _ → ∏-set λ _ → A-set₀) λ _ → ∏-set λ _ → A-set₀
 
         ret : (eq : F ≡ G) → f (g eq) ≡ eq
         ret eq = str-set F G (f (g eq)) eq

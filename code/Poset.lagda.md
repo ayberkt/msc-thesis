@@ -89,8 +89,8 @@ PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → [ PosetAx ℓ�
 
 PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
-  Σ-set (∏-set λ _ → ∏-set λ _ → isSetHProp) λ _⊑_ →
-  Σ-set (isProp→isSet isPropIsSet) λ A-set →
+  isSetΣ (∏-set λ _ → ∏-set λ _ → isSetHProp) λ _⊑_ →
+  isSetΣ (isProp→isSet isPropIsSet) λ A-set →
     isProp→isSet
       (is-true-prop (isReflexive {A = A} _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_))
 ```
@@ -219,7 +219,7 @@ DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] [ IsDownwardClosed P U ]
 
 DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → isSet (DownwardClosedSubset P)
 DownwardClosedSubset-set P =
-  Σ-set (𝒫-set ∣ P ∣ₚ) λ U → isProp→isSet (is-true-prop (IsDownwardClosed P U))
+  isSetΣ (𝒫-set ∣ P ∣ₚ) λ U → isProp→isSet (is-true-prop (IsDownwardClosed P U))
 ```
 
 ## Product of two posets

@@ -86,7 +86,7 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , n₀ , n₁ , n₂) 
     𝔽 = Σ[ a ∈ ∣ L ∣F ] j a ≡ a
 
     𝔽-set : isSet 𝔽
-    𝔽-set = Σ-set A-set (λ a → isProp→isSet (A-set (j a) a))
+    𝔽-set = isSetΣ A-set (λ a → isProp→isSet (A-set (j a) a))
 
     _≤_ : 𝔽 → 𝔽 → hProp ℓ₁
     (a , _) ≤ (b , _) = [ a ⊑[ P ] b ] , is-true-prop (a ⊑[ P ] b)

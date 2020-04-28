@@ -37,6 +37,7 @@ open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isPropIsSet
                                                             ; isOfHLevelΣ
                                                             ; isOfHLevelSuc
+                                                            ; isSetΣ
                                                             )
 open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
                                                             ; pathSigma→sigmaPath
@@ -144,11 +145,6 @@ id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
 
     NTS : isProp (f ≡ g)
     NTS p q = subst isProp (id-∏ f g) rem1 p q
-```
-
-```
-Σ-set : isSet A → ((x : A) → isSet (B x)) → isSet (Σ A B)
-Σ-set = isOfHLevelΣ 2
 ```
 
 ```
