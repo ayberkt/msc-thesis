@@ -13,7 +13,7 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             ; isEquiv
                                                             ; equivProof
                                                             )
-open import Cubical.Data.Sigma.Properties   public using    ( Σ≡; ΣProp≡ )
+open import Cubical.Data.Sigma.Properties   public using    ( ΣProp≡ )
 open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; funExt
                                                             ; subst
@@ -48,13 +48,22 @@ open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSi
                                                             ; _,_
                                                             )
                                                    renaming ( fst to π₀
-                                                            ; snd to π₁ )
+                                                            ; snd to π₁
+                                                            )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath
                                                             ; iso
                                                             ; section
-                                                            ; retract)
-open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath ; _⊓_ ; [_])
-open import Function                        public using    ( _∘_; id )
+                                                            ; retract
+                                                            )
+open import Cubical.Foundations.Logic       public using    ( _⇔_
+                                                            ; _⇒_
+                                                            ; ⇔toPath
+                                                            ; _⊓_
+                                                            ; [_]
+                                                            )
+open import Function                        public using    ( _∘_
+                                                            ; id
+                                                            )
 open import Level                           public
 ```
 
