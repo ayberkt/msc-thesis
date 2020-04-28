@@ -41,7 +41,7 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
     -- We write down the property φ, expressing that f is the LUB, and couple it with the
     -- proof (φ-prop) that it is propositional.
     φ = ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) → [ ∀[ x ε ℱ ] (x ⊑[ P ] (⋁ ℱ)) ])
-      × ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → [ (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ (⋁ ℱ) ⊑[ P ] x ])
+      × ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → [ (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ ⋁ ℱ ⊑[ P ] x ])
         -- f ℱ is is the _upper_ bound of ℱ i.e., above every x ε ℱ.
         -- Given any other x that is an upper bound of ℱ, f ℱ is _lower_ than x.
 
