@@ -9,7 +9,8 @@ files = [ "FormalTopology.agda",
           "SnocList.agda",
           "CantorSpace.lagda.md",
           "Frame.agda",
-          "ProductTopology.agda"
+          "ProductTopology.agda",
+          "UniversalProperty.lagda.md"
         ]
 
 def check_cosmetics_of_file(fname):
