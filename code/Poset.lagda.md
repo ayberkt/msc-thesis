@@ -21,7 +21,7 @@ order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
     f = equivFun eqv
 
 isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
-isSet-Order ℓ₁ A = ∏-set λ _ → ∏-set λ _ → isSetHProp
+isSet-Order ℓ₁ A = isSetΠ λ _ → isSetΠ λ _ → isSetHProp
 
 Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
 Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
@@ -89,7 +89,7 @@ PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → [ PosetAx ℓ�
 
 PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
-  isSetΣ (∏-set λ _ → ∏-set λ _ → isSetHProp) λ _⊑_ →
+  isSetΣ (isSetΠ λ _ → isSetΠ λ _ → isSetHProp) λ _⊑_ →
   isSetΣ (isProp→isSet isPropIsSet) λ A-set →
     isProp→isSet
       (is-true-prop (isReflexive {A = A} _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_))

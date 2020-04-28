@@ -485,7 +485,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
         str-set : isSet (RawFrameStr ℓ₁ ℓ₂ A)
         str-set = isSetΣ (PosetStr-set ℓ₁ A) λ _ →
                   isSetΣ A-set₀ λ _ →
-                  isSetΣ (∏-set λ _ → ∏-set λ _ → A-set₀) λ _ → ∏-set λ _ → A-set₀
+                  isSetΣ (isSetΠ λ _ → isSetΠ λ _ → A-set₀) λ _ → isSetΠ λ _ → A-set₀
 
         ret : (eq : F ≡ G) → f (g eq) ≡ eq
         ret eq = str-set F G (f (g eq)) eq

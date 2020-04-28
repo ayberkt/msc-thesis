@@ -11,7 +11,7 @@ _∈_ : A → 𝒫 A → hProp _
 x ∈ U = U x
 
 𝒫-set : (A : Type ℓ) → isSet (𝒫 A)
-𝒫-set A = ∏-set λ _ → isSetHProp
+𝒫-set A = isSetΠ λ _ → isSetHProp
 
 variable
   U V : 𝒫 A
