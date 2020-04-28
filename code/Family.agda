@@ -37,3 +37,7 @@ fam-forall {X = X} ℱ P = ((x : X) → x ε ℱ → [ P x ]) , prop
     prop = isPropΠ λ x → isPropΠ λ _ → is-true-prop (P x)
 
 syntax fam-forall ℱ (λ x → P) = ∀[ x ε ℱ ] P
+
+-- Familification of a given powerset.
+⟪_⟫ : {A : Type ℓ₀} → (A → hProp ℓ₁) → Sub (ℓ₀ ⊔ ℓ₁) A
+⟪_⟫ {A = A} U = (Σ[ x ∈ A ] [ U x ]) , π₀

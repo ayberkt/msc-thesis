@@ -13,7 +13,6 @@ open import Truncation     renaming (squash to squash′)
 open import Data.Bool      using    (Bool; true; false)
 open import Powerset
 open import FormalTopology renaming (pos to pos′)
-open import PowFamEquivalence
 ```
 
 We use an anonymous module that takes some formal topology `F` as a parameter to reduce

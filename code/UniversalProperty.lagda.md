@@ -7,7 +7,6 @@ open import Basis
 open import Frame
 open import Poset
 open import Powerset
-open import PowFamEquivalence
 open import Family
 open import Truncation
 open import FormalTopology hiding (pos)
