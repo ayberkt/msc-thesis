@@ -267,7 +267,10 @@ poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx ℓ₁ A str)
 
 poset-is-SNS : SNS {ℓ} (PosetStr ℓ₁) poset-iso
 poset-is-SNS {ℓ₁ = ℓ₁} =
-  SNS-PathP→SNS-≡ (PosetStr ℓ₁) poset-iso (add-axioms-SNS _ poset-axioms-props (SNS-≡→SNS-PathP order-iso Order-is-SNS))
+  SNS-PathP→SNS-≡
+    (PosetStr ℓ₁)
+    poset-iso
+    (add-axioms-SNS _ poset-axioms-props (SNS-≡→SNS-PathP order-iso Order-is-SNS))
 
 poset-is-SNS-PathP : SNS-PathP {ℓ} (PosetStr ℓ₁) poset-iso
 poset-is-SNS-PathP = SNS-≡→SNS-PathP poset-iso poset-is-SNS
