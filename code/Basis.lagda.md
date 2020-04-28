@@ -81,14 +81,6 @@ Unit-prop tt tt = refl
 ## Propositions
 
 ```
-IsProp-prop : isProp (isProp A)
-IsProp-prop {A = A} A-prop₀ A-prop₁ =
-  funExt rem
-  where
-    rem : (x : A) → A-prop₀ x ≡ A-prop₁ x
-    rem = λ x → funExt λ y →
-            isProp→isSet A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
-
 is-true-prop : (P : hProp ℓ) → isProp [ P ]
 is-true-prop (P , P-prop) = P-prop
 ```
