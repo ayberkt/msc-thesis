@@ -20,7 +20,7 @@ order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
   where
     f = equivFun eqv
 
-isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → IsSet (Order ℓ₁ A)
+isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
 isSet-Order ℓ₁ A = ∏-set λ _ → ∏-set λ _ → isSetHProp
 
 Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
@@ -29,7 +29,7 @@ Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
     f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
     f i = fn-ext _ _ λ x → fn-ext _ _ λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
 
-    ⇔-prop : IsProp ((x y : X) → (x ⊑₀ y ⇔ x ⊑₁ y) is-true)
+    ⇔-prop : isProp ((x y : X) → (x ⊑₀ y ⇔ x ⊑₁ y) is-true)
     ⇔-prop = ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
 
     f-equiv : isEquiv f
@@ -58,24 +58,24 @@ isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
   where
     φ      : Type (ℓ₀ ⊔ ℓ₁)
     φ      = ((x y z : X) → (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z) is-true)
-    φ-prop : IsProp φ
+    φ-prop : isProp φ
     φ-prop = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z → is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
 
-isAntisym : {A : Type ℓ₀} → IsSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+isAntisym : {A : Type ℓ₀} → isSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
   where
     φ      : Type (ℓ₀ ⊔ ℓ₁)
     φ      = ((x y : X) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y)
-    φ-prop : IsProp φ
+    φ-prop : isProp φ
     φ-prop = ∏-prop λ x → ∏-prop λ y →
               ∏-prop λ p → ∏-prop λ q → A-set x y
 
 PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = φ , φ-prop
   where
-    isPartial : IsSet A → hProp (ℓ₀ ⊔ ℓ₁)
+    isPartial : isSet A → hProp (ℓ₀ ⊔ ℓ₁)
     isPartial = λ A-set → isReflexive _⊑_ ∧ isTransitive _⊑_ ∧ isAntisym A-set _⊑_
-    φ         = Σ[ A-set ∈ IsSet A ] (isPartial A-set) is-true
+    φ         = Σ[ A-set ∈ isSet A ] (isPartial A-set) is-true
     φ-prop    = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
 
 ```
@@ -87,11 +87,11 @@ PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
 PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → PosetAx ℓ₁ A _⊑_ is-true
 
 
-PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → IsSet (PosetStr ℓ₁ A)
+PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
   Σ-set (∏-set λ _ → ∏-set λ _ → isSetHProp) λ _⊑_ →
-  Σ-set (prop⇒set isPropIsSet) λ A-set →
-    prop⇒set
+  Σ-set (isProp→isSet isPropIsSet) λ A-set →
+    isProp→isSet
       (is-true-prop (isReflexive {A = A} _⊑_  ∧ isTransitive _⊑_ ∧ isAntisym A-set _⊑_))
 ```
 
@@ -135,7 +135,7 @@ Similarly, we define projections for the poset properties.
              → x ⊑[ P ] y is-true → y ⊑[ P ] x is-true → x ≡ y
 ⊑[_]-antisym (_ , _ , _ , _ , _ , ⊑-antisym) = ⊑-antisym
 
-carrier-is-set : (P : Poset ℓ₀ ℓ₁) → IsSet ∣ P ∣ₚ
+carrier-is-set : (P : Poset ℓ₀ ℓ₁) → isSet ∣ P ∣ₚ
 carrier-is-set (_ , _ , is-set , _) = is-set
 ```
 
@@ -165,7 +165,7 @@ IsMonotonic P Q f =
   (x y : ∣ P ∣ₚ) → x ⊑[ P ] y is-true → (f x) ⊑[ Q ] (f y) is-true
 
 IsMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f : ∣ P ∣ₚ → ∣ Q ∣ₚ)
-                 → IsProp (IsMonotonic P Q f)
+                 → isProp (IsMonotonic P Q f)
 IsMonotonic-prop P Q f =
   ∏-prop (λ x → ∏-prop λ y → ∏-prop λ _ → is-true-prop (f x ⊑[ Q ] f y))
 ```
@@ -208,15 +208,15 @@ IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → 𝒫 ∣ P ∣ₚ → hProp (�
 IsDownwardClosed P U =
   ((x y : ∣ P ∣ₚ) → x ∈ U is-true → y ⊑[ P ] x is-true → y ∈ U is-true) , prop
   where
-    prop : IsProp ((x y : ∣ P ∣ₚ) → U x is-true → y ⊑[ P ] x is-true → U y is-true)
+    prop : isProp ((x y : ∣ P ∣ₚ) → U x is-true → y ⊑[ P ] x is-true → U y is-true)
     prop = ∏-prop λ _ → ∏-prop λ x → ∏-prop λ _ → ∏-prop λ _ → is-true-prop (x ∈ U)
 
 DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Type (suc ℓ₀ ⊔ ℓ₁)
 DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] IsDownwardClosed P U is-true
 
-DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → IsSet (DownwardClosedSubset P)
+DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → isSet (DownwardClosedSubset P)
 DownwardClosedSubset-set P =
-  Σ-set (𝒫-set ∣ P ∣ₚ) λ U → prop⇒set (is-true-prop (IsDownwardClosed P U))
+  Σ-set (𝒫-set ∣ P ∣ₚ) λ U → isProp→isSet (is-true-prop (IsDownwardClosed P U))
 ```
 
 ## Product of two posets
@@ -228,7 +228,7 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
     _⊑_ : ∣ P ∣ₚ × ∣ Q ∣ₚ → ∣ P ∣ₚ × ∣ Q ∣ₚ → hProp _
     _⊑_ (x₀ , y₀) (x₁ , y₁) = x₀ ⊑[ P ] x₁ ∧ y₀ ⊑[ Q ] y₁
 
-    carrier-set : IsSet (∣ P ∣ₚ × ∣ Q ∣ₚ)
+    carrier-set : isSet (∣ P ∣ₚ × ∣ Q ∣ₚ)
     carrier-set = isOfHLevelΣ 2 (carrier-is-set P) λ _ → (carrier-is-set Q)
 
     ⊑-refl : (p : ∣ P ∣ₚ × ∣ Q ∣ₚ) → p ⊑ p is-true
@@ -251,7 +251,7 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
 ```
 
 RP-iso-prop : (P Q : Σ (Type ℓ₀) (Order ℓ₁))
-            → (i : π₀ P ≃ π₀ Q) → IsProp (order-iso P Q i)
+            → (i : π₀ P ≃ π₀ Q) → isProp (order-iso P Q i)
 RP-iso-prop (A , _⊑₀_) (B , _⊑₁_) i =
   ∏-prop λ x → ∏-prop λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
   where
@@ -261,7 +261,7 @@ poset-iso : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Ty
 poset-iso {ℓ₁ = ℓ₁} = add-to-iso order-iso (λ A _⊑_ → PosetAx ℓ₁ A _⊑_ is-true)
 
 poset-axioms-props : (A : Type ℓ₀) (str : Order ℓ₁ A)
-                   → IsProp (PosetAx ℓ₁ A str is-true)
+                   → isProp (PosetAx ℓ₁ A str is-true)
 poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx ℓ₁ A str)
 
 

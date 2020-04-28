@@ -10,7 +10,7 @@ open import Basis
 _∈_ : A → 𝒫 A → hProp _
 x ∈ U = U x
 
-𝒫-set : (A : Type ℓ) → IsSet (𝒫 A)
+𝒫-set : (A : Type ℓ) → isSet (𝒫 A)
 𝒫-set A = ∏-set λ _ → isSetHProp
 
 variable
@@ -22,7 +22,7 @@ _⊆⊆_ {A = A} U V =  (x : A) → U x → V x
 _⊆_ : {A : Type ℓ} → 𝒫 A → 𝒫 A → hProp ℓ
 _⊆_ {A = A} U V = ((λ - → U - is-true) ⊆⊆ (λ - → V - is-true)) , prop
   where
-    prop : IsProp ((x : A) → U x is-true → V x is-true)
+    prop : isProp ((x : A) → U x is-true → V x is-true)
     prop = ∏-prop λ x → ∏-prop λ _ → is-true-prop (V x)
 
 ⊆-antisym : U ⊆ V is-true → V ⊆ U is-true → U ≡ V
@@ -31,5 +31,5 @@ _⊆_ {A = A} U V = ((λ - → U - is-true) ⊆⊆ (λ - → V - is-true)) , pro
 _∩_ : 𝒫 A → 𝒫 A → 𝒫 A
 _∩_ {A = A} U V = λ x → (U x is-true × V x is-true) , prop x
   where
-    prop : (x : A) → IsProp (U x is-true × V x is-true)
+    prop : (x : A) → isProp (U x is-true × V x is-true)
     prop x = isOfHLevelΣ 1 (is-true-prop (U x)) λ _ → is-true-prop (V x)

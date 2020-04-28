@@ -26,7 +26,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
     branch : (b : exp D a) → (f : (c : out D b) → next D c <| U) → a <| U
     squash : (p₀ p₁ : a <| U) → p₀ ≡ p₁
 
-  <|-prop : (a : ∣ P ∣ₚ) (U : 𝒫 ∣ P ∣ₚ) → IsProp (a <| U)
+  <|-prop : (a : ∣ P ∣ₚ) (U : 𝒫 ∣ P ∣ₚ) → isProp (a <| U)
   <|-prop a U = squash
 ```
 

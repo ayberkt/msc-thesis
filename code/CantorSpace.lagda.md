@@ -34,7 +34,7 @@ renamed to `_^_` to prevent conflict.
 _≤_ : ℂ → ℂ → hProp zero
 xs ≤ ys = (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs) , prop
   where
-    prop : IsProp (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs)
+    prop : isProp (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs)
     prop xs≤ys@(_ , p) xs≤ys′@(_ , q) =
       to-subtype-≡ xs≤ys xs≤ys′ (λ ws → ℂ-set xs (ys ++ ws)) (++-lemma p q)
 ```

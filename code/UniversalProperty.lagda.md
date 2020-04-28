@@ -284,16 +284,16 @@ Proof.
         f=g′∘η = subst (λ { (f′ , _) → f′ ≡ g′ ∘ η }) φ refl
 
         NTS₀ : (y : Σ (∣ pos L ∣ₚ → ∣ pos R ∣ₚ) (IsMonotonic (pos L) (pos R)))
-             → IsProp ((_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) ≡ fm)
+             → isProp ((_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) ≡ fm)
         NTS₀ y = isOfHLevelΣ 2
                    (∏-set λ _ → carrier-is-set (pos R))
-                   (λ h → prop⇒set (IsMonotonic-prop P (pos R) h))
+                   (λ h → isProp→isSet (IsMonotonic-prop P (pos R) h))
                    (_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) fm
 
-        I : (h : L ─f→ R) → IsProp (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm ≡ fm)
+        I : (h : L ─f→ R) → isProp (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm ≡ fm)
         I h = isOfHLevelΣ 2
                 (∏-set λ _ → carrier-is-set (pos R))
-                (λ h → prop⇒set (IsMonotonic-prop P (pos R) h))
+                (λ h → isProp→isSet (IsMonotonic-prop P (pos R) h))
                 (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm) fm
 
         g~g′ : (𝔘 : ∣ L ∣F) → g 𝔘 ≡ g′ 𝔘

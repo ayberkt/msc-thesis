@@ -46,7 +46,7 @@ SnocList-discrete (xs ⌢ x) (ys ⌢ y)
                          P = λ xs′ → Dec (xs′ ⌢ x  ≡ ys ⌢ y)
                          Q = λ x′  → Dec (ys  ⌢ x′ ≡ ys ⌢ y)
 
-SnocList-set : IsSet SnocList
+SnocList-set : isSet SnocList
 SnocList-set = Discrete→isSet SnocList-discrete
 
 _++_ : SnocList → SnocList → SnocList

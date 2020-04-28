@@ -27,7 +27,7 @@ isGLB P _⟨f⟩_ = φ , φ-prop
         -- that.
       × ((x y z  : ∣ P ∣ₚ) → (z ⊑[ P ] x ∧ z ⊑[ P ] y) ⇒ (z ⊑[ P ] (x ⟨f⟩ y)) is-true)
 
-    φ-prop : IsProp φ
+    φ-prop : isProp φ
     φ-prop = isOfHLevelΣ 1
                (∏-prop λ x → ∏-prop λ y →
                  is-true-prop ((x ⟨f⟩ y) ⊑[ P ] x ∧ (x ⟨f⟩ y) ⊑[ P ] y)) λ _ →
@@ -46,7 +46,7 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
         -- f ℱ is is the _upper_ bound of ℱ i.e., above every x ε ℱ.
         -- Given any other x that is an upper bound of ℱ, f ℱ is _lower_ than x.
 
-    φ-prop : IsProp φ
+    φ-prop : isProp φ
     φ-prop = isOfHLevelΣ 1
               (λ ψ ϑ → fn-ext ψ ϑ λ ℱ →
                 is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] (⋁ ℱ))) (ψ ℱ) (ϑ ℱ)) λ _ →
@@ -61,7 +61,7 @@ isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
   where
     φ = (x : ∣ P ∣ₚ) (ℱ : Sub ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ $ i))
 
-    φ-prop : IsProp φ
+    φ-prop : isProp φ
     φ-prop p q = fn-ext p q λ x → fn-ext _ _ λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
 
 frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
@@ -284,7 +284,7 @@ isFrameHomomorphism {ℓ₂ = ℓ₂} F G (f , _) = resp-𝟏 × resp-⊓ × res
 
 isFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
                          → (m : pos F ─m→ pos G)
-                         → IsProp (isFrameHomomorphism F G m)
+                         → isProp (isFrameHomomorphism F G m)
 isFrameHomomorphism-prop F G m =
   isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
   isOfHLevelΣ 1 (∏-prop λ x → ∏-prop λ y → carrier-is-set (pos G) _ _) λ _ →
@@ -484,7 +484,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
             ξ : (ℱ : Sub ℓ₂ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ $ i))
             ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ ⋃₁ (𝒻 ⟨$⟩ ℱ) }) (sym eq) refl
 
-        str-set : IsSet (RawFrameStr ℓ₁ ℓ₂ A)
+        str-set : isSet (RawFrameStr ℓ₁ ℓ₂ A)
         str-set = Σ-set (PosetStr-set ℓ₁ A) λ _ →
                   Σ-set A-set₀ λ _ →
                   Σ-set (∏-set λ _ → ∏-set λ _ → A-set₀) λ _ → ∏-set λ _ → A-set₀
@@ -492,7 +492,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
         ret : (eq : F ≡ G) → f (g eq) ≡ eq
         ret eq = str-set F G (f (g eq)) eq
 
-        RF-iso-prop : IsProp (RF-iso (A , F) (A , G) (idEquiv A))
+        RF-iso-prop : isProp (RF-iso (A , F) (A , G) (idEquiv A))
         RF-iso-prop =
           isOfHLevelΣ 1 (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
           isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
@@ -508,7 +508,7 @@ frame-iso : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π
 frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
   add-to-iso RF-iso λ A RF → frame-axioms A RF is-true
 
-frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → IsProp (frame-iso M N i)
+frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → isProp (frame-iso M N i)
 frame-iso-prop F G i =
   isOfHLevelΣ 1 (RP-iso-prop RP RQ i) λ _ →
   isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
@@ -522,7 +522,7 @@ frame-iso-Ω : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ M ≃ π₀ N → hP
 frame-iso-Ω M N i = frame-iso M N i , frame-iso-prop M N i
 
 frame-axioms-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A)
-                   → IsProp ((frame-axioms A str) is-true)
+                   → isProp ((frame-axioms A str) is-true)
 frame-axioms-props A str = is-true-prop (frame-axioms A str)
 
 frame-is-SNS : SNS {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
