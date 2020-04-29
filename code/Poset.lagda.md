@@ -186,6 +186,9 @@ poset-iso′ P Q e = IsMonotonic P Q f × IsMonotonic Q P g
   where
     f = π₀ (equiv→HAEquiv e)
     g = isHAEquiv.g (π₁ (equiv→HAEquiv e))
+
+poset-iso′′ : (P Q : Poset ℓ₀ ℓ₁) → (P ─m→ Q) → Type (ℓ₀ ⊔ ℓ₁)
+poset-iso′′ P Q (f , _) = Σ[ (g , _) ∈ (Q ─m→ P) ] section f g × retract f g
 ```
 
 Projection for the underlying function of a monotonic map.
@@ -330,8 +333,21 @@ poset-SIP {ℓ₁ = ℓ₁} A B eqv P Q i = foo (eqv , i)
 _≃ₚ_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
 _≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso P Q i
 
+_≃ₚ′_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
+P ≃ₚ′ Q = Σ[ eqv ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso′ P Q eqv
+
+_≃⋆_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
+P ≃⋆ Q = Σ[ f ∈ (P ─m→ Q) ] poset-iso′′ P Q f
+
 pos-iso-to-eq : (P Q : Poset ℓ₀ ℓ₁) → P ≃ₚ Q → P ≡ Q
 pos-iso-to-eq (A , A-pos) (B , B-pos) (eqv , i) = poset-SIP A B eqv A-pos B-pos i
+
+pos-iso-to-eq′ : (P Q : Poset ℓ₀ ℓ₁) → P ≃ₚ′ Q → P ≡ Q
+pos-iso-to-eq′ P Q (eqv , i-homo) =
+  pos-iso-to-eq P Q (eqv , π₁ (poset-iso⇔poset-iso′ P Q eqv) i-homo)
+
+≃⋆→≃ₚ′ : (P Q : Poset ℓ₀ ℓ₁) → P ≃⋆ Q → P ≃ₚ′ Q
+≃⋆→≃ₚ′ P Q ((f , f-mono) , (g , g-mono) , sec , ret) = isoToEquiv (iso f g sec ret) , f-mono , g-mono
 
 -- --}
 -- --}
