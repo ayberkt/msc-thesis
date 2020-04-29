@@ -318,7 +318,7 @@ downward-subset-poset {ℓ₀ = ℓ₀} (A , P) =
 
       <<-antisym : [ isAntisym 𝔻-set _<<_ ]
       <<-antisym X Y S⊆T T⊆S =
-        to-subtype-≡ X Y (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
+        ΣProp≡ (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀

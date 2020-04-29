@@ -13,7 +13,7 @@ open import Cubical.Core.Everything         public using    ( _≡_
                                                             ; isEquiv
                                                             ; equivProof
                                                             )
-open import Cubical.Data.Sigma.Properties   public using    ( Σ≡; ΣProp≡ )
+open import Cubical.Data.Sigma.Properties   public using    ( ΣProp≡ )
 open import Cubical.Foundations.Prelude     public using    ( J
                                                             ; funExt
                                                             ; subst
@@ -48,13 +48,22 @@ open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSi
                                                             ; _,_
                                                             )
                                                    renaming ( fst to π₀
-                                                            ; snd to π₁ )
+                                                            ; snd to π₁
+                                                            )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath
                                                             ; iso
                                                             ; section
-                                                            ; retract)
-open import Cubical.Foundations.Logic       public using    ( _⇔_; _⇒_; ⇔toPath ; _⊓_ ; [_])
-open import Function                        public using    ( _∘_; id )
+                                                            ; retract
+                                                            )
+open import Cubical.Foundations.Logic       public using    ( _⇔_
+                                                            ; _⇒_
+                                                            ; ⇔toPath
+                                                            ; _⊓_
+                                                            ; [_]
+                                                            )
+open import Function                        public using    ( _∘_
+                                                            ; id
+                                                            )
 open import Level                           public
 ```
 
@@ -81,14 +90,6 @@ Unit-prop tt tt = refl
 ## Propositions
 
 ```
-IsProp-prop : isProp (isProp A)
-IsProp-prop {A = A} A-prop₀ A-prop₁ =
-  funExt rem
-  where
-    rem : (x : A) → A-prop₀ x ≡ A-prop₁ x
-    rem = λ x → funExt λ y →
-            isProp→isSet A-prop₀ x y (A-prop₀ x y) (A-prop₁ x y)
-
 is-true-prop : (P : hProp ℓ) → isProp [ P ]
 is-true-prop (P , P-prop) = P-prop
 ```
@@ -103,22 +104,4 @@ is-true-prop (P , P-prop) = P-prop
 ```
 _~_ : (f g : (x : A) → B x) → Type _
 _~_ {A = A} f g = (x : A) → f x ≡ g x
-```
-
-```
-id-∏ : (f g : (x : A) → B x) → (f ~ g) ≡ (f ≡ g)
-id-∏ f g = isoToPath (iso F G (λ _ → refl) (λ _ → refl))
-  where
-    F : f ~ g → f ≡ g
-    F f~g = λ i → λ x → f~g x i
-
-    G : f ≡ g → f ~ g
-    G f=g = λ x i → f=g i x
-```
-
-```
-to-subtype-≡ : (p q : Σ A B)
-             → ((x : A) → isProp (B x))
-             → π₀ p ≡ π₀ q → p ≡ q
-to-subtype-≡ _ _ B-prop eq = ΣProp≡ B-prop eq
 ```

@@ -6,7 +6,7 @@ module CantorSpace where
 open import Basis
 open import Cubical.Data.Empty.Base   using (⊥; rec)
 open import Cubical.Data.Bool.Base    using (true; false; _≟_)   renaming (Bool to 𝔹)
-open import Data.List                 using (List; _∷_; []) renaming (_++_ to _^_)
+open import Data.List                 using (List; _∷_; [])      renaming (_++_ to _^_)
 open import Cubical.Foundations.Logic using ()                   renaming (⊥ to bot)
 open import Data.Sum                  using (_⊎_; inj₁; inj₂)
 open import Powerset                  hiding (U)
@@ -35,8 +35,7 @@ _≤_ : ℂ → ℂ → hProp zero
 xs ≤ ys = (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs) , prop
   where
     prop : isProp (Σ[ zs ∈ ℂ ] xs ≡ ys ++ zs)
-    prop xs≤ys@(_ , p) xs≤ys′@(_ , q) =
-      to-subtype-≡ xs≤ys xs≤ys′ (λ ws → ℂ-set xs (ys ++ ws)) (++-lemma p q)
+    prop (_ , p) (_ , q) = ΣProp≡ (λ ws → ℂ-set xs (ys ++ ws)) (++-lemma p q)
 ```
 
 As `_≤_` is a partial order, we package it up as a poset.
@@ -101,13 +100,13 @@ These four components together form an interaction system that satiesfies the mo
 and simulation properties (given in `ℂ-mono` and `ℂ-sim`).
 
 ```
-IS : InteractionStr ℂ
-IS = ℂ-exp , ℂ-out , λ {xs} → ℂ-rev {xs}
+ℂ-IS : InteractionStr ℂ
+ℂ-IS = ℂ-exp , ℂ-out , λ {xs} → ℂ-rev {xs}
 
-ℂ-mono : HasMonotonicity ℂ-pos IS
+ℂ-mono : hasMono ℂ-pos ℂ-IS
 ℂ-mono _ _ c = [] ⌢ c , refl
 
-ℂ-sim : HasSimulation (ℂ-pos , IS , ℂ-mono)
+ℂ-sim : hasSimulation ℂ-pos ℂ-IS
 ℂ-sim xs ys xs≤ys@([] , p)     tt = tt , λ c₀ → c₀ , [] , cong (λ - → - ⌢ c₀) p
 ℂ-sim xs ys xs≤ys@(zs ⌢ z , p) tt = tt , NTS
   where
@@ -128,7 +127,7 @@ We finally package up all this as a formal topology
 
 ```
 cantor : FormalTopology zero zero
-cantor = (ℂ-pos , IS , ℂ-mono) , ℂ-sim
+cantor = ℂ-pos , ℂ-IS , ℂ-mono , ℂ-sim
 ```
 
 from which we get a covering relation

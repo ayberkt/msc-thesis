@@ -23,46 +23,47 @@ action   (_ , B , _ , _) = B
 reaction (_ , _ , C , _) = C
 δ        (_ , _ , _ , d) = d
 
-HasMonotonicity : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-HasMonotonicity P i =
+hasMono : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
+hasMono P i =
   (a : state IS) (b : action IS a) (c : reaction IS b) → [ δ IS c ⊑[ P ] a ]
   where
     IS : InteractionSys _
     IS = ∣ P ∣ₚ , i
 
-Discipline : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
-Discipline ℓ₀ ℓ₁ =
-  Σ[ P ∈ (Poset ℓ₀ ℓ₁) ] Σ[ IS ∈ (InteractionStr ∣ P ∣ₚ) ] HasMonotonicity P IS
+module _ (P : Poset ℓ₀ ℓ₁) (ℐ-str : InteractionStr ∣ P ∣ₚ) where
+  ℐ : InteractionSys ℓ₀
+  ℐ = (∣ P ∣ₚ , ℐ-str)
 
-pos : Discipline ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
-pos (P , _) = P
-
-post : (D : Discipline ℓ₀ ℓ₁) → InteractionSys ℓ₀
-post (P , P-disc , _) = ∣ P ∣ₚ , P-disc
-
-module _ (D : Discipline ℓ₀ ℓ₁) where
-
-  private
-    P   = pos D
-    str = π₀ (π₁ D)
-
-  stage : Type ℓ₀
-  stage = state (post D)
-
-  exp : stage → Type ℓ₀
-  exp = action (post D)
-
-  outcome : {x : stage} → exp x → Type ℓ₀
-  outcome = reaction (∣ P ∣ₚ , str)
-
-  next : {a : stage} → {b : exp a} → outcome b → stage
-  next = δ (post D)
-
-  HasSimulation : Type (ℓ₀ ⊔ ℓ₁)
-  HasSimulation =
-    (a₀ a : ∣ P ∣ₚ) → [ a₀ ⊑[ pos D ] a ] →
-      (b : exp a) → Σ (exp a₀) (λ b₀ →
-        (c₀ : outcome b₀) → Σ (outcome b) (λ c → [ next c₀ ⊑[ pos D ] next c ]))
+  hasSimulation : Type (ℓ₀ ⊔ ℓ₁)
+  hasSimulation =
+    (a₀ a : ∣ P ∣ₚ) → [ a₀ ⊑[ P ] a ] →
+      (b : action ℐ a) → Σ (action ℐ a₀) (λ b₀ →
+        (c₀ : reaction ℐ b₀) → Σ (reaction ℐ b) (λ c → [ δ ℐ c₀ ⊑[ P ] δ ℐ c ]))
 
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
-FormalTopology ℓ₀ ℓ₁ = Σ[ D ∈ (Discipline ℓ₀ ℓ₁) ] HasSimulation D
+FormalTopology ℓ₀ ℓ₁ =
+  Σ[ P ∈ Poset ℓ₀ ℓ₁ ] Σ[ ℐ ∈ InteractionStr ∣ P ∣ₚ ] hasMono P ℐ × hasSimulation P ℐ
+
+pos : FormalTopology ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
+pos (P , _) = P
+
+IS : (ℱ : FormalTopology ℓ₀ ℓ₁) → InteractionStr ∣ pos ℱ ∣ₚ
+IS (_ , is , _) = is
+
+stage : FormalTopology ℓ₀ ℓ₁ → Type ℓ₀
+stage (P , ℐ-str , _) = state (∣ P ∣ₚ , ℐ-str)
+
+exp : (ℱ : FormalTopology ℓ₀ ℓ₁) → stage ℱ → Type ℓ₀
+exp (P , ℐ-str , _) = action (∣ P ∣ₚ , ℐ-str)
+
+outcome : (ℱ : FormalTopology ℓ₀ ℓ₁) → {a : stage ℱ} → exp ℱ a → Type ℓ₀
+outcome (P , ℐ-str , _) = reaction (∣ P ∣ₚ , ℐ-str)
+
+next : (ℱ : FormalTopology ℓ₀ ℓ₁) {a : stage ℱ} {b : exp ℱ a} → outcome ℱ b → stage ℱ
+next (P , ℐ-str , _) = δ (∣ P ∣ₚ , ℐ-str)
+
+mono : (ℱ : FormalTopology ℓ₀ ℓ₁) → hasMono (pos ℱ) (IS ℱ)
+mono (_ , _ , φ , _) = φ
+
+sim : (ℱ : FormalTopology ℓ₀ ℓ₁) → hasSimulation (pos ℱ) (IS ℱ)
+sim (_ , _ , _ , φ) = φ
