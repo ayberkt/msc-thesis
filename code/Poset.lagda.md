@@ -293,7 +293,7 @@ poset-iso⇔poset-iso′ P Q e = to , from
         f-mono : IsMonotonic P Q f
         f-mono x y x⊑y = π₀ (i x y) x⊑y
         g-mono : IsMonotonic Q P g
-        g-mono x y x⊑y =  π₁ (i (g x) (g y)) NTS 
+        g-mono x y x⊑y =  π₁ (i (g x) (g y)) NTS
           where
             NTS : [ f (g x) ⊑[ Q ] (f (g y)) ]
             NTS = subst (λ - → [ rel Q (- x) (- y) ]) (sym (funExt sec)) x⊑y
@@ -347,7 +347,8 @@ pos-iso-to-eq′ P Q (eqv , i-homo) =
   pos-iso-to-eq P Q (eqv , π₁ (poset-iso⇔poset-iso′ P Q eqv) i-homo)
 
 ≃⋆→≃ₚ′ : (P Q : Poset ℓ₀ ℓ₁) → P ≃⋆ Q → P ≃ₚ′ Q
-≃⋆→≃ₚ′ P Q ((f , f-mono) , (g , g-mono) , sec , ret) = isoToEquiv (iso f g sec ret) , f-mono , g-mono
+≃⋆→≃ₚ′ P Q ((f , f-mono) , (g , g-mono) , sec , ret) =
+  isoToEquiv (iso f g sec ret) , f-mono , g-mono
 
 -- --}
 -- --}
