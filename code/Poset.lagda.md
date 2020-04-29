@@ -180,6 +180,17 @@ _─m→_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀′ ℓ₁′ → Type (ℓ₀ �
 _─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (IsMonotonic P Q)
 ```
 
+```
+poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
+poset-iso′ P Q e = IsMonotonic P Q f × IsMonotonic Q P g
+  where
+    f = π₀ (equiv→HAEquiv e)
+    g = isHAEquiv.g (π₁ (equiv→HAEquiv e))
+
+poset-iso′′ : (P Q : Poset ℓ₀ ℓ₁) → (P ─m→ Q) → Type (ℓ₀ ⊔ ℓ₁)
+poset-iso′′ P Q (f , _) = Σ[ (g , _) ∈ (Q ─m→ P) ] section f g × retract f g
+```
+
 Projection for the underlying function of a monotonic map.
 
 ```
@@ -263,6 +274,38 @@ RP-iso-prop (A , _⊑₀_) (B , _⊑₁_) i =
 poset-iso : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
 poset-iso {ℓ₁ = ℓ₁} = add-to-iso order-iso λ A _⊑_ → [ PosetAx ℓ₁ A _⊑_ ]
 
+poset-iso⇔poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) (e : ∣ P ∣ₚ ≃ ∣ Q ∣ₚ)
+                     → (poset-iso P Q e → poset-iso′ P Q e)
+                     × (poset-iso′ P Q e → poset-iso P Q e)
+poset-iso⇔poset-iso′ P Q e = to , from
+  where
+    f   = π₀ (equiv→HAEquiv e)
+    g   = isHAEquiv.g (π₁ (equiv→HAEquiv e))
+    sec : section f g
+    sec = isHAEquiv.ret (π₁ (equiv→HAEquiv e))
+    ret : retract f g
+    ret = isHAEquiv.sec (π₁ (equiv→HAEquiv e))
+
+    to : poset-iso P Q e → poset-iso′ P Q e
+    to i = f-mono , g-mono
+      where
+
+        f-mono : IsMonotonic P Q f
+        f-mono x y x⊑y = π₀ (i x y) x⊑y
+        g-mono : IsMonotonic Q P g
+        g-mono x y x⊑y =  π₁ (i (g x) (g y)) NTS
+          where
+            NTS : [ f (g x) ⊑[ Q ] (f (g y)) ]
+            NTS = subst (λ - → [ rel Q (- x) (- y) ]) (sym (funExt sec)) x⊑y
+
+    from : poset-iso′ P Q e → poset-iso P Q e
+    from i x y = φ , ψ
+      where
+        φ : [ x ⊑[ P ] y ] → [ f x ⊑[ Q ] f y ]
+        φ x⊑y = π₀ i x y x⊑y
+        ψ : [ f x ⊑[ Q ] f y ] → [ x ⊑[ P ] y ]
+        ψ fx⊑fy = subst (λ - → [ - x ⊑[ P ] - y ]) (funExt ret) (π₁ i (f x) (f y) fx⊑fy)
+
 poset-axioms-props : (A : Type ℓ₀) (str : Order ℓ₁ A)
                    → isProp [ PosetAx ℓ₁ A str ]
 poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx ℓ₁ A str)
@@ -290,8 +333,22 @@ poset-SIP {ℓ₁ = ℓ₁} A B eqv P Q i = foo (eqv , i)
 _≃ₚ_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
 _≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso P Q i
 
+_≃ₚ′_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
+P ≃ₚ′ Q = Σ[ eqv ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso′ P Q eqv
+
+_≃⋆_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
+P ≃⋆ Q = Σ[ f ∈ (P ─m→ Q) ] poset-iso′′ P Q f
+
 pos-iso-to-eq : (P Q : Poset ℓ₀ ℓ₁) → P ≃ₚ Q → P ≡ Q
 pos-iso-to-eq (A , A-pos) (B , B-pos) (eqv , i) = poset-SIP A B eqv A-pos B-pos i
+
+pos-iso-to-eq′ : (P Q : Poset ℓ₀ ℓ₁) → P ≃ₚ′ Q → P ≡ Q
+pos-iso-to-eq′ P Q (eqv , i-homo) =
+  pos-iso-to-eq P Q (eqv , π₁ (poset-iso⇔poset-iso′ P Q eqv) i-homo)
+
+≃⋆→≃ₚ′ : (P Q : Poset ℓ₀ ℓ₁) → P ≃⋆ Q → P ≃ₚ′ Q
+≃⋆→≃ₚ′ P Q ((f , f-mono) , (g , g-mono) , sec , ret) =
+  isoToEquiv (iso f g sec ret) , f-mono , g-mono
 
 -- --}
 -- --}

@@ -32,6 +32,8 @@ open import Cubical.Foundations.Equiv       public using    ( idEquiv
                                                             ; retEq
                                                             ; fiber
                                                             )
+open import Cubical.Foundations.Equiv.HalfAdjoint public using
+  ( isHAEquiv ; equiv→HAEquiv )
 open import Cubical.Foundations.Univalence  public using    ( ua )
 open import Cubical.Foundations.HLevels     public using    ( hProp
                                                             ; isSetHProp
@@ -51,6 +53,7 @@ open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSi
                                                             ; snd to π₁
                                                             )
 open import Cubical.Foundations.Isomorphism public using    ( isoToPath
+                                                            ; isoToEquiv
                                                             ; iso
                                                             ; section
                                                             ; retract

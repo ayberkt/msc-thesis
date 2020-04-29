@@ -43,7 +43,14 @@ We will denote by $A \simeq B$ the type of equivalences between types $A$ and $B
 \begin{defn}[Equivalence of types]
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$,
   \begin{equation*}
-    A \simeq B \quad\is\quad \sigmaty{f}{A \rightarrow B}{\isequiv{f}}
+    \typequiv{A}{B} \quad\is\quad \sigmaty{f}{A \rightarrow B}{\isequiv{f}}
+  \end{equation*}
+\end{defn}
+
+\begin{defn}[Identity equivalence]\label{defn:id-equiv}
+  The identity function on every type $A$ is an equivalence:
+  \begin{equation*}
+    \oftyI{\idequiv{}}{\typequiv{A}{B}}
   \end{equation*}
 \end{defn}
 

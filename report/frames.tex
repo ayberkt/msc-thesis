@@ -152,7 +152,7 @@ Let us now write down the arrows between posets: monotonic maps.
   \end{equation*}
 \end{defn}
 
-\begin{defn}[Poset isomorphism]
+\begin{defn}[Poset isomorphism]\label{defn:poset-iso}
   An isomorphism between two posets is a monotonic function with a monotonic inverse.
 \end{defn}
 
@@ -205,7 +205,7 @@ join operator as $\bigvee^F$ and the meet operator as $\wedge_F$. When speaking 
 we will refer colloquially to its underlying poset. We will formally notate this as
 $\posof{F}$.
 
-\begin{prop}
+\begin{prop}\label{prop:frame-ax-prop}
   For every raw frame structure $(\sqsubseteq, \top, \wedge, \bigvee)$, $\frameax{\sqsubseteq, \top, \wedge, \bigvee}$ is a proposition.
 \end{prop}
 \begin{proof}[Proof sketch]
@@ -276,15 +276,128 @@ named \fnname{flatten}.
 
 \section{Isomorphic frames are equal}\label{sec:frame-univ}
 
-\todo{
-  First introduce the structure identity principle and make use of that to prove this
-  result. In the formalisation, the SIP from the \texttt{cubical} library is used.
-  Accordingly, I can provide a high-level yet detailed overview of the SIP and remark
-  that frames, as they have been defined here, form a standard notion of structure hence
-  admitting the SIP. Going into all the technical details seems to be neither necessary
-  nor desirable in terms of presentation.
-}\vspace{\baselineskip}
+It is common practice in standard mathematics to regard two isomorphic structures as being
+equal. However, this requires mathematicians to view isomorphism as the appropriate notion
+of equality on structures, as neither set-theoretical nor (non-univalent) type-theoretical
+foundations support this informal practice. One of the remarkable features of \UF{} is
+that it solves this problem: in a univalent setting, we can actually prove that two
+isomorphic structures are equal.
 
+As frames are the central objects of study of this thesis, we will prove that isomorphic
+frames are equal. For this, we will make use of a \emph{structure identity principle} (SIP
+for short): a description of the identity type between two structures in terms of
+equivalences of the carrier types (as explained by Escardó~\cite{escardo-uf-intro}). The
+first SIP was formulated by Coquand and Danielsson~\cite{coq-nad}.
+
+We use the SIP due to Martín Escardó~\cite{escardo-uf-intro}, as implemented in the
+\texttt{cubical} library~\cite{agda-cubical} of \veragda{}. Instead of going into the
+details of our proofs, we will provide a high-level overview of what this SIP requires and
+what exactly we have proven in the \veragda{} formalisation to be able to use it.
+
+We have specified the \emph{structure} of a poset and a frame (in definitions
+\ref{defn:poset} and \ref{defn:frame} in two steps: (1) writing down a function with type
+$\univ{}_m \rightarrow \univ{}_n$ expressing what it means for a type to have a certain structure,
+and (2) defining what it means for a function on the underlying types to preserve this
+structure, hence describing the isomorphisms for such structures.
+
+Now, we would like to speak generally for all structures so we have characterise (1) and
+(2) abstractly. This requires us to describe the conditions under which a notion of
+isomorphism of structures is well-behaved. Such a collection of conditions is called
+a \emph{standard notion of structure} by Escard\'{o}~\cite{escardo-uf-intro}.
+
+When is an isomorphism well-behaved? Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure,
+and let $\iota$ be a function expressing the equivalence of two structures that inhabit
+$\sigmaty{X}{\univ{}_m}{S(X)}$:
+\begin{equation*}
+  \oftyI{\iota}{%
+    \pity{(A , \_)~(B , \_)}{\sigmaty{X}{\univ{}_m}{S(X)}}{%
+      \typequiv{A}{B} \rightarrow \univ{}_o.
+    }
+  }
+\end{equation*}
+In the case of ordered structure, for instance, we would pick $S \is \ordernm{}_k$ which
+has type:
+\begin{equation*}
+  \oftyI{\ordernm{}_k}{\univ{}_m \rightarrow \univ{}_{\max(m, k+1)}}
+\end{equation*}
+and $\iota$ would be defined as
+\begin{equation*}
+  \iota((A, \sqsubseteq_A), (B, \sqsubseteq_B), (f , \_)) \quad\is\quad \logequiv{x \sqsubseteq_A y}{f(x) \sqsubseteq_B f(y)}.
+\end{equation*}
+This delineates those equivalences that have the additional virtue that they preserve the
+$S$-structure of the types $A$ and $B$. In our particular case, we said that a poset
+isomorphism is a monotonic function with a monotonic inverse, which would be equivalent to
+$\iota$: an equivalence is clearly an isomorphism and the two monotonicity conditions ensure
+$\logequiv{x \sqsubseteq_A y}{f(x) \sqsubseteq_B f(y)}$.
+
+Once some $\iota$ has been given for a certain $S$-structure, we then impose two conditions
+on it
+\begin{enumerate}
+  \item The identity equivalence meets the $\iota$ criterion for the respecting of
+    $S$-structure: for every $\oftyI{A}{\sigmaty{X}{\univ{}}{S(X)}}$,
+    $\iota(A, A, \idequiv{}_A)$ is inhabited.
+  \item Given some $\iota$ satisfying (1), and given a type $A$ with two structures
+    $\oftyII{s}{t}{S(A)}$, we can get a map:
+    \begin{equation*}
+      s = t \rightarrow \iota((A, s), (A, t), \idequiv{}_A).
+    \end{equation*}
+    The second requirement is that this map is an equivalence.
+\end{enumerate}
+
+(2) is a lot like the definition of univalence, stating that $\idtoeqvnm{}$ is an
+equivalence, with the modification that the right-hand side is now a ``homomorphic
+equivalence''. It becomes an obligation of the user of the SIP to make sure that their
+notion of structure is well-behaved in this sense. It can be proven in \UF{}, that any
+notion of structure, that is \emph{standard} in that it satisfies (1) and (2), is equal
+whenever it is isomorphic.
+
+When presenting both frames and posets, we have separated our structures into two: the
+data (e.g., the operations, the relation) and the axioms that constrain how these behave.
+The motivation for this, besides the organisational neatness, is that we can take an SNS
+on the raw structure and combine this with the axioms without disrupting the SNS property.
+Of course, this requires on to verify that the axioms are propositional as given in
+Proposition~\ref{prop:frame-ax-prop}.
+
+Both Escard\'{o}'s implementation~\cite{escardo-uf-intro} and the implementation from the
+\texttt{cubical} library~\cite{agda-cubical} provide mechanisms for building algebraic
+structures this way and we have made use of this in the \veragda{} formalisation.
+
+The content of these proofs are not particularly interesting so we refer the interested
+reader to the \veragda{} formalisation and the introductory development of
+Escardó~\cite{escardo-uf-intro} which provides plenty of examples. However, we will state
+formally the exact theorem we have proven for the sake of completeness.
+
+\begin{thm}[Isomorphic posets are equal]
+  Let $P$ and $Q$ be two posets. If $P$ is isomorphic to $Q$
+  (by Defn.~\ref{defn:poset-iso}) then $P = Q$. Formally,
+  \begin{equation*}
+    \pity{P~Q}{\poset{}_{m, n, o}}{%
+      \left(
+        \sigmaty{f}{\mono{P}{Q}}{\sigmaty{g}{\mono{Q}{P}}{%
+            \exteq{(f \circ g)}{\mathsf{id}} \times \exteq{(g \circ f)}{\mathsf{id}}
+          }
+        }
+      \right)
+      \rightarrow P = Q
+    }
+  \end{equation*}
+  where $\mathsf{id} \is \lambda x.~x$.
+\end{thm}
+
+\begin{thm}[Isomorphic frames are equal]\label{thm:frame-univ}
+  \todo{state.}
+\end{thm}
+
+This result is remarkable from the perspective of formal topology. In
+Chapter~\ref{chap:formal-topo}, we will present a method for generating a frame from a
+formal topology and prove that this satisfies the universal property of the freely
+generated frame. Indeed, one can prove that this universal property characterises the free
+frame uniquely \emph{up to isomorphism}. As we have just shown in
+Theorem~\ref{thm:frame-univ}, isomorphism of frames \emph{is} equality of frames, so we
+can now drop the ``up to isomorphism'' and say that the universal property characterises
+the frames \textbf{uniquely}.
+
+\vspace{\baselineskip}
 \noindent\todo{
   Comment on how univalence of frames is important for the rest of this development
   and talk a bit about
@@ -465,55 +578,3 @@ corresponding \veragda{} proof can be found the \modname{Frame} module by the na
 In the next chapter, we will make use of nuclei to a generate the ``freest'' frame (i.e.,
 not constrained by any rules except those we have deliberately imposed upon it) from a
 formal topology.
-
-%% \begin{code}
-%% {-# OPTIONS --cubical #-}
-
-%% open import basis
-
-%% Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-%% Order ℓ₁ A = A → A → hProp ℓ₁
-
-%% isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-%% isReflexive {A = X} _⊑_ =
-%%   ((x : X) → x ⊑ x is-true) , ∏-prop λ x → is-true-prop (x ⊑ x)
-
-%% isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-%% isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
-%%   where
-%%     φ        : Type (ℓ₀ ⊔ ℓ₁)
-%%     φ        = (x y z : X) → (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z) is-true
-%%     φ-prop   : isProp φ
-%%     φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ z →
-%%                  is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
-
-%% isAntisym : {A : Type ℓ₀} → IsSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-%% isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
-%%   where
-%%     φ        : Type (ℓ₀ ⊔ ℓ₁)
-%%     φ        = (x y : X) → (x ⊑ y) is-true → (y ⊑ x) is-true → x ≡ y
-%%     φ-prop   : isProp φ
-%%     φ-prop   = ∏-prop λ x → ∏-prop λ y → ∏-prop λ p → ∏-prop λ q → A-set x y
-
-%% PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-%% PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = φ , φ-prop
-%%   where
-%%     isPartial  : IsSet A → hProp (ℓ₀ ⊔ ℓ₁)
-%%     isPartial  = λ hset → isReflexive _⊑_ ∧ isTransitive _⊑_ ∧ isAntisym hset _⊑_
-%%     φ          = Σ[ A-set ∈ IsSet A ] (isPartial A-set) is-true
-%%     φ-prop     = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
-
-%% PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-%% PosetStr ℓ₁ = add-to-structure (Order ℓ₁) (λ A RP → PosetAx ℓ₁ A RP is-true)
-
-%% Poset : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
-%% Poset ℓ₀ ℓ₁ = Σ (Type ℓ₀) (PosetStr ℓ₁)
-%% \end{code}
-
-%% The {\color{AgdaFunction} \texttt{add-to-structure}} function is imported from the
-%% \texttt{cubical} library. It is a direct implementation of Mart\'{i}n Escard\'{o}'s
-%% SIP~\cite[Sec.~3.33.1]{escardo-uf-intro}.
-
-%% It would have been more idiomatic to use records to represent posets in Agda. $\sum$ types
-%% have been used to avoid repeating h-level theorems such as
-%% Proposition~\ref{prop:sigma-set}.

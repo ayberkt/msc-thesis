@@ -55,10 +55,12 @@
 \newcommand{\isequiv}[1]{\hyperref[defn:equiv]{\mathsf{isEquiv}}\left(#1\right)}
 \newcommand{\idtoeqvnm}{\mathsf{idToEquiv}}
 \newcommand{\idtoeqv}[1]{\idtoeqvnm{}\left(#1\right)}
+\newcommand{\idequiv}{\hyperref[defn:id-equiv]{\mathsf{idEqv}}}
 \newcommand{\isdec}[1]{\mathsf{isDecidable}\left(#1\right)}
 \newcommand{\isdisc}[1]{\mathsf{isDiscrete}\left(#1\right)}
-\newcommand{\typequiv}[2]{#1 \simeq #2}
+\newcommand{\typequiv}[2]{#1 \hyperref[defn:equiv]{\simeq} #2}
 \newcommand{\logequiv}[2]{#1 \leftrightarrow #2}
+\newcommand{\exteq}[2]{#1 \hyperref[defn:exteq]{\sim} #2}
 
 \newcommand{\unitty}{\mathsf{Unit}}
 
@@ -94,7 +96,7 @@
 \newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
 \newcommand{\dcframe}[1]{#1\hyperref[thm:down-set-frame]{\downarrow}}
 
-\newcommand{\ordernm}{\mathsf{Order}}
+\newcommand{\ordernm}{\hyperref[defn:poset]{\mathsf{Order}}}
 \newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
 
 \newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
