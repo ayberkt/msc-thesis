@@ -279,7 +279,7 @@ poset-iso⇔poset-iso′ P Q e = to , from
     f   = π₀ (equiv→HAEquiv e)
     g   = isHAEquiv.g (π₁ (equiv→HAEquiv e))
     sec : section f g
-    sec x = isHAEquiv.ret (π₁ (equiv→HAEquiv e)) x
+    sec = isHAEquiv.ret (π₁ (equiv→HAEquiv e))
     ret : retract f g
     ret = isHAEquiv.sec (π₁ (equiv→HAEquiv e))
 
