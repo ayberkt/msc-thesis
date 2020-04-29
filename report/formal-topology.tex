@@ -293,12 +293,12 @@ whereas all we get from the inductive hypothesis is
 \begin{equation*}
   \pity{c}{C(a, b)}{\trunc{\covers{d(a, b, c)}{V}}}.
 \end{equation*}
-An inference of the former from the latter would require the use of a well-studied
-classical reasoning principle: the axiom of countable choice~\cite{axiom-of-choice},
-which says:
+An inference of the former from the latter would require the use of a classical reasoning
+principle looking a lot like the axiom of choice~\cite[pg.~119, 3.8.3]{hottbook}:
 \begin{equation*}
-  \pity{x}{A}{\trunc{B(x)}} \rightarrow \trunc{\pity{x}{A}{B(x)}}.
+  \pity{x}{A}{\trunc{B(x)}} \rightarrow \trunc{\pity{x}{A}{B(x)}},
 \end{equation*}
+with the difference that neither $A$ nor $B$ are required to be h-sets.
 
 To remedy this, we will refrain from truncating the naive form of the cover relation, and
 we will instead add a higher constructor that \emph{squashes} the difference between the
@@ -337,10 +337,9 @@ When trying to prove the idempotence law with this, we get from the inductive hy
 family $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is still
 ``squashed'', but this squashing is an integral part of $\covers{\_}{\_}$ rather than a
 truncation that is imposed extrinsically upon it. This is sufficient for circumventing the
-problem that would have required the axiom of countable choice, and allows us to
-successfully complete the idempotence proof. The type of $\covers{\_}{\_}$ can be seen
-\emph{directly} to be $\pow{A} \rightarrow \pow{A} \rightarrow \hprop{}$ by the existence of the
-$\rulesquash{}$ constructor.
+problem that would have required a form of choice, and allows us to successfully complete
+the idempotence proof. The type of $\covers{\_}{\_}$ can be seen \emph{directly} to be
+$\pow{A} \rightarrow \pow{A} \rightarrow \hprop{}$ by the existence of the $\rulesquash{}$ constructor.
 
 Notice that, given a downwards-closed subset $U$, the subset of elements that are covered
 by $U$ ($\covers{\_}{U}$) is itself downwards-closed.
