@@ -23,8 +23,8 @@ action   (_ , B , _ , _) = B
 reaction (_ , _ , C , _) = C
 δ        (_ , _ , _ , d) = d
 
-hasMonotonicity : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-hasMonotonicity P i =
+hasMono : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
+hasMono P i =
   (a : state IS) (b : action IS a) (c : reaction IS b) → [ δ IS c ⊑[ P ] a ]
   where
     IS : InteractionSys _
@@ -42,7 +42,7 @@ module _ (P : Poset ℓ₀ ℓ₁) (ℐ-str : InteractionStr ∣ P ∣ₚ) where
 
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 FormalTopology ℓ₀ ℓ₁ =
-  Σ[ P ∈ Poset ℓ₀ ℓ₁ ] Σ[ ℐ ∈ InteractionStr ∣ P ∣ₚ ] hasMonotonicity P ℐ × hasSimulation P ℐ
+  Σ[ P ∈ Poset ℓ₀ ℓ₁ ] Σ[ ℐ ∈ InteractionStr ∣ P ∣ₚ ] hasMono P ℐ × hasSimulation P ℐ
 
 pos : FormalTopology ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁
 pos (P , _) = P
@@ -62,7 +62,7 @@ outcome (P , ℐ-str , _) = reaction (∣ P ∣ₚ , ℐ-str)
 next : (ℱ : FormalTopology ℓ₀ ℓ₁) {a : stage ℱ} {b : exp ℱ a} → outcome ℱ b → stage ℱ
 next (P , ℐ-str , _) = δ (∣ P ∣ₚ , ℐ-str)
 
-mono : (ℱ : FormalTopology ℓ₀ ℓ₁) → hasMonotonicity (pos ℱ) (IS ℱ)
+mono : (ℱ : FormalTopology ℓ₀ ℓ₁) → hasMono (pos ℱ) (IS ℱ)
 mono (_ , _ , φ , _) = φ
 
 sim : (ℱ : FormalTopology ℓ₀ ℓ₁) → hasSimulation (pos ℱ) (IS ℱ)

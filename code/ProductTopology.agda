@@ -28,7 +28,7 @@ module _ (𝔉 𝔊 : FormalTopology ℓ₀ ℓ₀) where
       ×-IS : InteractionStr ∣ P ×ₚ Q ∣ₚ
       ×-IS = ×-exp , ×-out , λ {a} {b} c → ×-next {b = b} c
 
-      ×-mono : hasMonotonicity (P ×ₚ Q) ×-IS
+      ×-mono : hasMono (P ×ₚ Q) ×-IS
       ×-mono (a₀ , a₁) (inj₁ b) c = (mono 𝔉 a₀ b c)   , ⊑[ Q ]-refl a₁
       ×-mono (a₀ , a₁) (inj₂ b) c = (⊑[ P ]-refl a₀) , mono 𝔊 a₁ b c
 
