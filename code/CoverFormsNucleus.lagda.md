@@ -28,14 +28,11 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
 
 ```
   private
-    D       = π₀ F
-    P       = pos′ (π₀ F)
+    P       = pos′ F
     𝔉       = ∣ P ∣ₚ
     F↓      = downward-subset-frame P
     P↓      = pos F↓
-    sim     = π₁ F
-    mono    = π₁ D
-    _⊑_     = λ (x y : stage D) → x ⊑[ P ] y
+    _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
 
   open Test F public
 ```
@@ -48,7 +45,7 @@ nothing but the map `U ↦ - <| U`.
   𝕛 (U , U-down) = U₀ , U₀-dc
     where
       -- This is not  h-propositional unless we force it to be using the HIT definition.
-      U₀ : stage D → hProp ℓ₀
+      U₀ : stage F → hProp ℓ₀
       U₀ = λ a → a <| U , squash
 
       U₀-dc : [ IsDownwardClosed P (λ - → (- <| U) , squash) ]
@@ -72,8 +69,8 @@ nothing but the map `U ↦ - <| U`.
           d a (dir p)        = dir (π₀ p) , dir (π₁ p)
           d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
             where
-              IH : (c : outcome D b) → [ π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next D c) ]
-              IH c = d (next D c) (f c)
+              IH : (c : outcome F b) → [ π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next F c) ]
+              IH c = d (next F c) (f c)
           d a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
             where
               IH₀ = d a p
@@ -102,21 +99,21 @@ We denote by `L` the frame of fixed points for `𝕛`.
 Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
 
 ```
-  ↓-clos : stage D → ∣ F↓ ∣F
+  ↓-clos : stage F → ∣ F↓ ∣F
   ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
       down-DC : [ IsDownwardClosed P x↓ ]
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
 
-  x◀x↓ : (x : stage D) → x <| (λ - → - ⊑[ P ] x)
+  x◀x↓ : (x : stage F) → x <| (λ - → - ⊑[ P ] x)
   x◀x↓ x = dir (⊑[ P ]-refl x)
 ```
 
 By composing this with the covering nucleus, we define a map `e` from `F` to `F↓`.
 
 ```
-  e : stage D → ∣ F↓ ∣F
+  e : stage F → ∣ F↓ ∣F
   e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
     where
       NTS : [ IsDownwardClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
@@ -127,7 +124,7 @@ We can further refine the codomain of `e` to `L`. In other words, we can prove t
 x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
 
 ```
-  fixing : (x : stage D) → 𝕛 (e x) ≡ e x
+  fixing : (x : stage F) → 𝕛 (e x) ≡ e x
   fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
     where
       NTS : ∀ y → [ π₀ (𝕛 (e x)) y ] → [ π₀ (e x) y ]
@@ -135,7 +132,7 @@ x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
       up : [ e x ⊑[ P↓ ] 𝕛 (e x) ]
       up = π₀ (π₁ 𝕛-nuclear) (e x)
 
-  η : stage (π₀ F) → ∣ L ∣F
+  η : stage F → ∣ L ∣F
   η x = (e x) , (fixing x)
 ```
 
@@ -147,6 +144,6 @@ Furthermore, `η` is a monotonic map.
     where
       η-mono : IsMonotonic P (pos L) η
       η-mono x y x⊑y a (dir p)        = dir (⊑[ P ]-trans a x y p x⊑y)
-      η-mono x y x⊑y a (branch b f)   = branch b (λ c → η-mono x y x⊑y (next D c) (f c))
+      η-mono x y x⊑y a (branch b f)   = branch b (λ c → η-mono x y x⊑y (next F c) (f c))
       η-mono x y x⊑y a (squash p q i) = squash (η-mono x y x⊑y a p) (η-mono x y x⊑y a q) i
 ```

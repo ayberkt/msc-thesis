@@ -9,7 +9,7 @@ open import Poset
 open import Powerset
 open import Family
 open import Truncation
-open import FormalTopology hiding (pos)
+open import FormalTopology    renaming (pos to pos′)
 open import CoverFormsNucleus
 
 compr : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → 𝒫 X → Sub ℓ₀ Y
@@ -19,14 +19,11 @@ syntax compr (λ x → e) ℱ = ⁅ e ∣ x ∈ ℱ ⁆
 
 module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
-  D       = π₀ F
-  P       = π₀ (π₀ F)
-  𝔉       = ∣ P ∣ₚ
+  P       = pos′ F
+  𝔉       = ∣ pos′ F ∣ₚ
   F↓      = downward-subset-frame P
   P↓      = pos F↓
-  sim     = π₁ F
-  mono    = π₁ D
-  _⊑_     = λ (x y : stage D) → x ⊑[ P ] y
+  _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
 
   open NucleusFrom F
 ```
@@ -36,8 +33,8 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
 ```
   represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R) → Type ℓ₀
   represents R (f , _) =
-    (x : 𝔉) (y : exp D x) →
-      [ f x ⊑[ pos R ] (⋃[ R ] (outcome D y , λ u → f (next D u))) ]
+    (x : 𝔉) (y : exp F x) →
+      [ f x ⊑[ pos R ] (⋃[ R ] (outcome F y , λ u → f (next F u))) ]
 ```
 
 ## Flatness
@@ -84,8 +81,8 @@ Before the proof we will need some lemmas.
             subst (λ V → [ π₀ V x ]) U-fix  (cover+ (U , U-dc) x◀y↓ yεU)
       up x (branch b f) = subst (λ V → [ π₀ V x ]) U-fix (branch b (dir ∘ IH))
         where
-          IH : (c : outcome D b) → [ next D c ∈ U ]
-          IH c = up (next D c) (f c)
+          IH : (c : outcome F b) → [ next F c ∈ U ]
+          IH c = up (next F c) (f c)
       up x (squash x◀⋁₀ x◀⋁₁ i) = is-true-prop (U x) (up x x◀⋁₀) (up x x◀⋁₁) i
 ```
 
@@ -214,14 +211,14 @@ Proof.
                                          ⋃[ R ]-upper _ _ ((j , y , cov) , refl) }) mem
                 ϑ y (branch b h) =
                   f y                               ⊑⟨ rep y b            ⟩
-                  ⋃[ R ] (outcome D b , f ∘ next D) ⊑⟨ ⋃[ R ]-least _ _ ζ ⟩
+                  ⋃[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋃[ R ]-least _ _ ζ ⟩
                   RHS                               ■
                   where
                     ζ : (r : ∣ R ∣F)
-                      → r ε (outcome D b , f ∘ next D)
+                      → r ε (outcome F b , f ∘ next F)
                       → [ r ⊑[ pos R ] RHS ]
                     ζ r (c , eq-r) =
-                      subst (λ - → [ - ⊑[ pos R ] RHS ]) eq-r (ϑ (next D c) (h c))
+                      subst (λ - → [ - ⊑[ pos R ] RHS ]) eq-r (ϑ (next F c) (h c))
                 ϑ y (squash φ ψ i) = is-true-prop (f y ⊑[ pos R ] RHS) (ϑ y φ) (ϑ y ψ) i
 
         up : [ RHS ⊑[ pos R ] LHS ]
@@ -244,13 +241,13 @@ Proof.
     lem a a′ (dir    a′⊑a)  = f-mono a′ a a′⊑a
     lem a a′ (branch b h)   =
       f a′                              ⊑⟨ rep a′ b              ⟩
-      ⋃[ R ] (outcome D b , f ∘ next D) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
+      ⋃[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
       f a                               ■
       where
         open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
-        isUB : ∀ a₀ → a₀ ε (outcome D b , f ∘ next D) → [ a₀ ⊑[ pos R ] f a ]
+        isUB : ∀ a₀ → a₀ ε (outcome F b , f ∘ next F) → [ a₀ ⊑[ pos R ] f a ]
         isUB a₀ (c , p) = a₀           ⊑⟨ ≡⇒⊑ (pos R) (sym p)    ⟩
-                          f (next D c) ⊑⟨ lem a (next D c) (h c) ⟩
+                          f (next F c) ⊑⟨ lem a (next F c) (h c) ⟩
                           f a          ■
 
     gm∘ηm = _∘m_ {P = P} {Q = pos L} {R = pos R} gm ηm
