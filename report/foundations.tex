@@ -1,18 +1,35 @@
 \chapter{Foundations}\label{chap:foundations}
 
-We present in this chapter basics of \UF{}. We assume that the author is
-familiar with standard (intensional) type theory and refrain from building the
-formal calculus from scratch. Instead, we summarise the additions that must be
-made to type theory to make it a suitable context for the pursuit of
-\emph{univalent} mathematics.
+We present in this chapter basics of \UF{}. We assume that the author is familiar with
+standard (intensional) type theory and refrain from building the formal calculus from
+scratch. Instead, we summarise the additions that must be made to type theory to make it a
+suitable context for the pursuit of \emph{univalent} mathematics.
+
+Our presentation in this chapter has been heavily influenced by both the HoTT
+book~\cite{hottbook} and Martín Escardó's introductory exposition of HoTT/UF in
+\veragda{}~\cite{escardo-uf-intro}.
 
 \section{Notation}
 
-\todo{%
-  Explain that we will be using the same notations from the HoTT book.
-}
+We refrain from formally presenting the calculus we will be working from scratch. This is
+both for the sake of simplicity as well as for philosophical reasons: as we will be using
+\UF{} in a practical way, we would like to keep the foundational system \emph{conceptual}
+and use it as a practical foundation as opposed to a formal calculus. Indeed, the work to
+be presented is the \emph{informalisation} of a completely formalised development and the
+formal system used for that is Cubical Type Theory (CTT)~\cite{CCHM}. However, CTT is just
+one specific instance of a univalent foundation. We would like to abstract over the
+implementation, and work with a univalen foundations whose formal details are
+unspecified---much like how set theory is used in ``everyday'' mathematics.
 
-\section{Equivalence of types and univalence}
+In terms of notation, we will mostly use the conventions from the HoTT
+book~\cite{hottbook}, as explained in Section~I.1. Like the HoTT book, we will often make
+use of pattern matching; for instance, we will write $\oftyI{(x,
+  \_)}{\sigmaty{a}{A}{B(a)}}$ rather than using the projection notation for projecting out
+the first component. We will have a minor deviation when it comes to the unit type, as we
+will explain later. To make this more visible, we will denote the unit type as
+$\unitty{}$.
+
+\section{Equivalence and univalence of types}
 
 \begin{defn}[Contractible]\label{defn:contr}
   A type $A$ is called contractible if it has exactly one inhabitant:
@@ -87,9 +104,9 @@ Perhaps most importantly, it allows us to \emph{prove} function extensionality.
 \begin{prop}[Function extensionality]\label{prop:funext}
   Two functions are equal whenever they are extensionally equal.
 \end{prop}
-\begin{proof}
-  \todo{complete.}
-\end{proof}
+
+We omit the proof as it is rather involved and the content is not interesting for our
+purposes. The reader is referred to Sec.~4.9 of the HoTT book~\cite{hottbook}.
 
 \section{Homotopy levels}
 
@@ -109,11 +126,42 @@ $n$. The idea is that we increase the dimension by one at each step.
   \end{align*}
 \end{defn}
 
+The hierarchy of $n$-types is upwards-closed as expressed in the following proposition.
+\begin{prop}\label{prop:level-up}
+  Given any type $A$, the following type has an inhabitant.
+  \begin{equation*}
+    \pity{n}{\mathbb{N}}{\isofhlevel{A}{n} \rightarrow \isofhlevel{A}{n+1}}
+  \end{equation*}
+\end{prop}
+
+Furthermore, $\sum$ and $\prod$ types respect h-levels.
+
+\begin{prop}\label{prop:is-of-level-pi}
+  Given an \emph{arbitrary} type $\oftyI{A}{\univ{}_m}$ and an $A$-indexed family of
+  $n$-types $\oftyI{B}{A \rightarrow \univ{}_n}$, $\pity{x}{A}{B(x)}$ is an $n$-type. In formal
+  terms:
+  \begin{equation*}
+    \left( \pity{x}{A}{\isofhlevel{B(x)}{n}} \right)
+      \rightarrow \isofhlevel{\pity{x}{A}{B(x)}}{n}
+  \end{equation*}
+\end{prop}
+
+\begin{prop}\label{prop:is-of-level-sigma}
+  Given an $n$-type $\oftyI{A}{\univ{}}$ and a $A$-indexed family $\oftyI{B}{A \rightarrow \univ{}}$
+  of $n$-types, $\sigmaty{x}{A}{B(x)}$ is an $n$-type. Formally,
+  \begin{equation*}
+    \isofhlevel{A}{n} \rightarrow
+      \pity{x}{A}{\isofhlevel{B(x)}{n}} \rightarrow \isofhlevel{\sigmaty{x}{A}{B(x)}}{n}
+  \end{equation*}
+\end{prop}
+
 \subsection{Propositions}
 
 The homotopy level of one is of special interest: it is the class of types that are like
 propositions in the sense that their own proof structure is trivial: they are inhabited by
-at most one term.
+at most one term. This is precisely the property we desire in those types that we view
+like expressing \emph{properties}: we are interested in whether they are inhabited or not,
+rather than what they are inhabited by.
 
 \begin{defn}[Proposition]\label{defn:prop'}
   A type $A$ is a proposition (sometimes disambiguated as an \emph{h-proposition}) if it
@@ -133,21 +181,26 @@ An equivalent way of expressing propositionality would be the following.
 \begin{prop}
   Definitions \ref{defn:prop'} and \ref{defn:hprop} are equivalent.
 \end{prop}
-\begin{proof}
-  \todo{prove.}
-\end{proof}
 
-We collect all propositional types in the type $\hprop{}$.
-\begin{defn}[$\Omega$]\label{defn:omega}
-  $\Omega_n$ is the type of all types at universe $n$ that are propositional:
+Due to this equivalence, we will sometimes use definitions \ref{defn:prop'} and
+\ref{defn:prop} interchangeably.
+
+We collect propositional types at level $n$ in the type $\hprop{}_n$.
+\begin{defn}[$\hprop{}$]\label{defn:omega}
+  $\hprop{}_n$ is the type of all types at universe $n$ that are propositional:
   \begin{equation*}
     \hprop{}_n \quad\is\quad \sigmaty{A}{\univ{}_n}{\isprop{A}}.
   \end{equation*}
 \end{defn}
 
-When asserting that a proposition $\oftyI{A}{\hprop{}_n}$ is inhabited, we have to project out
-the first component to be completely precise. We will engage in the excusable notational
-abuse of denoting this projection by $A$ itself.
+When asserting that a proposition $\oftyI{A}{\hprop{}_n}$ is inhabited, we have to project
+out the first component to be completely precise. We will engage in the excusable
+notational abuse of denoting this projection by $A$ itself.
+
+Notice that $\hprop{}$ itself is always an h-set.
+\begin{prop}\label{prop:hprop-set}
+  $\hprop{}$ is an h-set.
+\end{prop}
 
 Once we introduce this delineation of the class of propositional types, we have to make
 sure that types that are thought of as properties are actually propositional types. This
@@ -157,39 +210,17 @@ cases when they actually \emph{are not} propositional. A substantial component o
 presented in this thesis is devoted to the problem of forcing certain types to behave
 propositionally.
 
-Now, let us state some simple facts about the class of propositional types.
+Now, let us state some simple facts about the class of propositional types. Observe the
+two corollaries, of propositions \ref{prop:is-of-level-pi} and
+\ref{prop:is-of-level-sigma} respectively.
 
 \begin{prop}\label{prop:pi-prop}
   Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
   is a proposition whenever $B(x)$ is a proposition for every $\oftyI{x}{A}$.
 \end{prop}
 \begin{proof}
-  Let $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$ and assume that $B(x)$ is a
-  proposition for every $\oftyI{x}{A}$. Let $\oftyII{f}{g}{\pity{x}{A}{B(x)}}$. By
-  function extensionality (Proposition~\ref{prop:funext}), it suffices to show that $f(x)
-  = g(x)$ for every $\oftyI{x}{A}$. Let $\oftyI{x}{A}$. $f(x) = g(x)$ is given directly by
-  the fact that $B(x)$ is propositional.
+  Direct application of Proposition~\ref{prop:is-of-level-pi} with $n \is 1$.
 \end{proof}
-
-\begin{prop}
-  Given $\oftyI{A}{\univ{}_n}$, the type $\isprop{A}$ is propositional.
-\end{prop}
-
-As we view propositional types as embodying logical propositions, it is natural to
-expect that the right notion of equivalence between them is logical equivalence.
-\begin{defn}\label{defn:iff}
-  Types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_m}$ are logically equivalent
-  (denoted $\logequiv{A}{B}$) iff there exists functions both ways:
-  \begin{equation*}
-    A \leftrightarrow B \quad\is\quad (A \rightarrow B) \times (B \rightarrow A).
-  \end{equation*}
-\end{defn}
-Indeed, it turns out that in \UF{}, it is sufficient to show logical equivalence to
-establish equivalence between propositional types.
-\begin{prop}\label{prop:iff-equiv}
-  Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
-  then $\typequiv{A}{B}$.
-\end{prop}
 
 \begin{prop}\label{prop:sigma-prop}
   Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an
@@ -197,15 +228,45 @@ establish equivalence between propositional types.
   $\sigmaty{x}{A}{B}$ is an h-proposition.
 \end{prop}
 \begin{proof}
-  \todo{Complete.}
+  Direct application of Proposition~\ref{prop:is-of-level-sigma}.
+\end{proof}
+
+The type expressing that a given a type $A$ is a proposition, is itself a proposition.
+\begin{prop}
+  Given $\oftyI{A}{\univ{}_n}$, the type $\isprop{A}$ is propositional.
+\end{prop}
+\begin{proof}
+  By Proposition~\ref{prop:pi-prop}, it suffices to show $x = y$ is a proposition, for any
+  $\oftyII{x}{y}{A}$, which follows by the upwards-closure of h-levels
+  (Proposition~\ref{prop:level-up}).
+\end{proof}
+
+As we view propositional types as embodying logical propositions, it is natural to
+expect that the right notion of equivalence between them is logical equivalence.
+\begin{defn}\label{defn:iff}
+  Types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_m}$ are logically equivalent
+  (denoted $\logequiv{A}{B}$) iff there exists functions both ways:
+  \begin{equation*}
+    \logequiv{A}{B} \quad\is\quad (A \rightarrow B) \times (B \rightarrow A).
+  \end{equation*}
+\end{defn}
+In \UF{}, it is sufficient to show logical equivalence to establish equivalence between
+propositional types.
+\begin{prop}\label{prop:iff-equiv}
+  Given propositions $\oftyI{P}{\univ{}_n}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
+  then $\typequiv{A}{B}$.
+\end{prop}
+\begin{proof}[Proof sketch]
+  The two directions of $\logequiv{P}{Q}$ must constitute an isomorphism as the section
+  and the retraction are trivial by the propositionality.
 \end{proof}
 
 \subsection{Sets}
 
-The other homotopy class of interest is the class of types whose proof structure is not
-trivial, in that there may be distinct terms that inhabit it, but the proof structure of
-the type of equality proofs between these terms is trivial. In other words, inhabitants of
-a set are equal to each other in \emph{at most one way}.
+The other homotopy class of interest is the class of types whose proof structures are not
+trivial, in that there may be distinct terms that inhabit them, but the proof structure of
+the type of equality proofs between their terms is trivial. Put more simply, inhabitants
+of a set are equal to each other in \emph{at most one way}.
 \begin{defn}[Set]\label{defn:hset}
   A type $A$ is a set if its homotopy level is two:
   \begin{equation*}
@@ -213,77 +274,59 @@ a set are equal to each other in \emph{at most one way}.
   \end{equation*}
 \end{defn}
 
-The structures presented in this thesis will be based on an underlying partially ordered
-\emph{set}. When formalising these in \UF{}, they will be required to be h-sets, since a
-poset whose carrier bears higher dimensional homotopy structure does not correspond to the
-usual notion of a poset; it would be more accurate to call such a structure an
-\emph{$\infty$-poset}.
+The structures we present in chapters \ref{chap:frames} and \ref{chap:formal-topo} have
+underlying partially ordered \emph{sets}. When implementing these in \UF{}, these must be
+required to be h-sets. A more accurate name for a ``poset'' whose carrier set bears
+higher dimensional homotopy structure would be \emph{$\infty$-poset}.
 
-A highly useful sufficient condition for setness was given by Michael Hedberg in
-1998~\cite{hedberg}: every type with decidable equality is a set.
-\begin{defn}[Decidability]
-  A type $A$ is decidable if it is either provable of refutable:
-  \begin{equation*}
-    \isdec{A} \quad\is\quad A + \neg A.
-  \end{equation*}
-\end{defn}
-
-A type $A$ for which the identity type is decidable for every two inhabitants is called
-\emph{discrete}.
-\begin{defn}[Discrete]
-  \begin{equation*}
-    \isdisc{A} \quad\is\quad \pity{x~y}{A}{\isdec{x =_A y}}
-  \end{equation*}
-\end{defn}
-
-Hedberg's theorem can then be stated simply as follows.
-\begin{thm}[Hedberg]\label{thm:hedberg}
-  \begin{equation*}
-    \pity{A}{\univ{}_n}{\isdisc{A} \rightarrow \isset{A}}
-  \end{equation*}
-\end{thm}
-
-\begin{prop}\label{prop:sigma-set}
-  Given some type $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an h-set
-  and $B(a)$ is an h-set for every $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-set.
-\end{prop}
-\begin{proof}
-  \todo{%
-    prove that $\sum$ types actually preserve all h-levels and remark that this is but
-    a corollary
-  }
-\end{proof}
-
+Observe the following corollary of Proposition~\ref{prop:level-up}.
 \begin{prop}\label{prop:prop-is-set}
   Every proposition is a set.
 \end{prop}
-\begin{proof}
-  \todo{prove using Hedberg's theorem.}
-\end{proof}
+
+As we have done for the case of h-propositions, we consider the special cases
+of propositions \ref{prop:is-of-level-pi} and \ref{prop:is-of-level-sigma} in the
+h-set case.
+
+\begin{prop}\label{prop:pi-set}
+  Given $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{A \rightarrow \univ{}_n}$, the type $\pity{x}{A}{B(x)}$
+  is a set whenever $B(x)$ is a set for every $\oftyI{x}{A}$.
+\end{prop}
+
+\begin{prop}\label{prop:sigma-set}
+  Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an h-set and
+  $B(a)$ is an h-set for every $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an h-set.
+\end{prop}
 
 \section{Powersets}\label{sec:pow}
 
-The type of subsets of a given type $A$ is defined as follows.
+Given a type $A$, we would like to talk about its powerset: the type of \emph{properties}
+the inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$.
+Inhabitants of the powerset of a type are one way of representing subsets of inhabitants
+of a type in type theory. We will present the other approach in Section~\ref{sec:fam}.
 
 \begin{defn}\label{defn:pow}
-  Given a type $\oftyI{A}{\univ{}_n}$, the powerset of $A$ is the type of all predicates
-  on $A$:
+  Given a type $\oftyI{A}{\univ{}_n}$, the \emph{powerset} of $A$ is the type of all
+  predicates on $A$:
   \begin{equation*}
-    \pow{A} \quad\is\quad A \rightarrow \Omega_n.
+    \pow{A} \quad\is\quad A \rightarrow \hprop{}_n.
   \end{equation*}
 \end{defn}
 
-The proposition expressing membership of an element $x$ in a subset is then just the
+The proposition expressing the membership of an element $x$ in a subset is then just the
 application $U(x)$. For the sake of clarity, we will use a bit of syntactic sugar and
 write this as $x \in U \is U(x)$ for subsets.
 
+Our use of the word ``set'' in ``powerset'' is justified by the following proposition.
 \begin{prop}\label{prop:pow-set}
   Given \emph{any} type $A$, $\pow{A}$ is an h-set.
 \end{prop}
 \begin{proof}
-  \todo{complete.}
+  By Proposition~\ref{prop:pi-set}, suffices to show that the codomain, $\hprop{}$, is
+  a set. This is given by Proposition~\ref{prop:hprop-set}.
 \end{proof}
 
+Powersets are ordered under the usual inclusion order.
 \begin{defn}\label{defn:inclusion}
   Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the inclusion
   relation is defined as follows:
@@ -294,12 +337,12 @@ write this as $x \in U \is U(x)$ for subsets.
 
 \begin{defn}[Full subset]\label{defn:entire-subset}
   Given a type $\oftyI{A}{\univ{}_n}$, the subset containing the entirety of inhabitants
-  of $A$ is defined as the constant function $\lambda\_.~\unitty{}$.
-
-  Notice that, by the definition of $\pownm{}$, the type has to live in the same universe
-  as $A$. It is for this reason that $\unitty{}$, as we have defined it, takes as argument
-  the universe level we would like it to inhabit and inhabits that universe.
+  of $A$ is defined as the constant function $\lambda\_.~\unitty{}_n$.
 \end{defn}
+
+Notice that, by the definition of $\pownm{}$, the type has to live in the same universe as
+$A$. It is for this reason that $\unitty{}$, as we have defined it, takes as argument the
+universe level we would like it to inhabit and inhabits that universe.
 
 \begin{defn}\label{defn:intersection}
   Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$, the subset
@@ -312,11 +355,11 @@ write this as $x \in U \is U(x)$ for subsets.
   combined via Proposition~\ref{prop:sigma-prop}.
 \end{defn}
 
-\section{Families}
+\section{Families}\label{sec:fam}
 
-In type theory, we have two notions of ``subset of a type''. One of these is powersets
-as we have presented in Sec.~\ref{sec:pow}. We now briefly summarise the other approach
-in which view a subset of a type $A$ as an $A$-valued function (on some domain).
+In type theory, we have two notions of ``subset of a type''. One of these is powersets as
+we have presented in Sec.~\ref{sec:pow}. We now briefly summarise the other approach in
+which we view a subset of a type $A$ as an $A$-valued function (on some domain).
 
 \begin{defn}[Family]\label{defn:fam}
   Given a type $A$, a family of inhabitants of $A$ with index set $I$ is simply a
@@ -343,8 +386,8 @@ use the more familiar notation of
 What is meant by such notational sugar is expected to be obvious to the reader.
 
 In the \veragda{} formalisation, we use similar notational conventions. For instance, the
-syntax we have exemplified in (\ref{eqn:join-syntax}) is implemented in the \veragda{},
-formalisation in the \modname{JoinSyntax} submodule of the \modname{Frame} module.
+syntax we have exemplified in (\ref{eqn:join-syntax}) is implemented in the
+\modname{JoinSyntax} submodule of the \modname{Frame} module.
 \begin{code}%
 \>[0]\AgdaKeyword{module}\AgdaSpace{}%
 \AgdaModule{JoinSyntax}\AgdaSpace{}%
@@ -422,11 +465,89 @@ subscripting.
 \begin{defn}[Image over a family]\label{defn:fam-img}
   Given a type $A$, some family $U \equiv (I, f)$, and a function $\oftyI{g}{A \rightarrow B}$, the
   image of $g$ over $U$ is nothing but the family $(I, g \circ f)$.
-  We will denote this $\img{g}{U}$ or $\setof{ g(f(i)) ~|~ i \in I }$.
+  We will denote this $\img{g}{U}$ or $\setof{ g(f(i)) ~|~ \oftyI{i}{I} }$.
 \end{defn}
 
 \paragraph*{Remark on Agda notation.}
-\todo{explain what is looks like in Agda.}
+Again, we follow a similar notational sugaring in the \veragda{} formalisation. As the
+curly bracket symbols, \texttt{\{} and \texttt{\}}, are not available in \veragda{}, we
+approximate them as $\texttt{\textlquill}$ and $\texttt{\textrquill}$ for the comprehension notation. One
+instance of such a syntax declaration can be found in the \modname{Family} module.
+
+\begin{code}%
+\>[0]\AgdaFunction{img}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{Type}\AgdaSpace{}%
+\AgdaGeneralizable{ℓ₀}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{Y}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{Type}\AgdaSpace{}%
+\AgdaGeneralizable{ℓ₁}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{g}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaBound{X}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{Y}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{ℱ}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{Sub}\AgdaSpace{}%
+\AgdaGeneralizable{ℓ₂}\AgdaSpace{}%
+\AgdaBound{X}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaFunction{Sub}\AgdaSpace{}%
+\AgdaGeneralizable{ℓ₂}\AgdaSpace{}%
+\AgdaBound{Y}\<%
+\\
+\>[0]\AgdaFunction{img}\AgdaSpace{}%
+\AgdaBound{g}\AgdaSpace{}%
+\AgdaBound{ℱ}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{index}\AgdaSpace{}%
+\AgdaBound{ℱ}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaBound{g}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{∘}}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaFunction{\AgdaUnderscore{}\$\AgdaUnderscore{}}}\AgdaSpace{}%
+\AgdaBound{ℱ}\AgdaSymbol{)}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+\>[0]\AgdaKeyword{syntax}\AgdaSpace{}%
+\AgdaFunction{img}\AgdaSpace{}%
+\AgdaSymbol{(λ}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{e}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaBound{ℱ}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{⁅}\AgdaSpace{}%
+\AgdaBound{e}\AgdaSpace{}%
+\AgdaFunction{∣}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaFunction{ε}\AgdaSpace{}%
+\AgdaBound{ℱ}\AgdaSpace{}%
+\AgdaFunction{⁆}\<%
+\end{code}
+
+Given a powerset $U$ on some type $A$, we can represent subset $U$ represents as a family
+in a very simple way as given below.
+\begin{defn}[Familification of a powerset]
+  Let $A$ be a type and $\oftyI{U}{\pow{A}}$. The family associated with $U$ is
+  the pair $(I, f)$ where
+  \begin{align*}
+    I \quad&\is\quad \sigmaty{x}{A}{U(x)} \\
+    f \quad&\is\quad \mathsf{pr}_1        .
+  \end{align*}
+\end{defn}
+
+As what representation we are working with will be clear to the reader from the context,
+we will engage in a form notational abuse and will not explicitly denote that we are
+working with the familification of a powerset. In the \veragda{} formalisation, this is
+denoted $\mathtt{⟪} U \mathtt{⟫}$.
 
 \section{Higher Inductive Types (HITs)}
 
@@ -482,5 +603,32 @@ one of $P$ or $Q$ it comes from. For this to become propositional, we have to
 We now give the definition of propositional truncation as an HIT.
 
 \begin{defn}[Propositional truncation]\label{defn:truncation}
-  \todo{define as a HIT and write down the induction principle.}
+  Given a type $A$, its propositional truncation $\trunc{A}$ is a HIT given by
+  one constructor, $\rulename{inj}$, and one path, $\rulename{trsquash}$.
+  \begin{equation*}
+    \begin{prooftree}
+      \hypo{\oftyI{x}{A}}
+      \infer1[$\rulename{inj}$]{\oftyI{x}{\trunc{A}}}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \hypo{\oftyI{x}{\trunc{A}}}
+      \hypo{\oftyI{y}{\trunc{A}}}
+      \infer2[$\rulename{trsquash}$]{x = y}
+    \end{prooftree}
+  \end{equation*}
+  The recursion principle for propositional truncation is the following: given any two
+  types $A$ and $B$, to show $\trunc{A} \rightarrow B$ it suffices to show $\isprop{B}$ and $A \rightarrow B$.
+  Formally,
+  \begin{equation*}
+    \isprop{B} \rightarrow (A \rightarrow B) \rightarrow \trunc{A} \rightarrow B.
+  \end{equation*}
 \end{defn}
+
+Observe that this corresponds to the intuitive distinction between \emph{property} and
+\emph{structure}: we are allowed to use the inhabitant of a propositionally truncated type
+only if it will be used in the proof of another property.
+
+This definition of propositional truncation as an HIT brings us to the end of this
+chapter. With all the foundational notions we have defined, we are now ready to carry out
+an investigation of formal topology in \UF{}.
