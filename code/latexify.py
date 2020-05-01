@@ -14,5 +14,13 @@ with open(sys.argv[1], encoding="utf-8") as f:
         code_block_started = False
     elif line[0:3] == "## ":
       print("\\subsection{{{}}}".format(line[3:].rstrip()))
+    elif line[0:4] == "### ":
+      print("\\subsubsection{{{}}}".format(line[4:].rstrip()))
     else:
-      print(line, end="")
+      if code_block_started:
+        print(line, end="")
+      else:
+        if line == "\n":
+          print("")
+        else:
+          print("-- " + line, end="")
