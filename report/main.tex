@@ -39,6 +39,8 @@
   urlcolor   = hottviolet
 }
 
+\newtheorem{ax}{Axiom}
+
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\nats}{\mathbb{N}}
 \newcommand{\bool}{\mathbf{Bool}}
@@ -46,16 +48,17 @@
 \newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
 
 \newcommand{\oftyI}[2]{#1\hspace{0.1mm}:\hspace{0.1mm}#2}
-\newcommand{\oftyII}[3]{#1~#2:#3}
+\newcommand{\oftyII}[3]{#1, #2:#3}
 \newcommand{\refl}{\mathsf{refl}}
 \newcommand{\zero}{\mathsf{zero}}
 \newcommand{\suc}[1]{\mathsf{suc}\left(#1\right)}
 
 \newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
 \newcommand{\isequiv}[1]{\hyperref[defn:equiv]{\mathsf{isEquiv}}\left(#1\right)}
-\newcommand{\idtoeqvnm}{\mathsf{idToEquiv}}
-\newcommand{\idtoeqv}[1]{\idtoeqvnm{}\left(#1\right)}
-\newcommand{\idequiv}{\hyperref[defn:id-equiv]{\mathsf{idEqv}}}
+\newcommand{\idtoeqvnm}{\hyperref[defn:id-to-equiv]{\mathsf{idToEquiv}}}
+\newcommand{\idtoeqv}[2]{\idtoeqvnm{}\left(#1, #2\right)}
+\newcommand{\idequivnm}{\hyperref[defn:id-equiv]{\mathsf{idEqv}}}
+\newcommand{\idequiv}[1]{\idequivnm{}\left(#1\right)}
 \newcommand{\isdec}[1]{\mathsf{isDecidable}\left(#1\right)}
 \newcommand{\isdisc}[1]{\mathsf{isDiscrete}\left(#1\right)}
 \newcommand{\typequiv}[2]{#1 \hyperref[defn:equiv]{\simeq} #2}
@@ -90,6 +93,8 @@
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
 
+\newcommand{\subsetof}[2]{#1 \hyperref[defn:inclusion]{\subseteq} #2}
+
 \newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
 \newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
 \newcommand{\dcsubsetnm}{\hyperref[defn:dc-subset]{\mathsf{DCSubset}}}
@@ -104,6 +109,7 @@
 
 \DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\mathtt{\epsilon}}}
 \newcommand{\memfam}[2]{#1 \memfamnm #2}
+\newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
 
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
@@ -249,5 +255,7 @@
 \input{conclusion}
 
 \makebackmatter{}
+
+\input{agda-formalisation}
 
 \end{document}
