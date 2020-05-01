@@ -59,7 +59,7 @@
 \newcommand{\isdec}[1]{\mathsf{isDecidable}\left(#1\right)}
 \newcommand{\isdisc}[1]{\mathsf{isDiscrete}\left(#1\right)}
 \newcommand{\typequiv}[2]{#1 \hyperref[defn:equiv]{\simeq} #2}
-\newcommand{\logequiv}[2]{#1 \leftrightarrow #2}
+\newcommand{\logequiv}[2]{#1 \hyperref[defn:iff]{\leftrightarrow} #2}
 \newcommand{\exteq}[2]{#1 \hyperref[defn:exteq]{\sim} #2}
 
 \newcommand{\unitty}{\mathsf{Unit}}
@@ -67,7 +67,7 @@
 %% Homotopy levels.
 \newcommand{\iscontr}[1]{\hyperref[defn:contr]{\mathsf{isContr}}\left(#1\right)}
 \newcommand{\isprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
-\newcommand{\isset}[1]{\mathsf{isSet}\left(#1\right)}
+\newcommand{\isset}[1]{\hyperref[defn:hset]{\mathsf{isSet}}\left(#1\right)}
 \newcommand{\isofhlevel}[2]{%
   \hyperref[defn:hlevel]{\mathsf{isOfHLevel}}\left(#1, #2\right)
 }
@@ -137,6 +137,7 @@
 \newcommand{\modname}[1]{{\color{AgdaModule} \texttt{#1}}}
 \newcommand{\fnname}[1]{{\color{AgdaFunction} \texttt{#1}}}
 
+\newcommand{\rulename}[1]{{\color{darkred} \mathsf{#1}}}
 \newcommand{\ruledir}{{\color{darkred} \mathsf{dir}}}
 \newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
 \newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
