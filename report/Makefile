@@ -1,4 +1,4 @@
-all: main.pdf remove-log
+all: main.pdf
 
 .PHONY: references.bib
 references.bib:
@@ -11,8 +11,12 @@ main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.t
 	xelatex -interaction=nonstopmode $<
 	rm -f main.aux main.bbl main.bcf main.blg main.lof main.lot main.out main.ptb main.run.xml main.toc
 
-.PHONY: keep-log
 keep-log: main.pdf
+	xelatex -interaction=nonstopmode $<
+	biber main.bcf
+	xelatex -interaction=nonstopmode $<
+	xelatex -interaction=nonstopmode $<
+	rm -f main.aux main.log main.bbl main.bcf main.blg main.lof main.lot main.out main.ptb main.run.xml main.toc
 
 .PHONY: remove-log
 remove-log: main.pdf
