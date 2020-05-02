@@ -4,6 +4,11 @@ all: main.pdf
 references.bib:
 	wget http://127.0.0.1:23119/better-bibtex/collection?/1/Thesis//Core.biblatex -O $@
 
+.PHONY: literate-latex
+literate-latex:
+	cd ../code && ./latexify.py
+	mv ../code/literate-latex .
+
 main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex agda.sty
 	xelatex -interaction=nonstopmode $<
 	biber main.bcf
