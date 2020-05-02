@@ -48,7 +48,7 @@ nothing but the map `U ↦ - <| U`.
       U₀ : stage F → hProp ℓ₀
       U₀ = λ a → a <| U , squash
 
-      U₀-dc : [ IsDownwardClosed P (λ - → (- <| U) , squash) ]
+      U₀-dc : [ isDownwardsClosed P (λ - → (- <| U) , squash) ]
       U₀-dc a a₀ aεU₁ a₀⊑a = lem1 U-down a₀⊑a aεU₁
 
   _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
@@ -103,7 +103,7 @@ Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
   ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
-      down-DC : [ IsDownwardClosed P x↓ ]
+      down-DC : [ isDownwardsClosed P x↓ ]
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
 
   x◀x↓ : (x : stage F) → x <| (λ - → - ⊑[ P ] x)
@@ -116,7 +116,7 @@ By composing this with the covering nucleus, we define a map `e` from `F` to `F�
   e : stage F → ∣ F↓ ∣F
   e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
     where
-      NTS : [ IsDownwardClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
+      NTS : [ isDownwardsClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
       NTS _ _ x y = lem1 (λ _ _ x⊑y y⊑z → ⊑[ P ]-trans _ _ z y⊑z x⊑y) y x
 ```
 

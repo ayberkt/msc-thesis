@@ -44,7 +44,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
   <|-∩-comm {U = U} {V} a (branch b f)     = branch b (λ c → <|-∩-comm (next ℱ c) (f c))
   <|-∩-comm {U = U} {V} a (squash p₀ p₁ i) = squash (<|-∩-comm a p₀) (<|-∩-comm a p₁) i
 
-  module _ {U : ∣ P ∣ₚ → hProp ℓ} (U-down : [ IsDownwardClosed P U ]) where
+  module _ {U : ∣ P ∣ₚ → hProp ℓ} (U-down : [ isDownwardsClosed P U ]) where
 
     lem1 : {a a′ : ∣ P ∣ₚ} → [ a′ ⊑[ P ] a ] →  a <| U → a′ <| U
     lem1 {_}     {_}  h (squash p₀ p₁ i) = squash (lem1 h p₀) (lem1 h p₁) i
@@ -66,7 +66,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
   lem4 U V h a (dir p)          = h a p
   lem4 U V h a (branch b f)     = branch b (λ c → lem4  U V h (next ℱ c) (f c))
 
-  module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ) (V-dc : [ IsDownwardClosed P V ]) where
+  module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ) (V-dc : [ isDownwardsClosed P V ]) where
 ```
 
 ```
@@ -76,8 +76,8 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
     lem2 (branch b f)     h = branch b (λ c → lem2 (f c) (V-dc _ _ h (mono ℱ _ b c)))
 
   module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ)
-           (U-dc : [ IsDownwardClosed P U ])
-           (V-dc : [ IsDownwardClosed P V ]) where
+           (U-dc : [ isDownwardsClosed P U ])
+           (V-dc : [ isDownwardsClosed P V ]) where
 
     lem3 : (a a′ : ∣ P ∣ₚ) → [ a′ ⊑[ P ] a ] → a′ <| U → a <| V → a′ <| (U ∩ V)
     lem3 a a′ h (squash p₀ p₁ i) q = squash (lem3 a a′ h p₀ q) (lem3 a a′ h p₁ q) i

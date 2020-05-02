@@ -318,7 +318,7 @@ downward-subset-poset {ℓ₀ = ℓ₀} (A , P) =
 
       <<-antisym : [ isAntisym 𝔻-set _<<_ ]
       <<-antisym X Y S⊆T T⊆S =
-        ΣProp≡ (is-true-prop ∘ IsDownwardClosed (A , P)) (⊆-antisym S⊆T T⊆S)
+        ΣProp≡ (is-true-prop ∘ isDownwardsClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
 -- The set of downward-closed subsets of a poset forms a frame.
 downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
@@ -340,9 +340,9 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     𝟏 = (λ _ → Unit ℓ₀ , Unit-prop) , λ _ _ _ _ → tt
 
     ∩-down : (S T : 𝒫 X)
-           → [ IsDownwardClosed (X , P) S ]
-           → [ IsDownwardClosed (X , P) T ]
-           → [ IsDownwardClosed (X , P) (S ∩ T) ]
+           → [ isDownwardsClosed (X , P) S ]
+           → [ isDownwardsClosed (X , P) T ]
+           → [ isDownwardsClosed (X , P) (S ∩ T) ]
     ∩-down S T S↓ T↓ x y x∈S∩T y⊑x = S↓ x y (π₀ x∈S∩T) y⊑x , T↓ x y (π₁ x∈S∩T) y⊑x
 
     _∧_ : 𝔻 → 𝔻 → 𝔻
@@ -363,7 +363,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
             → [ y ⊑[ (X , P) ] x ] → in-some-set-of ℱ x → ∥ in-some-set-of ℱ y ∥
         ind x y y⊑x (i , x∈ℱᵢ) = ∣ i , π₁ (ℱ $ i) x y x∈ℱᵢ y⊑x ∣
 
-        ⊔ℱ↓ : [ IsDownwardClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) ]
+        ⊔ℱ↓ : [ isDownwardsClosed (X , P) (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) ]
         ⊔ℱ↓ x y ∣p∣ y⊑x = ∥∥-rec (∥∥-prop _) (ind x y y⊑x) ∣p∣
 
     open JoinSyntax 𝔻 ⊔_

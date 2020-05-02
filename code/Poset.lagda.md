@@ -183,19 +183,19 @@ We denote by `↓[ P ] x` the type of everything in `P` that is below `x`.
 ```
 
 ```
-IsDownwardClosed : (P : Poset ℓ₀ ℓ₁) → 𝒫 ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
-IsDownwardClosed P U =
+isDownwardsClosed : (P : Poset ℓ₀ ℓ₁) → 𝒫 ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
+isDownwardsClosed P U =
   ((x y : ∣ P ∣ₚ) → [ x ∈ U ] → [ y ⊑[ P ] x ] → [ y ∈ U ]) , prop
   where
     prop : isProp ((x y : ∣ P ∣ₚ) → [ U x ] → [ y ⊑[ P ] x ] → [ U y ])
     prop = isPropΠ λ _ → isPropΠ λ x → isPropΠ λ _ → isPropΠ λ _ → is-true-prop (x ∈ U)
 
 DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Type (suc ℓ₀ ⊔ ℓ₁)
-DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] [ IsDownwardClosed P U ]
+DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] [ isDownwardsClosed P U ]
 
 DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → isSet (DownwardClosedSubset P)
 DownwardClosedSubset-set P =
-  isSetΣ (𝒫-set ∣ P ∣ₚ) λ U → isProp→isSet (is-true-prop (IsDownwardClosed P U))
+  isSetΣ (𝒫-set ∣ P ∣ₚ) λ U → isProp→isSet (is-true-prop (isDownwardsClosed P U))
 ```
 
 ## Product of two posets

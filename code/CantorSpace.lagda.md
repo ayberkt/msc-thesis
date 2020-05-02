@@ -157,7 +157,7 @@ This subset is downwards-closed.
 
 ```
 
-↓-dc : (xss : List ℂ) → [ IsDownwardClosed ℂ-pos (λ - → - ↓ xss) ]
+↓-dc : (xss : List ℂ) → [ isDownwardsClosed ℂ-pos (λ - → - ↓ xss) ]
 ↓-dc (xs ∷ xss) ys zs ys◀xs∷xss zs≤ys =
   ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss))) NTS ys◀xs∷xss
   where
@@ -171,7 +171,7 @@ This subset is downwards-closed.
 The statement of compactness then is as follows.
 
 ```
-compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : [ IsDownwardClosed ℂ-pos U ])
+compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : [ isDownwardsClosed ℂ-pos U ])
         → xs ◀ U
         → ∥ Σ[ yss ∈ List ℂ ]
               (xs ◀ (λ - → - ↓ yss) × [ (λ - → - ↓ yss) ⊆ U ]) ∥
