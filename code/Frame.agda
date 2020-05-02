@@ -321,8 +321,8 @@ DCPoset {ℓ₀ = ℓ₀} (A , P) =
         ΣProp≡ (is-true-prop ∘ isDownwardsClosed (A , P)) (⊆-antisym S⊆T T⊆S)
 
 -- The set of downward-closed subsets of a poset forms a frame.
-downward-subset-frame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
-downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
+DCFrame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
+DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     𝔻
   , (strₚ 𝔻ₚ , 𝟏 , (_∧_ , ⊔_))
   , 𝟏-top

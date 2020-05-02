@@ -30,7 +30,7 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
   private
     P       = pos′ F
     𝔉       = ∣ P ∣ₚ
-    F↓      = downward-subset-frame P
+    F↓      = DCFrame P
     P↓      = pos F↓
     _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
 

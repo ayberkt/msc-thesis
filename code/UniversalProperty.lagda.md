@@ -21,7 +21,7 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
   P       = pos′ F
   𝔉       = ∣ pos′ F ∣ₚ
-  F↓      = downward-subset-frame P
+  F↓      = DCFrame P
   P↓      = pos F↓
   _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
 
