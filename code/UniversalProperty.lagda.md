@@ -103,7 +103,7 @@ Proof.
 ```
 
 ```
-    g-mono : IsMonotonic (pos L) (pos R) g
+    g-mono : isMonotonic (pos L) (pos R) g
     g-mono ((U , _) , _) ((V , _) , _) U⊆V =
       ⋃[ R ]-least _ _ (λ o oεfU → ⋃[ R ]-upper _ _ (NTS o oεfU ))
       where
@@ -259,7 +259,7 @@ Proof.
         down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem x y φ) }
 
     g∘η=f : gm∘ηm ≡ fm
-    g∘η=f = ΣProp≡ (IsMonotonic-prop P (pos R)) (funExt gm∘ηm~f)
+    g∘η=f = ΣProp≡ (isMonotonic-prop P (pos R)) (funExt gm∘ηm~f)
 
     g∘η=f′ : g ∘ η ≡ f
     g∘η=f′ = subst (λ { (h , _) → h ≡ f }) (sym g∘η=f) refl
@@ -278,17 +278,17 @@ Proof.
         f=g′∘η : f ≡ g′ ∘ η
         f=g′∘η = subst (λ { (f′ , _) → f′ ≡ g′ ∘ η }) φ refl
 
-        NTS₀ : (y : Σ (∣ pos L ∣ₚ → ∣ pos R ∣ₚ) (IsMonotonic (pos L) (pos R)))
+        NTS₀ : (y : Σ (∣ pos L ∣ₚ → ∣ pos R ∣ₚ) (isMonotonic (pos L) (pos R)))
              → isProp ((_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) ≡ fm)
         NTS₀ y = isOfHLevelΣ 2
                    (isSetΠ λ _ → carrier-is-set (pos R))
-                   (λ h → isProp→isSet (IsMonotonic-prop P (pos R) h))
+                   (λ h → isProp→isSet (isMonotonic-prop P (pos R) h))
                    (_∘m_ {P = P} {Q = pos L} {R = pos R} y ηm) fm
 
         I : (h : L ─f→ R) → isProp (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm ≡ fm)
         I h = isOfHLevelΣ 2
                 (isSetΠ λ _ → carrier-is-set (pos R))
-                (λ h → isProp→isSet (IsMonotonic-prop P (pos R) h))
+                (λ h → isProp→isSet (isMonotonic-prop P (pos R) h))
                 (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ h) ηm) fm
 
         g~g′ : (𝔘 : ∣ L ∣F) → g 𝔘 ≡ g′ 𝔘
@@ -312,7 +312,7 @@ Proof.
         II : (gm , g-frame-homo) ≡ (g′m , g′-frame-homo)
         II = ΣProp≡
                (isFrameHomomorphism-prop L R)
-               (ΣProp≡ (IsMonotonic-prop (pos L) (pos R)) (funExt g~g′))
+               (ΣProp≡ (isMonotonic-prop (pos L) (pos R)) (funExt g~g′))
 ```
 
 ### The final proof

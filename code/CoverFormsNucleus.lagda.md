@@ -142,7 +142,7 @@ Furthermore, `η` is a monotonic map.
   ηm : P ─m→ pos L
   ηm = η , η-mono
     where
-      η-mono : IsMonotonic P (pos L) η
+      η-mono : isMonotonic P (pos L) η
       η-mono x y x⊑y a (dir p)        = dir (⊑[ P ]-trans a x y p x⊑y)
       η-mono x y x⊑y a (branch b f)   = branch b (λ c → η-mono x y x⊑y (next F c) (f c))
       η-mono x y x⊑y a (squash p q i) = squash (η-mono x y x⊑y a p) (η-mono x y x⊑y a q) i

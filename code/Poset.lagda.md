@@ -129,14 +129,13 @@ module PosetReasoning (P : Poset ℓ₀ ℓ₁) where
 ≡⇒⊑ : (P : Poset ℓ₀ ℓ₁) → {x y : ∣ P ∣ₚ} → x ≡ y → [ x ⊑[ P ] y ]
 ≡⇒⊑ P {x = x} p = subst (λ z → [ x ⊑[ P ] z ]) p (⊑[ P ]-refl x)
 
-IsMonotonic : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₂ ℓ₃)
+isMonotonic : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₂ ℓ₃)
             → (∣ P ∣ₚ → ∣ Q ∣ₚ) → Type (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₃)
-IsMonotonic P Q f =
-  (x y : ∣ P ∣ₚ) → [ x ⊑[ P ] y ] → [ (f x) ⊑[ Q ] (f y) ]
+isMonotonic P Q f = (x y : ∣ P ∣ₚ) → [ x ⊑[ P ] y ] → [ (f x) ⊑[ Q ] (f y) ]
 
-IsMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f : ∣ P ∣ₚ → ∣ Q ∣ₚ)
-                 → isProp (IsMonotonic P Q f)
-IsMonotonic-prop P Q f =
+isMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f : ∣ P ∣ₚ → ∣ Q ∣ₚ)
+                 → isProp (isMonotonic P Q f)
+isMonotonic-prop P Q f =
   isPropΠ (λ x → isPropΠ λ y → isPropΠ λ _ → is-true-prop (f x ⊑[ Q ] f y))
 ```
 
@@ -144,12 +143,12 @@ IsMonotonic-prop P Q f =
 
 ```
 _─m→_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀′ ℓ₁′ → Type (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₀′ ⊔ ℓ₁′)
-_─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (IsMonotonic P Q)
+_─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (isMonotonic P Q)
 ```
 
 ```
 poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso′ P Q e = IsMonotonic P Q f × IsMonotonic Q P g
+poset-iso′ P Q e = isMonotonic P Q f × isMonotonic Q P g
   where
     f = π₀ (equiv→HAEquiv e)
     g = isHAEquiv.g (π₁ (equiv→HAEquiv e))
@@ -292,9 +291,9 @@ poset-iso⇔poset-iso′ P Q e = to , from
     to i = f-mono , g-mono
       where
 
-        f-mono : IsMonotonic P Q f
+        f-mono : isMonotonic P Q f
         f-mono x y x⊑y = π₀ (i x y) x⊑y
-        g-mono : IsMonotonic Q P g
+        g-mono : isMonotonic Q P g
         g-mono x y x⊑y =  π₁ (i (g x) (g y)) NTS
           where
             NTS : [ f (g x) ⊑[ Q ] (f (g y)) ]
