@@ -7,12 +7,13 @@ task of making type-theoretical sense of topology presents another challenge: we
 able to develop our results in a completely predicative way as well. To address this, we
 will use formal topologies which give us a way of \emph{presenting} frames. Instead of
 working with frames directly, we will work with formal topologies from which the frames
-are freely generated.
+are generated.
 
 Our definition of a formal topology will make use of the notion of an interaction system,
-first formulated by Petersson and Synek~\cite{tree-sets}, the motivation of whom was to
-generalise $\mathsf{W}$ types to be able to accommodate mutual induction. Other names for
-interaction systems are \emph{tree set constructors} (which is the name that Petersson and
+first formulated by Petersson and Synek~\cite{tree-sets}. In formulating this notion, the
+motivation of Petersson and Synek was to generalise $\mathsf{W}$ types to be able to
+accommodate mutual induction. Other names for interaction systems are
+\emph{tree set constructors} (which is the name that Petersson and
 Synek~\cite{tree-sets} use), and \emph{indexed containers}~\cite{indexed-containers}. The
 idea of doing formal topology with interaction systems is due to Coquand~\cite{coq-posets}
 who was inspired by Dragalin~\cite{dragalin}.
@@ -117,8 +118,8 @@ Once we adopt this view, what the monotonicity property says becomes much more c
 we perform an experiment $b$ while we have knowledge $a$ and revise our knowledge based on
 some outcome $c$ of $b$, the new state of knowledge we arrive at must contain at least as
 much information. In fact, if we would like to view things sensibly as experiments, it
-makes sense to reserve this terminology to interaction structures that have an ordering
-that satisfies the monotonicity property
+makes sense to reserve this terminology to interaction systems that have orderings that
+satisfy the monotonicity property
 
 Now, to proceed towards the definition of a formal topology, let us first formally define
 interaction systems.
@@ -128,7 +129,7 @@ interaction systems.
   \begin{align*}
     \treestr{A} &\quad\is\quad
       \sigmaty{B}{A \rightarrow \univ}{
-        \sigmaty{C}{\pity{a}{A}{B(a) \rightarrow C}}{
+        \sigmaty{C}{\pity{a}{A}{B(a) \rightarrow \univ{}}}{
           \pity{a}{A}{\pity{b}{B(a)}{C(a, b) \rightarrow A}}
         }
       }\\
@@ -140,7 +141,7 @@ interaction systems.
 \end{defn}
 
 Given an interaction system $\mathcal{I}$, the monotonicity property is then formally
-expressed as in Definition~\ref{defn:mono}.
+expressed as given in the following definition.
 \begin{defn}[Monotonicity property of an interaction system]\label{defn:mono}
   An interaction system $\mathcal{I}$, whose type $A_{\mathcal{I}}$ of stages is equipped
   with a poset structure, is said to have the monotonicity property if the following type
@@ -169,8 +170,8 @@ definition.
       a' \sqsubseteq a \rightarrow\\
       &\hspace{4em}\pity{b}{B(a)}{
         \sigmaty{b'}{B(a')}{
-          \pity{z'}{C(a', b')}{
-            \sigmaty{z}{C(a, b)}{
+          \pity{c'}{C(a', b')}{
+            \sigmaty{c}{C(a, b)}{
               d(a', b', c') \sqsubseteq d(a, b, c)
             }
           }
@@ -263,8 +264,8 @@ to write it like:
 \begin{equation*}
   \_\RHD\_ : \pow{A} \rightarrow \pow{A},
 \end{equation*}
-but this is not the case as the relation has been defined using more than one
-constructors. We could then restrict this to get an endofunction on the set of
+but this is not the case as the relation has been defined using more than one constructor.
+If this were the case, we could restrict this to get an endofunction on the set of
 downwards-closed subsets:
 \begin{equation*}
   \_\RHD\_ : \dcsubset{A} \rightarrow \dcsubset{A}
@@ -274,14 +275,15 @@ $\covers{\_}{U}$ is a subset that is downwards-closed. But first, we have to dea
 problem that the result type of $\covers{}{}$ is not $\hprop{}$.
 
 It is tempting to try to achieve this by truncating $\covers{\_}{\_}$. When we do this,
-however, it becomes impossible to prove the idempotence law for the purported nucleus
-$\RHD : \dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? To prove the idempotence law
+however, it becomes impossible (ostensibly) to prove the idempotence law for the purported
+nucleus $\RHD : \dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? To prove the
+idempotence law
 \begin{equation*}
   \trunc{\covers{a}{\trunc{\covers{-}{U}}}} \rightarrow \trunc{\covers{a}{U}},
 \end{equation*}
 we need a lemma that says, given any $a$, and subsets $U, V$,
 \begin{center}
-  if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$, for every $a'$, then
+  if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$ for every $a'$, then
   $\trunc{\covers{a}{V}}$.
 \end{center}
 The $\ruledir{}$ case is easily verified. The $\rulebranch{}$ case, however, results in a
