@@ -14,41 +14,6 @@ open import Powerset
 Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
 Order ℓ₁ A = A → A → hProp ℓ₁
 
-order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
-order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
-  (x y : A) → [ x ⊑₀ y ⇔ f x ⊑₁ f y ]
-  where
-    f = equivFun eqv
-
-isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
-isSet-Order ℓ₁ A = isSetΠ λ _ → isSetΠ λ _ → isSetHProp
-
-Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
-Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
-  where
-    f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
-    f i = funExt λ x → funExt λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
-
-    ⇔-prop : isProp ((x y : X) → [ x ⊑₀ y ⇔ x ⊑₁ y ])
-    ⇔-prop = isPropΠ λ x → isPropΠ λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
-
-    f-equiv : isEquiv f
-    f-equiv = record { equiv-proof = λ eq → (g eq , sec eq) , h eq }
-      where
-        g : (eq : _⊑₀_ ≡ _⊑₁_)
-          → (x y : X)
-          → ([ x ⊑₀ y ] → [ x ⊑₁ y ]) × ([ x ⊑₁ y ] → [ x ⊑₀ y ])
-        g eq x y = subst (λ { _⊑⋆_ → [ x ⊑⋆ y ] }) eq
-                 , subst (λ { _⊑⋆_ → [ x ⊑⋆ y ] }) (sym eq)
-
-        sec : section f g
-        sec p = isSet-Order _ X _⊑₀_ _⊑₁_ (f (g p)) p
-
-        h : (p : _⊑₀_ ≡ _⊑₁_) → (fib : fiber f p) → (g p , sec p) ≡ fib
-        h p (i , _) = ΣProp≡
-                        (λ i′ → isOfHLevelSuc 2 (isSet-Order ℓ₁ X) _⊑₀_ _⊑₁_ (f i′) p)
-                        (⇔-prop (g p) i)
-
 isReflexive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isReflexive {A = X} _⊑_ =
   ((x : X) → [ x ⊑ x ]) , isPropΠ (λ x → is-true-prop (x ⊑ x))
@@ -263,6 +228,41 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
 ## Equality of isomorphic posets
 
 ```
+order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
+order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
+  (x y : A) → [ x ⊑₀ y ⇔ f x ⊑₁ f y ]
+  where
+    f = equivFun eqv
+
+isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
+isSet-Order ℓ₁ A = isSetΠ λ _ → isSetΠ λ _ → isSetHProp
+
+Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
+Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
+  where
+    f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
+    f i = funExt λ x → funExt λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
+
+    ⇔-prop : isProp ((x y : X) → [ x ⊑₀ y ⇔ x ⊑₁ y ])
+    ⇔-prop = isPropΠ λ x → isPropΠ λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
+
+    f-equiv : isEquiv f
+    f-equiv = record { equiv-proof = λ eq → (g eq , sec eq) , h eq }
+      where
+        g : (eq : _⊑₀_ ≡ _⊑₁_)
+          → (x y : X)
+          → ([ x ⊑₀ y ] → [ x ⊑₁ y ]) × ([ x ⊑₁ y ] → [ x ⊑₀ y ])
+        g eq x y = subst (λ { _⊑⋆_ → [ x ⊑⋆ y ] }) eq
+                 , subst (λ { _⊑⋆_ → [ x ⊑⋆ y ] }) (sym eq)
+
+        sec : section f g
+        sec p = isSet-Order _ X _⊑₀_ _⊑₁_ (f (g p)) p
+
+        h : (p : _⊑₀_ ≡ _⊑₁_) → (fib : fiber f p) → (g p , sec p) ≡ fib
+        h p (i , _) = ΣProp≡
+                        (λ i′ → isOfHLevelSuc 2 (isSet-Order ℓ₁ X) _⊑₀_ _⊑₁_ (f i′) p)
+                        (⇔-prop (g p) i)
+
 
 RP-iso-prop : (P Q : Σ (Type ℓ₀) (Order ℓ₁))
             → (i : π₀ P ≃ π₀ Q) → isProp (order-iso P Q i)
