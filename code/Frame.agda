@@ -13,7 +13,7 @@ open import Poset
 open import Powerset
 
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
-RawFrameStr ℓ₁ ℓ₂ A = (PosetStr ℓ₁ A) × A × (A → A → A) × (Sub ℓ₂ A → A)
+RawFrameStr ℓ₁ ℓ₂ A = PosetStr ℓ₁ A × A × (A → A → A) × (Sub ℓ₂ A → A)
 
 isTop : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
 isTop P x = ((y : ∣ P ∣ₚ) → [ y ⊑[ P ] x ]) , isPropΠ λ y → is-true-prop (y ⊑[ P ] x)
@@ -63,14 +63,14 @@ isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
     φ-prop : isProp φ
     φ-prop p q = funExt λ x → funExt λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
 
-frame-axioms : (A : Type ℓ₀) → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-frame-axioms {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} A (P-str@(_⊑_ , _) , 𝟏 , _∧_ , ⋃_) =
-  isTop P 𝟏 ⊓ isGLB P _∧_ ⊓ isLUB P ⋃_ ⊓ isDist P _∧_ ⋃_
+FrameAx : {A : Type ℓ₀} → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+FrameAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {A = A} (s@(_⊑_ , _) , ⊤ , _∧_ , ⋃_) =
+  isTop P ⊤ ⊓ isGLB P _∧_ ⊓ isLUB P ⋃_ ⊓ isDist P _∧_ ⋃_
   where
-    P = A , P-str
+    P = A , s
 
 FrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
-FrameStr ℓ₁ ℓ₂ = add-to-structure (RawFrameStr ℓ₁ ℓ₂) λ A RF → [ frame-axioms A RF ]
+FrameStr ℓ₁ ℓ₂ = add-to-structure (RawFrameStr ℓ₁ ℓ₂) λ _ RF → [ FrameAx RF ]
 
 Frame : (ℓ₀ ℓ₁ ℓ₂ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 Frame ℓ₀ ℓ₁ ℓ₂ = Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)
@@ -279,12 +279,12 @@ isFrameHomomorphism {ℓ₂ = ℓ₂} F G (f , _) = resp-𝟏 × resp-⊓ × res
     resp-⊓ = (x y : ∣ F ∣F) → f (x ⊓[ F ] y) ≡ (f x) ⊓[ G ] (f y)
 
     resp-⋃ : Type _
-    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → f (⋃[ F ] ℱ) ≡ ⋃[ G ] (f ⟨$⟩ ℱ)
+    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → f (⋃[ F ] ℱ) ≡ ⋃[ G ] ⁅ f x ∣ x ε ℱ ⁆
 
 isFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
-                         → (m : pos F ─m→ pos G)
-                         → isProp (isFrameHomomorphism F G m)
-isFrameHomomorphism-prop F G m =
+                         → (f : pos F ─m→ pos G)
+                         → isProp (isFrameHomomorphism F G f)
+isFrameHomomorphism-prop F G f =
   isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
   isOfHLevelΣ 1 (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
     isPropΠ λ ℱ → carrier-is-set (pos G) _ _
@@ -504,7 +504,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
 
 frame-iso : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
-  add-to-iso RF-iso λ A RF → [ frame-axioms A RF ]
+  add-to-iso RF-iso λ A RF → [ FrameAx RF ]
 
 frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → isProp (frame-iso M N i)
 frame-iso-prop F G i =
@@ -519,16 +519,16 @@ frame-iso-prop F G i =
 frame-iso-Ω : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ M ≃ π₀ N → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 frame-iso-Ω M N i = frame-iso M N i , frame-iso-prop M N i
 
-frame-axioms-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A)
-                   → isProp [ frame-axioms A str ]
-frame-axioms-props A str = is-true-prop (frame-axioms A str)
+FrameAx-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A)
+                   → isProp [ FrameAx str ]
+FrameAx-props A str = is-true-prop (FrameAx str)
 
 frame-is-SNS : SNS {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
 frame-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
   SNS-PathP→SNS-≡
     (FrameStr ℓ₁ ℓ₂)
     frame-iso
-    (add-axioms-SNS _ frame-axioms-props (SNS-≡→SNS-PathP RF-iso RF-is-SNS))
+    (add-axioms-SNS _ FrameAx-props (SNS-≡→SNS-PathP RF-iso RF-is-SNS))
 
 frame-is-SNS-PathP : SNS-PathP {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
 frame-is-SNS-PathP = SNS-≡→SNS-PathP frame-iso frame-is-SNS
