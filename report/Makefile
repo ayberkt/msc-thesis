@@ -11,10 +11,10 @@ literate-latex:
 	mv ../code/literate-latex .
 
 main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex agda.sty
-	xelatex $<
+	xelatex -interaction=nonstopmode $<
 	biber main.bcf
-	xelatex $<
-	xelatex $<
+	xelatex -interaction=nonstopmode $<
+	xelatex -interaction=nonstopmode $<
 	rm -f main.aux main.bbl main.bcf main.blg main.lof main.lot main.out main.ptb main.run.xml main.toc
 
 keep-log: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex agda.sty
