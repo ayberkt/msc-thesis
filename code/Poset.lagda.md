@@ -12,7 +12,7 @@ open import Powerset
 
 ```
 Order : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-Order {ℓ = ℓ} ℓ₁ A = A → A → hProp ℓ₁
+Order ℓ₁ A = A → A → hProp ℓ₁
 
 order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
 order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
