@@ -6,7 +6,8 @@ references.bib:
 
 .PHONY: literate-latex
 literate-latex:
-	cd ../code && ./latexify.py
+	rm -rf literate-latex
+	cd ../code && ./latexify.sh
 	mv ../code/literate-latex .
 
 main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex agda.sty
