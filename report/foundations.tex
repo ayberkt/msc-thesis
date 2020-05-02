@@ -300,6 +300,13 @@ The type expressing that a given type $A$ is a proposition, is itself a proposit
   Given $\oftyI{A}{\univ{}_n}$, the type $\isprop{A}$ is propositional.
 \end{prop}
 
+Notice also the following fact.
+\begin{prop}\label{prop:to-subtype}
+  Given some type $A$, and a family of propositions $\oftyI{B}{A \rightarrow \hprop{}}$, to show the
+  equality of two inhabitants of $\oftyII{(x, p)}{(y, q)}{\sigmaty{a}{A}{B(a)}}$, it
+  suffices to show the equality of $x$ and $y$.
+\end{prop}
+
 As we view propositional types as embodying logical propositions, it is natural to
 expect that the right notion of equivalence between them is logical equivalence.
 \begin{defn}\label{defn:iff}
@@ -351,6 +358,11 @@ h-set case.
 \begin{prop}\label{prop:sigma-set}
   Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{\univ{}_n}$, if $A$ is an set and
   $B(a)$ is an set for every $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B}$ is an set.
+\end{prop}
+
+Notice also that the type expressing a given a type is a set is a proposition.
+\begin{prop}\label{prop:set-prop}
+  Given any type $A$, the type $\isset{A}$ is a proposition.
 \end{prop}
 
 \section{Powersets}\label{sec:pow}
