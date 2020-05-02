@@ -36,15 +36,14 @@ isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
     φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ p → isPropΠ λ q → A-set x y
 
 PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = isPartialSet , isPropisPartialSet
+PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = isPartialSet , isPartialSet-prop
   where
     isPartial : isSet A → hProp (ℓ₀ ⊔ ℓ₁)
-    isPartial isSetA = isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym isSetA _⊑_
+    isPartial A-set = isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_
 
     isPartialSet = Σ[ A-set ∈ isSet A ] [ isPartial A-set ]
 
-    isPropisPartialSet = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
-
+    isPartialSet-prop = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
 ```
 
 A poset structure with level `ℓ₁`.
