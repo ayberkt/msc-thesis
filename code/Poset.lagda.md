@@ -35,8 +35,8 @@ isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
     φ-prop : isProp φ
     φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ p → isPropΠ λ q → A-set x y
 
-PosetAx : (ℓ₁ : Level) (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-PosetAx {ℓ₀ = ℓ₀} ℓ₁ A _⊑_ = isPartialSet , isPartialSet-prop
+PosetAx : (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
+PosetAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} A _⊑_ = isPartialSet , isPartialSet-prop
   where
     isPartial : isSet A → hProp (ℓ₀ ⊔ ℓ₁)
     isPartial A-set = isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_
@@ -50,8 +50,7 @@ A poset structure with level `ℓ₁`.
 
 ```
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → [ PosetAx ℓ₁ A _⊑_ ]
-
+PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → [ PosetAx A _⊑_ ]
 
 PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
@@ -273,7 +272,7 @@ RP-iso-prop (A , _⊑₀_) (B , _⊑₁_) i =
     f = equivFun i
 
 poset-iso : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso {ℓ₁ = ℓ₁} = add-to-iso order-iso λ A _⊑_ → [ PosetAx ℓ₁ A _⊑_ ]
+poset-iso {ℓ₁ = ℓ₁} = add-to-iso order-iso λ A _⊑_ → [ PosetAx A _⊑_ ]
 
 poset-iso⇔poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) (e : ∣ P ∣ₚ ≃ ∣ Q ∣ₚ)
                      → (poset-iso P Q e → poset-iso′ P Q e)
@@ -308,8 +307,8 @@ poset-iso⇔poset-iso′ P Q e = to , from
         ψ fx⊑fy = subst (λ - → [ - x ⊑[ P ] - y ]) (funExt ret) (π₁ i (f x) (f y) fx⊑fy)
 
 poset-axioms-props : (A : Type ℓ₀) (str : Order ℓ₁ A)
-                   → isProp [ PosetAx ℓ₁ A str ]
-poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx ℓ₁ A str)
+                   → isProp [ PosetAx A str ]
+poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx A str)
 
 
 poset-is-SNS : SNS {ℓ} (PosetStr ℓ₁) poset-iso
