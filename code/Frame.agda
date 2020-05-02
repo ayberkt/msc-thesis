@@ -303,8 +303,8 @@ downward-subset-poset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ�
 downward-subset-poset {ℓ₀ = ℓ₀} (A , P) =
    𝔻 , _<<_ , 𝔻-set , <<-refl , <<-trans  , <<-antisym
   where
-    𝔻     = DownwardClosedSubset     (A , P)
-    𝔻-set = DownwardClosedSubset-set (A , P)
+    𝔻     = DCSubset     (A , P)
+    𝔻-set = DCSubset-set (A , P)
 
     _<<_ : 𝔻 → 𝔻 → hProp ℓ₀
     _<<_ (S , _) (T , _) = S ⊆ T

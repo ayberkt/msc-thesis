@@ -19,19 +19,21 @@ isReflexive {A = X} _⊑_ =
   ((x : X) → [ x ⊑ x ]) , isPropΠ (λ x → is-true-prop (x ⊑ x))
 
 isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = φ , φ-prop
+isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = isTrans⊑ , isPropisTrans⊑
   where
-    φ      : Type (ℓ₀ ⊔ ℓ₁)
-    φ      = ((x y z : X) → [ x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z ])
-    φ-prop : isProp φ
-    φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ z →
-               is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
+    isTrans⊑ : Type (ℓ₀ ⊔ ℓ₁)
+    isTrans⊑ = ((x y z : X) → [ x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z ])
+
+    isPropisTrans⊑ : isProp isTrans⊑
+    isPropisTrans⊑ = isPropΠ λ x → isPropΠ λ y → isPropΠ λ z →
+                       is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
 
 isAntisym : {A : Type ℓ₀} → isSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
 isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
   where
     φ      : Type (ℓ₀ ⊔ ℓ₁)
     φ      = ((x y : X) → [ x ⊑ y ] → [ y ⊑ x ] → x ≡ y)
+
     φ-prop : isProp φ
     φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ p → isPropΠ λ q → A-set x y
 
@@ -190,11 +192,11 @@ isDownwardsClosed P U =
     prop : isProp ((x y : ∣ P ∣ₚ) → [ U x ] → [ y ⊑[ P ] x ] → [ U y ])
     prop = isPropΠ λ _ → isPropΠ λ x → isPropΠ λ _ → isPropΠ λ _ → is-true-prop (x ∈ U)
 
-DownwardClosedSubset : (P : Poset ℓ₀ ℓ₁) → Type (suc ℓ₀ ⊔ ℓ₁)
-DownwardClosedSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] [ isDownwardsClosed P U ]
+DCSubset : (P : Poset ℓ₀ ℓ₁) → Type (suc ℓ₀ ⊔ ℓ₁)
+DCSubset P = Σ[ U ∈ 𝒫 ∣ P ∣ₚ ] [ isDownwardsClosed P U ]
 
-DownwardClosedSubset-set : (P : Poset ℓ₀ ℓ₁) → isSet (DownwardClosedSubset P)
-DownwardClosedSubset-set P =
+DCSubset-set : (P : Poset ℓ₀ ℓ₁) → isSet (DCSubset P)
+DCSubset-set P =
   isSetΣ (𝒫-set ∣ P ∣ₚ) λ U → isProp→isSet (is-true-prop (isDownwardsClosed P U))
 ```
 
