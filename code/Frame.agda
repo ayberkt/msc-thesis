@@ -299,8 +299,8 @@ _$f_ : {F G : Frame ℓ₀ ℓ₁ ℓ₂} → F ─f→ G → ∣ F ∣F → ∣
 -- frame of downward closed posets is like a general observation.
 
 -- The set of downward-closed subsets of a poset forms a frame.
-downward-subset-poset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
-downward-subset-poset {ℓ₀ = ℓ₀} (A , P) =
+DCPoset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
+DCPoset {ℓ₀ = ℓ₀} (A , P) =
    𝔻 , _<<_ , 𝔻-set , <<-refl , <<-trans  , <<-antisym
   where
     𝔻     = DCSubset     (A , P)
@@ -331,7 +331,7 @@ downward-subset-frame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
   , (⊔-upper , ⊔-least)
   , distr
   where
-    𝔻ₚ = downward-subset-poset (X , P)
+    𝔻ₚ = DCPoset (X , P)
     𝔻  = ∣ 𝔻ₚ ∣ₚ
 
     ∣_∣𝔻 : 𝔻 → 𝒫 X
