@@ -37,7 +37,7 @@ mono L (j , N₀ , N₁ , N₂) x y x⊑y =
   j x ⊓[ L ] j y  ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y)  ⟩
   j y         ■
   where
-    open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
+    open PosetReasoning (pos L)
 
     x⊑x⊓y : [ x ⊑[ pos L ] (x ⊓[ L ] y) ]
     x⊑x⊓y = ⊓[ L ]-greatest x y x (⊑[ pos L ]-refl x) x⊑y
@@ -129,7 +129,7 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     𝟏-fixed : j 𝟏[ L ] ≡ 𝟏[ L ]
     𝟏-fixed = ⊑[ pos L ]-antisym _ _ (𝟏[ L ]-top (j 𝟏[ L ])) (n₁ 𝟏[ L ])
 
-    open PosetReasoning (pos L) using (_⊑⟨_⟩_; _■)
+    open PosetReasoning (pos L)
 
     _∧_ : 𝒜 → 𝒜 → 𝒜
     _∧_ (x , x-f) (y , y-f) =

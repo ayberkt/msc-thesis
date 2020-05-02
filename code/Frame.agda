@@ -195,7 +195,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
           ≡ ⋃[ F ] (A , λ a → ⋃[ F ] (B a , λ b → f a b))
   flatten I J f = ⊑[ pos F ]-antisym _ _ down up
     where
-      open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
+      open PosetReasoning (pos F)
 
       LHS = ⋃[ F ] (Σ I J , (λ { (x , y) → f x y }))
       RHS = ⋃[ F ] (I , (λ i → ⋃[ F ] (J i , f i)))
@@ -243,7 +243,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     ⋃[ F ] ((index ℱ × index 𝒢) , (λ { (i , j) → (ℱ $ i) ⊓[ F ] (𝒢 $ j) }))
       ∎
     where
-      open PosetReasoning (pos F) using (_⊑⟨_⟩_; _■)
+      open PosetReasoning (pos F)
 
       NTS₀ : (λ - → (⋃[ F ] ℱ) ⊓[ F ] -) ≡ (λ - → - ⊓[ F ] (⋃[ F ] ℱ))
       NTS₀ = funExt λ x → comm (⋃[ F ] ℱ) x
@@ -555,7 +555,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
     sec : (x : ∣ F ∣F) → g (f x) ≡ x
     sec = secEq eqv
 
-    open PosetReasoning (pos G) using (_⊑⟨_⟩_; _■)
+    open PosetReasoning (pos G)
     open PosetReasoning (pos F) using () renaming (_⊑⟨_⟩_ to _⊑₁⟨_⟩_; _■ to _■₁)
 
     bar : (x y : ∣ G ∣F) → [ x ⊑[ pos G ] y ⇔ (g x) ⊑[ pos F ] (g y) ]

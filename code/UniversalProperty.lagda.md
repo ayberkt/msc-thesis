@@ -203,7 +203,7 @@ Proof.
             ψ : (o : ∣ R ∣F) → o ε ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆ → [ o ⊑[ pos R ] RHS ]
             ψ o ((x , foo) , eq) = subst (λ - → [ - ⊑[ pos R ] RHS ]) eq (ϑ x foo)
               where
-                open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
+                open PosetReasoning (pos R)
                 ϑ : (y : 𝔉) → [ y ∈ ⦅ ⋃[ L ] ℱ ⦆ ] → [ f y ⊑[ pos R ] RHS ]
                 ϑ y (dir mem) = ∥∥-rec
                                   (is-true-prop (f y ⊑[ pos R ] RHS))
@@ -244,7 +244,7 @@ Proof.
       ⋃[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
       f a                               ■
       where
-        open PosetReasoning (pos R) using (_⊑⟨_⟩_; _■)
+        open PosetReasoning (pos R)
         isUB : ∀ a₀ → a₀ ε (outcome F b , f ∘ next F) → [ a₀ ⊑[ pos R ] f a ]
         isUB a₀ (c , p) = a₀           ⊑⟨ ≡⇒⊑ (pos R) (sym p)    ⟩
                           f (next F c) ⊑⟨ lem a (next F c) (h c) ⟩
