@@ -29,6 +29,11 @@ fmap = _⟨$⟩_
 
 syntax fmap (λ x → e) ℱ = ⁅ e ∣ x ε ℱ ⁆
 
+fmap′ : {X : Type ℓ₀} → (I : Type ℓ₂) → (I → X) → Sub ℓ₂ X
+fmap′ I f = (I , f)
+
+syntax fmap′ I (λ i → e) = ⁅ e ∣ i ∶ I ⁆
+
 -- Forall quantification for families.
 fam-forall : {X : Type ℓ₀} (ℱ : Sub ℓ₂ X) → (X → hProp ℓ₁) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₂)
 fam-forall {X = X} ℱ P = ((x : X) → x ε ℱ → [ P x ]) , prop
