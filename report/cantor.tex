@@ -115,14 +115,13 @@ To write this down formally, we first need to define the inductive type of (snoc
     bs_1 \le bs_0 \quad\is\quad \sigmaty{bs_2}{\listty{}}{bs_1 = bs_0 \concat bs_2}
   \end{equation*}
   We will refer to such a $bs_2$, that is the part of $bs_1$ after $bs_0$, as the
-  \emph{difference} of $bs_1$ from $bs_$. The fact that $\listty{}$ is a set is given in
+  \emph{difference} of $bs_1$ from $bs_0$. The fact that $\listty$ is a set is given in
   Proposition~\ref{prop:list-set}. Reflexivity is immediate by picking $bs_2 \is
   \emptylist{}$. Transitivity boils down to to the associativity of $\concat$. For
-  antisymmetry, let $\oftyII{bs}{bs'}{\listty{}}$ such that $bs \le bs'$ and $bs' \le bs$.
-  The result is immediate in the cases where the difference of either proof $\emptylist$,
-  and the case where it is not is impossible. This latter fact involves a non-trivial
-  amount of bureaucracy to prove in a completely precise way but it is intuitively
-  apparent.
+  antisymmetry, let $\oftyII{bs}{bs'}{\listty{}}$ such that $bs \le bs'$ and $bs' \le bs$. The
+  result is immediate in the cases where the difference of either proof $\emptylist$, and
+  the case where it is not is impossible. This latter fact involves a non-trivial amount
+  of bureaucracy to prove in a completely precise way but it is intuitively apparent.
 
   Finally, note that the relation $\_\le\_$ is h-propositional (without the need for
   truncation!). This follows from the injectivity of $bs_0 \concat \_$.
@@ -152,7 +151,37 @@ that this interaction system is indeed a formal topology.
   it onto a list of booleans clearly gets us in a more refined stage, witnessed by the
   difference of $\emptylist{} \frown b$.
 
-  For the simulation, \ldots
+  For the simulation property (Defn.~\ref{defn:sim}), let $\oftyII{bs_0}{bs_1}{\listty{}}$
+  and assume that $bs_1 \le bs_0$. Note that the experiment type is trivial so it suffices
+  to show that for any outcome of $\oftyI{b_1}{C(bs_1, \star)}$, there exists some
+  $\oftyI{b_0}{C(bs_0, \star)}$ such that
+  \begin{equation*}
+    d(bs_1, \star, b_1) \sqsubseteq d(bs_0, \star, b_0).
+  \end{equation*}
+  Unfolding the judgemental equalities in this statement, we can restate our goal as
+  follows: for any boolean $b_1$ there exists some boolean $b_0$ such that
+  \begin{equation*}
+    bs_1 \frown b_1 \le bs_0 \frown b_0.
+  \end{equation*}
+  Let $b_1$ be an arbitrary boolean. We shall now construct such a $b_0$. We proceed by
+  case analysis on the difference of $bs_1$ from $bs_2$.
+  \begin{itemize}
+    \item Case: $\emptylist{}$. This means that $bs_0 = bs_1$. We choose
+      $b_0 \is b_1$. It is clear that $bs_1 \frown b_1 \le bs_0 \frown b_1$ by reflexivity.
+    \item Case: $bs \frown b$. In this case, $bs_1 = bs_0 \concat{} (bs \frown b)$ and we know that
+      $bs \frown b$ is nonempty. Call the first element (counting from left to right) of $bs \frown
+      b$, $b_h$, and the rest of it, $bs_t$ ($h$ for ``head'' and $t$ for ``tail''). We
+      choose $b_0 \is b_h$. It remains to be shown that $bs_1 \frown b_1 \le bs_0 \frown b_h$. Observe
+      the following equality:
+      \begin{align*}
+        bs_1 \frown b_1 \quad&=\quad (bs_0 \concat{} (bs \frown b)) \frown b_1             \\
+                   \quad&=\quad (bs_0 \concat{} (b_h \concat{} bs_t)) \frown b_1 \\
+                   \quad&=\quad ((bs_0 \concat{} b_h) \concat{} bs_t) \frown b_1 \\
+                   \quad&=\quad (bs_0 \concat{} b_h) \concat{} (bs_t \frown b_1) ,
+      \end{align*}
+      This means that $bs_1 \frown b_1 \le bs_0 \frown b_h$ is witnessed by the difference
+      $bs_t \frown b_1$.
+  \end{itemize}
 \end{proof}
 
 \section{The Cantor space is compact}
