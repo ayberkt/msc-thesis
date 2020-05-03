@@ -66,6 +66,10 @@
 \newcommand{\logequiv}[2]{#1 \hyperref[defn:iff]{\leftrightarrow} #2}
 \newcommand{\exteq}[2]{#1 \hyperref[defn:exteq]{\sim} #2}
 
+\newcommand{\fincovernm}{\hyperref[defn:fin-cover]{\mathsf{down}}}
+\newcommand{\fincover}[1]{\fincovernm{}\left(#1\right)}
+\newcommand{\iscompact}[1]{\hyperref[defn:compact]{\mathsf{isCompact}}\left(#1\right)}
+
 \newcommand{\unitty}{\mathsf{Unit}}
 
 %% Homotopy levels.
@@ -94,7 +98,10 @@
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
 
-\newcommand{\listty}{\mathbb{L}}
+\newcommand{\listty}[1]{\mathbb{L}\left(#1\right)}
+\newcommand{\bitlist}{\mathbb{L}_B}
+\newcommand{\bitI}{\text{\texttt{1}}}
+\newcommand{\bitO}{\text{\texttt{0}}}
 \newcommand{\emptylist}{\text{\texttt{[]}}}
 \newcommand{\snoc}[2]{#1 \frown #2}
 
