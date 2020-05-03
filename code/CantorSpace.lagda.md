@@ -107,7 +107,10 @@ and simulation properties (given in `ℂ-mono` and `ℂ-sim`).
 ℂ-mono _ _ c = [] ⌢ c , refl
 
 ℂ-sim : hasSimulation ℂ-pos ℂ-IS
-ℂ-sim xs ys xs≤ys@([] , p)     tt = tt , λ c₀ → c₀ , [] , cong (λ - → - ⌢ c₀) p
+ℂ-sim xs ys xs≤ys@([] , p) tt = tt , NTS
+  where
+    NTS : (b₁ : 𝔹) → Σ[ b₀ ∈ 𝔹 ] [ (xs ⌢ b₁) ≤ (ys ⌢ b₀) ]
+    NTS b₁ = b₁ , subst (λ - → [ (xs ⌢ b₁) ≤ (- ⌢ b₁) ]) p (⊑[ ℂ-pos ]-refl _)
 ℂ-sim xs ys xs≤ys@(zs ⌢ z , p) tt = tt , NTS
   where
     NTS : (c₀ : 𝔹) → Σ[ c ∈ 𝔹 ] [ (xs ⌢ c₀) ≤ (ys ⌢ c) ]
