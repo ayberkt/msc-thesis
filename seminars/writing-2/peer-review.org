@@ -1,0 +1,115 @@
+* Peer review for the thesis draft of Luca Bello
+** pg. 1
+   - "Rich mathematical structure": I more or less understand what you mean
+     here but I think it would be better to stay away from such ambiguous
+     expressions. The "richness" of mathematical structure can mean many
+     different things to different  people.
+** pg. 2
+   - I really like the diagram in Figure 1.1.
+** pg. 3
+   - "The aim of this thesis is to solve these problems in the context of big
+     data in a more efficient way": this seems to be a nice statement of your
+     research question. However, I think it's a bit too strongly worded.
+     Instead of saying "solve these problems", I think you should say
+     something like "address these problems" or "consider solutions to these
+     problems" and so on.
+** pg. 4
+   - The huge paragraphs should certainly be broken up into multiple
+     paragraphs.
+   - When you are listing properties of possible applications, it becomes
+     quite hard to follow the sentence. Consider itemising this.
+   - "the notation used is taken from [8]": some people hold the opinion that
+     the text should be citation-invariant, that is, if you take out all the
+     citations, the text should remain natural. Personally, I don't fully
+     agree with this opinion and find what you have done in this sentence
+     quite convenient. However, I do partially agree with this opinion in
+     that, sometimes trying make the text citation-invariant can lead to more
+     natural sentences. In addition, it can make things easier for your
+     reader. For instance, someone who is familiar with the field of machine
+     learning and data science would probably easily know what the reference
+     [8] is if they saw the last name of the author so mentioning the last
+     name directly in the text can save them from the trouble of checking the
+     bibliography.
+** pg. 7
+   - "At this point...": rather a weak start for the chapter. It might be a
+     good idea to start with something more direct.
+   - "... is a good choice (e.g. autoregressive ...": it seems that you have
+     typed `e.g. autoregressive` in LaTeX which resulted in an incorrect
+     spacing after the dot, as LaTeX thinks that you are ending a sentence
+     with the last dot in `e.g.`. The correct way to write this would be:
+     `e.g.~autoregressive`.
+** pg. 9
+   - I really like the opening of Section 2.2! Very to-the-point and
+     accessible.
+** pg. 10
+   - "bigger interest lies in": this expression doesn't seem idiomatic to me.
+** pg. 14
+   - "it's useful to thoroughly explain the calculations in [13]": it might be
+     better to say something like "thoroughly examine the calculations". You
+     are the one doing the explaining, not the reader, so this sounds a bit
+     weird to me. If I understand it correctly, the _scenario_ one should have
+     in mind in scientific writing is an exploration upon which the reader and
+     the author are collaboratively embarking upon (which is, by the way, the
+     justification of the "we" pronoun).
+** pg. 15
+   - There are some other instances of the citation-invariance issue I
+     mentioned. It might be a good idea to review these and think about if
+     they would benefit from a citation-invariant style.
+** pg. 22
+   - "Real numbers can have an unlimited amount of digits in their decimal
+     expansion; it's easy to see the impossibility to keep all of them when
+     storing a real number on a machine". I will not provide writing advice
+     regarding this sentence, but a bit of technical advice as it's getting
+     into my field of research. The notion that "we cannot store real numbers
+     on computers" is a myth and it is a pet peeve of mine that people often
+     say this. Let me clarify that I am in no way criticising your
+     understanding, as I completely understand that this is a standard
+     opinion.
+     
+     In computer science, we deal with a lot of things that are infinite and
+     we can represent them on computers perfectly fine. An example: programs
+     themselves. They certainly have _potentially_ infinite behaviour so one
+     cannot attain a finite understanding of their behaviour, as seen from the
+     outside world (i.e., by running the program, not examining its code). For
+     instance, I could write you an interpreter, and there is no hope that you
+     will be able to completely understand its behaviour since if you could,
+     you would be able to solve the halting problem. Despite this, we often
+     write _code_ that generates this infinite behaviour which is a completely
+     finite thing and can be represented on a computer.
+     
+     If you think of real numbers as programs, there is nothing preventing you
+     from representing _all digits_ of π on a computer, by writing its Taylor
+     series expansion. This way, you can perform whatever operations you want
+     to perform on real numbers. The problem arises when we want to observe
+     these, not when we try to represent them!
+     
+     There is an entire sub-field (of programming language theory) called
+     "exact real-number computation" devoted to representing real numbers on
+     computers this way. The idea is that you can compute whatever real number
+     you want, and at the end of day, when you want to see a _finite_
+     approximation of it, you run this real number and get better and better
+     approximations of it by waiting, which will be rational number. In this
+     way, there are no "rounding errors" in the computation of the result; it
+     is the *finite approximation* of the result that causes the rounding
+     errors.
+
+     Perhaps, the existence of such a sub-field deserves at least a mention
+     here in your thesis?
+
+     It is my genuine hope that people in machine learning learn a bit about
+     these techniques as they would benefit immensely from them. Actually,
+     I do sometimes wonder why they have not started applying these techniques
+     yet.
+     
+     Here are some links if you are interested.
+     1) I suggest you read the abstract of this BSc thesis:
+          http://www.dcs.ed.ac.uk/home/mhe/plume/.
+     2) https://wiki.haskell.org/Exact_real_arithmetic
+     3) https://karczmarczuk.users.greyc.fr/arpap/lazypi.pdf
+
+** General remarks
+   - There is something wrong with the paragraph spacing of your thesis. Some
+     paragraphs do not seem to be indented.
+
+** Conclusion
+    - Overall, this is very good considering it's an early draft!
