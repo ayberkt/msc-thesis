@@ -1,0 +1,132 @@
+\chapter{The Cantor Space}\label{chap:cantor}
+
+Now that we have pinned down a notion of formal topology, let us make things a bit more
+concrete by looking at a prime example of a formal topology: the Cantor space. This
+chapter corresponds to the \modname{CantorSpace} module in the \veragda{} formalisation.
+
+For our purposes, the Cantor space is the type of all boolean sequences: $\nats{} \rightarrow
+\bool{}$. If we were following a pointful road to the topology of the Cantor space, we
+would start by saying the points of this space are sequences
+$\oftyI{f}{\nats{} \rightarrow \bool{}}$. As we taking a \emph{pointless} road, we will start by
+stating what the opens are: (finite) lists of booleans. Recalling the discussion about
+approximations from Chapter~\ref{chap:intro}, it is clear why this is the case: a
+function $\oftyI{f}{\nats{} \rightarrow \bool{}}$ is an infinite object, meaning we will never be
+able to fully write it down. If we are to somehow understand its behaviour, this has to
+by \emph{experimenting with it}, namely, examining its output up to some
+$\oftyI{n}{\nats{}}$. In classical mathematics, we can indeed examine such a function
+up to infinity as the infinity of time is trivialised by the law of excluded middle.
+It is clear that this does not fit well with computational intuitions. If we write a
+program to analyse a bitstream, and expect to get any sort of useful output from this
+program, it has to analyse the given bitstream up to some finite $n$. This is precisely
+the point of pointless topology: infinite things make computational sense only by finitary
+examinations, which is what the opens are. Accordingly, we now start writing down the
+topology of the Cantor space as an interaction system.
+
+\begin{figure}
+  \caption[Visualisation of the Cantor space]{%
+    A visualisation of the Cantor space. Nodes correspond to stages of information (i.e.,
+    observed prefixes) about a sequence as there is a unique path from each node to the
+    root. Dashed lines denote possible outcomes whereas plain lines denote actual ones.
+    The encircled node is the stage of information at which the prefix $\emptylist{} \frown 0 \frown
+    0 \frown 1$ has been observed.
+  }
+  \label{fig:cantor}
+  \centering
+  \begin{forest}
+    for tree={l sep=20pt}
+    [\texttt{[]}
+      [1, edge=dashed
+        [0, edge=dashed
+          [0, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [1, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ] ]
+        [1, edge=dashed
+          [0, edge=dashed [ $\vdots$~, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [1, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$~, edge=dashed ] ]
+        ]
+      ]
+      [\textbf{0}, edge=thick,
+        [\textbf{0}, edge=thick
+          [0, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [\textbf{1}, edge=thick, circle, draw={red, radius=0.3pt, thick}
+            [ $\vdots$, edge=dashed ]
+            [ $\vdots$, edge=dashed ] ] ]
+        [1, edge=dashed
+          [0, edge=dashed
+            [ $\vdots$, edge=dashed ]
+            [ $\vdots$, edge=dashed ] ]
+          [ 1, edge=dashed
+            [ $\vdots$, edge=dashed ]
+            [ $\vdots$, edge=dashed ] ] ]
+      ] 
+    ]
+  \end{forest}
+\end{figure}
+
+\section{The interaction structure}
+
+As we have explained in Section~\ref{sec:intr-sys}, we need to start defining the Cantor
+space by giving its interaction structure.
+\begin{description}
+  \item[Stages:] finite lists of booleans. A list of length $n$ is the stage of
+    information at which first $n$ bits of the sequence have been learned.
+  \item[Experiments:] at any stage, there is only one experiment that can be performed:
+    asking for the next bit. The sequences can be thought of as a black-box computing
+    device with a button on it; whenever the button is pressed, it emits a new bit.
+  \item[Outcomes:] the outcome of the experiment of asking for a new bit is its emission.
+  \item[Revision:] when we receive bit $\oftyI{b}{\bool{}}$ at stage $bs$, we proceed to
+    the next stage by appending $b$ to $bs$. We will denote this $bs \frown b$.
+\end{description}
+
+To write this down formally, we first need to define the inductive type of (snoc) lists.
+
+\begin{defn}[Lists]\label{defn:list}
+  The type $\listty{}$ of lists of booleans is inductively defined by two constructors:
+  \[
+    \begin{prooftree}
+      \infer0{\oftyI{\emptylist{}}{\listty{}}}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \hypo{\oftyI{b}{\bool{}}}
+      \hypo{\oftyI{bs}{\listty{}}}
+      \infer2{\oftyI{bs \frown b}{\listty{}}}
+    \end{prooftree}
+  \]
+\end{defn}
+
+\begin{prop}\label{prop:list-set}
+  $\listty$ is an h-set.
+\end{prop}
+\begin{proof}[Proof sketch.]
+  It is easy to show that equality on $\listty{}$ is decidable. It is therefore a set
+  by Hedberg's theorem.
+\end{proof}
+
+\todo{Add Hedberg's theorem to the foundations chapter.}
+
+\begin{defn}[The Cantor poset]\label{defn:cantor-poset}
+  The set $\listty{}$ forms a poset under the following order. Let
+  $\oftyII{bs_0}{bs_1}{\listty{}}$;
+  \begin{equation*}
+    bs_1 \le bs_0 \quad\is\quad \sigmaty{bs_2}{\listty{}}{bs_1 = bs_0 \concat bs_2}
+  \end{equation*}
+\end{defn}
+
+Now let us write down the interaction system that will underlie the Cantor space.
+
+\begin{defn}[The Cantor interaction system]\label{defn:cantor-is}
+  We will call the Cantor interaction system $\mathcal{C}$. It is defined as
+  $\mathcal{C} \is (A, B, C, d)$, where
+  \begin{alignat*}{2}
+    A           \quad&\is\quad && \listty{} \\
+    B(bs)       \quad&\is\quad && \unitty{} \\
+    C(bs, \star)    \quad&\is\quad && \bool{}   \\
+    d(bs, \star, b) \quad&\is\quad && bs \frown b    .
+  \end{alignat*}
+\end{defn}
+
+\section{The Cantor space is compact}
