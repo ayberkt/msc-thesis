@@ -10,7 +10,7 @@ literate-latex:
 	cd ../code && ./latexify.sh
 	mv ../code/literate-latex .
 
-main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex agda.sty
+main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex cantor.tex agda.sty
 	xelatex -interaction=nonstopmode $<
 	biber main.bcf
 	xelatex -interaction=nonstopmode $<
