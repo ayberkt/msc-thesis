@@ -3,6 +3,7 @@
 
 \usepackage{ebproof}
 \usepackage{tikz-cd}
+\usepackage{forest}
 
 \tikzcdset{
   arrow style=tikz,
@@ -43,7 +44,7 @@
 
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\nats}{\mathbb{N}}
-\newcommand{\bool}{\mathbf{Bool}}
+\newcommand{\bool}{\mathsf{Bool}}
 \newcommand{\ball}[2]{\mathfrak{A}(#1, #2)}
 \newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
 
@@ -93,6 +94,10 @@
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
 
+\newcommand{\listty}{\mathbb{L}}
+\newcommand{\emptylist}{\mathtt{[\ ]}}
+\newcommand{\snoc}[2]{#1 \frown #2}
+
 \newcommand{\subsetof}[2]{#1 \hyperref[defn:inclusion]{\subseteq} #2}
 
 \newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
@@ -110,6 +115,8 @@
 \DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\mathtt{\epsilon}}}
 \newcommand{\memfam}[2]{#1 \memfamnm #2}
 \newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
+
+\DeclareMathOperator{\concat}{\text{\texttt{++}}}
 
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
@@ -250,12 +257,12 @@
 
 \input{formal-topology}
 
-%% \input{examples}
+\input{cantor}
 
 \input{conclusion}
 
 \makebackmatter{}
 
-\input{agda-formalisation}
+%% \input{agda-formalisation}
 
 \end{document}
