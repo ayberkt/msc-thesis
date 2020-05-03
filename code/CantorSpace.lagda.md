@@ -262,7 +262,7 @@ compact xs U U-dc (dir xs∈U) = ∣ xs ∷ [] , NTS₀ , NTS₁ ∣
         NTS₁′ : [ ys ≤ xs ] ⊎ [ ys ↓ [] ] → [ U ys ]
         NTS₁′ (inj₁ ys≤xs) = U-dc xs ys xs∈U ys≤xs
 
-compact xs U U-dc (branch b f) =
+compact xs U U-dc (branch tt f) =
   let
     IH₀ : ∥ Σ[ yss₀ ∈ List ℂ ]
               ((xs ⌢ true) ◀ (λ - → - ↓ yss₀)) × [ ℂ-down yss₀ ⊆ U ] ∥
@@ -276,9 +276,9 @@ compact xs U U-dc (branch b f) =
     NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀) × [ ℂ-down yss₀ ⊆ U ]
         → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁) × [ ℂ-down yss₁ ⊆ U ]
         → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]
-    NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch b g , NTS′
+    NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch tt g , NTS′
       where
-        g : (c : ℂ-out b) → (xs ⌢ c) ◀ (λ - → ℂ-down (yss ^ zss) -)
+        g : (c : 𝔹) → (xs ⌢ c) ◀ (λ - → ℂ-down (yss ^ zss) -)
         g false = U⊆V⇒◀U⊆◀V _ (ℂ-down zss) (ℂ-down (yss ^ zss)) (↓-++-right yss zss) ψ
         g true  = U⊆V⇒◀U⊆◀V _ (ℂ-down yss) (ℂ-down (yss ^ zss)) (↓-++-left  yss zss) φ
 
