@@ -284,9 +284,9 @@ compact xs U U-dc (branch tt f) =
 
         NTS′ : [ (λ - → - ↓ (yss ^ zss)) ⊆ U ]
         NTS′ ys ys◀yss₀^yss₁ =
-          ∥∥-rec (is-true-prop (U ys)) NTS₂ (◀^-decide _ yss _ ys◀yss₀^yss₁)
+          ∥∥-rec (is-true-prop (ys ∈ U)) NTS₂ (◀^-decide _ yss _ ys◀yss₀^yss₁)
           where
-            NTS₂ : [ ys ↓ yss ] ⊎ [ ys ↓ zss ] → [ U ys ]
+            NTS₂ : [ ys ↓ yss ] ⊎ [ ys ↓ zss ] → [ ys ∈ U ]
             NTS₂ (inj₁ ys◀yss₀) = p ys ys◀yss₀
             NTS₂ (inj₂ ys◀yss₁) = q ys ys◀yss₁
 
