@@ -157,7 +157,7 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
   private
     A = stage   F
-    B = exp     F 
+    B = exp     F
     C = outcome F
     d = next    F
 
