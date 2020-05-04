@@ -14,7 +14,7 @@ open import Poset
 open import Powerset
 
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
-RawFrameStr ℓ₁ ℓ₂ A = PosetStr ℓ₁ A × A × (A → A → A) × (Sub ℓ₂ A → A)
+RawFrameStr ℓ₁ ℓ₂ A = PosetStr ℓ₁ A × A × (A → A → A) × (Fam ℓ₂ A → A)
 
 isTop : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
 isTop P x = ((y : ∣ P ∣ₚ) → [ y ⊑[ P ] x ]) , isPropΠ λ y → is-true-prop (y ⊑[ P ] x)
@@ -36,13 +36,13 @@ isGLB P _⟨f⟩_ = φ , φ-prop
                  isPropΠ λ z → is-true-prop ((z ⊑[ P ] x ⊓ z ⊑[ P ] y) ⇒
                                               (z ⊑[ P ] (x ⟨f⟩ y)))
 
-isLUB : (P : Poset ℓ₀ ℓ₁) → (Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+isLUB : (P : Poset ℓ₀ ℓ₁) → (Fam ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ) → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
   where
     -- We write down the property φ, expressing that f is the LUB, and couple it with the
     -- proof (φ-prop) that it is propositional.
-    φ = ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) → [ ∀[ x ε ℱ ] (x ⊑[ P ] (⋁ ℱ)) ])
-      × ((ℱ : Sub ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → [ (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ ⋁ ℱ ⊑[ P ] x ])
+    φ = ((ℱ : Fam ℓ₂ ∣ P ∣ₚ) → [ ∀[ x ε ℱ ] (x ⊑[ P ] (⋁ ℱ)) ])
+      × ((ℱ : Fam ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → [ (∀[ y ε ℱ ] (y ⊑[ P ] x)) ⇒ ⋁ ℱ ⊑[ P ] x ])
         -- f ℱ is is the _upper_ bound of ℱ i.e., above every x ε ℱ.
         -- Given any other x that is an upper bound of ℱ, f ℱ is _lower_ than x.
 
@@ -55,11 +55,11 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
 
 isDist : (P : Poset ℓ₀ ℓ₁)
        → (∣ P ∣ₚ → ∣ P ∣ₚ → ∣ P ∣ₚ)
-       → (Sub ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ)
+       → (Fam ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ)
        → hProp (ℓ₀ ⊔ suc ℓ₂)
 isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = φ , φ-prop
   where
-    φ = (x : ∣ P ∣ₚ) (ℱ : Sub ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ $ i))
+    φ = (x : ∣ P ∣ₚ) (ℱ : Fam ℓ₂ ∣ P ∣ₚ) → x ⊓ (⋁ ℱ) ≡ ⋁ (index ℱ , λ i → x ⊓ (ℱ $ i))
 
     φ-prop : isProp φ
     φ-prop p q = funExt λ x → funExt λ ℱ → carrier-is-set P _ _ (p x ℱ) (q x ℱ)
@@ -93,10 +93,10 @@ glb-of (_ , (_ , _ , _⊓_ , _) , _) = _⊓_
 
 syntax glb-of F o p = o ⊓[ F ] p
 
-⋃[_]_ : (F : Frame ℓ₀ ℓ₁ ℓ₂) → Sub ℓ₂ ∣ F ∣F → ∣ F ∣F
+⋃[_]_ : (F : Frame ℓ₀ ℓ₁ ℓ₂) → Fam ℓ₂ ∣ F ∣F → ∣ F ∣F
 ⋃[ (_ , (_ , (_ , _ , ⋃_)) , _) ] ℱ = ⋃ ℱ
 
-module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Sub ℓ₂ A → A) where
+module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Fam ℓ₂ A → A) where
 
   join-of : {I : Type ℓ₂} → (I → A) → A
   join-of {I = I} f = join (I , f)
@@ -133,16 +133,16 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
   ⊓[_]-greatest =
     let (_ , _ , str) = F in λ x y z z⊑x z⊑y → π₁ (π₀ (π₁ str)) x y z (z⊑x , z⊑y)
 
-  ⋃[_]-upper : (ℱ : Sub ℓ₂ ∣ F ∣F) (o : ∣ F ∣F) → o ε ℱ → [ o ⊑[ pos F ] (⋃[ F ] ℱ) ]
+  ⋃[_]-upper : (ℱ : Fam ℓ₂ ∣ F ∣F) (o : ∣ F ∣F) → o ε ℱ → [ o ⊑[ pos F ] (⋃[ F ] ℱ) ]
   ⋃[_]-upper = let (_ , _ , str) = F in π₀ (π₀ (π₁ (π₁ str)))
 
-  ⋃[_]-least : (ℱ : Sub ℓ₂ ∣ F ∣F) (x : ∣ F ∣F)
+  ⋃[_]-least : (ℱ : Fam ℓ₂ ∣ F ∣F) (x : ∣ F ∣F)
             → [ ∀[ y ε ℱ ] (y ⊑[ pos F ] x) ]
             → [ (⋃[ F ] ℱ) ⊑[ pos F ] x ]
   ⋃[_]-least = let (_ , _ , str) = F in π₁ (π₀ (π₁ (π₁ str)))
 
 
-  dist : (o : ∣ F ∣F) (ℱ : Sub ℓ₂ ∣ F ∣F)
+  dist : (o : ∣ F ∣F) (ℱ : Fam ℓ₂ ∣ F ∣F)
        → o ⊓[ F ] (⋁⟨ i ⟩ (ℱ $ i)) ≡ ⋁⟨ i ⟩ (o ⊓[ F ] (ℱ $ i))
   dist = let (_ , _ , str) = F in π₁ (π₁ (π₁ str))
 
@@ -161,7 +161,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       NTS : [ (x ⊓[ F ] y) ⊑[ P ] z ]
       NTS = greatest (x ⊓[ F ] y) (⊓[_]-lower₀ x y) (⊓[_]-lower₁ x y)
 
-  ⋃-unique : (ℱ : Sub ℓ₂ ∣ F ∣F) (z : ∣ F ∣F)
+  ⋃-unique : (ℱ : Fam ℓ₂ ∣ F ∣F) (z : ∣ F ∣F)
           → ((o : ∣ F ∣F) → o ε ℱ → [ o ⊑ z ])
           → ((w : ∣ F ∣F) → ((o : ∣ F ∣F) → o ε ℱ → [ o ⊑ w ]) → [ z ⊑ w ])
           → z ≡ ⋃[ F ] ℱ
@@ -176,7 +176,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     where
       NTS = λ w w⊑y w⊑x → ⊓[_]-greatest x y w w⊑x w⊑y
 
-  family-iff : {ℱ 𝒢 : Sub ℓ₂ ∣ F ∣F}
+  family-iff : {ℱ 𝒢 : Fam ℓ₂ ∣ F ∣F}
              → ((x : ∣ F ∣F) → (x ε ℱ → x ε 𝒢) × (x ε 𝒢 → x ε ℱ))
              → ⋃[ F ] ℱ ≡ ⋃[ F ] 𝒢
   family-iff {ℱ = ℱ} {𝒢 = 𝒢} h = ⋃-unique _ _ ub least
@@ -227,7 +227,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
               isUB′ : (z : ∣ F ∣F) → z ε (J i , (λ y → f i y)) → [ z ⊑[ pos F ] LHS ]
               isUB′ z (j , eq′) = ⋃[_]-upper _ _ ((i , j) , eq′)
 
-  sym-distr : (ℱ@(I , _) 𝒢@(J , _) : Sub ℓ₂ ∣ F ∣F)
+  sym-distr : (ℱ@(I , _) 𝒢@(J , _) : Fam ℓ₂ ∣ F ∣F)
             → (⋁⟨ i ⟩ (ℱ $ i)) ⊓[ F ] (⋁⟨ i ⟩ (𝒢 $ i))
             ≡ ⋃[ F ] ⁅ (ℱ $ i) ⊓[ F ] (𝒢 $ j) ∣ (i , j) ∶ (I × J) ⁆
   sym-distr ℱ 𝒢 =
@@ -280,7 +280,7 @@ isFrameHomomorphism {ℓ₂ = ℓ₂} F G (f , _) = resp-𝟏 × resp-⊓ × res
     resp-⊓ = (x y : ∣ F ∣F) → f (x ⊓[ F ] y) ≡ (f x) ⊓[ G ] (f y)
 
     resp-⋃ : Type _
-    resp-⋃ = (ℱ : Sub ℓ₂ ∣ F ∣F) → f (⋃[ F ] ℱ) ≡ ⋃[ G ] ⁅ f x ∣ x ε ℱ ⁆
+    resp-⋃ = (ℱ : Fam ℓ₂ ∣ F ∣F) → f (⋃[ F ] ℱ) ≡ ⋃[ G ] ⁅ f x ∣ x ε ℱ ⁆
 
 isFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
                          → (f : pos F ─m→ pos G)
@@ -354,10 +354,10 @@ DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 
     -- Given a family ℱ over 𝔻 and some x : X, `in-some-set ℱ x` holds iff there is some
     -- set S among ℱ such that x ∈ S.
-    in-some-set-of : (ℱ : Sub ℓ₀ 𝔻) → X → Type ℓ₀
+    in-some-set-of : (ℱ : Fam ℓ₀ 𝔻) → X → Type ℓ₀
     in-some-set-of ℱ x = Σ[ i ∈ index ℱ ] [ x ∈ ∣ ℱ $ i ∣𝔻 ]
 
-    ⊔_ : Sub ℓ₀ 𝔻 → 𝔻
+    ⊔_ : Fam ℓ₀ 𝔻 → 𝔻
     ⊔ ℱ = (λ x → ∥ in-some-set-of ℱ x ∥ , ∥∥-prop _) , ⊔ℱ↓
       where
         ind : (x y : X)
@@ -369,10 +369,10 @@ DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
 
     open JoinSyntax 𝔻 ⊔_
 
-    ⊔-upper : (ℱ : Sub ℓ₀ 𝔻) (D : 𝔻) → D ε ℱ → [ D ⊑[ 𝔻ₚ ] (⊔ ℱ) ]
+    ⊔-upper : (ℱ : Fam ℓ₀ 𝔻) (D : 𝔻) → D ε ℱ → [ D ⊑[ 𝔻ₚ ] (⊔ ℱ) ]
     ⊔-upper ℱ D DεS@(i , p) x x∈D = ∣ i , subst (λ V → [ ∣ V ∣𝔻 x ]) (sym p) x∈D ∣
 
-    ⊔-least : (ℱ : Sub ℓ₀ 𝔻) (z : 𝔻)
+    ⊔-least : (ℱ : Fam ℓ₀ 𝔻) (z : 𝔻)
             → [ ∀[ o ε ℱ ] (o ⊑[ 𝔻ₚ ] z) ]
             → [ (⊔ ℱ) ⊑[ 𝔻ₚ ] z ]
     ⊔-least ℱ D φ x x∈⊔S = ∥∥-rec (π₁ (∣ D ∣𝔻 x)) ind x∈⊔S
@@ -389,7 +389,7 @@ DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     ⊓-greatest : (D E F : 𝔻) → [ F ⊑[ 𝔻ₚ ] D ] → [ F ⊑[ 𝔻ₚ ] E ] → [ F ⊑[ 𝔻ₚ ] (D ∧ E) ]
     ⊓-greatest D E F F<<D F<<E x x∈F = (F<<D x x∈F) , (F<<E x x∈F)
 
-    distr : (D : 𝔻) (ℱ : Sub ℓ₀ 𝔻) → D ∧ (⊔ ℱ) ≡ ⋁⟨ i ⟩ (D ∧ (ℱ $ i))
+    distr : (D : 𝔻) (ℱ : Fam ℓ₀ 𝔻) → D ∧ (⊔ ℱ) ≡ ⋁⟨ i ⟩ (D ∧ (ℱ $ i))
     distr D ℱ = ⊑[ 𝔻ₚ ]-antisym _ _ down up
       where
         LHS = ∣ D ∧ (⊔ ℱ) ∣𝔻
@@ -414,7 +414,7 @@ RF-iso {ℓ₂ = ℓ₂} (A , (P , _) , 𝟏₀ , _⊓₀_ , ⋃₀) (B , (Q , _
     (order-iso (A , P) (B , Q) i)
   × (f 𝟏₀ ≡ 𝟏₁)
   × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
-  × ((ℱ : Sub ℓ₂ A) → f (⋃₀ ℱ) ≡ ⋃₁ (f ⟨$⟩ ℱ))
+  × ((ℱ : Fam ℓ₂ A) → f (⋃₀ ℱ) ≡ ⋃₁ (f ⟨$⟩ ℱ))
   where
     f = equivFun i
 
@@ -480,7 +480,7 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
             ϑ x y =
               subst (λ { (_ , _ , _-_ , _) → 𝒻 (x - y) ≡ (𝒻 x) ⊓₁ (𝒻 y) }) (sym eq) refl
 
-            ξ : (ℱ : Sub ℓ₂ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ $ i))
+            ξ : (ℱ : Fam ℓ₂ A) → 𝒻 (⋃₀ ℱ) ≡ ⋃₁ (index ℱ , λ i → 𝒻 (ℱ $ i))
             ξ ℱ = subst (λ { (_ , _ , _ , -) → 𝒻 (- ℱ) ≡ ⋃₁ (𝒻 ⟨$⟩ ℱ) }) (sym eq) refl
 
         str-set : isSet (RawFrameStr ℓ₁ ℓ₂ A)
@@ -632,7 +632,7 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (𝟏-eq , ⊓-eq , ⋃
                   x ⊓[ F ] y         ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _))               ⟩
                   g (f (x ⊓[ F ] y)) ■₁
 
-    ⋃-eq : (ℱ : Sub ℓ₂ ∣ F ∣F) →  f (⋃[ F ] ℱ) ≡ ⋃[ G ] (index ℱ , λ i → f (ℱ $ i))
+    ⋃-eq : (ℱ : Fam ℓ₂ ∣ F ∣F) →  f (⋃[ F ] ℱ) ≡ ⋃[ G ] (index ℱ , λ i → f (ℱ $ i))
     ⋃-eq ℱ = ⋃-unique G (f ⟨$⟩ ℱ) (f (⋃[ F ] ℱ)) NTS₀ NTS₁
       where
         NTS₀ : (o : ∣ G ∣F) → o ε (f ⟨$⟩ ℱ) → [ o ⊑[ pos G ] (f (⋃[ F ] ℱ)) ]

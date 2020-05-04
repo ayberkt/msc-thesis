@@ -14,7 +14,7 @@ open import Truncation
 open import FormalTopology    renaming (pos to pos′)
 open import CoverFormsNucleus
 
-compr : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → 𝒫 X → Sub ℓ₀ Y
+compr : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → 𝒫 X → Fam ℓ₀ Y
 compr g U = (index ⟪ U ⟫) , g ∘ (_$_ ⟪ U ⟫)
 
 syntax compr (λ x → e) ℱ = ⁅ e ∣ x ∈ ℱ ⁆
@@ -187,7 +187,7 @@ Proof.
 ### `g` respects the joins
 
 ```
-    g-resp-⊔ : (ℱ : Sub ℓ₀ ∣ L ∣F) → g (⋃[ L ] ℱ) ≡ ⋃[ R ] (g ⟨$⟩ ℱ)
+    g-resp-⊔ : (ℱ : Fam ℓ₀ ∣ L ∣F) → g (⋃[ L ] ℱ) ≡ ⋃[ R ] (g ⟨$⟩ ℱ)
     g-resp-⊔ ℱ@(I , U) =
       ⋃[ R ] ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆
         ≡⟨ ⊑[ pos R ]-antisym _ _ down up ⟩
