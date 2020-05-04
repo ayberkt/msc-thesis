@@ -42,6 +42,8 @@
 
 \newtheorem{ax}{Axiom}
 
+\appto{\bibsetup}{\hyphenation{Sp-ring-er}}
+
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\nats}{\mathbb{N}}
 \newcommand{\bool}{\mathsf{Bool}}
@@ -127,7 +129,7 @@
 \newcommand{\memfam}[2]{#1 \memfamnm #2}
 \newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
 
-\DeclareMathOperator{\concat}{\text{\texttt{++}}}
+\DeclareMathOperator{\concat}{\textnormal{\texttt{++}}}
 \DeclareMathOperator{\append}{\text{\texttt{++}}}
 
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
@@ -276,6 +278,6 @@
 
 \makebackmatter{}
 
-%% \input{agda-formalisation}
+\input{agda-formalisation}
 
 \end{document}

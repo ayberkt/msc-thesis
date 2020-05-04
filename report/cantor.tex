@@ -348,8 +348,11 @@ We are now ready to prove the compactness of the Cantor space.
     $b$:
     \begin{itemize}
       \item Case $b \equiv \bitO{}$. By Lemma~\ref{lem:comp1}, and the fact that
-        $\fincover{bss_0} \subseteq \fincover{bss_0 \concat bss_1}$ (by Lemma~\ref{lem:comp2}), it
-        suffices to show $\covers{bs \frown \bitO{}}{\fincover{bss_0}}$ which we know by
+        \begin{equation*}
+          \subsetof{\fincover{bss_0}}{\fincover{bss_0 \concat bss_1}}
+          \qquad\text{(by Lemma~\ref{lem:comp2})},
+        \end{equation*}
+        it suffices to show $\covers{bs \frown \bitO{}}{\fincover{bss_0}}$ which we know by
         (\ref{eqn:comp-ass-1}).
       \item Case $b \equiv \bitI{}$. Exactly the same reasoning as in the $b \equiv \bitO{}$ case
         but with $bss_1$ instead $bss_o$.
