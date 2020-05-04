@@ -20,33 +20,31 @@ isReflexive {A = X} _⊑_ =
   ((x : X) → [ x ⊑ x ]) , isPropΠ (λ x → is-true-prop (x ⊑ x))
 
 isTransitive : {A : Type ℓ₀} → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = isTrans⊑ , isPropisTrans⊑
+isTransitive {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} _⊑_ = ⊑-trans , ⊑-trans-prop
   where
-    isTrans⊑ : Type (ℓ₀ ⊔ ℓ₁)
-    isTrans⊑ = ((x y z : X) → [ x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z ])
+    ⊑-trans : Type (ℓ₀ ⊔ ℓ₁)
+    ⊑-trans = ((x y z : X) → [ x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z ])
 
-    isPropisTrans⊑ : isProp isTrans⊑
-    isPropisTrans⊑ = isPropΠ λ x → isPropΠ λ y → isPropΠ λ z →
-                       is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
+    ⊑-trans-prop : isProp  ⊑-trans
+    ⊑-trans-prop = isPropΠ3 λ x y z → is-true-prop (x ⊑ y ⇒ y ⊑ z ⇒ x ⊑ z)
 
 isAntisym : {A : Type ℓ₀} → isSet A → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-isAntisym {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = X} A-set _⊑_ = φ , φ-prop
+isAntisym {A = A} A-set _⊑_ = ⊑-antisym , ⊑-antisym-prop
   where
-    φ      : Type (ℓ₀ ⊔ ℓ₁)
-    φ      = ((x y : X) → [ x ⊑ y ] → [ y ⊑ x ] → x ≡ y)
+    ⊑-antisym = (x y : A) → [ x ⊑ y ] → [ y ⊑ x ] → x ≡ y
 
-    φ-prop : isProp φ
-    φ-prop = isPropΠ λ x → isPropΠ λ y → isPropΠ λ p → isPropΠ λ q → A-set x y
+    ⊑-antisym-prop : isProp ⊑-antisym
+    ⊑-antisym-prop = isPropΠ2 λ x y → isPropΠ2 λ _ _ → A-set x y
 
 PosetAx : (A : Type ℓ₀) → Order ℓ₁ A → hProp (ℓ₀ ⊔ ℓ₁)
-PosetAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} A _⊑_ = isPartialSet , isPartialSet-prop
+PosetAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} A _⊑_ = isAPartialSet , isAPartialSet-prop
   where
-    isPartial : isSet A → hProp (ℓ₀ ⊔ ℓ₁)
-    isPartial A-set = isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_
+    isAPartialSet =
+      Σ[ A-set ∈ isSet A ] [ isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_ ]
 
-    isPartialSet = Σ[ A-set ∈ isSet A ] [ isPartial A-set ]
-
-    isPartialSet-prop = isPropΣ isPropIsSet (is-true-prop ∘ isPartial)
+    isAPartialSet-prop =
+      isPropΣ isPropIsSet λ A-set →
+        is-true-prop (isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_)
 ```
 
 A poset structure with level `ℓ₁`.
@@ -59,8 +57,7 @@ PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
   isSetΣ (isSetΠ λ _ → isSetΠ λ _ → isSetHProp) λ _⊑_ →
   isSetΣ (isProp→isSet isPropIsSet) λ A-set →
-    isProp→isSet
-      (is-true-prop (isReflexive {A = A} _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_))
+    isProp→isSet (is-true-prop (isReflexive _⊑_ ⊓ isTransitive _⊑_ ⊓ isAntisym A-set _⊑_))
 ```
 
 A poset with carrier level `ℓ₀` and relation level `ℓ₁`.
@@ -81,6 +78,8 @@ Given a poset `P`, `∣ P ∣ₚ` denotes its carrier set and `strₚ P` its ord
 strₚ : (P : Poset ℓ₀ ℓ₁) → PosetStr ℓ₁ ∣ P ∣ₚ
 strₚ (_ , s) = s
 ```
+
+We refer to to the order of `P` as `_⊑[ P ]_`.
 
 ```
 rel : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → ∣ P ∣ₚ → hProp ℓ₁
@@ -129,7 +128,11 @@ module PosetReasoning (P : Poset ℓ₀ ℓ₁) where
 ```
 ≡⇒⊑ : (P : Poset ℓ₀ ℓ₁) → {x y : ∣ P ∣ₚ} → x ≡ y → [ x ⊑[ P ] y ]
 ≡⇒⊑ P {x = x} p = subst (λ z → [ x ⊑[ P ] z ]) p (⊑[ P ]-refl x)
+```
 
+## Monotonic functions
+
+```
 isMonotonic : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₂ ℓ₃)
             → (∣ P ∣ₚ → ∣ Q ∣ₚ) → Type (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₃)
 isMonotonic P Q f = (x y : ∣ P ∣ₚ) → [ x ⊑[ P ] y ] → [ (f x) ⊑[ Q ] (f y) ]
@@ -138,9 +141,10 @@ isMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f 
                  → isProp (isMonotonic P Q f)
 isMonotonic-prop P Q f =
   isPropΠ (λ x → isPropΠ λ y → isPropΠ λ _ → is-true-prop (f x ⊑[ Q ] f y))
+
 ```
 
-## Monotonic functions
+We collect monotonic functions in the following type.
 
 ```
 _─m→_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀′ ℓ₁′ → Type (ℓ₀ ⊔ ℓ₁ ⊔ ℓ₀′ ⊔ ℓ₁′)

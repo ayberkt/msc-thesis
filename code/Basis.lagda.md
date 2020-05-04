@@ -17,7 +17,7 @@ open DS public using    (ΣProp≡; sigmaPath→pathSigma; pathSigma→sigmaPath
 open FP public using    (funExt; subst; isContr; isProp; isSet; isProp→isSet)
 open FE public using    (idEquiv; invEquiv; secEq; retEq; fiber)
 open FL public using    ( _⇔_ ; _⇒_ ; ⇔toPath ; _⊓_ ; [_] )
-open FH public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSuc; isSetΣ; isSetΠ; isPropΠ)
+open FH public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSuc; isSetΣ; isSetΠ; isPropΠ; isPropΠ2; isPropΠ3)
 open FI public using    (isoToPath; isoToEquiv; iso; section; retract )
   
 open import Cubical.Foundations.Prelude     public using    ( cong; refl; sym
