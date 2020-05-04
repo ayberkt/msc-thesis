@@ -51,7 +51,7 @@ nothing but the map `U ↦ - <| U`.
       U₀ = λ a → a <| U , squash
 
       U₀-dc : [ isDownwardsClosed P (λ - → (- <| U) , squash) ]
-      U₀-dc a a₀ aεU₁ a₀⊑a = lem1 U-down a₀⊑a aεU₁
+      U₀-dc a a₀ aεU₁ a₀⊑a = ◀-lem₁ U-down a₀⊑a aεU₁
 
   _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
   x << y = x ⊑[ pos F↓ ] y
@@ -119,7 +119,7 @@ By composing this with the covering nucleus, we define a map `e` from `F` to `F�
   e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
     where
       NTS : [ isDownwardsClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
-      NTS _ _ x y = lem1 (λ _ _ x⊑y y⊑z → ⊑[ P ]-trans _ _ z y⊑z x⊑y) y x
+      NTS _ _ x y = ◀-lem₁ (λ _ _ x⊑y y⊑z → ⊑[ P ]-trans _ _ z y⊑z x⊑y) y x
 ```
 
 We can further refine the codomain of `e` to `L`. In other words, we can prove that `j (e

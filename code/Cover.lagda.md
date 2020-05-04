@@ -46,16 +46,16 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
 
   module _ {U : ∣ P ∣ₚ → hProp ℓ} (U-down : [ isDownwardsClosed P U ]) where
 
-    lem1 : {a a′ : ∣ P ∣ₚ} → [ a′ ⊑[ P ] a ] →  a <| U → a′ <| U
-    lem1 {_}     {_}  h (squash p₀ p₁ i) = squash (lem1 h p₀) (lem1 h p₁) i
-    lem1 {_}     {_}  h (dir q)          = dir (U-down _ _ q h)
-    lem1 {a = a} {a′} h (branch b f)     = branch b′ g
+    ◀-lem₁ : {a a′ : ∣ P ∣ₚ} → [ a′ ⊑[ P ] a ] →  a <| U → a′ <| U
+    ◀-lem₁ {_}     {_}  h (squash p₀ p₁ i) = squash (◀-lem₁ h p₀) (◀-lem₁ h p₁) i
+    ◀-lem₁ {_}     {_}  h (dir q)          = dir (U-down _ _ q h)
+    ◀-lem₁ {a = a} {a′} h (branch b f)     = branch b′ g
       where
         b′ : exp ℱ a′
         b′ = π₀ (sim ℱ a′ a h b)
 
         g : (c′ : out ℱ b′) → next ℱ c′ <| U
-        g c′ = lem1 (π₁ (π₁ (sim ℱ a′ a h b) c′)) (f c)
+        g c′ = ◀-lem₁ (π₁ (π₁ (sim ℱ a′ a h b) c′)) (f c)
           where
             c : out ℱ b
             c = π₀ (π₁ (sim ℱ a′ a h b) c′)
@@ -81,9 +81,9 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
 
     lem3 : (a a′ : ∣ P ∣ₚ) → [ a′ ⊑[ P ] a ] → a′ <| U → a <| V → a′ <| (U ∩ V)
     lem3 a a′ h (squash p₀ p₁ i) q = squash (lem3 a a′ h p₀ q) (lem3 a a′ h p₁ q) i
-    lem3 a a′ h (dir p)          q = <|-∩-comm a′ (lem2 V U U-dc (lem1 V-dc h q) p)
+    lem3 a a′ h (dir p)          q = <|-∩-comm a′ (lem2 V U U-dc (◀-lem₁ V-dc h q) p)
     lem3 a a′ h (branch b f)     q = branch b g
       where
         g : (c : out ℱ b) → next ℱ c <| (U ∩ V)
-        g c = lem3 a′ (next ℱ c) (mono ℱ a′ b c) (f c) (lem1 V-dc h q)
+        g c = lem3 a′ (next ℱ c) (mono ℱ a′ b c) (f c) (◀-lem₁ V-dc h q)
 ```
