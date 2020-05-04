@@ -98,12 +98,16 @@
 \newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
 \newcommand{\pair}[2]{\langle #1 , #2 \rangle}
 
-\newcommand{\listty}[1]{\mathbb{L}\left(#1\right)}
-\newcommand{\bitlist}{\mathbb{L}_B}
+\newcommand{\listtynm}{\mathsf{List}}
+\newcommand{\listty}[1]{\listtynm{}\left(#1\right)}
+\DeclareMathOperator{\cons}{\text{\texttt{∷}}}
+\newcommand{\bitlist}{\mathbb{B}}
+\newcommand{\singleton}[1]{\text{\texttt{[}}~#1~\text{\texttt{]}}}
 \newcommand{\bitI}{\text{\texttt{1}}}
 \newcommand{\bitO}{\text{\texttt{0}}}
 \newcommand{\emptylist}{\text{\texttt{[]}}}
 \newcommand{\snoc}[2]{#1 \frown #2}
+\newcommand{\cantoris}{\hyperref[defn:cantor-is]{\mathcal{C}}}
 
 \newcommand{\subsetof}[2]{#1 \hyperref[defn:inclusion]{\subseteq} #2}
 
@@ -124,6 +128,7 @@
 \newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
 
 \DeclareMathOperator{\concat}{\text{\texttt{++}}}
+\DeclareMathOperator{\append}{\text{\texttt{++}}}
 
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
@@ -153,6 +158,7 @@
 \newcommand{\verposet}{\hyperref[defn:poset]{poset}}
 \newcommand{\verintrsys}{\hyperref[defn:intr-sys]{interaction system}}
 \newcommand{\veragda}{\textsc{Agda}}
+\newcommand{\verbool}{Boolean}
 
 \newcommand{\modname}[1]{{\color{AgdaModule} \texttt{#1}}}
 \newcommand{\fnname}[1]{{\color{AgdaFunction} \texttt{#1}}}
