@@ -7,6 +7,7 @@ module Frame where
 open import Basis
 open import Family
 open import Truncation
+open import Function                using    (_∘_; id)
 open import Data.Product            using    (uncurry)
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
 open import Poset
@@ -28,7 +29,7 @@ isGLB P _⟨f⟩_ = φ , φ-prop
       × ((x y z  : ∣ P ∣ₚ) → [ (z ⊑[ P ] x ⊓ z ⊑[ P ] y) ⇒  z ⊑[ P ] (x ⟨f⟩ y) ])
 
     φ-prop : isProp φ
-    φ-prop = isOfHLevelΣ 1
+    φ-prop = isPropΣ
                (isPropΠ λ x → isPropΠ λ y →
                  is-true-prop ((x ⟨f⟩ y) ⊑[ P ] x ⊓ (x ⟨f⟩ y) ⊑[ P ] y)) λ _ →
                isPropΠ λ x → isPropΠ λ y →
@@ -46,7 +47,7 @@ isLUB {ℓ₂ = ℓ₂} P ⋁_ = φ , φ-prop
         -- Given any other x that is an upper bound of ℱ, f ℱ is _lower_ than x.
 
     φ-prop : isProp φ
-    φ-prop = isOfHLevelΣ 1
+    φ-prop = isPropΣ
               (λ ψ ϑ → funExt λ ℱ →
                 is-true-prop (∀[ y ε ℱ ] (y ⊑[ P ] (⋁ ℱ))) (ψ ℱ) (ϑ ℱ)) λ _ →
               isPropΠ λ ℱ → isPropΠ λ x →
@@ -285,8 +286,8 @@ isFrameHomomorphism-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂)
                          → (f : pos F ─m→ pos G)
                          → isProp (isFrameHomomorphism F G f)
 isFrameHomomorphism-prop F G f =
-  isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
-  isOfHLevelΣ 1 (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
+  isPropΣ (carrier-is-set (pos G) _ _) λ _ →
+  isPropΣ (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
     isPropΠ λ ℱ → carrier-is-set (pos G) _ _
 
 _─f→_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
@@ -492,9 +493,9 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , 𝟏₀ , _⊓₀_ 
 
         RF-iso-prop : isProp (RF-iso (A , F) (A , G) (idEquiv A))
         RF-iso-prop =
-          isOfHLevelΣ 1 (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
-          isOfHLevelΣ 1 (λ p q → A-set₀ _ _ p q ) λ _ →
-          isOfHLevelΣ 1 (isPropΠ λ _ → isPropΠ λ _ → A-set₀ _ _) λ _ →
+          isPropΣ (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
+          isPropΣ (λ p q → A-set₀ _ _ p q ) λ _ →
+          isPropΣ (isPropΠ λ _ → isPropΠ λ _ → A-set₀ _ _) λ _ →
           isPropΠ λ _ → A-set₀ _ _)
 
         h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
@@ -508,9 +509,9 @@ frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
 
 frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → isProp (frame-iso M N i)
 frame-iso-prop F G i =
-  isOfHLevelΣ 1 (RP-iso-prop RP RQ i) λ _ →
-  isOfHLevelΣ 1 (carrier-is-set (pos G) _ _) λ _ →
-  isOfHLevelΣ 1 (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
+  isPropΣ (RP-iso-prop RP RQ i) λ _ →
+  isPropΣ (carrier-is-set (pos G) _ _) λ _ →
+  isPropΣ (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
                 isPropΠ λ _ → carrier-is-set (pos G) _ _
   where
     RP = ∣ F ∣F , π₀ (strₚ (pos F))

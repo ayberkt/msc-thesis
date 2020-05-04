@@ -3,6 +3,7 @@
 module Family where
 
 open import Basis
+open import Function using (_∘_; id)
 
 Sub : (ℓ₀ : Level) → Type ℓ₁ → Type (suc ℓ₀ ⊔ ℓ₁)
 Sub ℓ A = Σ (Set ℓ) (λ I → I → A)

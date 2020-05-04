@@ -4,6 +4,8 @@ open import Truncation
 
 module Nucleus where
 
+open import Function using (_∘_; id)
+
 open import Basis
 open import Family
 open import Poset

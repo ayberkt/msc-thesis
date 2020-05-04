@@ -32,4 +32,4 @@ _∩_ : 𝒫 A → 𝒫 A → 𝒫 A
 _∩_ {A = A} U V = λ x → ([ U x ] × [ V x ]) , prop x
   where
     prop : (x : A) → isProp ([ U x ] × [ V x ])
-    prop x = isOfHLevelΣ 1 (is-true-prop (U x)) λ _ → is-true-prop (V x)
+    prop x = isPropΣ (is-true-prop (x ∈ U)) λ _ → is-true-prop (V x)

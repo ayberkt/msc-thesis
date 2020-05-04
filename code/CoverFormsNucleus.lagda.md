@@ -3,6 +3,8 @@
 
 module CoverFormsNucleus where
 
+open import Function       using  (_∘_)
+
 open import Basis          hiding (A)
 open import Poset
 open import Frame

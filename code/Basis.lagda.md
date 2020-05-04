@@ -3,70 +3,31 @@
 
 module Basis where
 
-open import Cubical.Core.Everything         public using    ( _≡_
-                                                            ; Type
-                                                            ; Σ
-                                                            ; Σ-syntax
-                                                            ; _,_
-                                                            ; _≃_
-                                                            ; equivFun
-                                                            ; isEquiv
-                                                            ; equivProof
-                                                            )
-open import Cubical.Data.Sigma.Properties   public using    ( ΣProp≡ )
-open import Cubical.Foundations.Prelude     public using    ( J
-                                                            ; funExt
-                                                            ; subst
-                                                            ; isProp
-                                                            ; isSet
-                                                            ; isProp→isSet
-                                                            ; cong; refl; sym
+import Cubical.Core.Everything         as CE
+import Cubical.Data.Sigma              as DS
+import Cubical.Foundations.Prelude     as FP
+import Cubical.Foundations.Equiv       as FE
+import Cubical.Foundations.Logic       as FL
+import Cubical.Foundations.HLevels     as FH
+import Cubical.Foundations.Isomorphism as FI
+
+open CE public using    (_≡_; Type; Σ; Σ-syntax; _,_; _≃_; equivFun; isEquiv)
+open DS public using    (ΣProp≡; sigmaPath→pathSigma; pathSigma→sigmaPath; _×_; _,_)
+               renaming (fst to π₀; snd to π₁)
+open FP public using    (funExt; subst; isContr; isProp; isSet; isProp→isSet)
+open FE public using    (idEquiv; invEquiv; secEq; retEq; fiber)
+open FL public using    ( _⇔_ ; _⇒_ ; ⇔toPath ; _⊓_ ; [_] )
+open FH public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSuc; isSetΣ; isSetΠ; isPropΠ)
+open FI public using    (isoToPath; isoToEquiv; iso; section; retract )
+  
+open import Cubical.Foundations.Prelude     public using    ( cong; refl; sym
                                                             ; _≡⟨_⟩_; _∎
                                                             ; transport
-                                                            ; transportRefl
-                                                            ; isContr)
-open import Cubical.Foundations.Transport   public using    ( transportEquiv )
-open import Cubical.Foundations.Equiv       public using    ( idEquiv
-                                                            ; invEquiv
-                                                            ; secEq
-                                                            ; retEq
-                                                            ; fiber
-                                                            )
-open import Cubical.Foundations.Equiv.HalfAdjoint public using
-  ( isHAEquiv ; equiv→HAEquiv )
-open import Cubical.Foundations.Univalence  public using    ( ua )
-open import Cubical.Foundations.HLevels     public using    ( hProp
-                                                            ; isSetHProp
-                                                            ; isPropIsSet
-                                                            ; isOfHLevelΣ
-                                                            ; isOfHLevelSuc
-                                                            ; isSetΣ
-                                                            ; isSetΠ
-                                                            ; isPropΠ
-                                                            )
-open import Cubical.Data.Sigma              public using    ( sigmaPath→pathSigma
-                                                            ; pathSigma→sigmaPath
-                                                            ; _×_
-                                                            ; _,_
-                                                            )
-                                                   renaming ( fst to π₀
-                                                            ; snd to π₁
-                                                            )
-open import Cubical.Foundations.Isomorphism public using    ( isoToPath
-                                                            ; isoToEquiv
-                                                            ; iso
-                                                            ; section
-                                                            ; retract
-                                                            )
-open import Cubical.Foundations.Logic       public using    ( _⇔_
-                                                            ; _⇒_
-                                                            ; ⇔toPath
-                                                            ; _⊓_
-                                                            ; [_]
-                                                            )
-open import Function                        public using    ( _∘_
-                                                            ; id
-                                                            )
+                                                            ; transportRefl )
+
+open import Cubical.Foundations.Equiv.HalfAdjoint public using (isHAEquiv; equiv→HAEquiv )
+
+
 open import Level                           public
 ```
 

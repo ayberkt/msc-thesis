@@ -6,6 +6,7 @@ module Poset where
 open import Basis
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
 open import Powerset
+open import Function using (_∘_; id)
 ```
 
 ## Definition of poset
@@ -45,7 +46,7 @@ PosetAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} A _⊑_ = isPartialSet , isPartialSe
 
     isPartialSet = Σ[ A-set ∈ isSet A ] [ isPartial A-set ]
 
-    isPartialSet-prop = isOfHLevelΣ 1 isPropIsSet (is-true-prop ∘ isPartial)
+    isPartialSet-prop = isPropΣ isPropIsSet (is-true-prop ∘ isPartial)
 ```
 
 A poset structure with level `ℓ₁`.
@@ -209,7 +210,7 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
     _⊑_ (x₀ , y₀) (x₁ , y₁) = x₀ ⊑[ P ] x₁ ⊓ y₀ ⊑[ Q ] y₁
 
     carrier-set : isSet (∣ P ∣ₚ × ∣ Q ∣ₚ)
-    carrier-set = isOfHLevelΣ 2 (carrier-is-set P) λ _ → (carrier-is-set Q)
+    carrier-set = isSetΣ (carrier-is-set P) λ _ → (carrier-is-set Q)
 
     ⊑-refl : (p : ∣ P ∣ₚ × ∣ Q ∣ₚ) → [ p ⊑ p ]
     ⊑-refl (x , y) = (⊑[ P ]-refl x) , (⊑[ Q ]-refl y)
