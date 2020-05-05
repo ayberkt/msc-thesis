@@ -288,7 +288,7 @@ DCPoset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
 DCPoset {ℓ₀ = ℓ₀} P = 𝔻 , _<<_ , 𝔻-set , <<-refl , <<-trans  , <<-antisym
   where
     𝔻     = DCSubset     P
-    𝔻-set = DCSubset-set P 
+    𝔻-set = DCSubset-set P
 
     _<<_ : 𝔻 → 𝔻 → hProp ℓ₀
     _<<_ (S , _) (T , _) = S ⊆ T
