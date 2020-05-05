@@ -45,7 +45,7 @@ isLUB : (P : Poset ℓ₀ ℓ₁) → (Fam ℓ₂ ∣ P ∣ₚ → ∣ P ∣ₚ)
 isLUB {ℓ₂ = ℓ₂} P ⋁_ = ⋁-LUB , ⋁-LUB-prop
   where
     ⋁-LUB = ((U : Fam ℓ₂ ∣ P ∣ₚ) → [ ∀[ x ε U ] (x ⊑[ P ] ⋁ U) ])
-          × ((U : Fam ℓ₂ ∣ P ∣ₚ) (x : ∣ P ∣ₚ) → [ (∀[ y ε U ] (y ⊑[ P ] x)) ⇒ ⋁ U ⊑[ P ] x ])
+          × ((U : Fam ℓ₂ ∣ P ∣ₚ) (x : _) → [ (∀[ y ε U ] (y ⊑[ P ] x)) ⇒ ⋁ U ⊑[ P ] x ])
 
     ⋁-LUB-prop : isProp ⋁-LUB
     ⋁-LUB-prop = isPropΣ
