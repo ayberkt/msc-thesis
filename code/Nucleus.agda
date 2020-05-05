@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --cubical --safe #-}
+{-# OPTIONS --cubical --safe #-}
 
 open import Truncation
 
@@ -104,11 +104,11 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , N₀ , N₁ , N₂) 
       ΣProp≡ (λ z → A-set (j z) z) (⊑[ P ]-antisym x y x≤y y≤x)
 
 -- The set of fixed points of a nucleus `j` forms a frame.
--- The join of this frame is define as ⊔ᵢ ℱᵢ := j (⊔′ᵢ ℱᵢ) where ⊔′ denotes the join of L.
+-- The join of this frame is define as ⊔ᵢ Uᵢ := j (⊔′ᵢ Uᵢ) where ⊔′ denotes the join of L.
 nuclear-fixed-point-frame : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
 nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n₁ , n₂) =
                           ∣ nuclear-fixed-point-poset L N ∣ₚ
-  , (strₚ (nuclear-fixed-point-poset L N) , (𝟏[ L ] , 𝟏-fixed) , _∧_ , ⊔_)
+  , (strₚ (nuclear-fixed-point-poset L N) , (⊤[ L ] , ⊤-fixed) , _∧_ , ⊔_)
   , top
   , ( (λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y)
     , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
@@ -122,14 +122,14 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     _⊑N_ : 𝒜 → 𝒜 → hProp ℓ₁
     _⊑N_  = λ x y → x ⊑[ nuclear-fixed-point-poset L N ] y
 
-    ⋃L_ : Fam ℓ₂ ∣ L ∣F → ∣ L ∣F
-    ⋃L x = ⋃[ L ] x
+    ⋁L_ : Fam ℓ₂ ∣ L ∣F → ∣ L ∣F
+    ⋁L x = ⋁[ L ] x
 
     ⊑N-antisym = ⊑[ nuclear-fixed-point-poset L N ]-antisym
     A-set      = carrier-is-set (nuclear-fixed-point-poset L N)
 
-    𝟏-fixed : j 𝟏[ L ] ≡ 𝟏[ L ]
-    𝟏-fixed = ⊑[ pos L ]-antisym _ _ (𝟏[ L ]-top (j 𝟏[ L ])) (n₁ 𝟏[ L ])
+    ⊤-fixed : j ⊤[ L ] ≡ ⊤[ L ]
+    ⊤-fixed = ⊑[ pos L ]-antisym _ _ (⊤[ L ]-top (j ⊤[ L ])) (n₁ ⊤[ L ])
 
     open PosetReasoning (pos L)
 
@@ -155,14 +155,14 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
         φ = ⊓[ L ]-greatest x y (j (x ⊓[ L ] y)) ⊑x ⊑y
 
     ⊔_ : Fam ℓ₂ 𝒜 → 𝒜
-    ⊔ (I , F) = j (⋃[ L ] 𝒢) , j⊔L-fixed
+    ⊔ (I , F) = j (⋁[ L ] 𝒢) , j⊔L-fixed
       where
         𝒢 = I , π₀ ∘ F
-        j⊔L-fixed : j (j (⋃[ L ] 𝒢)) ≡ j (⋃[ L ] 𝒢)
-        j⊔L-fixed = ⊑[ pos L ]-antisym _ _ (n₂ (⋃[ L ] 𝒢)) (n₁ (j (⋃[ L ] 𝒢)))
+        j⊔L-fixed : j (j (⋁[ L ] 𝒢)) ≡ j (⋁[ L ] 𝒢)
+        j⊔L-fixed = ⊑[ pos L ]-antisym _ _ (n₂ (⋁[ L ] 𝒢)) (n₁ (j (⋁[ L ] 𝒢)))
 
-    top : (o : 𝒜) → [ o ⊑N (𝟏[ L ] , 𝟏-fixed) ]
-    top = 𝟏[ L ]-top ∘ π₀
+    top : (o : 𝒜) → [ o ⊑N (⊤[ L ] , ⊤-fixed) ]
+    top = ⊤[ L ]-top ∘ π₀
 
     ⊓-lower₀ : (o p : 𝒜) → [ (o ∧ p) ⊑N o ]
     ⊓-lower₀ (o , _) (p , _) = ⊓[ L ]-lower₀ o p
@@ -173,44 +173,44 @@ nuclear-fixed-point-frame {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , n₀ , n�
     ⊓-greatest : (o p q : 𝒜) → [ q ⊑N o ] → [ q ⊑N p ] → [ q ⊑N (o ∧ p) ]
     ⊓-greatest (o , _) (p , _) (q , _) q⊑o q⊑p = ⊓[ L ]-greatest o p q q⊑o q⊑p
 
-    ⊔-least : (ℱ : Fam ℓ₂ 𝒜) (u : 𝒜) → [ ∀[ x ε ℱ ] (x ⊑N u) ] → [ (⊔ ℱ) ⊑N u ]
-    ⊔-least ℱ (u , fix) ℱ⊑u = subst (λ - → [ j (⋃[ L ] 𝒢) ⊑ - ]) fix NTS₀
+    ⊔-least : (U : Fam ℓ₂ 𝒜) (u : 𝒜) → [ ∀[ x ε U ] (x ⊑N u) ] → [ (⊔ U) ⊑N u ]
+    ⊔-least U (u , fix) U⊑u = subst (λ - → [ j (⋁[ L ] 𝒢) ⊑ - ]) fix NTS₀
       where
         𝒢 : Fam ℓ₂ ∣ pos L ∣ₚ
-        𝒢 = π₀ ⟨$⟩ ℱ
+        𝒢 = π₀ ⟨$⟩ U
 
         𝒢⊑u : [ ∀[ o ε 𝒢 ] (o ⊑ u) ]
         𝒢⊑u o (i , eq′) = o     ⊑⟨ ≡⇒⊑ (pos L) (sym eq′)               ⟩
-                          𝒢 $ i ⊑⟨ ℱ⊑u (𝒢 $ i , π₁ (ℱ $ i)) (i , refl) ⟩
+                          𝒢 $ i ⊑⟨ U⊑u (𝒢 $ i , π₁ (U $ i)) (i , refl) ⟩
                           u     ■
 
-        NTS₀ : [ j (⋃[ L ] 𝒢) ⊑ j u ]
-        NTS₀ = mono L N (⋃[ L ] 𝒢) u (⋃[ L ]-least 𝒢 u 𝒢⊑u)
+        NTS₀ : [ j (⋁[ L ] 𝒢) ⊑ j u ]
+        NTS₀ = mono L N (⋁[ L ] 𝒢) u (⋁[ L ]-least 𝒢 u 𝒢⊑u)
 
-    ⊔-upper : (ℱ : Fam ℓ₂ 𝒜) (x : 𝒜) → x ε ℱ → [ x ⊑N (⊔ ℱ) ]
-    ⊔-upper ℱ (x , _) o∈ℱ@(i , eq) =
+    ⊔-upper : (U : Fam ℓ₂ 𝒜) (x : 𝒜) → x ε U → [ x ⊑N (⊔ U) ]
+    ⊔-upper U (x , _) o∈U@(i , eq) =
       x                   ⊑⟨ NTS                  ⟩
-      ⋃[ L ] (π₀ ⟨$⟩ ℱ)     ⊑⟨ n₁ (⋃[ L ] (π₀ ⟨$⟩ ℱ)) ⟩
-      j (⋃[ L ] (π₀ ⟨$⟩ ℱ)) ■
+      ⋁[ L ] (π₀ ⟨$⟩ U)     ⊑⟨ n₁ (⋁[ L ] (π₀ ⟨$⟩ U)) ⟩
+      j (⋁[ L ] (π₀ ⟨$⟩ U)) ■
       where
-        NTS : [ x ⊑ (⋃[ L ] (π₀ ⟨$⟩ ℱ)) ]
-        NTS = ⋃[ L ]-upper (π₀ ⟨$⟩ ℱ) x (i , λ j → π₀ (eq j))
+        NTS : [ x ⊑ (⋁[ L ] (π₀ ⟨$⟩ U)) ]
+        NTS = ⋁[ L ]-upper (π₀ ⟨$⟩ U) x (i , λ j → π₀ (eq j))
 
-    distr : (o : 𝒜) (ℱ : Fam ℓ₂ 𝒜) → o ∧ (⊔ ℱ) ≡ ⊔ (index ℱ , (λ i → o ∧ (ℱ $ i)))
-    distr 𝒶@(o , jo=o) ℱ@(I , F) =
+    distr : (o : 𝒜) (U : Fam ℓ₂ 𝒜) → o ∧ (⊔ U) ≡ ⊔ (index U , (λ i → o ∧ (U $ i)))
+    distr 𝒶@(o , jo=o) U@(I , F) =
       sigmaPath→pathSigma _ _ (φ , carrier-is-set (pos L) _ _ _ _)
       where
         𝒢 : Fam ℓ₂ ∣ pos L ∣ₚ
-        𝒢 = π₀ ⟨$⟩ ℱ
+        𝒢 = π₀ ⟨$⟩ U
 
-        φ :  π₀ (𝒶 ∧ (⊔ ℱ)) ≡ π₀ (⊔ (I , (λ i → 𝒶 ∧ (ℱ $ i))))
+        φ :  π₀ (𝒶 ∧ (⊔ U)) ≡ π₀ (⊔ (I , (λ i → 𝒶 ∧ (U $ i))))
         φ =
-          π₀ (𝒶 ∧ (⊔ ℱ))                    ≡⟨ refl                                      ⟩
-          o ⊓[ L ] j (⋃L 𝒢)                 ≡⟨ cong (λ - → - ⊓[ L ] j (⋃L 𝒢)) (sym jo=o) ⟩
-          j o ⊓[ L ] j (⋃L 𝒢)               ≡⟨ sym (n₀ o (⋃[ L ] 𝒢))                     ⟩
-          j (o ⊓[ L ] (⋃L 𝒢))               ≡⟨ cong j (dist L o 𝒢)                       ⟩
-          j (⋃L ((λ - → o ⊓[ L ] -) ⟨$⟩ 𝒢)) ≡⟨ refl                                      ⟩
-          π₀ (⊔ (I , λ i → 𝒶 ∧ (ℱ $ i)))    ∎
+          π₀ (𝒶 ∧ (⊔ U))                    ≡⟨ refl                                      ⟩
+          o ⊓[ L ] j (⋁L 𝒢)                 ≡⟨ cong (λ - → - ⊓[ L ] j (⋁L 𝒢)) (sym jo=o) ⟩
+          j o ⊓[ L ] j (⋁L 𝒢)               ≡⟨ sym (n₀ o (⋁[ L ] 𝒢))                     ⟩
+          j (o ⊓[ L ] (⋁L 𝒢))               ≡⟨ cong j (dist L o 𝒢)                       ⟩
+          j (⋁L ((λ - → o ⊓[ L ] -) ⟨$⟩ 𝒢)) ≡⟨ refl                                      ⟩
+          π₀ (⊔ (I , λ i → 𝒶 ∧ (U $ i)))    ∎
 
 -- --}
 -- --}

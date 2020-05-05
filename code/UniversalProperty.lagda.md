@@ -14,7 +14,7 @@ open import Truncation
 open import FormalTopology    renaming (pos to pos′)
 open import CoverFormsNucleus
 
-compr : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → 𝒫 X → Fam ℓ₀ Y
+compr : {X : Type ℓ₀} {Y : Type ℓ₁} → (g : X → Y) → 𝒫 X → Fam ℓ₀ Y
 compr g U = (index ⟪ U ⟫) , g ∘ (_$_ ⟪ U ⟫)
 
 syntax compr (λ x → e) ℱ = ⁅ e ∣ x ∈ ℱ ⁆
@@ -36,7 +36,7 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
   represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R) → Type ℓ₀
   represents R (f , _) =
     (x : 𝔉) (y : exp F x) →
-      [ f x ⊑[ pos R ] (⋃[ R ] (outcome F y , λ u → f (next F u))) ]
+      [ f x ⊑[ pos R ] (⋁[ R ] (outcome F y , λ u → f (next F u))) ]
 ```
 
 ## Flatness
@@ -46,8 +46,8 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
   _↓_↓ a b = λ - → - ⊑[ P ] a ⊓ - ⊑[ P ] b
 
   IsFlat : (F : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos F) → Type (suc ℓ₀)
-  IsFlat F (f , _) = (𝟏[ F ] ≡ ⋃[ F ] (𝔉 , f))
-                   × ((a b : 𝔉) → f a ⊓[ F ] f b ≡ ⋃[ F ] (f ⟨$⟩ ⟪ a ↓ b ↓ ⟫))
+  IsFlat F (f , _) = (⊤[ F ] ≡ ⋁[ F ] (𝔉 , f))
+                   × ((a b : 𝔉) → f a ⊓[ F ] f b ≡ ⋁[ F ] (f ⟨$⟩ ⟪ a ↓ b ↓ ⟫))
 ```
 
 ## The universal property
@@ -69,13 +69,13 @@ Before the proof we will need some lemmas.
 ```
 
 ```
-  main-lemma : (𝔘 : ∣ L ∣F) → 𝔘 ≡ ⋃[ L ] ⁅ η u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆
+  main-lemma : (𝔘 : ∣ L ∣F) → 𝔘 ≡ ⋁[ L ] ⁅ η u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆
   main-lemma 𝔘@((U , U-dc) , U-fix) = ⊑[ pos L ]-antisym _ _ down up
     where
-      down : [ 𝔘 ⊑[ pos L ] (⋃[ L ] ⁅ η x ∣ x ∈ U ⁆) ]
+      down : [ 𝔘 ⊑[ pos L ] (⋁[ L ] ⁅ η x ∣ x ∈ U ⁆) ]
       down x xεU = dir ∣ (x , xεU) , dir (⊑[ P ]-refl x) ∣
 
-      up : [ (⋃[ L ] ⁅ η x ∣ x ∈ U ⁆) ⊑[ pos L ] 𝔘 ]
+      up : [ (⋁[ L ] ⁅ η x ∣ x ∈ U ⁆) ⊑[ pos L ] 𝔘 ]
       up x (dir xε⋁) = ∥∥-rec (is-true-prop (U x)) NTS xε⋁
         where
           NTS : Σ[ y ∈ _ ] [ x ∈ ⦅ η (π₀ y) ⦆ ] → [ x ∈ U ]
@@ -101,13 +101,13 @@ Proof.
 
 ```
     g : ∣ L ∣F → ∣ R ∣F
-    g 𝔘 = ⋃[ R ] (f ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)
+    g 𝔘 = ⋁[ R ] (f ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)
 ```
 
 ```
     g-mono : isMonotonic (pos L) (pos R) g
     g-mono ((U , _) , _) ((V , _) , _) U⊆V =
-      ⋃[ R ]-least _ _ (λ o oεfU → ⋃[ R ]-upper _ _ (NTS o oεfU ))
+      ⋁[ R ]-least _ _ (λ o oεfU → ⋁[ R ]-upper _ _ (NTS o oεfU ))
       where
         NTS : (x : ∣ R ∣F) → x ε (∃ U , f ∘ π₀) → x ε (∃ V , f ∘ π₀)
         NTS x ((x′ , x′εfU) , fUεi=x) = (x′ , U⊆V x′ x′εfU) , fUεi=x
@@ -119,15 +119,15 @@ Proof.
 ### `g` respects the top element
 
 ```
-    g-resp-𝟏 : g 𝟏[ L ] ≡ 𝟏[ R ]
-    g-resp-𝟏 = g 𝟏[ L ]                            ≡⟨ refl             ⟩
-               ⋃[ R ] (f ⟨$⟩ (∃ ⦅ 𝟏[ L ] ⦆ , π₀))  ≡⟨ family-iff R NTS ⟩
-               ⋃[ R ] (𝔉 , f)                      ≡⟨ sym (π₀ f-flat)  ⟩
-               𝟏[ R ]                              ∎
+    g-resp-𝟏 : g ⊤[ L ] ≡ ⊤[ R ]
+    g-resp-𝟏 = g ⊤[ L ]                            ≡⟨ refl             ⟩
+               ⋁[ R ] (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀))  ≡⟨ family-iff R NTS ⟩
+               ⋁[ R ] (𝔉 , f)                      ≡⟨ sym (π₀ f-flat)  ⟩
+               ⊤[ R ]                              ∎
       where
         NTS : (x : ∣ R ∣F)
-            → (x ε (f ⟨$⟩ (∃ ⦅ 𝟏[ L ] ⦆ , π₀)) → x ε (𝔉 , f))
-            × (x ε (𝔉 , f) → x ε (f ⟨$⟩ (∃ ⦅ 𝟏[ L ] ⦆ , π₀)))
+            → (x ε (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀)) → x ε (𝔉 , f))
+            × (x ε (𝔉 , f) → x ε (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀)))
         NTS x = (λ { ((y , _) , eq) → y , eq }) , (λ { (y , eq) → (y , tt) , eq })
 ```
 
@@ -138,47 +138,47 @@ Proof.
     g-resp-⊓ 𝔘 𝔙 =
       g (𝔘 ⊓[ L ] 𝔙)
         ≡⟨ refl ⟩
-      ⋃[ R ] ⁅ f a ∣ a ∈ ⦅ 𝔘 ⊓[ L ] 𝔙 ⦆ ⁆
+      ⋁[ R ] ⁅ f a ∣ a ∈ ⦅ 𝔘 ⊓[ L ] 𝔙 ⦆ ⁆
         ≡⟨ I ⟩
-      ⋃[ R ] ((∃ ⦅ 𝔘 ⦆ × ∃ ⦅ 𝔙 ⦆) , λ { ((u , _) , v , _) → ⋃[ R ] (f ⟨$⟩ ⟪ u ↓ v ↓ ⟫) })
-        ≡⟨ cong (λ - → (⋃[ R ] ((∃ ⦅ 𝔘 ⦆ × ∃ ⦅ 𝔙 ⦆) , -))) II ⟩
-      ⋃[ R ] (((∃ ⦅ 𝔘 ⦆) × (∃ ⦅ 𝔙 ⦆)) , λ { ((u , _) , (v , _)) → f u ⊓[ R ] f v })
+      ⋁[ R ] ((∃ ⦅ 𝔘 ⦆ × ∃ ⦅ 𝔙 ⦆) , λ { ((u , _) , v , _) → ⋁[ R ] (f ⟨$⟩ ⟪ u ↓ v ↓ ⟫) })
+        ≡⟨ cong (λ - → (⋁[ R ] ((∃ ⦅ 𝔘 ⦆ × ∃ ⦅ 𝔙 ⦆) , -))) II ⟩
+      ⋁[ R ] (((∃ ⦅ 𝔘 ⦆) × (∃ ⦅ 𝔙 ⦆)) , λ { ((u , _) , (v , _)) → f u ⊓[ R ] f v })
         ≡⟨ sym (sym-distr R (⁅ f u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆) (⁅ f v ∣ v ∈ ⦅ 𝔙 ⦆ ⁆)) ⟩
-      (⋃[ R ] ⁅ f u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆) ⊓[ R ] (⋃[ R ] ⁅ f v ∣ v ∈ ⦅ 𝔙 ⦆ ⁆)
+      (⋁[ R ] ⁅ f u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆) ⊓[ R ] (⋁[ R ] ⁅ f v ∣ v ∈ ⦅ 𝔙 ⦆ ⁆)
         ≡⟨ refl ⟩
       g 𝔘 ⊓[ R ] g 𝔙
         ∎
       where
-        II : (λ { ((u , _) , (v , _)) → ⋃[ R ] (f ⟨$⟩ ⟪ u ↓ v ↓ ⟫) })
+        II : (λ { ((u , _) , (v , _)) → ⋁[ R ] (f ⟨$⟩ ⟪ u ↓ v ↓ ⟫) })
            ≡ (λ { ((u , _) , (v , _)) → (f u) ⊓[ R ] (f v) })
         II = sym (funExt λ { ((u , _) , (v , _)) → π₁ f-flat u v })
         I  : _
         I  = ⊑[ pos R ]-antisym _ _ down up
           where
             down : _
-            down = ⋃[ R ]-least _ _ isUB
+            down = ⋁[ R ]-least _ _ isUB
               where
                 isUB : _
                 isUB o ((i , (a , b)) , eq) =
-                  ⋃[ R ]-upper _ _ (((i , a) , (i , b)) , subst (λ o′ → _ ≡ o′) eq φ)
+                  ⋁[ R ]-upper _ _ (((i , a) , (i , b)) , subst (λ o′ → _ ≡ o′) eq φ)
                   where
-                    down′ : [ (⋃[ R ] (f ⟨$⟩ ⟪ i ↓ i ↓ ⟫)) ⊑[ pos R ] f i ]
+                    down′ : [ (⋁[ R ] (f ⟨$⟩ ⟪ i ↓ i ↓ ⟫)) ⊑[ pos R ] f i ]
                     down′ =
-                      ⋃[ R ]-least _ _ λ { z ((_ , (k , _)) , eq′) →
+                      ⋁[ R ]-least _ _ λ { z ((_ , (k , _)) , eq′) →
                         subst (λ - → [ - ⊑[ pos R ] _ ]) eq′ (f-mono _ _ k) }
-                    up′ : [ f i ⊑[ pos R ] (⋃[ R ] (f ⟨$⟩ ⟪ i ↓ i ↓ ⟫)) ]
-                    up′ = ⋃[ R ]-upper _ _ ((i , (⊑[ P ]-refl i , ⊑[ P ]-refl i)) , refl)
-                    φ : ⋃[ R ] (f ⟨$⟩ ⟪ i ↓ i ↓ ⟫) ≡ f i
+                    up′ : [ f i ⊑[ pos R ] (⋁[ R ] (f ⟨$⟩ ⟪ i ↓ i ↓ ⟫)) ]
+                    up′ = ⋁[ R ]-upper _ _ ((i , (⊑[ P ]-refl i , ⊑[ P ]-refl i)) , refl)
+                    φ : ⋁[ R ] (f ⟨$⟩ ⟪ i ↓ i ↓ ⟫) ≡ f i
                     φ = ⊑[ pos R ]-antisym _ _ down′ up′
             up : _
-            up = ⋃[ R ]-least _ _ isUB
+            up = ⋁[ R ]-least _ _ isUB
               where
                 isUB :  _
                 isUB o (i@((x , xε𝔙) , (y , yε𝔘)) , eq) =
-                  subst (λ o′ → [ o′ ⊑[ pos R ] _ ]) eq (⋃[ R ]-least _ _ NTS)
+                  subst (λ o′ → [ o′ ⊑[ pos R ] _ ]) eq (⋁[ R ]-least _ _ NTS)
                   where
                     NTS : _
-                    NTS w (j@(z , (z⊑x , z⊑y)) , eq′) = ⋃[ R ]-upper _ _ ((z , φ) ,  eq′)
+                    NTS w (j@(z , (z⊑x , z⊑y)) , eq′) = ⋁[ R ]-upper _ _ ((z , φ) ,  eq′)
                       where
                         φ : [ z ∈ (⦅ 𝔘 ⦆ ∩ ⦅ 𝔙 ⦆) ]
                         φ = (π₁ (π₀ 𝔘) x z xε𝔙 z⊑x) , (π₁ (π₀ 𝔙) y z yε𝔘 z⊑y)
@@ -187,33 +187,33 @@ Proof.
 ### `g` respects the joins
 
 ```
-    g-resp-⊔ : (ℱ : Fam ℓ₀ ∣ L ∣F) → g (⋃[ L ] ℱ) ≡ ⋃[ R ] (g ⟨$⟩ ℱ)
+    g-resp-⊔ : (ℱ : Fam ℓ₀ ∣ L ∣F) → g (⋁[ L ] ℱ) ≡ ⋁[ R ] (g ⟨$⟩ ℱ)
     g-resp-⊔ ℱ@(I , U) =
-      ⋃[ R ] ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆
+      ⋁[ R ] ⁅ f a ∣ a ∈ ⦅ ⋁[ L ] ℱ ⦆ ⁆
         ≡⟨ ⊑[ pos R ]-antisym _ _ down up ⟩
-        ⋃[ R ] ((Σ[ i ∈ I ] ∃ ⦅ U i ⦆) , λ { (_ , y) → f (π₀ y) })
+        ⋁[ R ] ((Σ[ i ∈ I ] ∃ ⦅ U i ⦆) , λ { (_ , y) → f (π₀ y) })
         ≡⟨ flatten R I (λ - → ∃ ⦅ U - ⦆) (λ _ j → f (π₀ j))   ⟩
-      ⋃[ R ] (g ⟨$⟩ ℱ)
+      ⋁[ R ] (g ⟨$⟩ ℱ)
         ∎
       where
-        LHS = ⋃[ R ] ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆
-        RHS = ⋃[ R ] (Σ I (λ - → ∃ ⦅ U - ⦆) , λ { (x , y) → f (π₀ y) })
+        LHS = ⋁[ R ] ⁅ f a ∣ a ∈ ⦅ ⋁[ L ] ℱ ⦆ ⁆
+        RHS = ⋁[ R ] (Σ I (λ - → ∃ ⦅ U - ⦆) , λ { (x , y) → f (π₀ y) })
 
         down : [ LHS ⊑[ pos R ] RHS ]
-        down = ⋃[ R ]-least _ _ ψ
+        down = ⋁[ R ]-least _ _ ψ
           where
-            ψ : (o : ∣ R ∣F) → o ε ⁅ f a ∣ a ∈ ⦅ ⋃[ L ] ℱ ⦆ ⁆ → [ o ⊑[ pos R ] RHS ]
+            ψ : (o : ∣ R ∣F) → o ε ⁅ f a ∣ a ∈ ⦅ ⋁[ L ] ℱ ⦆ ⁆ → [ o ⊑[ pos R ] RHS ]
             ψ o ((x , foo) , eq) = subst (λ - → [ - ⊑[ pos R ] RHS ]) eq (ϑ x foo)
               where
                 open PosetReasoning (pos R)
-                ϑ : (y : 𝔉) → [ y ∈ ⦅ ⋃[ L ] ℱ ⦆ ] → [ f y ⊑[ pos R ] RHS ]
+                ϑ : (y : 𝔉) → [ y ∈ ⦅ ⋁[ L ] ℱ ⦆ ] → [ f y ⊑[ pos R ] RHS ]
                 ϑ y (dir mem) = ∥∥-rec
                                   (is-true-prop (f y ⊑[ pos R ] RHS))
                                   (λ { (j , cov) →
-                                         ⋃[ R ]-upper _ _ ((j , y , cov) , refl) }) mem
+                                         ⋁[ R ]-upper _ _ ((j , y , cov) , refl) }) mem
                 ϑ y (branch b h) =
                   f y                               ⊑⟨ rep y b            ⟩
-                  ⋃[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋃[ R ]-least _ _ ζ ⟩
+                  ⋁[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋁[ R ]-least _ _ ζ ⟩
                   RHS                               ■
                   where
                     ζ : (r : ∣ R ∣F)
@@ -224,8 +224,8 @@ Proof.
                 ϑ y (squash φ ψ i) = is-true-prop (f y ⊑[ pos R ] RHS) (ϑ y φ) (ϑ y ψ) i
 
         up : [ RHS ⊑[ pos R ] LHS ]
-        up = ⋃[ R ]-least _ _ λ { r ((i , (x , xεU)) , eq) →
-               ⋃[ R ]-upper _ _ ((x , dir ∣ i , xεU ∣) , eq) }
+        up = ⋁[ R ]-least _ _ λ { r ((i , (x , xεU)) , eq) →
+               ⋁[ R ]-upper _ _ ((x , dir ∣ i , xεU ∣) , eq) }
 ```
 
 ### `g` is a frame homomorphism
@@ -243,7 +243,7 @@ Proof.
     lem a a′ (dir    a′⊑a)  = f-mono a′ a a′⊑a
     lem a a′ (branch b h)   =
       f a′                              ⊑⟨ rep a′ b              ⟩
-      ⋃[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋃[ R ]-least _ _ isUB ⟩
+      ⋁[ R ] (outcome F b , f ∘ next F) ⊑⟨ ⋁[ R ]-least _ _ isUB ⟩
       f a                               ■
       where
         open PosetReasoning (pos R)
@@ -255,10 +255,10 @@ Proof.
     gm∘ηm = _∘m_ {P = P} {Q = pos L} {R = pos R} gm ηm
 
     gm∘ηm~f : (x : 𝔉) → gm $ₘ (ηm $ₘ x) ≡ fm $ₘ x
-    gm∘ηm~f x = ⊑[ pos R ]-antisym _ _ down (⋃[ R ]-upper _ _ ((x , x◀x↓ x) , refl))
+    gm∘ηm~f x = ⊑[ pos R ]-antisym _ _ down (⋁[ R ]-upper _ _ ((x , x◀x↓ x) , refl))
       where
-        down : [ (⋃[ R ] (∃ π₀ (e x) , f ∘ π₀)) ⊑[ pos R ] f x ]
-        down = ⋃[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem x y φ) }
+        down : [ (⋁[ R ] (∃ π₀ (e x) , f ∘ π₀)) ⊑[ pos R ] f x ]
+        down = ⋁[ R ]-least _ _ λ { o ((y , φ) , eq) → subst (λ _ → _) eq (lem x y φ) }
 
     g∘η=f : gm∘ηm ≡ fm
     g∘η=f = ΣProp≡ (isMonotonic-prop P (pos R)) (funExt gm∘ηm~f)
@@ -296,19 +296,19 @@ Proof.
         g~g′ : (𝔘 : ∣ L ∣F) → g 𝔘 ≡ g′ 𝔘
         g~g′ 𝔘 =
           g 𝔘                            ≡⟨ refl                                       ⟩
-          ⋃[ R ] ⁅ f u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆     ≡⟨ cong g (main-lemma 𝔘)                      ⟩
-          g (⋃[ L ] ⁅ η u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆) ≡⟨ π₁ (π₁ g-frame-homo) (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)       ⟩
-          ⋃[ R ] ⁅ g (η u) ∣ u ∈ ⦅ 𝔘 ⦆ ⁆ ≡⟨ cong (λ - → ⋃[ R ] (- ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)) g∘η=f′ ⟩
-          ⋃[ R ] ⁅ f u     ∣ u ∈ ⦅ 𝔘 ⦆ ⁆ ≡⟨ eq₀                                        ⟩
-          ⋃[ R ] ((g′ ∘ η) ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)  ≡⟨ eq₁                                        ⟩
-          g′ (⋃[ L ] (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))    ≡⟨ eq₂                                        ⟩
+          ⋁[ R ] ⁅ f u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆     ≡⟨ cong g (main-lemma 𝔘)                      ⟩
+          g (⋁[ L ] ⁅ η u ∣ u ∈ ⦅ 𝔘 ⦆ ⁆) ≡⟨ π₁ (π₁ g-frame-homo) (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)       ⟩
+          ⋁[ R ] ⁅ g (η u) ∣ u ∈ ⦅ 𝔘 ⦆ ⁆ ≡⟨ cong (λ - → ⋁[ R ] (- ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)) g∘η=f′ ⟩
+          ⋁[ R ] ⁅ f u     ∣ u ∈ ⦅ 𝔘 ⦆ ⁆ ≡⟨ eq₀                                        ⟩
+          ⋁[ R ] ((g′ ∘ η) ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)  ≡⟨ eq₁                                        ⟩
+          g′ (⋁[ L ] (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))    ≡⟨ eq₂                                        ⟩
           g′ 𝔘 ∎
           where
-            eq₀ : ⋃[ R ] (f ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡ ⋃[ R ] ((g′ ∘ η) ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)
-            eq₀ = cong (λ - → ⋃[ R ] (- ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)) f=g′∘η
-            eq₁ : ⋃[ R ] ((g′ ∘ η) ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡ g′ (⋃[ L ] (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))
+            eq₀ : ⋁[ R ] (f ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡ ⋁[ R ] ((g′ ∘ η) ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)
+            eq₀ = cong (λ - → ⋁[ R ] (- ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫)) f=g′∘η
+            eq₁ : ⋁[ R ] ((g′ ∘ η) ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫) ≡ g′ (⋁[ L ] (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))
             eq₁ = sym (π₁ (π₁ g′-frame-homo) (η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))
-            eq₂ : g′ (⋃[ L ] ((η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))) ≡ g′ 𝔘
+            eq₂ : g′ (⋁[ L ] ((η ⟨$⟩ ⟪ ⦅ 𝔘 ⦆ ⟫))) ≡ g′ 𝔘
             eq₂ = cong g′ (sym (main-lemma 𝔘))
 
         II : (gm , g-frame-homo) ≡ (g′m , g′-frame-homo)
