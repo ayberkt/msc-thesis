@@ -644,11 +644,28 @@ frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (⊤-eq , ⊓-eq , ⋁-
                 foεf⟨$⟩U = j , (f ⟨$⟩ U $ j ≡⟨ refl ⟩ f (U $ j) ≡⟨ cong f εU ⟩ f o ∎)
 
 _≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
-F ≃f G = Σ[ i ∈ (∣ F ∣F ≃ ∣ G ∣F) ] poset-iso (pos F) (pos G) i
+F ≃f G = Σ[ i ∈ ∣ F ∣F ≃ ∣ G ∣F ] poset-iso (pos F) (pos G) i
+
+_≃f′_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
+F ≃f′ G = Σ[ eqv ∈ ∣ F ∣F ≃ ∣ G ∣F ] poset-iso′ (pos F) (pos G) eqv
+
+_≃f⋆_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
+F ≃f⋆ G = Σ[ f ∈ (pos F ─m→ pos G) ] poset-iso′′ (pos F) (pos G) f
 
 -- This is the weak form of univalence.
 ≃f→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
 ≃f→≡ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso' F G eqv iso-f)
+
+≃f′→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f′ G → F ≡ G
+≃f′→≡ F G (eqv , iso-f) =
+  ≃f→≡ F G (eqv , (π₁ (poset-iso⇔poset-iso′ (pos F) (pos G) eqv) iso-f))
+
+≃f⋆→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f⋆ G → F ≃f′ G
+≃f⋆→≡ F G ((f , f-mono) , (g , g-mono) , sec , ret) =
+  isoToEquiv (iso f g sec ret) , f-mono , g-mono
+
+main : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f⋆ G → F ≡ G
+main F G i = ≃f′→≡ F G (≃f⋆→≡ F G i)
 
 -- -}
 -- -}
