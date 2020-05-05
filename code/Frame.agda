@@ -516,7 +516,7 @@ frame-is-SNS-PathP : SNS-PathP {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
 frame-is-SNS-PathP = SNS-≡→SNS-PathP frame-iso frame-is-SNS
 
 frame-SIP : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (eqv : ∣ F ∣F ≃ ∣ G ∣F) → frame-iso F G eqv → F ≡ G
-frame-SIP {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} F G eqv i = NTS (eqv , i)
+frame-SIP F G eqv i = NTS (eqv , i)
   where
     NTS : F ≃[ frame-iso ] G → F ≡ G
     NTS = equivFun (SIP frame-is-SNS-PathP F G)
