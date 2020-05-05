@@ -69,3 +69,9 @@ is-true-prop (P , P-prop) = P-prop
 _~_ : (f g : (x : A) → B x) → Type _
 _~_ {A = A} f g = (x : A) → f x ≡ g x
 ```
+
+```
+funExt2 : {A₀ : Type ℓ₀} {A₁ : Type ℓ₂} {B : A₀ → A₁ → Type ℓ₃}
+        → {f g : (x : A₀) (y : A₁) → B x y} → ((x : A₀) (y : A₁) → f x y ≡ g x y) → f ≡ g
+funExt2 eq = funExt λ x → funExt λ y → eq x y
+```

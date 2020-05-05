@@ -10,6 +10,9 @@ open import Basis
 _∈_ : A → 𝒫 A → hProp _
 x ∈ U = U x
 
+∈-prop : {A : Type ℓ} {x : A} → (U : 𝒫 A) → isProp [ x ∈ U ]
+∈-prop {x = x} U = is-true-prop (x ∈ U)
+
 𝒫-set : (A : Type ℓ) → isSet (𝒫 A)
 𝒫-set A = isSetΠ λ _ → isSetHProp
 
