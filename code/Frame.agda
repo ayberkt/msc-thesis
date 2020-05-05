@@ -171,7 +171,9 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
   family-iff {U = U} {V = V} h = ⋁-unique _ _ ub least
     where
       ub : (o : ∣ F ∣F) → o ε V → [ o ⊑ (⋁[ F ] U) ]
-      ub o (i , p) = subst (λ - → [ - ⊑ _ ]) p (⋁[ _ ]-upper _ (π₁ (h (V $ i)) (i , refl)))
+      ub o (i , p) =
+        subst (λ - → [ - ⊑ _ ]) p (⋁[ _ ]-upper _ (π₁ (h (V $ i)) (i , refl)))
+
       least : (w : ∣ F ∣F)
             → ((o : ∣ F ∣F) → o ε V → [ o ⊑ w ])
             → [ (⋁[ F ] U) ⊑ w ]
