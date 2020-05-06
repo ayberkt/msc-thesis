@@ -1,7 +1,5 @@
 {-# OPTIONS --cubical --safe #-}
 
-open import Truncation
-
 module Nucleus where
 
 open import Function using (_∘_; id)

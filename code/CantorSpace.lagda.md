@@ -10,7 +10,6 @@ open import Data.List                 using (List; _∷_; [])      renaming (_++
 open import Data.Sum                  using (_⊎_; inj₁; inj₂)
 open import Powerset                  hiding (U)
 open import Cover
-open import Truncation
 open import Poset
 open import FormalTopology
 ```

@@ -10,7 +10,6 @@ open import Frame
 open import Poset
 open import Powerset
 open import Family
-open import Truncation
 open import FormalTopology    renaming (pos to pos′)
 open import CoverFormsNucleus
 

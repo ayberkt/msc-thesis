@@ -1,12 +1,9 @@
 {-# OPTIONS --without-K --cubical --safe #-}
 
-open import Truncation
-
 module Frame where
 
 open import Basis
 open import Family
-open import Truncation
 open import Function                using    (_∘_; id)
 open import Data.Product            using    (uncurry)
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
@@ -664,8 +661,8 @@ F ≃f⋆ G = Σ[ f ∈ (pos F ─m→ pos G) ] poset-iso′′ (pos F) (pos G) 
 ≃f⋆→≡ F G ((f , f-mono) , (g , g-mono) , sec , ret) =
   isoToEquiv (iso f g sec ret) , f-mono , g-mono
 
-main : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f⋆ G → F ≡ G
-main F G i = ≃f′→≡ F G (≃f⋆→≡ F G i)
+main′ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f⋆ G → F ≡ G
+main′ F G i = ≃f′→≡ F G (≃f⋆→≡ F G i)
 
 -- -}
 -- -}
