@@ -3,32 +3,29 @@
 
 module Basis where
 
-import Cubical.Core.Everything         as CE
-import Cubical.Data.Sigma              as DS
-import Cubical.Foundations.Prelude     as FP
-import Cubical.Foundations.Equiv       as FE
-import Cubical.Foundations.Logic       as FL
-import Cubical.Foundations.HLevels     as FH
-import Cubical.Foundations.Isomorphism as FI
+open import Level public
 
-open CE public using    (_≡_; Type; Σ; Σ-syntax; _,_; _≃_; equivFun; isEquiv)
-open DS public using    (ΣProp≡; sigmaPath→pathSigma; pathSigma→sigmaPath; _×_; _,_)
-               renaming (fst to π₀; snd to π₁)
-open FP public using    (funExt; subst; isContr; isProp; isSet; isProp→isSet)
-open FE public using    (idEquiv; invEquiv; secEq; retEq; fiber)
-open FL public using    ( _⇔_ ; _⇒_ ; ⇔toPath ; _⊓_ ; [_] )
-open FH public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSuc; isSetΣ; isSetΠ; isPropΠ; isPropΠ2; isPropΠ3)
-open FI public using    (isoToPath; isoToEquiv; iso; section; retract )
+import Cubical.Core.Everything               as CE
+import Cubical.Data.Sigma                    as DS
+import Cubical.Foundations.Prelude           as FP
+import Cubical.Foundations.Equiv             as FE
+import Cubical.Foundations.Logic             as FL
+import Cubical.Foundations.HLevels           as FH
+import Cubical.Foundations.Isomorphism       as FI
+import Cubical.Foundations.Equiv.HalfAdjoint as HAE
 
-open import Cubical.Foundations.Prelude     public using    ( cong; refl; sym
-                                                            ; _≡⟨_⟩_; _∎
-                                                            ; transport
-                                                            ; transportRefl )
+open CE  public using    (_≡_; Type; Σ; Σ-syntax; _,_; _≃_; equivFun; isEquiv)
+open DS  public using    (ΣProp≡; sigmaPath→pathSigma; pathSigma→sigmaPath; _×_; _,_)
+                renaming (fst to π₀; snd to π₁)
+open FP  public using    (funExt; subst; isContr; isProp; isSet; isProp→isSet; cong; refl;
+                          sym; _≡⟨_⟩_; _∎; transport; transportRefl)
+open FE  public using    (idEquiv; invEquiv; secEq; retEq; fiber)
+open FL  public using    ( _⇔_ ; _⇒_ ; ⇔toPath ; _⊓_ ; [_] )
+open FH  public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSuc; isSetΣ;
+                          isSetΠ; isPropΠ; isPropΠ2; isPropΠ3)
+open FI  public using    (isoToPath; isoToEquiv; iso; section; retract )
+open HAE public using    (isHAEquiv; equiv→HAEquiv)
 
-open import Cubical.Foundations.Equiv.HalfAdjoint public using (isHAEquiv; equiv→HAEquiv )
-
-
-open import Level                           public
 ```
 
 ```
