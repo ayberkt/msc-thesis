@@ -31,7 +31,7 @@ $\oftyI{(x, \_)}{\sigmaty{a}{A}{B(a)}}$ rather than using the projection notatio
 projecting out the first component. There will be some minor notational deviations and
 abuses of language, which will be addressed locally, in the relevant sections.
 
-Finally, we note that we will be introducing new judgemental equalities in various
+Finally, we note that we will be introducing new definitional equalities in various
 definitions. For the convenience of the reader who is reading this thesis electronically,
 the definienda have been made clickable, which is marked by the
 {\color{darkgreen} dark green} colour.
@@ -642,40 +642,49 @@ will engage in a form notational abuse and will not explicitly denote that we ar
 with the familification of a powerset. In the \veragda{} formalisation, this is denoted
 $\AgdaFunction{⟪} U \AgdaFunction{⟫}$.
 
-\section{Higher Inductive Types (HITs)}
-
-\hrule\vspace{1em}
+\section{Higher Inductive Types}
 
 In ordinary type theory, the inductive definition of a type amounts to a specification of
 its points. In univalent type theory, we are working not just with $2$-types but with
-arbitrary $n$-types. Therefore, we accordingly generalise our mechanism for the inductive
-specification of types by generalising points to $n$-paths. In other words, we add the
-means to define a type not just by specifying its points, but also the paths between the
-points, paths between those paths, and then paths between those and so on. Such an
-inductive type is called a \emph{higher inductive type} (HIT for short).
+arbitrary $n$-types. Therefore, univalent type theory generalises the mechanism for the
+inductive generation of types by generalising points ($0$-paths) to $n$-paths. In other
+words, it provides the means to define a type not just by specifying its points, but also
+the paths between the points, paths between those paths, and then paths between those and
+so on. Such an inductive type is called a \emph{higher inductive type} (HIT for short).
 
 Let us give an example of what an HIT definition might look like. The usual $\unitty{}$
 type would be inductively defined by the specification of a single constructor:
 \begin{equation*}
   \begin{prooftree}
-    \infer0[$\rulename{tt}$]{\unitty{}}
+    \infer0{\oftyI{\rulename{\star}}{\unitty{}}}
   \end{prooftree}
 \end{equation*}
-whose only equality is the trivial one: $\oftyI{\mathsf{refl}_\star}{\star =_{\unitty{}} \star}$.
+whose only equality is the trivial one:
+$\oftyI{\mathsf{refl}_{\rulename{\star}}}{\rulename{\star} =_{\unitty{}} \rulename{\star}}$. This means
+that $\unitty{}$ contains no non-trivial paths.
 
-Using HITs, we can add, for instance, a non-trivial equality of $\star$ to itself. The
-resulting type is called the $\mathsf{Circle}$.
+HITs allow us to insert non-trivial paths into a type. For instance, we can add a new
+equality of $\rulename{\star}$ to itself, that we will call $\rulename{loop}$; the resulting
+type is called the $\mathsf{Circle}$.
 \begin{equation*}
   \begin{prooftree}
-    \infer0[$\rulename{base}$]{\mathsf{Circle}}
+    \infer0[]{\oftyI{\rulename{base}}{\mathsf{Circle}}}
   \end{prooftree}
   \hspace{2em}
   \begin{prooftree}
-    \infer0[$\rulename{loop}$]{{\mathsf{base} = \mathsf{base}}}
+    \infer0[]{\oftyI{\rulename{loop}}{\mathsf{base} = \mathsf{base}}}
   \end{prooftree}
 \end{equation*}
 
-\todo{talk about the induction principles.}
+Of course, when generalising the machinery for defining inductive types in this way, we
+have to be careful about the corresponding \emph{introduction} and \emph{elimination}
+rules. The introduction rules are easy to deal with as they are given by the point
+constructors. The elimination rules, however, are quite subtle and it is technically
+intricate to completely address the problem of extracting (dependent) eliminators from
+higher inductive definitions. Even in the HoTT Book~\cite[Sec.~6.2]{hottbook}, this issue
+is not addressed in a completely technical way. Similarly, we will consider in the
+following section, an useful instance of an HIT and presents its recursion principle.
+Hopefully, this should provide sufficient intuition for the reader.
 
 HITs turn out to be immensely useful and in fact we will explain later that they are used
 in a crucial way in this thesis: the main construction of Chapter~\ref{chap:formal-topo}
@@ -688,29 +697,30 @@ A particular HIT of interest will be the \emph{propositional truncation} type. T
 allow us to \emph{forget} the proof structure of a type, or in other words, force a
 non-propositional type to be propositional by collapsing its proof structure.
 
-This turns out to be useful as it gives us a way of turning structure into property.
-Consider for instance two propositions $\oftyII{P}{Q}{\Omega_n}$. We would like to be able to
-express their logical disjunction, $P + Q$, and we would also like it to be a proposition
-itself. It will clearly not be propositional due to the fundamental, proof-relevant nature
-of type theory: the inhabitant will contain the information of which one of $P$ or $Q$ it
-comes from. For this to become propositional, we have to \emph{forget} this information;
-propositional truncation allows us to do precisely this.
+This turns out to be quite convenient as it gives us a way of turning structure into
+property. Consider for instance two propositions $\oftyII{P}{Q}{\hprop{}_n}$. We would
+like to be able to express their logical disjunction, $P + Q$, and we would also like it
+to be a proposition itself. It will clearly not be propositional due to the fundamental,
+proof-relevant nature of type theory: the inhabitant will contain the information of which
+one of $P$ or $Q$ it comes from. For this to become propositional, we have to somehow
+\emph{forget} this information; propositional truncation allows us to do precisely this.
 
 We now give the definition of propositional truncation as an HIT.
 
 \begin{defn}[Propositional truncation]\label{defn:truncation}
-  Given a type $A$, its propositional truncation $\trunc{A}$ is a HIT given by
-  one constructor, $\rulename{inj}$, and one path, $\rulename{trsquash}$.
+  Given a type $A$, its propositional truncation $\trunc{A}$ is a HIT given by one point
+  constructor, $\rulename{|}\_\rulename{|}$, and one path constructor,
+  $\rulename{trsquash}$.
   \begin{equation*}
     \begin{prooftree}
       \hypo{\oftyI{x}{A}}
-      \infer1[$\rulename{inj}$]{\oftyI{x}{\trunc{A}}}
+      \infer1{\oftyI{\rulename{|}x\rulename{|}}{\trunc{A}}}
     \end{prooftree}
     \qquad
     \begin{prooftree}
       \hypo{\oftyI{x}{\trunc{A}}}
       \hypo{\oftyI{y}{\trunc{A}}}
-      \infer2[$\rulename{trsquash}$]{x = y}
+      \infer2{\oftyI{\rulename{trsquash}}{x = y}}
     \end{prooftree}
   \end{equation*}
   The recursion principle for propositional truncation is the following: given any two
@@ -721,10 +731,26 @@ We now give the definition of propositional truncation as an HIT.
   \end{equation*}
 \end{defn}
 
+Intuitively, why does the recursion principle have this form? To define a function
+$\nats{} \rightarrow B$ on the natural numbers using their elimination principle, we need to
+construct two terms: (1) an inhabitant of $B$ for the base case, and (2) a
+$\nats{}$-indexed family of inhabitants of $B \rightarrow B$ for the inductive case; these
+correspond to the types of the constructors $\oftyI{\zero{}}{\nats{}}$ and
+$\oftyI{\sucnm{}}{\nats{} \rightarrow \nats{}}$. In the case of truncation, we have a constructor of
+the form $\oftyI{\rulename{trsquash}}{\pity{x~y}{A}{x =_A y}}$. Accordingly, in addition
+to some inhabitant of $A \rightarrow B$ for the $\rulename{|}\_\rulename{|}$ constructor, we now
+have to require a $(B \times B)$-indexed family of equality proofs: for each
+$\oftyII{x}{y}{B}$, an proof of $x = y$, which is none other than the requirement of $B$
+to be propositional.
+
 Observe that this corresponds to the intuitive distinction between \emph{property} and
 \emph{structure}: we are allowed to use the inhabitant of a propositionally truncated type
 only if it will be used in the proof of another property i.e., only in a context where the
 structure will not become exposed.
+
+When we use propositional truncation, we will not explicitly refer to these two
+constructors. Instead, we will simply mention that some $\trunc{A} \rightarrow B$ is enabled by the
+propositionality of $B$.
 
 This definition of propositional truncation as an HIT brings us to the end of this
 chapter. With all the foundational notions we have defined, we are now ready to carry out
