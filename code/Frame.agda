@@ -420,7 +420,9 @@ top-of (_ , _ , ⊤ , _) = ⊤
 -- Frame univalence
 
 RF-is-SNS : SNS {ℓ₀} (RawFrameStr ℓ₁ ℓ₂) isARawHomoEqv
-RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(s@(_⊑₀_ , _) , ⊤₀ , _⊓₀_ , ⋁₀) G@(t@(_⊑₁_ , _) , ⊤₁ , _⊓₁_ , ⋁₁) =
+RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A}
+          F@(s@(_⊑₀_ , _) , ⊤₀ , _⊓₀_ , ⋁₀)
+          G@(t@(_⊑₁_ , _) , ⊤₁ , _⊓₁_ , ⋁₁) =
   isoToEquiv (iso f g sec-f-g ret-f-g)
   where
     C = RawFrameStr ℓ₁ ℓ₂ A
