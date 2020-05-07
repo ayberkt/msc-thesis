@@ -72,10 +72,10 @@ FrameAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = A} (s@(_⊑_ , _) , ⊤ , _∧_
     P = A , s
 
 FrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
-FrameStr ℓ₁ ℓ₂ = add-to-structure (RawFrameStr ℓ₁ ℓ₂) λ _ RF → [ FrameAx RF ]
+FrameStr ℓ₁ ℓ₂ A  = Σ[ s ∈ RawFrameStr ℓ₁ ℓ₂ A ] [ FrameAx s ]
 
 Frame : (ℓ₀ ℓ₁ ℓ₂ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
-Frame ℓ₀ ℓ₁ ℓ₂ = Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)
+Frame ℓ₀ ℓ₁ ℓ₂ = Σ[ A ∈ Type ℓ₀ ] FrameStr ℓ₁ ℓ₂ A
 
 -- Projection for the carrier set of a frame
 -- i.e., the carrier set of the underlying poset.
@@ -261,7 +261,7 @@ isFrameHomomorphism {ℓ₂ = ℓ₂} F G (f , _) = resp-⊤ × resp-⊓ × resp
     resp-⊓ = (x y : ∣ F ∣F) → f (x ⊓[ F ] y) ≡ (f x) ⊓[ G ] (f y)
 
     resp-⋁ : Type _
-    resp-⋁ = (U : Fam ℓ₂ ∣ F ∣F) → f (⋁[ F ] U) ≡ ⋁[ G ] ⁅ f x ∣ x ε U ⁆
+    resp-⋁ = (U : Fam ℓ₂ ∣ F ∣F) → f (⋁[ F ] U) ≡ ⋁[ G ] ⁅ f x ∣ x ε U ⁆
 
 isFrameHomomorphism-prop : (F : Frame ℓ₀ ℓ₁ ℓ₂) (G : Frame ℓ₀′ ℓ₁′ ℓ₂)
                          → (f : pos F ─m→ pos G)
