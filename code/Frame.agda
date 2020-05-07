@@ -462,14 +462,19 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A}
     sec-f-g p = RawFrameStr-set ℓ₁ ℓ₂ A F G (f (g p)) p
 
     ret-f-g : retract f g
-    ret-f-g (mono-eqv , p , q , r) = ΣProp≡ NTS₀ (ΣProp≡ (λ _ → isOrderPreserving-prop (A , _⊑₁_) (A , _⊑₀_) id) (funExt₂ (λ x y → funExt λ φ → is-true-prop (x ⊑₁ y) _ _)))
+    ret-f-g (mono-eqv , p , q , r) = ΣProp≡ NTS₀ NTS₁
       where
         NTS₀ : (mono-eqv′ : isAMonotonicEqv (A , s) (A , t) (idEquiv A))
-             → isProp ((⊤₀ ≡ ⊤₁) × ((x₁ y : A) → (x₁ ⊓₀ y) ≡ (x₁ ⊓₁ y)) × ((U : Fam ℓ₂ A) → (⋁₀ U) ≡ ⋁₁ U))
+             → isProp (_ × _ × _)
         NTS₀ mono-eqv′ =
           isPropΣ (A-set₀ ⊤₀ ⊤₁) λ _ →
           isPropΣ (isPropΠ2 λ x y → A-set₀ (x ⊓₀ y) (x ⊓₁ y)) λ _ →
           isPropΠ (λ _ → A-set₀ _ _)
+
+        NTS₁ : π₀ (g (f (mono-eqv , p , q , r))) ≡ mono-eqv
+        NTS₁ = ΣProp≡
+                 (λ _ → isOrderPreserving-prop (A , _⊑₁_) (A , _⊑₀_) id)
+                 (funExt₂ (λ x y → funExt λ φ → is-true-prop (x ⊑₁ y) _ _))
 
 -- A predicate expressing that an equivalence between the underlying types of two frames
 -- is frame-homomorphic.
@@ -563,10 +568,10 @@ frame-univ₀ = SIP frame-is-SNS-PathP
                                f (x ⊓[ F ] y) ■
               where
                 gw⊑x : [ g w ⊑[ pos F ] x ]
-                gw⊑x = subst (λ - → [ g w ⊑[ pos F ] - ]) (ret x) (g-mono w (f x) w⊑fx) 
+                gw⊑x = subst (λ - → [ g w ⊑[ pos F ] - ]) (ret x) (g-mono w (f x) w⊑fx)
 
                 gw⊑y : [ g w ⊑[ pos F ] y ]
-                gw⊑y = subst (λ - → [ g w ⊑[ pos F ] - ]) (ret y) (g-mono w (f y) w⊑fy) 
+                gw⊑y = subst (λ - → [ g w ⊑[ pos F ] - ]) (ret y) (g-mono w (f y) w⊑fy)
 
                 gw⊑x∧y : [ g w ⊑[ pos F ] (x ⊓[ F ] y) ]
                 gw⊑x∧y = ⊓[ F ]-greatest x y (g w) gw⊑x gw⊑y
@@ -590,7 +595,7 @@ frame-univ₀ = SIP frame-is-SNS-PathP
             NTS₁ : (w : ∣ G ∣F)
                  → ((o : ∣ G ∣F) → o ε ⁅ f x ∣ x ε U ⁆ → [ o ⊑[ pos G ] w ])
                  → [ f (⋁[ F ] U) ⊑[ pos G ] w ]
-            NTS₁ w h = f (⋁[ F ] U) ⊑⟨ f⋁U⊑fgw ⟩ f (g w) ⊑⟨ ≡⇒⊑ (pos G) (sec _) ⟩ w ■ 
+            NTS₁ w h = f (⋁[ F ] U) ⊑⟨ f⋁U⊑fgw ⟩ f (g w) ⊑⟨ ≡⇒⊑ (pos G) (sec _) ⟩ w ■
               where
                 gf⋁U⊑gw : [ g (f (⋁[ F ] U)) ⊑[ pos F ] g w ]
                 gf⋁U⊑gw = subst
