@@ -19,11 +19,12 @@ open DS  public using    (ΣProp≡; sigmaPath→pathSigma; pathSigma→sigmaPat
                 renaming (fst to π₀; snd to π₁)
 open FP  public using    (funExt; subst; isContr; isProp; isSet; isProp→isSet; cong; refl;
                           sym; _≡⟨_⟩_; _∎; transport; transportRefl)
-open FE  public using    (idEquiv; invEquiv; secEq; retEq; fiber)
+open FE  public using    (idEquiv; invEquiv; secEq; retEq; fiber; equivToIso;
+                          isPropIsEquiv)
 open FL  public using    ( _⇔_ ; _⇒_ ; ⇔toPath ; _⊓_ ; [_] )
 open FH  public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSuc; isSetΣ;
                           isSetΠ; isPropΠ; isPropΠ2; isPropΠ3)
-open FI  public using    (isoToPath; isoToEquiv; iso; section; retract )
+open FI  public using    (isoToPath; isoToEquiv; iso; section; retract; Iso)
 open HAE public using    (isHAEquiv; equiv→HAEquiv)
 
 ```
@@ -43,7 +44,7 @@ variable
 ```
 data Unit (ℓ : Level) : Type ℓ where
   tt : Unit ℓ
-
+ 
 Unit-prop : {ℓ : Level} → isProp (Unit ℓ)
 Unit-prop tt tt = refl
 ```
