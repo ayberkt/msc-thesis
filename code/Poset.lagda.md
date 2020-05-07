@@ -150,13 +150,13 @@ _─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (isMonotonic P Q)
 ```
 
 ```
-poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso′ P Q e@(f , _) = isMonotonic P Q f × isMonotonic Q P g
+isAMonotonicEqv : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
+isAMonotonicEqv P Q e@(f , _) = isMonotonic P Q f × isMonotonic Q P g
   where
     g = equivFun (invEquiv e)
 
-poset-iso′′ : (P Q : Poset ℓ₀ ℓ₁) → (P ─m→ Q) → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso′′ P Q (f , _) = Σ[ (g , _) ∈ (Q ─m→ P) ] section f g × retract f g
+isPosetIso : (P Q : Poset ℓ₀ ℓ₁) → (P ─m→ Q) → Type (ℓ₀ ⊔ ℓ₁)
+isPosetIso P Q (f , _) = Σ[ (g , _) ∈ (Q ─m→ P) ] section f g × retract f g
 ```
 
 Projection for the underlying function of a monotonic map.
@@ -231,16 +231,16 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
 ## Equality of isomorphic posets
 
 ```
-order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
-order-iso (A , _⊑₀_) (B , _⊑₁_) (f , _) = (x y : A) → [ x ⊑₀ y ⇔ f x ⊑₁ f y ]
+isAnOrderPreservingEqv : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
+isAnOrderPreservingEqv (A , _⊑₀_) (B , _⊑₁_) (f , _) = (x y : A) → [ x ⊑₀ y ⇔ f x ⊑₁ f y ]
 
-isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
-isSet-Order ℓ₁ A = isSetΠ λ _ → isSetΠ λ _ → isSetHProp
+Order-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
+Order-set ℓ₁ A = isSetΠ λ _ → isSetΠ λ _ → isSetHProp
 
-Order-is-SNS : SNS {ℓ} (Order ℓ₁) order-iso
+Order-is-SNS : SNS {ℓ} (Order ℓ₁) isAnOrderPreservingEqv
 Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
   where
-    f : order-iso (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
+    f : isAnOrderPreservingEqv (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
     f i = funExt λ x → funExt λ y → ⇔toPath (π₀ (i x y)) (π₁ (i x y))
 
     ⇔-prop : isProp ((x y : X) → [ x ⊑₀ y ⇔ x ⊑₁ y ])
@@ -256,27 +256,27 @@ Order-is-SNS {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , f-equiv
                  , subst (λ { _⊑⋆_ → [ x ⊑⋆ y ] }) (sym eq)
 
         sec : section f g
-        sec p = isSet-Order _ X _⊑₀_ _⊑₁_ (f (g p)) p
+        sec p = Order-set _ X _⊑₀_ _⊑₁_ (f (g p)) p
 
         h : (p : _⊑₀_ ≡ _⊑₁_) → (fib : fiber f p) → (g p , sec p) ≡ fib
         h p (i , _) = ΣProp≡
-                        (λ i′ → isOfHLevelSuc 2 (isSet-Order ℓ₁ X) _⊑₀_ _⊑₁_ (f i′) p)
+                        (λ i′ → isOfHLevelSuc 2 (Order-set ℓ₁ X) _⊑₀_ _⊑₁_ (f i′) p)
                         (⇔-prop (g p) i)
 
 
 RP-iso-prop : (P Q : Σ (Type ℓ₀) (Order ℓ₁))
-            → (i : π₀ P ≃ π₀ Q) → isProp (order-iso P Q i)
+            → (i : π₀ P ≃ π₀ Q) → isProp (isAnOrderPreservingEqv P Q i)
 RP-iso-prop (A , _⊑₀_) (B , _⊑₁_) i =
   isPropΠ λ x → isPropΠ λ y → is-true-prop (x ⊑₀ y ⇔ f x ⊑₁ f y)
   where
     f = equivFun i
 
-poset-iso : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso {ℓ₁ = ℓ₁} = add-to-iso order-iso λ A _⊑_ → [ PosetAx A _⊑_ ]
+isAMonotonicEqv₀ : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
+isAMonotonicEqv₀ {ℓ₁ = ℓ₁} = add-to-iso isAnOrderPreservingEqv λ A _⊑_ → [ PosetAx A _⊑_ ]
 
 poset-iso⇔poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) (e : ∣ P ∣ₚ ≃ ∣ Q ∣ₚ)
-                     → (poset-iso P Q e → poset-iso′ P Q e)
-                     × (poset-iso′ P Q e → poset-iso P Q e)
+                     → (isAMonotonicEqv₀ P Q e → isAMonotonicEqv P Q e)
+                     × (isAMonotonicEqv P Q e → isAMonotonicEqv₀ P Q e)
 poset-iso⇔poset-iso′ P Q e = to , from
   where
     f   = π₀ (equiv→HAEquiv e)
@@ -286,7 +286,7 @@ poset-iso⇔poset-iso′ P Q e = to , from
     ret : retract f g
     ret = isHAEquiv.sec (π₁ (equiv→HAEquiv e))
 
-    to : poset-iso P Q e → poset-iso′ P Q e
+    to : isAMonotonicEqv₀ P Q e → isAMonotonicEqv P Q e
     to i = f-mono , g-mono
       where
 
@@ -298,7 +298,7 @@ poset-iso⇔poset-iso′ P Q e = to , from
             NTS : [ f (g x) ⊑[ Q ] (f (g y)) ]
             NTS = subst (λ - → [ rel Q (- x) (- y) ]) (sym (funExt sec)) x⊑y
 
-    from : poset-iso′ P Q e → poset-iso P Q e
+    from : isAMonotonicEqv P Q e → isAMonotonicEqv₀ P Q e
     from i x y = φ , ψ
       where
         φ : [ x ⊑[ P ] y ] → [ f x ⊑[ Q ] f y ]
@@ -311,33 +311,33 @@ poset-axioms-props : (A : Type ℓ₀) (str : Order ℓ₁ A)
 poset-axioms-props {ℓ₁ = ℓ₁} A str = is-true-prop (PosetAx A str)
 
 
-poset-is-SNS : SNS {ℓ} (PosetStr ℓ₁) poset-iso
+poset-is-SNS : SNS {ℓ} (PosetStr ℓ₁) isAMonotonicEqv₀
 poset-is-SNS {ℓ₁ = ℓ₁} =
   SNS-PathP→SNS-≡
     (PosetStr ℓ₁)
-    poset-iso
-    (add-axioms-SNS _ poset-axioms-props (SNS-≡→SNS-PathP order-iso Order-is-SNS))
+    isAMonotonicEqv₀
+    (add-axioms-SNS _ poset-axioms-props (SNS-≡→SNS-PathP isAnOrderPreservingEqv Order-is-SNS))
 
-poset-is-SNS-PathP : SNS-PathP {ℓ} (PosetStr ℓ₁) poset-iso
-poset-is-SNS-PathP = SNS-≡→SNS-PathP poset-iso poset-is-SNS
+poset-is-SNS-PathP : SNS-PathP {ℓ} (PosetStr ℓ₁) isAMonotonicEqv₀
+poset-is-SNS-PathP = SNS-≡→SNS-PathP isAMonotonicEqv₀ poset-is-SNS
 
 poset-SIP : (A : Type ℓ₀) (B : Type ℓ₀) (eqv : A ≃ B)
             (P : PosetStr ℓ₁ A) (Q : PosetStr ℓ₁ B)
-          → poset-iso (A , P) (B , Q) eqv
+          → isAMonotonicEqv₀ (A , P) (B , Q) eqv
           → (A , P) ≡ (B , Q)
 poset-SIP {ℓ₁ = ℓ₁} A B eqv P Q i = foo (eqv , i)
   where
-    foo : (A , P) ≃[ poset-iso ] (B , Q) → (A , P) ≡ (B , Q)
+    foo : (A , P) ≃[ isAMonotonicEqv₀ ] (B , Q) → (A , P) ≡ (B , Q)
     foo = equivFun (SIP poset-is-SNS-PathP (A , P) (B , Q))
 
 _≃ₚ_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
-_≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso P Q i
+_≃ₚ_ P Q = Σ[ i ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] isAMonotonicEqv₀ P Q i
 
 _≃ₚ′_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
-P ≃ₚ′ Q = Σ[ eqv ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] poset-iso′ P Q eqv
+P ≃ₚ′ Q = Σ[ eqv ∈ (∣ P ∣ₚ ≃ ∣ Q ∣ₚ) ] isAMonotonicEqv P Q eqv
 
 _≃⋆_ : Poset ℓ₀ ℓ₁ → Poset ℓ₀ ℓ₁ → Type (ℓ₀ ⊔ ℓ₁)
-P ≃⋆ Q = Σ[ f ∈ (P ─m→ Q) ] poset-iso′′ P Q f
+P ≃⋆ Q = Σ[ f ∈ (P ─m→ Q) ] isPosetIso P Q f
 
 pos-iso-to-eq : (P Q : Poset ℓ₀ ℓ₁) → P ≃ₚ Q → P ≡ Q
 pos-iso-to-eq (A , A-pos) (B , B-pos) (eqv , i) = poset-SIP A B eqv A-pos B-pos i
