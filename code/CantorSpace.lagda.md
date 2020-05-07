@@ -8,7 +8,6 @@ open import Cubical.Data.Empty.Base   using (⊥; rec)
 open import Cubical.Data.Bool.Base    using (true; false; _≟_)   renaming (Bool to 𝔹)
 open import Data.List                 using (List; _∷_; [])      renaming (_++_ to _^_)
 open import Data.Sum                  using (_⊎_; inj₁; inj₂)
-open import Powerset                  hiding (U)
 open import Cover
 open import Poset
 open import FormalTopology

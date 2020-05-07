@@ -9,7 +9,6 @@ open import Data.Product            using    (uncurry)
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
 open import Cubical.Foundations.Equiv using (_≃⟨_⟩_) renaming (_■ to _𝔔𝔈𝔇)
 open import Poset
-open import Powerset
 
 module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Fam ℓ₂ A → A) where
 

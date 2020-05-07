@@ -6,7 +6,6 @@ module Poset where
 open import Basis
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
 open import Cubical.Foundations.Equiv using (_≃⟨_⟩_) renaming (_■ to _𝔔𝔈𝔇)
-open import Powerset
 open import Function using (_∘_; id)
 ```
 
