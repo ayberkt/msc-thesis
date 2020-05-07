@@ -151,10 +151,9 @@ _─m→_ P Q = Σ (∣ P ∣ₚ → ∣ Q ∣ₚ) (isMonotonic P Q)
 
 ```
 poset-iso′ : (P Q : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ ≃ ∣ Q ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
-poset-iso′ P Q e = isMonotonic P Q f × isMonotonic Q P g
+poset-iso′ P Q e@(f , _) = isMonotonic P Q f × isMonotonic Q P g
   where
-    f = π₀ (equiv→HAEquiv e)
-    g = isHAEquiv.g (π₁ (equiv→HAEquiv e))
+    g = equivFun (invEquiv e)
 
 poset-iso′′ : (P Q : Poset ℓ₀ ℓ₁) → (P ─m→ Q) → Type (ℓ₀ ⊔ ℓ₁)
 poset-iso′′ P Q (f , _) = Σ[ (g , _) ∈ (Q ─m→ P) ] section f g × retract f g
@@ -233,10 +232,7 @@ P ×ₚ Q = (∣ P ∣ₚ × ∣ Q ∣ₚ) , _⊑_ , carrier-set , (⊑-refl , �
 
 ```
 order-iso : (M N : Σ (Type ℓ₀) (Order ℓ₁)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁)
-order-iso (A , _⊑₀_) (B , _⊑₁_) eqv =
-  (x y : A) → [ x ⊑₀ y ⇔ f x ⊑₁ f y ]
-  where
-    f = equivFun eqv
+order-iso (A , _⊑₀_) (B , _⊑₁_) (f , _) = (x y : A) → [ x ⊑₀ y ⇔ f x ⊑₁ f y ]
 
 isSet-Order : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (Order ℓ₁ A)
 isSet-Order ℓ₁ A = isSetΠ λ _ → isSetΠ λ _ → isSetHProp
