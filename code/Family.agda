@@ -6,7 +6,7 @@ open import Basis
 open import Function using (_∘_; id)
 
 Fam : (ℓ₀ : Level) → Type ℓ₁ → Type (suc ℓ₀ ⊔ ℓ₁)
-Fam ℓ A = Σ (Set ℓ) (λ I → I → A)
+Fam ℓ₀ A = Σ (Set ℓ₀) (λ I → I → A)
 
 index : Fam ℓ₁ A → Type ℓ₁
 index (I , _) = I
