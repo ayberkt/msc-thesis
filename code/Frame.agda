@@ -7,6 +7,7 @@ open import Family
 open import Function                using    (_∘_; id)
 open import Data.Product            using    (uncurry)
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
+open import Cubical.Foundations.Equiv using (_≃⟨_⟩_) renaming (_■ to _𝔔𝔈𝔇)
 open import Poset
 open import Powerset
 
@@ -20,6 +21,18 @@ module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Fam ℓ₂ A → A)
 
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 RawFrameStr ℓ₁ ℓ₂ A = PosetStr ℓ₁ A × A × (A → A → A) × (Fam ℓ₂ A → A)
+
+RawFrameStr-set : (ℓ₁ ℓ₂ : Level) (A : Type ℓ₀)
+                → isSet (RawFrameStr ℓ₁ ℓ₂ A)
+RawFrameStr-set ℓ₁ ℓ₂ A = isSetΣ (PosetStr-set ℓ₁ A) NTS
+  where
+    NTS : _
+    NTS pos = isSetΣ A-set λ _ →
+              isSetΣ (isSetΠ λ _ → isSetΠ λ _ → A-set) λ _ →
+              isSetΠ λ _ → A-set
+      where
+        A-set : isSet A
+        A-set = carrier-is-set (A , pos)
 
 isTop : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
 isTop P x = ((y : ∣ P ∣ₚ) → [ y ⊑[ P ] x ]) , isPropΠ λ y → is-true-prop (y ⊑[ P ] x)
@@ -384,17 +397,19 @@ DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
             φ : in-some-set-of ⁅ U ∧ (V $ i) ∣ i ∶ I ⁆ x → [ ∣ U ∣𝔻 x ] × [ ∣ ⋁ V ∣𝔻 x ]
             φ (i , x∈D , x∈Uᵢ) = x∈D , ∣ i , x∈Uᵢ ∣
 
+
 -- Frames form an SNS.
 
-RF-iso : {ℓ₁ ℓ₂ : Level} (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
-       → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-RF-iso {ℓ₂ = ℓ₂} (A , (P , _) , ⊤₀ , _⊓₀_ , ⋁₀) (B , (Q , _), ⊤₁ , _⊓₁_ , ⋁₁) i =
-    (order-iso (A , P) (B , Q) i)
+-- Similar to the poset case, we start by expressing what it means for an equivalence to
+-- preserve the structure of a frame
+isARawHomoEqv : {ℓ₁ ℓ₂ : Level} (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
+       → π₀ M ≃ π₀ N
+       → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+isARawHomoEqv {ℓ₂ = ℓ₂} (A , s , ⊤₀ , _⊓₀_ , ⋁₀) (B , t , ⊤₁ , _⊓₁_ , ⋁₁) e@(f , _) =
+    (isAMonotonicEqv (A , s) (B , t) e)
   × (f ⊤₀ ≡ ⊤₁)
   × ((x y : A) → f (x ⊓₀ y) ≡ (f x) ⊓₁ (f y))
   × ((U : Fam ℓ₂ A) → f (⋁₀ U) ≡ ⋁₁ (f ⟨$⟩ U))
-  where
-    f = equivFun i
 
 pos-of : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂) → Σ (Type ℓ₀) (Order ℓ₁)
 pos-of (A , ((RPS , _) , _)) = (A , RPS)
@@ -402,35 +417,31 @@ pos-of (A , ((RPS , _) , _)) = (A , RPS)
 top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
 top-of (_ , _ , ⊤ , _) = ⊤
 
-RF-is-SNS : SNS {ℓ₀} (RawFrameStr ℓ₁ ℓ₂) RF-iso
-RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , ⊤₀ , _⊓₀_ , ⋁₀) G@(Q , ⊤₁ , _⊓₁_ , ⋁₁) =
-  f , f-equiv
+-- Frame univalence
+
+RF-is-SNS : SNS {ℓ₀} (RawFrameStr ℓ₁ ℓ₂) isARawHomoEqv
+RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(s@(_⊑₀_ , _) , ⊤₀ , _⊓₀_ , ⋁₀) G@(t@(_⊑₁_ , _) , ⊤₁ , _⊓₁_ , ⋁₁) =
+  isoToEquiv (iso f g sec-f-g ret-f-g)
   where
     C = RawFrameStr ℓ₁ ℓ₂ A
 
-    _⊑₀_ : A → A → hProp ℓ₁
-    x ⊑₀ y = x ⊑[ (A , P) ] y
+    A-set₀ = carrier-is-set (A , s)
 
-    _⊑₁_ : A → A → hProp ℓ₁
-    x ⊑₁ y = x ⊑[ (A , Q) ] y
+    PS-A = π₀ s
+    PS-B = π₀ t
 
-    A-set₀ = carrier-is-set (A , P)
-
-    PS-A = π₀ P
-    PS-B = π₀ Q
-
-    f : RF-iso (A , F) (A , G) (idEquiv A) → F ≡ G
+    f : isARawHomoEqv (A , F) (A , G) (idEquiv A) → F ≡ G
     f (iₚ , eq-⊤ , ⊓-xeq , ⋁-xeq) =
-      P , ⊤₀ , _⊓₀_ , ⋁₀   ≡⟨ cong (λ - → (P , - , _⊓₀_ , ⋁₀))              eq-⊤ ⟩
-      P , ⊤₁ , _⊓₀_ , ⋁₀   ≡⟨ cong {B = λ _ → C} (λ - → P , ⊤₁ , - , ⋁₀)    ⊓-eq ⟩
-      P , ⊤₁ , _⊓₁_ , ⋁₀   ≡⟨ cong {B = λ _ → C} (λ - → P , ⊤₁ , _⊓₁_ , -)  ⋁-eq ⟩
-      P , ⊤₁ , _⊓₁_ , ⋁₁   ≡⟨ cong {B = λ _ → C} (λ - → - , ⊤₁ , _⊓₁_ , ⋁₁) eq   ⟩
-      Q , ⊤₁ , _⊓₁_ , ⋁₁   ∎
+      s , ⊤₀ , _⊓₀_ , ⋁₀   ≡⟨ cong (λ - → (s , - , _⊓₀_ , ⋁₀))              eq-⊤ ⟩
+      s , ⊤₁ , _⊓₀_ , ⋁₀   ≡⟨ cong {B = λ _ → C} (λ - → s , ⊤₁ , - , ⋁₀)    ⊓-eq ⟩
+      s , ⊤₁ , _⊓₁_ , ⋁₀   ≡⟨ cong {B = λ _ → C} (λ - → s , ⊤₁ , _⊓₁_ , -)  ⋁-eq ⟩
+      s , ⊤₁ , _⊓₁_ , ⋁₁   ≡⟨ cong {B = λ _ → C} (λ - → - , ⊤₁ , _⊓₁_ , ⋁₁) eq   ⟩
+      t , ⊤₁ , _⊓₁_ , ⋁₁   ∎
       where
-        eq : P ≡ Q
+        eq : s ≡ t
         eq = ΣProp≡
-               (poset-axioms-props A)
-               (funExt λ x → funExt λ y → ⇔toPath (π₀ (iₚ x y)) (π₁ (iₚ x y)))
+               (is-true-prop ∘ PosetAx A)
+               (funExt₂ λ x y → ⇔toPath (π₀ iₚ x y) (π₁ iₚ x y))
 
         ⊓-eq : _⊓₀_ ≡ _⊓₁_
         ⊓-eq = funExt (λ x → funExt λ y → ⊓-xeq x y)
@@ -438,232 +449,162 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A} F@(P , ⊤₀ , _⊓₀_ ,
         ⋁-eq : ⋁₀ ≡ ⋁₁
         ⋁-eq = funExt λ U → ⋁-xeq U
 
-    f-equiv : isEquiv f
-    f-equiv = record { equiv-proof = λ eq → (g eq , ret eq) , h eq }
+    g : F ≡ G → isARawHomoEqv (A , F) (A , G) (idEquiv A)
+    g p = subst (λ - → isARawHomoEqv (A , F) (A , -) (idEquiv A)) p id-iso
       where
-        g : (eq : F ≡ G) → RF-iso (A , F) (A , G) (idEquiv A)
-        g eq = φ , ψ , ϑ , ξ
-          where
-            𝒻  = equivFun (idEquiv A)
+        id-iso : isARawHomoEqv (A , F) (A , F) (idEquiv A)
+        id-iso =
+          ((λ _ _ x⊑₀y → x⊑₀y) , λ _ _ x⊑₀y → x⊑₀y) , refl , (λ _ _ → refl) , (λ _ → refl)
 
-            φ : order-iso (A , _⊑₀_) (A , _⊑₁_) (idEquiv A)
-            φ x y =
-                (subst (λ { ((_⊑⋆_ , _) , _) → [ x ⊑⋆ y ] }) eq)
-              , subst (λ { ((_⊑⋆_ , _) , _) → [ x ⊑⋆ y ] }) (sym eq)
+    sec-f-g : section f g
+    sec-f-g p = RawFrameStr-set ℓ₁ ℓ₂ A F G (f (g p)) p
 
-            ψ : equivFun (idEquiv A) ⊤₀ ≡ ⊤₁
-            ψ = subst (λ { (_ , - , _ , _) → 𝒻 - ≡ ⊤₁ }) (sym eq) refl
+    ret-f-g : retract f g
+    ret-f-g (mono-eqv , p , q , r) = ΣProp≡ NTS₀ (ΣProp≡ (λ _ → isOrderPreserving-prop (A , _⊑₁_) (A , _⊑₀_) id) (funExt₂ (λ x y → funExt λ φ → is-true-prop (x ⊑₁ y) _ _)))
+      where
+        NTS₀ : (mono-eqv′ : isAMonotonicEqv (A , s) (A , t) (idEquiv A))
+             → isProp ((⊤₀ ≡ ⊤₁) × ((x₁ y : A) → (x₁ ⊓₀ y) ≡ (x₁ ⊓₁ y)) × ((U : Fam ℓ₂ A) → (⋁₀ U) ≡ ⋁₁ U))
+        NTS₀ mono-eqv′ =
+          isPropΣ (A-set₀ ⊤₀ ⊤₁) λ _ →
+          isPropΣ (isPropΠ2 λ x y → A-set₀ (x ⊓₀ y) (x ⊓₁ y)) λ _ →
+          isPropΠ (λ _ → A-set₀ _ _)
 
-            ϑ : (x y : A) → 𝒻 (x ⊓₀ y) ≡ (𝒻 x) ⊓₁ (𝒻 y)
-            ϑ x y =
-              subst (λ { (_ , _ , _-_ , _) → 𝒻 (x - y) ≡ (𝒻 x) ⊓₁ (𝒻 y) }) (sym eq) refl
+-- A predicate expressing that an equivalence between the underlying types of two frames
+-- is frame-homomorphic.
+isHomoEqv : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ F ≃ π₀ G → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+isHomoEqv {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} (A , (s , _)) (B , (t , _)) = isARawHomoEqv (A , s) (B , t)
 
-            ξ : (U : Fam ℓ₂ A) → 𝒻 (⋁₀ U) ≡ ⋁₁ (index U , λ i → 𝒻 (U $ i))
-            ξ U = subst (λ { (_ , _ , _ , -) → 𝒻 (- U) ≡ ⋁₁ (𝒻 ⟨$⟩ U) }) (sym eq) refl
+-- We collect all frame-homomorphic equivalences between two frames in the following type.
+_≃f_ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
+F ≃f G = Σ[ e ∈ ∣ F ∣F ≃ ∣ G ∣F ] isHomoEqv F G e
 
-        str-set : isSet (RawFrameStr ℓ₁ ℓ₂ A)
-        str-set = isSetΣ (PosetStr-set ℓ₁ A) λ _ →
-                  isSetΣ A-set₀ λ _ →
-                  isSetΣ (isSetΠ λ _ → isSetΠ λ _ → A-set₀) λ _ → isSetΠ λ _ → A-set₀
-
-        ret : (eq : F ≡ G) → f (g eq) ≡ eq
-        ret eq = str-set F G (f (g eq)) eq
-
-        RF-iso-prop : isProp (RF-iso (A , F) (A , G) (idEquiv A))
-        RF-iso-prop =
-          isPropΣ (RP-iso-prop (A , π₀ P) (A , π₀ Q) (idEquiv A)) (λ _ →
-          isPropΣ (λ p q → A-set₀ _ _ p q ) λ _ →
-          isPropΣ (isPropΠ λ _ → isPropΠ λ _ → A-set₀ _ _) λ _ →
-          isPropΠ λ _ → A-set₀ _ _)
-
-        h : (eq : F ≡ G) → (fib : fiber f eq) → (g eq , ret eq) ≡ fib
-        h eq (i , p) =
-          ΣProp≡ (λ x → isOfHLevelSuc 2 str-set F G (f x) eq) (RF-iso-prop (g eq) i)
-
-
-frame-iso : (M N : Σ (Type ℓ₀) (FrameStr ℓ₁ ℓ₂)) → π₀ M ≃ π₀ N → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-frame-iso {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
-  add-to-iso RF-iso λ A RF → [ FrameAx RF ]
-
-frame-iso-prop : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → (i : π₀ M ≃ π₀ N) → isProp (frame-iso M N i)
-frame-iso-prop F G i =
-  isPropΣ (RP-iso-prop RP RQ i) λ _ →
-  isPropΣ (carrier-is-set (pos G) _ _) λ _ →
-  isPropΣ (isPropΠ λ x → isPropΠ λ y → carrier-is-set (pos G) _ _) λ _ →
-                isPropΠ λ _ → carrier-is-set (pos G) _ _
+isHomoEqv-prop : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (e : ∣ F ∣F ≃ ∣ G ∣F) → isProp (isHomoEqv F G e)
+isHomoEqv-prop F G i =
+  isPropΣ (isAMonotonicEqv-prop (pos F) (pos G) i) λ _ →
+  isPropΣ (∣G∣-set _ _) λ _ →
+  isPropΣ (isPropΠ2 λ x y → ∣G∣-set _ _) λ _ →
+  isPropΠ λ _ → ∣G∣-set _ _
   where
-    RP = ∣ F ∣F , π₀ (strₚ (pos F))
-    RQ = ∣ G ∣F , π₀ (strₚ (pos G))
-
-frame-iso-Ω : (M N : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ M ≃ π₀ N → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
-frame-iso-Ω M N i = frame-iso M N i , frame-iso-prop M N i
+    ∣G∣-set : isSet ∣ G ∣F
+    ∣G∣-set = carrier-is-set (pos G)
 
 FrameAx-props : (A : Type ℓ₀) (str : RawFrameStr ℓ₁ ℓ₂ A)
                    → isProp [ FrameAx str ]
 FrameAx-props A str = is-true-prop (FrameAx str)
 
-frame-is-SNS : SNS {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
+frame-is-SNS : SNS {ℓ₀} (FrameStr ℓ₁ ℓ₂) isHomoEqv
 frame-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
   SNS-PathP→SNS-≡
     (FrameStr ℓ₁ ℓ₂)
-    frame-iso
-    (add-axioms-SNS _ FrameAx-props (SNS-≡→SNS-PathP RF-iso RF-is-SNS))
+    isHomoEqv
+    (add-axioms-SNS _ FrameAx-props (SNS-≡→SNS-PathP isARawHomoEqv RF-is-SNS))
 
-frame-is-SNS-PathP : SNS-PathP {ℓ₀} (FrameStr ℓ₁ ℓ₂) frame-iso
-frame-is-SNS-PathP = SNS-≡→SNS-PathP frame-iso frame-is-SNS
+frame-is-SNS-PathP : SNS-PathP {ℓ₀} (FrameStr ℓ₁ ℓ₂) isHomoEqv
+frame-is-SNS-PathP = SNS-≡→SNS-PathP isHomoEqv frame-is-SNS
 
-frame-SIP : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (eqv : ∣ F ∣F ≃ ∣ G ∣F) → frame-iso F G eqv → F ≡ G
-frame-SIP F G eqv i = NTS (eqv , i)
+-- Similar to the poset case, this is sufficient to establish that the category of frames
+-- is univalent
+
+frame-univ₀ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (F ≃f G) ≃ (F ≡ G)
+frame-univ₀ = SIP frame-is-SNS-PathP
+
+-- However, there are two minor issues with this.
+--
+--   1. We do not have to talk about equivalences as we are talking about sets;
+--      isomorphisms are well-behaved in our case as we are dealing with sets.
+--
+--  2. We do not have to require the frame data to be preserved. We can show that any
+--     poset isomorphism preserves the frame operators.
+--
+-- We will therefore strengthen our result to work with the notion of poset isomorphism.
+
+-- We start by showing the equivalence between ≃f and ≅ₚ.
+
+≃f≃≅ₚ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (pos F ≅ₚ pos G) ≃ (F ≃f G)
+≃f≃≅ₚ F G = isoToEquiv (iso from to ret-to-from sec-to-from)
   where
-    NTS : F ≃[ frame-iso ] G → F ≡ G
-    NTS = equivFun (SIP frame-is-SNS-PathP F G)
-
-frame-iso→frame-iso' : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
-                     → poset-iso (pos F) (pos G) eqv → frame-iso F G eqv
-frame-iso→frame-iso' {ℓ₂ = ℓ₂} F G eqv i = i , (⊤-eq , ⊓-eq , ⋁-eq)
-  where
-    f = equivFun eqv
-    g = equivFun (invEquiv eqv)
-
-    ret : (y : ∣ G ∣F) → f (g y) ≡ y
-    ret y = retEq eqv y
-
-    sec : (x : ∣ F ∣F) → g (f x) ≡ x
-    sec = secEq eqv
-
-    open PosetReasoning (pos G)
-    open PosetReasoning (pos F) using () renaming (_⊑⟨_⟩_ to _⊑₁⟨_⟩_; _■ to _■₁)
-
-    bar : (x y : ∣ G ∣F) → [ x ⊑[ pos G ] y ⇔ (g x) ⊑[ pos F ] (g y) ]
-    bar x y = β , α
+    to : F ≃f G → pos F ≅ₚ pos G
+    to (e@(f , _) , (f-mono , g-mono) , _) =
+      (f , f-mono) , (g , g-mono) , retEq e , secEq e
       where
-        φ : [ (g x) ⊑[ pos F ] (g y) ⇔ (f (g x)) ⊑[ pos G ] (f (g y)) ]
-        φ = i (g x) (g y)
+        g = equivFun (invEquiv e)
 
-        α : [ (g x) ⊑[ pos F ] (g y) ⇒ x ⊑[ pos G ] y ]
-        α p = x       ⊑⟨ ≡⇒⊑ (pos G) (sym (ret x))  ⟩
-              f (g x) ⊑⟨ π₀ φ p                     ⟩
-              f (g y) ⊑⟨ ≡⇒⊑ (pos G) (ret y)        ⟩
-              y       ■
-
-        β : [ x ⊑[ pos G ] y ⇒ (g x) ⊑[ pos F ] (g y) ]
-        β p = π₁ φ eq
-          where
-            eq : [ f (g x) ⊑[ pos G ] f (g y) ]
-            eq = f (g x)  ⊑⟨ ≡⇒⊑ (pos G) (ret x)       ⟩
-                 x        ⊑⟨ p                         ⟩
-                 y        ⊑⟨ ≡⇒⊑ (pos G) (sym (ret y)) ⟩
-                 f (g y)  ■
-
-
-    ⊤-eq : f ⊤[ F ] ≡ ⊤[ G ]
-    ⊤-eq = top-unique G (f ⊤[ F ]) NTS
+    from : pos F ≅ₚ pos G → F ≃f G
+    from ((f , f-mono) , (g , g-mono) , sec , ret) =
+      isoToEquiv (iso f g sec ret) , (f-mono , g-mono) , (resp-⊤ , resp-∧ , resp-⋁)
       where
-        NTS : (o : ∣ G ∣F) → [ o ⊑[ pos G ] (f ⊤[ F ]) ]
-        NTS o = π₁ (bar o (f ⊤[ F ])) eq
+        open PosetReasoning (pos G)
+
+        resp-⊤ : f ⊤[ F ] ≡ ⊤[ G ]
+        resp-⊤ = top-unique G (f ⊤[ F ]) NTS
           where
-            eq : [ g o ⊑[ pos F ] g (f ⊤[ F ]) ]
-            eq = g o          ⊑₁⟨ ⊤[ F ]-top (g o) ⟩
-                 ⊤[ F ]       ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec ⊤[ F ])) ⟩
-                 g (f ⊤[ F ]) ■₁
+            NTS : (x : ∣ G ∣F) → [ x ⊑[ pos G ] (f ⊤[ F ]) ]
+            NTS x = x        ⊑⟨ ≡⇒⊑ (pos G) (sym (sec x))              ⟩
+                    f (g x)  ⊑⟨ f-mono (g x) ⊤[ F ] (⊤[ F ]-top (g x)) ⟩
+                    f ⊤[ F ] ■
 
-    ⊓-eq : (x y : ∣ F ∣F) →  f (x ⊓[ F ] y) ≡ (f x) ⊓[ G ] (f y)
-    ⊓-eq x y = ⊓-unique G (f x) (f y) (f (x ⊓[ F ] y)) I II III
-      where
-        I : [ f (x ⊓[ F ] y) ⊑[ pos G ] f x ]
-        I = π₁ (bar (f (x ⊓[ F ] y)) (f x)) NTS
+        resp-∧ : (x y : ∣ F ∣F) → f (x ⊓[ F ] y) ≡ (f x) ⊓[ G ] (f y)
+        resp-∧ x y = ⊓-unique G (f x) (f y) (f (x ⊓[ F ] y)) NTS₀ NTS₁ NTS₂
           where
-            NTS : [ g (f (x ⊓[ F ] y)) ⊑[ pos F ] g (f x) ]
-            NTS = g (f (x ⊓[ F ] y)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _)       ⟩
-                  x ⊓[ F ] y         ⊑₁⟨ ⊓[ F ]-lower₀ x y         ⟩
-                  x                  ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec x)) ⟩
-                  g (f x)            ■₁
+            NTS₀ : [ f (x ⊓[ F ] y) ⊑[ pos G ] (f x) ]
+            NTS₀ = f-mono (x ⊓[ F ] y) x (⊓[ F ]-lower₀ x y)
 
-        II : [ f (x ⊓[ F ] y) ⊑[ pos G ] f y ]
-        II = π₁ (bar (f (x ⊓[ F ] y)) (f y)) NTS
-          where
-            NTS : [ g (f (x ⊓[ F ] y)) ⊑[ pos F ] g (f y) ]
-            NTS = g (f (x ⊓[ F ] y)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _)       ⟩
-                  x ⊓[ F ] y         ⊑₁⟨ ⊓[ F ]-lower₁ x y         ⟩
-                  y                  ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _)) ⟩
-                  g (f y)            ■₁
+            NTS₁ : [ f (x ⊓[ F ] y) ⊑[ pos G ] (f y) ]
+            NTS₁ = f-mono (x ⊓[ F ] y) y (⊓[ F ]-lower₁ x y)
 
-        III : (z′ : ∣ G ∣F)
-            → [ z′ ⊑[ pos G ] (f x) ]
-            → [ z′ ⊑[ pos G ] (f y) ]
-            → [ z′ ⊑[ pos G ] f (x ⊓[ F ] y) ]
-        III z′ p q = π₁ (bar z′ (f (x ⊓[ F ] y))) NTS
-          where
-            gz′⊑x : [ g z′ ⊑[ pos F ] x ]
-            gz′⊑x =
-              π₁ (i (g z′) x) (f (g z′) ⊑⟨ ≡⇒⊑ (pos G) (ret z′) ⟩ z′ ⊑⟨ p ⟩ f x ■)
-
-            gz′⊑y : [ g z′ ⊑[ pos F ] y ]
-            gz′⊑y =
-              π₁ (i (g z′) y) (f (g z′) ⊑⟨ ≡⇒⊑ (pos G) (ret z′) ⟩ z′ ⊑⟨ q ⟩ f y ■)
-
-            NTS : [ g z′ ⊑[ pos F ] g (f (x ⊓[ F ] y)) ]
-            NTS = g z′               ⊑₁⟨ ⊓[ F ]-greatest x y (g z′) gz′⊑x gz′⊑y  ⟩
-                  x ⊓[ F ] y         ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _))               ⟩
-                  g (f (x ⊓[ F ] y)) ■₁
-
-    ⋁-eq : (U : Fam ℓ₂ ∣ F ∣F) →  f (⋁[ F ] U) ≡ ⋁[ G ] (index U , λ i → f (U $ i))
-    ⋁-eq U = ⋁-unique G (f ⟨$⟩ U) (f (⋁[ F ] U)) NTS₀ NTS₁
-      where
-        NTS₀ : (o : ∣ G ∣F) → o ε (f ⟨$⟩ U) → [ o ⊑[ pos G ] (f (⋁[ F ] U)) ]
-        NTS₀ o (i , p) =
-          π₁
-            (bar o (f (⋁[ F ] U)))
-            (g o              ⊑₁⟨ ⋁[ F ]-upper U (g o) I ⟩
-             ⋁[ F ] U         ⊑₁⟨ ≡⇒⊑ (pos F) (sym (sec _)) ⟩
-             g (f (⋁[ F ] U)) ■₁)
-          where
-            I : g o ε U
-            I = i , (U $ i ≡⟨ sym (sec _) ⟩ g (f (U $ i)) ≡⟨ cong g p ⟩ g o ∎)
-
-        NTS₁ : (z′ : ∣ G ∣F)
-             → ((o : ∣ G ∣F) → o ε (f ⟨$⟩ U) → [ o ⊑[ pos G ] z′ ])
-             → [ f (⋁[ F ] U) ⊑[ pos G ] z′ ]
-        NTS₁ z′ p =
-          π₁
-            (bar (f (⋁[ F ] U)) z′)
-            (g (f (⋁[ F ] U)) ⊑₁⟨ ≡⇒⊑ (pos F) (sec _)       ⟩
-             ⋁[ F ] U         ⊑₁⟨ ⋁[ F ]-least U (g z′) NTS ⟩
-             g z′             ■₁)
-          where
-            NTS : (o : ∣ F ∣F) → o ε U → [ o ⊑[ pos F ] (g z′) ]
-            NTS o (j , εU) =
-              π₁
-                (i o (g z′))
-                (f o ⊑⟨ p (f o) foεf⟨$⟩U ⟩ z′ ⊑⟨ ≡⇒⊑ (pos G) (sym (ret _)) ⟩ f (g z′) ■)
+            NTS₂ : (w : ∣ G ∣F)
+                 → [ w ⊑[ pos G ] f x ]
+                 → [ w ⊑[ pos G ] f y ]
+                 → [ w ⊑[ pos G ] f (x ⊓[ F ] y) ]
+            NTS₂ w w⊑fx w⊑fy = w              ⊑⟨ ≡⇒⊑ (pos G) (sym (sec w)) ⟩
+                               f (g w)        ⊑⟨ f-mono _ _ gw⊑x∧y         ⟩
+                               f (x ⊓[ F ] y) ■
               where
-                foεf⟨$⟩U : f o ε (f ⟨$⟩ U)
-                foεf⟨$⟩U = j , (f ⟨$⟩ U $ j ≡⟨ refl ⟩ f (U $ j) ≡⟨ cong f εU ⟩ f o ∎)
+                gw⊑x : [ g w ⊑[ pos F ] x ]
+                gw⊑x = subst (λ - → [ g w ⊑[ pos F ] - ]) (ret x) (g-mono w (f x) w⊑fx) 
 
-_≃f_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
-F ≃f G = Σ[ i ∈ ∣ F ∣F ≃ ∣ G ∣F ] poset-iso (pos F) (pos G) i
+                gw⊑y : [ g w ⊑[ pos F ] y ]
+                gw⊑y = subst (λ - → [ g w ⊑[ pos F ] - ]) (ret y) (g-mono w (f y) w⊑fy) 
 
-_≃f′_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
-F ≃f′ G = Σ[ eqv ∈ ∣ F ∣F ≃ ∣ G ∣F ] poset-iso′ (pos F) (pos G) eqv
+                gw⊑x∧y : [ g w ⊑[ pos F ] (x ⊓[ F ] y) ]
+                gw⊑x∧y = ⊓[ F ]-greatest x y (g w) gw⊑x gw⊑y
 
-_≃f⋆_ : Frame ℓ₀ ℓ₁ ℓ₂ → Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
-F ≃f⋆ G = Σ[ f ∈ (pos F ─m→ pos G) ] poset-iso′′ (pos F) (pos G) f
+        resp-⋁ : (U : Fam _ ∣ F ∣F) → f (⋁[ F ] U) ≡ (⋁[ G ] ⁅ f x ∣ x ε U ⁆)
+        resp-⋁ U = ⋁-unique G ⁅ f x ∣ x ε U ⁆ (f (⋁[ F ] U)) NTS₀ NTS₁
+          where
+            NTS₀ : (x : ∣ G ∣F) → x ε ⁅ f y ∣ y ε U ⁆ → [ x ⊑[ pos G ] f (⋁[ F ] U) ]
+            NTS₀ x (i , p) = x                    ⊑⟨ ≡⇒⊑ (pos G) (sym (sec _)) ⟩
+                             f (g x)              ⊑⟨ f-mono _ _ gx⊑f⋁U         ⟩
+                             f (g (f (⋁[ F ] U))) ⊑⟨ ≡⇒⊑ (pos G) (sec _)       ⟩
+                             f (⋁[ F ] U)         ■
+              where
+                gx⊑f⋁U : [ g x ⊑[ pos F ] (g (f (⋁[ F ] U))) ]
+                gx⊑f⋁U = subst (λ - → [ rel (pos F) (g x) - ]) (sym (ret (⋁[ F ] U))) (⋁[ F ]-upper U (g x) (subst (λ - → g - ε U) p (i , (sym (ret _)))))
 
--- This is the weak form of univalence.
-≃f→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f G → F ≡ G
-≃f→≡ F G (eqv , iso-f) = frame-SIP F G eqv (frame-iso→frame-iso' F G eqv iso-f)
+            NTS₁ : (w : ∣ G ∣F)
+                 → ((o : ∣ G ∣F) → o ε ⁅ f x ∣ x ε U ⁆ → [ o ⊑[ pos G ] w ])
+                 → [ f (⋁[ F ] U) ⊑[ pos G ] w ]
+            NTS₁ w h = f (⋁[ F ] U) ⊑⟨ f-mono _ _ (subst (λ - → [ - ⊑[ pos F ] g w ]) (ret _) gf⋁U⊑gw) ⟩ f (g w) ⊑⟨ ≡⇒⊑ (pos G) (sec _) ⟩ w ■ 
+              where
+                gf⋁U⊑gw : [ g (f (⋁[ F ] U)) ⊑[ pos F ] g w ]
+                gf⋁U⊑gw = subst (λ - → [ - ⊑[ pos F ] g w ]) (sym (ret _)) (⋁[ F ]-least U (g w) NTS′)
+                  where
+                    NTS′ : [ ∀[ u ε U ] (u ⊑[ pos F ] (g w)) ]
+                    NTS′ u (i , p) =
+                      subst (λ - → [ - ⊑[ pos F ] (g w) ]) p
+                        (subst (λ - → [ - ⊑[ pos F ] g w ]) (ret _) (g-mono _ _ (h (f (π₁ U i)) (i , refl))))
 
-≃f′→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f′ G → F ≡ G
-≃f′→≡ F G (eqv , iso-f) =
-  ≃f→≡ F G (eqv , (π₁ (poset-iso⇔poset-iso′ (pos F) (pos G) eqv) iso-f))
+    sec-to-from : section to from
+    sec-to-from is@((f , f-mono) , ((g , g-mono) , sec , ret)) =
+      ΣProp≡ (isPosetIso-prop (pos F) (pos G)) (forget-mono (pos F) (pos G) (f , f-mono) (π₀ (to (from is))) refl)
 
-≃f⋆→≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f⋆ G → F ≃f′ G
-≃f⋆→≡ F G ((f , f-mono) , (g , g-mono) , sec , ret) =
-  isoToEquiv (iso f g sec ret) , f-mono , g-mono
+    ret-to-from : retract to from
+    ret-to-from (eqv , eqv-homo) =
+      ΣProp≡ (isHomoEqv-prop F G ) (ΣProp≡ isPropIsEquiv refl)
 
-main′ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → F ≃f⋆ G → F ≡ G
-main′ F G i = ≃f′→≡ F G (≃f⋆→≡ F G i)
+-- Now that we have this result, we can move on to show that given two frames F and G,
+-- (pos F) ≅ₚ (pos G) is equivalent to F ≡ G.
 
--- -}
--- -}
--- -}
+frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
+           → (pos F ≅ₚ pos G) ≃ (F ≡ G)
+frame-univ F G eqv = pos F ≅ₚ pos G ≃⟨ ≃f≃≅ₚ F G ⟩ F ≃f G ≃⟨ frame-univ₀ F G ⟩ F ≡ G 𝔔𝔈𝔇
