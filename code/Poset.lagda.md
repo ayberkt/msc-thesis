@@ -300,9 +300,6 @@ Order-is-SNS {ℓ = ℓ} {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , reco
         (λ _ → isOrderPreserving-prop (X , _⊑₁_) (X , _⊑₀_) id)
         (g (f (φ , ψ))) (φ , ψ)
 
-    ⇔-prop : isProp ((x y : X) → [ x ⊑₀ y ⇔ x ⊑₁ y ])
-    ⇔-prop = isPropΠ λ x → isPropΠ λ y → is-true-prop (x ⊑₀ y ⇔ x ⊑₁ y)
-
     f-equiv : (p : _⊑₀_ ≡ _⊑₁_) → isContr (fiber f p)
     f-equiv p = ((to , from) , eq) , NTS
       where
