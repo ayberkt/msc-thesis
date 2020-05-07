@@ -579,24 +579,39 @@ frame-univ₀ = SIP frame-is-SNS-PathP
                              f (⋁[ F ] U)         ■
               where
                 gx⊑f⋁U : [ g x ⊑[ pos F ] (g (f (⋁[ F ] U))) ]
-                gx⊑f⋁U = subst (λ - → [ rel (pos F) (g x) - ]) (sym (ret (⋁[ F ] U))) (⋁[ F ]-upper U (g x) (subst (λ - → g - ε U) p (i , (sym (ret _)))))
+                gx⊑f⋁U =
+                  subst
+                    (λ - → [ rel (pos F) (g x) - ])
+                    (sym (ret (⋁[ F ] U)))
+                    (⋁[ F ]-upper U (g x) (subst (λ - → g - ε U) p (i , (sym (ret _)))))
 
             NTS₁ : (w : ∣ G ∣F)
                  → ((o : ∣ G ∣F) → o ε ⁅ f x ∣ x ε U ⁆ → [ o ⊑[ pos G ] w ])
                  → [ f (⋁[ F ] U) ⊑[ pos G ] w ]
-            NTS₁ w h = f (⋁[ F ] U) ⊑⟨ f-mono _ _ (subst (λ - → [ - ⊑[ pos F ] g w ]) (ret _) gf⋁U⊑gw) ⟩ f (g w) ⊑⟨ ≡⇒⊑ (pos G) (sec _) ⟩ w ■ 
+            NTS₁ w h = f (⋁[ F ] U) ⊑⟨ f⋁U⊑fgw ⟩ f (g w) ⊑⟨ ≡⇒⊑ (pos G) (sec _) ⟩ w ■ 
               where
                 gf⋁U⊑gw : [ g (f (⋁[ F ] U)) ⊑[ pos F ] g w ]
-                gf⋁U⊑gw = subst (λ - → [ - ⊑[ pos F ] g w ]) (sym (ret _)) (⋁[ F ]-least U (g w) NTS′)
+                gf⋁U⊑gw = subst
+                            (λ - → [ - ⊑[ pos F ] g w ])
+                            (sym (ret _))
+                            (⋁[ F ]-least U (g w) NTS′)
                   where
                     NTS′ : [ ∀[ u ε U ] (u ⊑[ pos F ] (g w)) ]
                     NTS′ u (i , p) =
                       subst (λ - → [ - ⊑[ pos F ] (g w) ]) p
-                        (subst (λ - → [ - ⊑[ pos F ] g w ]) (ret _) (g-mono _ _ (h (f (π₁ U i)) (i , refl))))
+                        (subst
+                           (λ - → [ - ⊑[ pos F ] g w ])
+                           (ret _)
+                           (g-mono _ _ (h (f (π₁ U i)) (i , refl))))
+
+                f⋁U⊑fgw : [ f (⋁[ F ] U) ⊑[ pos G ] f (g w) ]
+                f⋁U⊑fgw = f-mono _ _ (subst (λ - → [ - ⊑[ pos F ] g w ]) (ret _) gf⋁U⊑gw)
 
     sec-to-from : section to from
     sec-to-from is@((f , f-mono) , ((g , g-mono) , sec , ret)) =
-      ΣProp≡ (isPosetIso-prop (pos F) (pos G)) (forget-mono (pos F) (pos G) (f , f-mono) (π₀ (to (from is))) refl)
+      ΣProp≡
+        (isPosetIso-prop (pos F) (pos G))
+        (forget-mono (pos F) (pos G) (f , f-mono) (π₀ (to (from is))) refl)
 
     ret-to-from : retract to from
     ret-to-from (eqv , eqv-homo) =
