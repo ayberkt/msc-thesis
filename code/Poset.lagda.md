@@ -283,7 +283,7 @@ Order-is-SNS : SNS {ℓ} (Order ℓ₁) isAnOrderPreservingEqv
 Order-is-SNS {ℓ = ℓ} {ℓ₁ = ℓ₁} {X = X}  _⊑₀_ _⊑₁_ = f , record { equiv-proof = f-equiv }
   where
     f : isAnOrderPreservingEqv (X , _⊑₀_) (X , _⊑₁_) (idEquiv X) → _⊑₀_ ≡ _⊑₁_
-    f e@(φ , ψ) = funExt2 (λ x y → ⇔toPath (φ x y) (ψ x y))
+    f e@(φ , ψ) = funExt₂ λ x y → ⇔toPath (φ x y) (ψ x y)
 
     g : _⊑₀_ ≡ _⊑₁_ → isAnOrderPreservingEqv (X , _⊑₀_) (X , _⊑₁_) (idEquiv X)
     g p =
