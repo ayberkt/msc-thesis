@@ -1,19 +1,19 @@
 ```
-{-# OPTIONS --without-K --cubical --safe #-}
+{-# OPTIONS --cubical --safe #-}
 
 module Basis where
 
 open import Level public
 
-import Cubical.Core.Everything               as CE
-import Cubical.Data.Sigma                    as DS
-import Cubical.Foundations.Prelude           as FP
-import Cubical.Foundations.Equiv             as FE
-import Cubical.Foundations.Logic             as FL
-import Cubical.Foundations.HLevels           as FH
-import Cubical.Foundations.Isomorphism       as FI
-import Cubical.Foundations.Equiv.HalfAdjoint as HAE
-import Cubical.Functions.FunExtEquiv         as FEE
+import Cubical.Core.Everything                as CE
+import Cubical.Data.Sigma                     as DS
+import Cubical.Foundations.Prelude            as FP
+import Cubical.Foundations.Equiv              as FE
+import Cubical.Foundations.Logic              as FL
+import Cubical.Foundations.HLevels            as FH
+import Cubical.Foundations.Isomorphism        as FI
+import Cubical.Foundations.Equiv.HalfAdjoint  as HAE
+import Cubical.Functions.FunExtEquiv          as FEE
 
 open import Cubical.Foundations.Univalence public using (ua)
 
