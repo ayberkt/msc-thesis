@@ -139,9 +139,7 @@ isMonotonic P Q f = (x y : ∣ P ∣ₚ) → [ x ⊑[ P ] y ] → [ (f x) ⊑[ Q
 
 isMonotonic-prop : (P : Poset ℓ₀ ℓ₁) (Q : Poset ℓ₀′ ℓ₁′) (f : ∣ P ∣ₚ → ∣ Q ∣ₚ)
                  → isProp (isMonotonic P Q f)
-isMonotonic-prop P Q f =
-  isPropΠ (λ x → isPropΠ λ y → isPropΠ λ _ → is-true-prop (f x ⊑[ Q ] f y))
-
+isMonotonic-prop P Q f = isPropΠ3 λ x y _ → is-true-prop (f x ⊑[ Q ] f y)
 ```
 
 We collect monotonic functions in the following type.
