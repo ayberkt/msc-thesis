@@ -85,7 +85,7 @@ In the remainder of this chapter, we first present the technicalities required f
 formulating univalence. We subsequently proceed to present the basics of univalent type
 theory.
 
-\section{Equivalence and univalence of types}
+\section{Equivalence and univalence}
 
 At the heart of univalent type theory lies the notion of \emph{type equivalence}. We build
 up to its definition given in Definition~\ref{defn:equiv}.
@@ -265,12 +265,16 @@ formalisation, we use the notation of the \libcub{}~\cite{agda-cubical} library 
 this is denoted \fnname{[} $A$ \fnname{]}.
 
 Once we introduce this delineation of the class of propositional types, we have to make
-sure that types that are thought of as properties are actually propositional types. Many
-types that are expected to behave like propositions behave naturally like propositions so
-it suffices to prove their propositionality; for those that do not, univalent type theory
-provides a mechanism, called \emph{propositional truncation}, for forcing them to be
-propositional. A substantial component of the work presented in this thesis pertains to
-problems related to the use of this mechanism.
+sure that types that are thought of as properties are actually propositional types. For
+instance, the definition of equivalence we gave (in Defn.~\ref{defn:equiv}) has the
+crucial property that it is propositional. This would not be the case if we were to use
+the usual notion of invertible function.
+
+Many types that are expected to behave like propositions behave naturally like
+propositions so it suffices to prove their propositionality; for those that do not,
+univalent type theory provides a mechanism, called \emph{propositional truncation}, for
+forcing them to be propositional. A substantial component of the work presented in this
+thesis pertains to problems related to the use of this mechanism.
 
 Now, let us state some simple facts about the class of propositional types. Observe the
 two corollaries, of propositions \ref{prop:is-of-level-pi} and
@@ -419,6 +423,7 @@ We can define the usual inclusion order on the powerset of a given a type.
   \begin{equation*}
     \subsetof{U}{V} \quad\is\quad \pity{x}{A}{x \in U \rightarrow x \in V}.
   \end{equation*}
+  The propositionality follows from Prop.~\ref{prop:pi-prop}.
 \end{defn}
 
 \begin{defn}[Full subset]\label{defn:entire-subset}
