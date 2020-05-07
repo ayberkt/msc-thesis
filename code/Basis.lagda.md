@@ -13,7 +13,7 @@ import Cubical.Foundations.Logic             as FL
 import Cubical.Foundations.HLevels           as FH
 import Cubical.Foundations.Isomorphism       as FI
 import Cubical.Foundations.Equiv.HalfAdjoint as HAE
-import Cubical.Functions.FunExtEquiv         as FEE 
+import Cubical.Functions.FunExtEquiv         as FEE
 
 open import Cubical.Foundations.Univalence public using (ua)
 
@@ -30,7 +30,6 @@ open FH  public using    (hProp; isSetHProp; isPropIsSet; isPropΣ; isOfHLevelSu
 open FI  public using    (isoToPath; isoToEquiv; iso; section; retract; Iso)
 open FEE public using    (funExtEquiv; funExt₂; funExt₂Equiv; funExt₂Path)
 open HAE public using    (isHAEquiv; equiv→HAEquiv)
-
 ```
 
 ```
@@ -48,7 +47,7 @@ variable
 ```
 data Unit (ℓ : Level) : Type ℓ where
   tt : Unit ℓ
- 
+
 Unit-prop : {ℓ : Level} → isProp (Unit ℓ)
 Unit-prop tt tt = refl
 ```
