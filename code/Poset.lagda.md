@@ -5,7 +5,7 @@ module Poset where
 
 open import Basis
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)
-open import Cubical.Foundations.Equiv using (_≃⟨_⟩_) renaming (_■ to _QED)
+open import Cubical.Foundations.Equiv using (_≃⟨_⟩_) renaming (_■ to _𝔔𝔈𝔇)
 open import Powerset
 open import Function using (_∘_; id)
 ```
@@ -439,5 +439,5 @@ of posets is univalent*.
 
 ```
 poset-univ : (P Q : Poset ℓ₀ ℓ₁) → (P ≅ₚ Q) ≃ (P ≡ Q)
-poset-univ P Q = P ≅ₚ Q ≃⟨ ≃ₚ≃≅ₚ P Q ⟩ P ≃ₚ Q ≃⟨ poset-univ₀ P Q ⟩ P ≡ Q QED
+poset-univ P Q = P ≅ₚ Q ≃⟨ ≃ₚ≃≅ₚ P Q ⟩ P ≃ₚ Q ≃⟨ poset-univ₀ P Q ⟩ P ≡ Q 𝔔𝔈𝔇
 ```
