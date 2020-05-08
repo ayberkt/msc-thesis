@@ -4,7 +4,6 @@ import os
 import subprocess
 
 files = [ "Basis.lagda.md",
-          "Powerset.agda",
           "Family.agda",
           "FormalTopology.agda",
           "Cover.lagda.md",
@@ -47,11 +46,11 @@ def latexify(fname):
         code_block_started = not code_block_started
       elif line[0:3] == "## ":
         output_file.write("\\end{code}\n")
-        output_file.write("\\subsection{{{}}}\n".format(line[3:].rstrip()))
+        output_file.write("\\subsection*{{{}}}\n".format(line[3:].rstrip()))
         output_file.write("\\begin{code}\n")
       elif line[0:4] == "### ":
         output_file.write("\\end{code}\n")
-        output_file.write("\\subsubsection{{{}}}\n".format(line[4:].rstrip()))
+        output_file.write("\\subsubsection*{{{}}}\n".format(line[4:].rstrip()))
         output_file.write("\\begin{code}\n")
       else:
         if line == "\n":
