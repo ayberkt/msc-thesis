@@ -122,7 +122,8 @@
 \newcommand{\snoc}[2]{#1 \frown #2}
 \newcommand{\cantoris}{\hyperref[defn:cantor-is]{\mathcal{C}}}
 
-\newcommand{\subsetof}[2]{#1 \hyperref[defn:inclusion]{\subseteq} #2}
+\newcommand{\subsetofnm}{\hyperref[defn:inclusion]{\subseteq}}
+\newcommand{\subsetof}[2]{#1 \subsetofnm{} #2}
 
 \newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
 \newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
@@ -164,8 +165,11 @@
 \newcommand{\hasmono}[1]{\hyperref[defn:mono]{\mathsf{hasMono}}\left(#1\right)}
 \newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
 
-\newcommand{\posetiso}[2]{#1 \hyperref[defn:poset-iso]{\cong_p} #2}
-\newcommand{\posetequiv}[2]{#1 \hyperref[eqn:poset-equiv]{\simeq_p} #2}
+\DeclareMathOperator{\posetisonm}{\hyperref[defn:poset-iso]{\cong_p}}
+\newcommand{\posetiso}[2]{#1 \posetisonm{} #2}
+
+\DeclareMathOperator{\posetequivnm}{\hyperref[defn:poset-equiv]{\simeq_p}}
+\newcommand{\posetequiv}[2]{#1 \posetequivnm{}  #2}
 
 \DeclareMathOperator{\frameequivnm}{\hyperref[defn:frame-equiv]{\simeq_f}}
 
@@ -194,7 +198,7 @@
 
 \newcommand{\isflat}[1]{\hyperref[defn:flat]{\mathsf{isFlat}}\left(#1\right)}
 
-\newcommand{\framestrnm}{\mathsf{FrameStr}}
+\newcommand{\framestrnm}{\hyperref[defn:frame]{\mathsf{FrameStr}}}
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
 \newcommand{\frameax}[1]{\hyperref[defn:frame]{\mathsf{FrameAx}}\left(#1\right)}
 \newcommand{\framenm}{\hyperref[defn:frame]{\mathsf{Frame}}}
@@ -232,6 +236,8 @@
 
 \newcommand{\representsnm}{\hyperref[defn:rep]{\mathsf{represents}}}
 \newcommand{\represents}[3]{\representsnm{}\left(#1, #2, #3\right)}
+
+\newcommand{\entire}[1]{\hyperref[defn:entire-subset]{\top}_{#1}}
 
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bG}{\mathbf{G}}
