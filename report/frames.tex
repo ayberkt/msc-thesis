@@ -163,6 +163,8 @@ structure of a poset: monotonic maps.
 
 \begin{defn}[Poset isomorphism]\label{defn:poset-iso}
   An isomorphism between two posets is a monotonic function with a monotonic inverse.
+  We will denote the type of isomorphisms between two posets $P$ and $Q$ by
+  $\posetiso{P}{Q}$.
 \end{defn}
 
 \section{Definition of a frame}\label{sec:frame}
@@ -248,14 +250,14 @@ to preserve this structure.
   \end{equation*}
 \end{defn}
 
-\begin{defn}
+\begin{defn}\label{defn:frame-iso}
   A frame isomorphism is a frame homomorphism with an inverse that is also a frame
   homomorphism.
 \end{defn}
 
 Alternatively, we could define an isomorphism between frames as an isomorphism between the
 underlying posets. This would be equivalent since isomorphisms preserve meets and joins.
-\begin{defn}
+\begin{defn}\label{defn:frame-iso-official}
   An isomorphism of frame $F$ and $G$ is simply an isomorphism of their underlying posets.
 \end{defn}
 
@@ -301,7 +303,7 @@ fact for simultaneously distributing the meet of two joins.
   distributivity law again, and then flatten (using Lemma~\ref{lem:flatten}).
 \end{proof}
 
-\section{Isomorphic frames are equal}\label{sec:frame-univ}
+\section{Frames form a univalent category}\label{sec:frame-univ}
 
 It is common practice in mathematics to regard two isomorphic structures as equal.
 However, this requires isomorphisms to be viewed as the appropriate notion of equality on
@@ -348,20 +350,25 @@ respects the $S$-structures. The type of $\iota$ looks like the following:
   }.
 \end{equation*}
 
-In the case of ordered structures, for instance, we pick $S \is \ordernm{}_k$ which has
-type:
+In the case of posets, for instance, we pick $S \is \posetstrnm{}_k$ which has type:
 \begin{equation*}
-  \oftyI{\ordernm{}_k}{\univ{}_m \rightarrow \univ{}_{\max(m, k+1)}},
+  \oftyI{\posetstrnm{}_k}{\univ{}_m \rightarrow \univ{}_{\max(m, k+1)}},
 \end{equation*}
-and $\iota$ would be defined as
-\begin{equation*}
-  \iota((A, \sqsubseteq_A), (B, \sqsubseteq_B), (f , \_)) \quad\is\quad \logequiv{x \sqsubseteq_A y}{f(x) \sqsubseteq_B f(y)}.
-\end{equation*}
-This delineates those type equivalences that have the virtue of preserving the
-$\ordernm{}$-structure on types $A$ and $B$.
+and define $\iota$ as:
+\begin{align*}
+  \iota(P, &Q, (f , \_)) \quad\is\quad                                                          \\
+                &\pity{x~y}{\abs{P}}{x \sqsubseteq_P y \rightarrow f(x) \sqsubseteq_Q f(y)}                       \\
+  \hspace{2em}\times &\pity{x~y}{\abs{Q}}{x \sqsubseteq_Q y \rightarrow \invequiv{f}(x) \sqsubseteq_P \invequiv{f}(y)} .
+\end{align*}
+This delineates those type equivalences between $\abs{P}$ and $\abs{Q}$ that have the
+virtue of preserving the poset structure on types $A$ and $B$. We denote
+the type of such equivalences between posets $P$ and $Q$ as follows:
+\begin{equation}\label{eqn:poset-equiv}
+  \posetequiv{P}{Q} \quad\is\quad \sigmaty{e}{\typequiv{\abs{P}}{\abs{Q}}}{\iota(P, Q, e)}
+\end{equation}
 
-We require $\iota$ to satisfy two conditions to make sure it is a well-behaved
-characterisation of homomorphic equivalences.
+In the general case, we require $\iota$ to satisfy two conditions to make sure it is a
+well-behaved characterisation of homomorphic equivalences.
 \begin{enumerate}
   \item The identity equivalence meets the $\iota$ criterion: for every $$\oftyI{(A,
     s)}{\sigmaty{X}{\univ{}}{S(X)}},$$ $\iota((A, s), (A, s), \idequiv{A})$ is inhabited.
@@ -379,48 +386,55 @@ $S$ is standard in the sense that there is some $\iota$ satisfying (1) and (2) f
 type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to the identity type
 between them.
 
-To conclude this section, let us state formally, the exact theorems we have obtained using
-the SIP.
+The situation is the same for frames: they form an SNS with $S \is \framestrnm{}$ and $\iota$
+expressing the notion of an equivalence being homomorphic by requiring both directions to
+be frame homomorphisms as defined in Defn.~\ref{defn:frame-homo}. We will denote such
+frame-homomorphic equivalences between frames $F$ and $G$ by $\frameequiv{F}{G}$
 
-\begin{thm}[Isomorphic posets are equal]
-  Let $P$ and $Q$ be two posets. If $P$ is isomorphic to $Q$
-  (by Defn.~\ref{defn:poset-iso}) then $P = Q$. Formally,
-  \begin{equation*}
-    \pity{P~Q}{\poset{}_{m, n}}{%
-      \left(
-        \sigmaty{f}{\mono{P}{Q}}{\sigmaty{g}{\mono{Q}{P}}{%
-            \exteq{(f \circ g)}{\mathsf{id}} \times \exteq{(g \circ f)}{\mathsf{id}}
-          }
-        }
-      \right)
-      \rightarrow P = Q
-    }
-  \end{equation*}
-  where $\mathsf{id} \is \lambda x.~x$.
-\end{thm}
+\begin{defn}[Frame-homomorphic equivalence]\label{defn:frame-equiv}
+  An equivalence $\oftyI{e}{\typequiv{A}{B}}$ between types $A$ and $B$, are equipped
+  with frame structures, $s_A$ and $s_B$ is called frame-homomorphic if both
+  $f \is \mathsf{pr}_1(e)$ and $g \is \mathsf{pr}_1(\invequiv{e})$ are frame homomorphism.
+  We denote the type of such equivalences by $\frameequiv{(A, s_A)}{(B , s_B)}$.
+\end{defn}
 
-\begin{thm}[Isomorphic frames are equal]\label{thm:frame-univ}
-  \todo{state.}
-\end{thm}
+We noted in Chapter~\ref{chap:foundations} that the type of type isomorphisms is
+equivalent to the type of type equivalences in the special case when the types are h-sets.
+As we are working with algebraic structures that have carrier h-sets, the notions of
+frame-homomorphic and monotonic equivalences are not precisely what we want; we should use
+the familiar notion of categorical isomorphism, as we gave in definitions
+\ref{defn:poset-iso} and \ref{defn:frame-iso}.
 
-One thing that has to be noted here is that there is an apparent deviation from the SIP.
-We have not defined an isomorphism as a homomorphic equivalence, which is how the notion
-of SNS lets us specify it. Instead, we have defined it as a homomorphism with a
-homomorphic inverse. This is a technically subtle point: in the general case of an
-$n$-type, the type of equivalences is only logically equivalent to the type of type
-isomorphisms (i.e., function with a section and a retract). When we are working with
-$2$-types, however, these two types are actually equivalent. Both in the case of frames
-and posets, we are working with algebraic structures whose underlying types are h-sets so
-this difference is not of concern to us. At the level of precision required for the
-formalisation, however, we have formulated two equivalent notions of frame homomorphism:
-(1) a homomorphic equivalence, (2) a homomorphism with a homomorphic inverse. We have then
-proven these to be equivalent.
+In the case of posets, we prove the equivalence of $\posetequiv{P}{Q}$ with
+$\posetiso{P}{Q}$ for any two posets $P$ and $Q$. The desired result follows from this
+combined with the equivalence $\typequiv{(\posetequiv{P}{Q})}{(P \equiv Q)}$ given by the SIP.
 
-The result given in Theorem~\ref{thm:frame-univ} is remarkable from the perspective of
-formal topology. In Chapter~\ref{chap:formal-topo}, we will present a method for
-generating a frame from a formal topology and prove that this satisfies the universal
-property of the freely generated frame. Indeed, one can prove that this universal property
-characterises the free frame uniquely \emph{up to isomorphism}. As we have just shown in
+In the case of frames, we do not even need to require a function to preserve the frame
+data for it to be an isomorphism (as remarked in Defn.~\ref{defn:frame-iso-official});
+simply preserving the partial order suffices. It is, however, quite convenient to carry
+out SNS proof with a notion of frame homomorphism that explicitly requires the
+preservation of frame data. It is for this reason that, in the
+\veragda{} formalisation, we first obtain the result (using the SIP)
+\begin{equation}\label{eqn:frame-equiv-1}
+  \typequiv{(\frameequiv{F}{G})}{(F \equiv G)},
+\end{equation}
+and after this:
+\begin{equation}\label{eqn:frame-equiv-2}
+  \typequiv{(\posof{F} \cong_p \posof{G})}{(\frameequiv{F}{G})}.
+\end{equation}
+The desired result,
+\begin{equation}\label{eqn:frame-equiv-3}
+  \typequiv{(\posetiso{\posof{F}}{\posof{G}})}{(F \equiv G)},
+\end{equation}
+is then just a combination of (\ref{eqn:frame-equiv-1}) and (\ref{eqn:frame-equiv-2})
+
+\paragraph*{Remark on the \veragda{} formalisation.} foo
+
+The result given in (\ref{eqn:frame-equiv-3}) is remarkable from the perspective of formal
+topology. In Chapter~\ref{chap:formal-topo}, we will present a method for generating a
+frame from a formal topology and prove that this satisfies the universal property of the
+freely generated frame. Indeed, one can prove that this universal property characterises
+the free frame uniquely \emph{up to isomorphism}. As we have just shown in
 Theorem~\ref{thm:frame-univ}, isomorphism of frames \emph{is} equality of frames, so we
 can now drop the ``up to isomorphism'' and say that the universal property characterises
 the free frame \textbf{uniquely}.

@@ -124,6 +124,10 @@ We will denote by $\typequiv{A}{B}$ the type of equivalences between types $A$ a
   \end{equation*}
 \end{defn}
 
+One may wonder why the notion of type equivalence is not the familiar categorical notion
+of isomorphism, that is, a function between types that is invertible. We will address this
+point in Section~\ref{subsec:prop}.
+
 \begin{defn}[Identity equivalence]\label{defn:id-equiv}
   The identity function on every type $A$ can easily be seen to be an equivalence.
   Therefore there exists a function:
@@ -222,7 +226,7 @@ Furthermore, $\sum$ and $\prod$ types respect h-levels.
   \end{equation*}
 \end{prop}
 
-\subsection{Propositions}
+\subsection{Propositions}\label{subsec:prop}
 
 The homotopy level of one is of special interest: it is the class of types that behave
 like logical propositions, in the sense that their proof structures are trivial: they are
@@ -321,6 +325,32 @@ the equivalence of two propositional types.
   Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
   then $\typequiv{A}{B}$.
 \end{prop}
+
+As we mentioned before, Voevodsky's notion of type equivalence enjoys the crucial property
+that it is propositional. Let us consider the categorical definition of one might expect.
+\begin{defn}[Type isomorphism]\label{defn:type-iso}
+  Given types $A$ and $B$, the type of type isomorphisms between them is denoted by
+  $\typiso{A}{B}$:
+  \begin{alignat*}{2}
+    \istypiso{f}   \quad&\is\quad && \sigmaty{g}{B \rightarrow A}{g \circ f \sim \idfn{A} \times g \circ f \sim \idfn{B}} \\
+    \typiso{A}{B} \quad&\is\quad &&\sigmaty{f}{A \rightarrow B}{\istypiso{f}}                          .
+  \end{alignat*}
+\end{defn}
+
+This would not be viable definition of type equivalence in univalent type theory as it
+suffers the problem that it is not propositional. A function can have different left and
+right inverses in the general case when we are dealing with $n$-types.
+Definition~\ref{defn:type-iso} is logically equivalent but not equivalent to
+Definition~\ref{defn:equiv}.
+
+\begin{prop}
+  Definitions \ref{defn:type-iso} and \ref{defn:equiv} are logically equivalent.
+\end{prop}
+
+When we have some $\oftyI{f}{A \rightarrow B}$ such that $\isequiv{f}$ we will refer to the inverse
+of $f$. This expression refers implicitly to this equivalence. The reader is advised to
+keep the distinction between $\typequiv{A}{B}$ and $\typiso{A}{B}$ in mind. This will be
+especially important in Section~\ref{sec:frame-univ}.
 
 \subsection{Sets}
 

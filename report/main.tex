@@ -62,7 +62,7 @@
 \newcommand{\refl}{\mathsf{refl}}
 \newcommand{\zero}{\rulename{\mathsf{zero}}}
 \newcommand{\sucnm}{\rulename{\mathsf{suc}}}
-\newcommand{\suc}[1]{\mathsf{suc}\left(#1\right)}
+\newcommand{\suc}[1]{\sucnm{}\left(#1\right)}
 
 \newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
 \newcommand{\isequiv}[1]{\hyperref[defn:equiv]{\mathsf{isEquiv}}\left(#1\right)}
@@ -73,8 +73,11 @@
 \newcommand{\isdec}[1]{\hyperref[defn:decidable]{\mathsf{isDecidable}}\left(#1\right)}
 \newcommand{\isdisc}[1]{\hyperref[defn:discrete]{\mathsf{isDiscrete}}\left(#1\right)}
 \newcommand{\typequiv}[2]{#1 \hyperref[defn:equiv]{\simeq} #2}
+\newcommand{\istypiso}[1]{\hyperref[defn:type-iso]{\mathsf{isIso}}\left(#1\right)}
+\newcommand{\typiso}[2]{#1 \hyperref[defn:type-iso]{\cong} #2}
 \newcommand{\logequiv}[2]{#1 \hyperref[defn:iff]{\leftrightarrow} #2}
 \newcommand{\exteq}[2]{#1 \hyperref[defn:exteq]{\sim} #2}
+\newcommand{\idfn}[1]{\mathsf{id}_{#1}}
 
 \newcommand{\fincovernm}{\hyperref[defn:fin-cover]{\mathsf{down}}}
 \newcommand{\fincover}[1]{\fincovernm{}\left(#1\right)}
@@ -160,6 +163,15 @@
 
 \newcommand{\hasmono}[1]{\hyperref[defn:mono]{\mathsf{hasMono}}\left(#1\right)}
 \newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
+
+\newcommand{\posetiso}[2]{#1 \hyperref[defn:poset-iso]{\cong_p} #2}
+\newcommand{\posetequiv}[2]{#1 \hyperref[eqn:poset-equiv]{\simeq_p} #2}
+
+\DeclareMathOperator{\frameequivnm}{\hyperref[defn:frame-equiv]{\simeq_f}}
+
+\newcommand{\frameequiv}[2]{#1 \frameequivnm{} #2}
+
+\newcommand{\invequiv}[1]{\mathsf{inv}\left(#1\right)}
 
 \newcommand{\vermono}{monotonicity}
 \newcommand{\versim}{simulation}
@@ -286,6 +298,10 @@
 
 \makebackmatter{}
 
+\ifdefined\omitagdainappendix
+  Omitting Agda code.
+\else
 \input{agda-formalisation}
+\fi
 
 \end{document}
