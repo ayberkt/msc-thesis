@@ -26,15 +26,12 @@ nuclei-resp-⊤ : (L : Frame ℓ₀ ℓ₁ ℓ₂) ((j , _) : Nucleus L) → j �
 nuclei-resp-⊤ L (j , N₀ , N₁ , N₂) = ⊑[ pos L ]-antisym _ _ (⊤[ L ]-top _) (N₁ _)
 
 -- Every nucleus is idempotent.
-idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
-     → (N : Nucleus L)
-     → let j = π₀ N in (x : ∣ L ∣F) → j (j x) ≡ j x
+idem : (L : Frame ℓ₀ ℓ₁ ℓ₂) → ((j , _) : Nucleus L) → (x : ∣ L ∣F) → j (j x) ≡ j x
 idem L (j , N₀ , N₁ , N₂) x = ⊑[ pos L ]-antisym _ _ (N₂ x) (N₁ (j x))
 
 -- Every nucleus is monotonic.
-mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L)
-     → let j = π₀ N
-       in (x y : ∣ L ∣F) → [ x ⊑[ pos L ] y ] → [ (j x) ⊑[ pos L ] (j y) ]
+mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) ((j , _) : Nucleus L)
+     → (x y : ∣ L ∣F) → [ x ⊑[ pos L ] y ] → [ (j x) ⊑[ pos L ] (j y) ]
 mono L (j , N₀ , N₁ , N₂) x y x⊑y =
   j x             ⊑⟨ ≡⇒⊑ (pos L) (cong j x≡x⊓y) ⟩
   j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)       ⟩
