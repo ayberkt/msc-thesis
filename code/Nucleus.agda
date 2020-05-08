@@ -21,6 +21,10 @@ IsNuclear L j = N₀ × N₁ × N₂
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
 Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
 
+-- The top element is fixed point for every nucleus.
+nuclei-resp-⊤ : (L : Frame ℓ₀ ℓ₁ ℓ₂) ((j , _) : Nucleus L) → j ⊤[ L ] ≡ ⊤[ L ]
+nuclei-resp-⊤ L (j , N₀ , N₁ , N₂) = ⊑[ pos L ]-antisym _ _ (⊤[ L ]-top _) (N₁ _)
+
 -- Every nucleus is idempotent.
 idem : (L : Frame ℓ₀ ℓ₁ ℓ₂)
      → (N : Nucleus L)
