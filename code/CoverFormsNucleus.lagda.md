@@ -42,14 +42,14 @@ nothing but the map `U ↦ - <| U`.
 
 ```
   𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
-  𝕛 (U , U-down) = U₀ , U₀-dc
+  𝕛 (U , U-down) = (λ - → U ▶ -) , U▶-dc
     where
-      -- This is not  h-propositional unless we force it to be using the HIT definition.
-      U₀ : stage F → hProp ℓ₀
-      U₀ = λ a → a <| U , squash
+      -- This is not propositional unless we force it to be using the HIT definition!
+      _▶_ : 𝒫 𝔉 → 𝒫 𝔉
+      U ▶ a = a <| U , squash
 
-      U₀-dc : [ isDownwardsClosed P (λ - → (- <| U) , squash) ]
-      U₀-dc a a₀ aεU₁ a₀⊑a = ◀-lem₁ U-down a₀⊑a aεU₁
+      U▶-dc : [ isDownwardsClosed P (λ - → (- <| U) , squash) ]
+      U▶-dc a a₀ aεU₁ a₀⊑a = ◀-lem₁ U-down a₀⊑a aεU₁
 
   _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
   x << y = x ⊑[ pos F↓ ] y
@@ -63,21 +63,21 @@ nothing but the map `U ↦ - <| U`.
       -- in (u) (𝕛 a₀) ⊓ (𝕛 a₁) ⊑ 𝕛 (a₀ ⊓ a₁).
       N₀ : (𝔘 𝔙 : ∣ F↓ ∣F) → 𝕛 (𝔘 ⊓[ F↓ ] 𝔙) ≡ (𝕛 𝔘) ⊓[ F↓ ] (𝕛 𝔙)
       N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) =
-        <<-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) d u
+        <<-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) down up
         where
-          d : [ (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) ]
-          d a (dir p)        = dir (π₀ p) , dir (π₁ p)
-          d a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
+          down : [ (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) ]
+          down a (dir p)        = dir (π₀ p) , dir (π₁ p)
+          down a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
             where
               IH : (c : outcome F b) → [ π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next F c) ]
-              IH c = d (next F c) (f c)
-          d a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
+              IH c = down (next F c) (f c)
+          down a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
             where
-              IH₀ = d a p
-              IH₁ = d a q
+              IH₀ = down a p
+              IH₁ = down a q
 
-          u : [ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) ]
-          u a (a◀U , a◀V) = lem3 V U V-down U-down (⊑[ P ]-refl a) a◀V a◀U
+          up : [ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) ]
+          up a (a◀U , a◀V) = lem3 V U V-down U-down (⊑[ P ]-refl a) a◀V a◀U
 
       N₁ : (𝔘 : ∣ F↓ ∣F) → [ 𝔘 << (𝕛 𝔘) ]
       N₁ _ a₀ a∈U = dir a∈U
