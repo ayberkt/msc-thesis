@@ -511,8 +511,8 @@ frame-is-SNS-PathP = SNS-≡→SNS-PathP isHomoEqv frame-is-SNS
 -- Similar to the poset case, this is sufficient to establish that the category of frames
 -- is univalent
 
-frame-univ₀ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (F ≃f G) ≃ (F ≡ G)
-frame-univ₀ = SIP frame-is-SNS-PathP
+≃f≃≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (F ≃f G) ≃ (F ≡ G)
+≃f≃≡ = SIP frame-is-SNS-PathP
 
 -- However, there are two minor issues with this.
 --
@@ -626,6 +626,6 @@ frame-univ₀ = SIP frame-is-SNS-PathP
 -- Now that we have this result, we can move on to show that given two frames F and G,
 -- (pos F) ≅ₚ (pos G) is equivalent to F ≡ G.
 
-frame-univ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
+≅ₚ≃≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) (eqv : ∣ F ∣F ≃ ∣ G ∣F)
            → (pos F ≅ₚ pos G) ≃ (F ≡ G)
-frame-univ F G eqv = pos F ≅ₚ pos G ≃⟨ ≃f≃≅ₚ F G ⟩ F ≃f G ≃⟨ frame-univ₀ F G ⟩ F ≡ G 𝔔𝔈𝔇
+≅ₚ≃≡ F G eqv = pos F ≅ₚ pos G ≃⟨ ≃f≃≅ₚ F G ⟩ F ≃f G ≃⟨ ≃f≃≡ F G ⟩ F ≡ G 𝔔𝔈𝔇
