@@ -204,7 +204,7 @@ compact : isCompact cantor
 
 ```
 U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → [ U ⊆ V ] → xs ◀ U → xs ◀ V
-U⊆V⇒◀U⊆◀V xs U V U⊆V = lem4 U V NTS xs
+U⊆V⇒◀U⊆◀V xs U V U⊆V = lem₄ U V NTS xs
   where
     NTS : (u : ℂ) → [ u ∈ U ] → u ◀ V
     NTS u u∈U = dir (U⊆V u u∈U)

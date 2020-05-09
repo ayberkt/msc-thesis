@@ -77,13 +77,13 @@ nothing but the map `U ↦ - <| U`.
               IH₁ = d a q
 
           u : [ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) ]
-          u a p = lem3 U V U-down V-down a a (⊑[ P ]-refl a) (π₀ p) (π₁ p)
+          u a (a◀U , a◀V) = lem3 V U V-down U-down (⊑[ P ]-refl a) a◀V a◀U
 
       N₁ : (𝔘 : ∣ F↓ ∣F) → [ 𝔘 << (𝕛 𝔘) ]
       N₁ _ a₀ a∈U = dir a∈U
 
       N₂ : (𝔘 : ∣ F↓ ∣F) → [ π₀ (𝕛 (𝕛 𝔘)) ⊆ π₀ (𝕛 𝔘) ]
-      N₂ 𝔘@(U , _) = lem4 (π₀ (𝕛 𝔘)) U (λ _ q → q)
+      N₂ 𝔘@(U , _) = lem₄ (π₀ (𝕛 𝔘)) U (λ _ q → q)
 ```
 
 We denote by `L` the frame of fixed points for `𝕛`.
@@ -128,7 +128,7 @@ x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
   fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
     where
       NTS : ∀ y → [ π₀ (𝕛 (e x)) y ] → [ π₀ (e x) y ]
-      NTS = lem4 (π₀ (e x)) (π₀ (↓-clos x)) (λ _ q → q)
+      NTS = lem₄ (π₀ (e x)) (π₀ (↓-clos x)) (λ _ q → q)
       up : [ e x ⊑[ P↓ ] 𝕛 (e x) ]
       up = π₀ (π₁ 𝕛-nuclear) (e x)
 
