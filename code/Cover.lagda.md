@@ -57,7 +57,7 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
 ```
 
 ```
-    lem2 : {a : ∣ P ∣ₚ} → a <| U → [ V a ] → a <| (U ∩ V)
+    lem2 : {a : ∣ P ∣ₚ} → a <| U → [ a ∈ V ] → a <| (U ∩ V)
     lem2 (squash p₀ p₁ i) h = squash (lem2 p₀ h) (lem2 p₁ h) i
     lem2 (dir q)          h = dir (q , h)
     lem2 (branch b f)     h = branch b (λ c → lem2 (f c) (V-dc _ _ h (mono ℱ _ b c)))
