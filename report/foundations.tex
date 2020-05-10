@@ -40,8 +40,10 @@ the definienda have been made clickable, which is marked by the
 
 Starting with the work of Hofmann and Streicher~\cite{hofmann-streicher}, the idea that
 types (as conceived in intensional type theory) have connections to homotopy theory had
-been brewing in the type theory community. The solidification of this idea started around
-2006, through the efforts of various researchers~\cite{warren-fmcs, uppsala-awodey, uppsala-garner, uppsala-van-den-berg, voevodsky-very-short}
+been brewing in the type theory community, the key idea being that types and their types
+of equality proofs can be viewed as topological spaces (identified up to homotopy) and
+their space of \emph{paths}. The solidification of this idea started around 2006, through
+the efforts of various researchers~\cite{warren-fmcs, uppsala-awodey, uppsala-garner, uppsala-van-den-berg, voevodsky-very-short}
 exploring this connection from different perspectives. It was around this time that the
 concept of univalence emerged. We will refrain from addressing the history of the subject
 in detail.
@@ -49,7 +51,7 @@ in detail.
 Among these researchers, Vladimir Voevodsky~\cite{voevodsky-bernays} emphasised the
 possibility of transforming type theory through insights arising from this line of work.
 He coined the term ``univalent foundations'' to refer to his vision of mathematical
-foundations that support univalence.
+foundations that support univalent mathematics.
 
 So what is univalence and what are the novelties it presents for mathematical foundations?
 Foundations have historically suffered problems with the notion of equality. In
@@ -61,10 +63,10 @@ for categories, group isomorphism for groups, and so on.
 
 A reasonable expectation from a foundational system for mathematics is that it be able to
 accommodate the common practices occurring in its high-level use in a natural way. Both
-set theory and type theory have suffered from the problem that they could not accommodate
-this practice well. In the context of type theory, however, this problem can be seen more
-clearly: the attempt to implement this informal practice in type theory gave rise to what
-is known as ``setoid hell''~\cite{homotopy-heaven}.
+set theory and type theory have suffered the problem that they could not accommodate this
+practice well. In the context of type theory, however, this problem can be seen more
+clearly: the implementation this informal practice in type theory gave rise to what is
+known as ``setoid hell''~\cite{homotopy-heaven}.
 
 Homotopy type theory, being the first of univalent type theories, is arguably the first
 foundational system that validates this practice of working with the ``right'' equality.
@@ -82,15 +84,14 @@ univalence implies function extensionality, which is not a theorem of non-unival
 theory.
 
 In the remainder of this chapter, we first present the technicalities required for
-formulating univalence. We subsequently proceed to present the basics of univalent type
-theory.
+formulating univalence. Subsequently, we present the basics of univalent type theory.
 
 \section{Equivalence and univalence}
 
 At the heart of univalent type theory lies the notion of \emph{type equivalence}. We build
 up to its definition given in Definition~\ref{defn:equiv}.
 
-We delineate the class of types that have exactly one inhabitant.
+We start by delineating the class of types that have exactly one inhabitant.
 \begin{defn}[Contractible]\label{defn:contr}
   A type $A$ is called contractible if it has exactly one inhabitant:
   \begin{equation*}
@@ -142,7 +143,7 @@ equal, we can clearly prove that they are equivalent.
   Given any $\oftyII{A}{B}{\univ{}_n}$ with a proof $\oftyI{p}{A = B}$, there exists a
   function:
   \begin{equation*}
-    \oftyI{\idtoeqvnm{}}{\pity{A, B}{\univ{}_n}{A = B \rightarrow A \simeq B}}.
+    \oftyI{\idtoeqvnm{}}{\pity{A, B}{\univ{}_n}{A = B \rightarrow \typequiv{A}{B}}}.
   \end{equation*}
 \end{defn}
 
@@ -181,12 +182,13 @@ This was first proven by Voevodsky using the \textsc{Coq} proof assistant.
 \section{Homotopy levels}
 
 One of the most interesting observations arising from the association of type theory with
-homotopy theory is that we can classify types with respect to the non-trivial homotopy
+homotopy theory is that we can classify types with respect to the nontrivial homotopy
 structure they bear. A space containing no nontrivial homotopy above dimension $n$ is
 called a homotopy $n$-type (or said to be of homotopy level $n$).
 
 We then recursively define a predicate expressing that a given type has homotopy level
-$n$. The idea is that we increase the dimension by one at each step.
+$n$. The idea is that we increase the dimension by one (i.e., go from a space to its path
+space) at each step.
 \begin{defn}[Homotopy level]\label{defn:hlevel}
   We will say that the homotopy level of a type $A$ is $\oftyI{n}{\mathbb{N}}$ if
   $\isofhlevel{A}{n}$ as inhabited:
@@ -200,7 +202,7 @@ The hierarchy of $n$-types is upwards-closed as expressed in the following propo
 \begin{prop}\label{prop:level-up}
   Given any type $A$, the following type has an inhabitant:
   \begin{equation*}
-    \pity{n}{\mathbb{N}}{\isofhlevel{A}{n} \rightarrow \isofhlevel{A}{n+1}}.
+    \pity{n}{\mathbb{N}}{\isofhlevel{A}{n} \rightarrow \isofhlevel{A}{\suc{n}}}.
   \end{equation*}
 \end{prop}
 
@@ -229,9 +231,9 @@ Furthermore, $\sum$ and $\prod$ types respect h-levels.
 \subsection{Propositions}\label{subsec:prop}
 
 The homotopy level of one is of special interest: it is the class of types that behave
-like logical propositions, in the sense that their proof structures are trivial: they are
+like logical propositions, in the sense that their proof structures are trivial; they can
 inhabited by at most one term. This is precisely the property we desire in those types
-that we view as expressing \emph{properties}; we are interested, not in what they are
+that we view as expressing \emph{properties}: we are interested, not in what they are
 inhabited by, but in whether they are inhabited or not.
 
 \begin{defn}[Proposition]\label{defn:prop'}
@@ -271,8 +273,8 @@ this is denoted \fnname{[} $A$ \fnname{]}.
 Once we introduce this delineation of the class of propositional types, we have to make
 sure that types that are thought of as properties are actually propositional types. For
 instance, the definition of equivalence we gave (in Defn.~\ref{defn:equiv}) has the
-crucial property that it is propositional. This would not be the case if we were to use
-the usual notion of invertible function.
+crucial property that it is propositional. This would not be the case~\cite{hottbook} if
+we were to use the usual notion of equivalence as an invertible function.
 
 Many types that are expected to behave like propositions behave naturally like
 propositions so it suffices to prove their propositionality; for those that do not,
@@ -291,7 +293,7 @@ two corollaries, of propositions \ref{prop:is-of-level-pi} and
 
 \begin{prop}\label{prop:sigma-prop}
   Given types $\oftyI{A}{\univ{}_m}$ and $\oftyI{B}{A \rightarrow \univ{}_n}$, if $A$ is a
-  proposition and $B$ is a family of propositions, then $\sigmaty{x}{A}{B}$ is a
+  proposition and $B$ is a family of propositions, then $\sigmaty{x}{A}{B(x)}$ is a
   proposition.
 \end{prop}
 
@@ -327,37 +329,42 @@ the equivalence of two propositional types.
 \end{prop}
 
 As we mentioned before, Voevodsky's notion of type equivalence enjoys the crucial property
-that it is propositional. Let us consider the categorical definition of one might expect.
+that it is propositional. Let us consider the familiar notion of equivalence between
+types.
 \begin{defn}[Type isomorphism]\label{defn:type-iso}
   Given types $A$ and $B$, the type of type isomorphisms between them is denoted by
   $\typiso{A}{B}$:
   \begin{alignat*}{2}
-    \istypiso{f}   \quad&\is\quad && \sigmaty{g}{B \rightarrow A}{g \circ f \sim \idfn{A} \times g \circ f \sim \idfn{B}} \\
+    \istypiso{f}   \quad&\is\quad && \sigmaty{g}{B \rightarrow A}{\exteq{g \circ f}{\idfn{A}} \times \exteq{f \circ g}{\idfn{B}}} \\
     \typiso{A}{B} \quad&\is\quad &&\sigmaty{f}{A \rightarrow B}{\istypiso{f}}                          .
   \end{alignat*}
 \end{defn}
 
-This would not be viable definition of type equivalence in univalent type theory as it
-suffers the problem that it is not propositional. A function can have different left and
-right inverses in the general case when we are dealing with $n$-types.
-Definition~\ref{defn:type-iso} is logically equivalent but not equivalent to
-Definition~\ref{defn:equiv}.
+This would not be a viable definition of type equivalence in univalent type theory as it
+suffers the problem that it is not propositional: although the inverse a function is
+necessarily unique, the invertibility proofs of are not unique in the general case when we
+are dealing with $n$-types. Therefore, Definition~\ref{defn:type-iso} is logically
+equivalent but not equivalent to Definition~\ref{defn:equiv}.
 
-\begin{prop}
+\begin{prop}\label{prop:iso-equiv-equiv}
   Definitions \ref{defn:type-iso} and \ref{defn:equiv} are logically equivalent.
 \end{prop}
 
-When we have some $\oftyI{f}{A \rightarrow B}$ such that $\isequiv{f}$ we will refer to the inverse
-of $f$. This expression refers implicitly to this equivalence. The reader is advised to
-keep the distinction between $\typequiv{A}{B}$ and $\typiso{A}{B}$ in mind. This will be
+
+Notice, however, that this logical equivalence is an equivalence in the special where the
+domain and the codomain are h-sets.
+
+When we have some $\oftyI{f}{A \rightarrow B}$ such that $\isequiv{f}$, we will speak of the inverse
+of $f$ and denote this $\invequiv{f}$. This expression refers implicitly to this logical
+equivalence. The distinction between $\typequiv{A}{B}$ and $\typiso{A}{B}$ will be
 especially important in Section~\ref{sec:frame-univ}.
 
 \subsection{Sets}
 
 The other homotopy class of interest is the class of types whose proof structures are not
-trivial but the proof structures of their types of equality proofs are trivial. Put more
-simply, inhabitants of such types are equal to each other in \emph{at most one way}. This
-is the class of types that are called sets.
+necessarily trivial but the proof structures of their types of equality proofs are
+trivial. Put more simply, inhabitants of such types are equal to each other in
+\emph{at most one way}. This is the class of types that are called sets.
 \begin{defn}[Set]\label{defn:hset}
   A type $A$ is a set (disambiguated as h-set) if its homotopy level is two:
   \begin{equation*}
@@ -394,7 +401,7 @@ h-set case.
   $B(a)$ is a set for every $\oftyI{a}{A}$, then $\sigmaty{x}{A}{B(x)}$ is a set.
 \end{prop}
 
-Notice also that the type expressing a given a type is a set is a proposition.
+Notice also that the type expressing that a given a type is a set is a proposition.
 \begin{prop}\label{prop:set-prop}
   Given any type $A$, the type $\isset{A}$ is a proposition.
 \end{prop}
@@ -404,7 +411,7 @@ Let us write down the usual definition of a decidable type.
 \begin{defn}\label{defn:decidable}
   A type $A$ is called is decidable if it satisfies the law of excluded middle:
   \begin{equation*}
-    \isdec{A} \quad\is\quad \pity{x~y}{A}{A + \neg A}
+    \isdec{A} \quad\is\quad \pity{x~y}{A}{A + \neg A}.
   \end{equation*}
 \end{defn}
 
@@ -481,9 +488,9 @@ live in the universe level we provide it as an argument; we denote this using a 
 
 \section{Families}\label{sec:fam}
 
-In type theory, we have two notions of ``subset of inhabitants of a type''. One of these
-is the powerset as we presented in Sec.~\ref{sec:pow}. We now briefly summarise the other
-approach in which we view a subset of a type $A$ as an $A$-valued function (on some
+In type theory, we have two common notions of ``subset of inhabitants of a type''. One of
+these is the powerset as we presented in Sec.~\ref{sec:pow}. We now briefly summarise the
+other approach in which we view a subset of a type $A$ as an $A$-valued function (on some
 domain).
 
 \begin{defn}[Family]\label{defn:fam}
@@ -504,9 +511,9 @@ as though it were a concrete set, so we will use the notation $\{ x_i ~|~ i \in 
 substitute for ``$I$-indexed family whose $i$th projection is denoted $x_i$''. Furthermore,
 we will talk quite often about join operators $\oftyI{\bigvee\_}{\sub{o}{A} \rightarrow A}$. Instead of
 writing $\bigvee (I, \lambda i.~e(i))$ for the application of a join operator to a family, we will
-use the more familiar notation of
+use the more familiar notation:
 \begin{equation}\label{eqn:join-syntax}
-  \bigvee_i e
+  \bigvee_i e.
 \end{equation}
 What is meant by such notational sugar is expected to be obvious to the reader.
 
@@ -600,7 +607,7 @@ presented in this thesis.
 \end{defn}
 
 \paragraph*{Remark on Agda notation.}
-Again, we use a similar syntactic sugaring in the \veragda{} formalisation. As the curly
+Again, we use similar syntactic sugaring in the \veragda{} formalisation. As the curly
 bracket symbols, \fnname{\{} and \fnname{\}}, are not available in \veragda{}, we
 approximate these as \fnname{\textlquill} and \fnname{\textrquill} for the comprehension notation. One
 instance of such a syntax declaration can be found in the \modname{Family} module.
@@ -664,7 +671,7 @@ instance of such a syntax declaration can be found in the \modname{Family} modul
 \end{code}
 \end{center}
 
-Given a inhabitant $U$ of the powerset of some type $A$, we can represent $U$ as a family
+Given an inhabitant $U$ of the powerset of some type $A$, we can represent $U$ as a family
 as defined below.
 \begin{defn}[Familification of a powerset]
   Let $A$ be a type and $\oftyI{U}{\pow{A}}$. The family associated with $U$ is
@@ -676,9 +683,9 @@ as defined below.
 \end{defn}
 
 As the representation we are working with will be clear to the reader from the context, we
-will engage in a form notational abuse and will not explicitly denote that we are working
-with the familification of a powerset. In the \veragda{} formalisation, this is denoted
-$\AgdaFunction{⟪} U \AgdaFunction{⟫}$.
+will engage in a form of notational abuse and will not explicitly denote that we are
+working with the familification of a powerset. In the \veragda{} formalisation, this is
+denoted $\AgdaFunction{⟪} U \AgdaFunction{⟫}$.
 
 \section{Higher Inductive Types}
 
@@ -699,9 +706,9 @@ type would be inductively defined by the specification of a single constructor:
 \end{equation*}
 whose only equality is the trivial one:
 $\oftyI{\mathsf{refl}_{\rulename{\star}}}{\rulename{\star} =_{\unitty{}} \rulename{\star}}$. This means
-that $\unitty{}$ contains no non-trivial paths.
+that $\unitty{}$ contains no nontrivial paths.
 
-HITs allow us to insert non-trivial paths into a type. For instance, we can add a new
+HITs allow us to insert nontrivial paths into a type. For instance, we can add a new
 equality of $\rulename{\star}$ to itself, that we will call $\rulename{loop}$; the resulting
 type is called the $\mathsf{Circle}$.
 \begin{equation*}
@@ -716,13 +723,14 @@ type is called the $\mathsf{Circle}$.
 
 Of course, when generalising the machinery for defining inductive types in this way, we
 have to be careful about the corresponding \emph{introduction} and \emph{elimination}
-rules. The introduction rules are easy to deal with as they are given by the point
-constructors. The elimination rules, however, are quite subtle and it is technically
-intricate to completely address the problem of extracting (dependent) eliminators from
-higher inductive definitions. Even in the HoTT Book~\cite[Sec.~6.2]{hottbook}, this issue
-is not addressed in a completely technical way. Similarly, we will consider in the
-following section, an useful instance of an HIT and presents its recursion principle.
-Hopefully, this should provide sufficient intuition for the reader.
+rules. The introduction rules are easy to deal with as they are given by the constructors.
+The elimination rules, however, are quite subtle and it is technically intricate to
+completely address the problem of extracting (dependent) eliminators from higher inductive
+definitions. Even in the HoTT Book~\cite[Sec.~6.2]{hottbook}, this issue is not addressed
+in a completely technical way. Similarly, we will consider in the following section, a
+useful instance of an HIT and present its recursion principle. Hopefully, this should
+provide sufficient intuition for the reader; it certainly suffices for the purposes of
+our development.
 
 HITs turn out to be immensely useful and in fact we will explain later that they are used
 in a crucial way in this thesis: the main construction of Chapter~\ref{chap:formal-topo}
@@ -746,7 +754,7 @@ one of $P$ or $Q$ it comes from. For this to become propositional, we have to so
 We now give the definition of propositional truncation as an HIT.
 
 \begin{defn}[Propositional truncation]\label{defn:truncation}
-  Given a type $A$, its propositional truncation $\trunc{A}$ is a HIT given by one point
+  Given a type $A$, its propositional truncation $\trunc{A}$ is an HIT given by one point
   constructor, $\rulename{|}\_\rulename{|}$, and one path constructor,
   $\rulename{trsquash}$.
   \begin{equation*}
@@ -762,8 +770,8 @@ We now give the definition of propositional truncation as an HIT.
     \end{prooftree}
   \end{equation*}
   The recursion principle for propositional truncation is the following: given any two
-  types $A$ and $B$, to show $\trunc{A} \rightarrow B$ it suffices to show $\isprop{B}$ and $A \rightarrow B$.
-  Formally,
+  types $A$ and $B$, to show $\trunc{A} \rightarrow B$, it suffices to show $\isprop{B}$ and $A \rightarrow
+  B$. Formally,
   \begin{equation*}
     \isprop{B} \rightarrow (A \rightarrow B) \rightarrow \trunc{A} \rightarrow B.
   \end{equation*}
@@ -773,13 +781,13 @@ Intuitively, why does the recursion principle have this form? To define a functi
 $\nats{} \rightarrow B$ on the natural numbers using their elimination principle, we need to
 construct two terms: (1) an inhabitant of $B$ for the base case, and (2) a
 $\nats{}$-indexed family of inhabitants of $B \rightarrow B$ for the inductive case; these
-correspond to the types of the constructors $\oftyI{\zero{}}{\nats{}}$ and
-$\oftyI{\sucnm{}}{\nats{} \rightarrow \nats{}}$. In the case of truncation, we have a constructor of
-the form $\oftyI{\rulename{trsquash}}{\pity{x~y}{A}{x =_A y}}$. Accordingly, in addition
-to some inhabitant of $A \rightarrow B$ for the $\rulename{|}\_\rulename{|}$ constructor, we now
-have to require a $(B \times B)$-indexed family of equality proofs: for each
-$\oftyII{x}{y}{B}$, an proof of $x = y$, which is none other than the requirement of $B$
-to be propositional.
+correspond to the types of the (non-dependent) constructors $\oftyI{\zero{}}{\nats{}}$ and
+$\oftyI{\sucnm{}}{\nats{} \rightarrow \nats{}}$. In the case of truncation, we have a (dependent)
+constructor of the form $\oftyI{\rulename{trsquash}}{\pity{x~y}{A}{x =_A y}}$.
+Accordingly, in addition to some term of type $A \rightarrow B$ for the $\rulename{|}\_\rulename{|}$
+constructor, we now have to require a $(B \times B)$-indexed family of equality proofs: for
+each $\oftyII{x}{y}{B}$, a proof of $x = y$, which is none other than the requirement of
+$B$ to be propositional.
 
 Observe that this corresponds to the intuitive distinction between \emph{property} and
 \emph{structure}: we are allowed to use the inhabitant of a propositionally truncated type
@@ -791,5 +799,5 @@ constructors. Instead, we will simply mention that some $\trunc{A} \rightarrow B
 propositionality of $B$.
 
 This definition of propositional truncation as an HIT brings us to the end of this
-chapter. With all the foundational notions we have defined, we are now ready to carry out
-an investigation of formal topology in univalent foundations.
+chapter. The foundational notions we have collected so far suffice to carry out an
+investigation of formal topology in univalent foundations.

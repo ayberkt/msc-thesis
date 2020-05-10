@@ -12,8 +12,7 @@ verifiable properties. Recall that a frame consists of the following:
 \end{itemize}
 
 In addition to these, we need a law to ensure the correct interplay between meets and
-joins. Suppose that we have a set $A$ and a family of sets $B_0, B_1, \cdots$. Consider the
-set:
+joins. Suppose we have a set $A$ and a family of sets $B_0, B_1, \cdots$. Consider the set:
 \begin{equation*}
   A \cap (\bigcup_i B_i).
 \end{equation*}
@@ -66,7 +65,7 @@ Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in case
 be ambiguity) and the underlying set of $P$ as $\abs{P}$. Notice that the fourth component
 of $\posetaxnm{}$ requires the carrier set to be an h-set (Defn.~\ref{defn:hset}).
 
-Given a poset $P$, we will talk about its \emph{downwards-closed subsets}: sets that
+We can talk about the \emph{downwards-closed subsets} of a given poset $P$: sets that
 include all elements below their elements. One way of reading this is as expressing the
 property of being closed under refinement or ``collection of more information''. Take a
 certain element $x : \abs{P}$ that we view as a stage of information. For some other
@@ -75,21 +74,22 @@ information i.e., it contains more information hence admitting less approximatio
 $U$ be a subset of $\abs{P}$. The property that $U$ is downwards-closed is then nothing
 but:
 \begin{equation*}
-  x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U,
+  \mempow{x}{U} \rightarrow y \sqsubseteq x \rightarrow \mempow{y}{U},
 \end{equation*}
 the intuitive reading of which is: $U$ is closed under the reception of more information.
 In other words, regardless of how things unfold after $x$ has been reached, the stage of
 information we end up at will still be in $U$. One can therefore say that $U$ is itself
 like a finitely verifiable property on $\abs{P}$ in that a judgement of membership of a
-set $x_0 \sqsubseteq x_1 \sqsubseteq \ldots$ can be made just by observing the membership of some $x_i \in U$ for
-some $x_i$.
+set $x_0 \sqsupseteq x_1 \sqsupseteq \ldots$ of elements can be made just by observing the membership of
+$\mempow{x_i}{U}$ for some $x_i$.
 
 Let us formally summarise the notion of downwards-closure.
 \begin{defn}[Downwards-closed subset]\label{defn:dc-subset}
-  We first define a predicate expressing that a given subset of $P$ is downwards-closed:
+  We first define a predicate expressing that a given subset $\oftyI{U}{\pow{\abs{P}}}$ of
+  some poset $P$ is downwards-closed:
   \begin{alignat*}{2}
-    \isdcnm{}   &\quad:\quad     &&\poset{} \rightarrow \pow{\abs{P}} \rightarrow \hprop{}          \\
-    \isdc{P, U} &\quad\is{}\quad &&\pity{x~y}{\abs{P}}{x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U}   .
+    \isdcnm{}   &\quad:\quad     &&\poset{} \rightarrow \pow{\abs{P}} \rightarrow \hprop{}                        \\
+    \isdc{P, U} &\quad\is{}\quad &&\pity{x~y}{\abs{P}}{\mempow{x}{U} \rightarrow y \sqsubseteq x \rightarrow \mempow{y}{U}} .
   \end{alignat*}
   The propositionality follows by Prop.~\ref{prop:pi-prop}. We then define the
   type of downwards-closed subsets of a poset as:
@@ -213,8 +213,16 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
 We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
 do for posets. Similarly, we will refer to the underlying partial order as $\_\sqsubseteq_F\_$, the
 join operator as $\bigvee^F$, and the meet operator as $\wedge_F$. We will colloquially refer to the
-underlying poset of a given frame $F$ which we denote $\posof{F}$.
+underlying poset of a given frame $F$ which we will denote $\posof{F}$.
 
+Notice at this point the source of the predicativity problems: in the definition of
+$\mathsf{isLUB}$, we are quantifying over \emph{subsets}. We have a type that quantifies
+over other types, which in type theory, is a ``large'' type. This quickly gives rise to
+problems: if we were to work with this, we would be able to have only joins of families
+whose index types live in the ground universe; this would be sufficient for entertaining
+only trivial examples of topologies.
+
+Let us now note that $\frameaxnm{}$ is propositional as one would expect.
 \begin{prop}\label{prop:frame-ax-prop}
   For every raw frame structure $(\sqsubseteq, \top, \wedge, \bigvee)$, $\frameax{\sqsubseteq, \top, \wedge, \bigvee}$ is a proposition.
 \end{prop}
@@ -255,11 +263,12 @@ to preserve this structure.
   homomorphism.
 \end{defn}
 
-Alternatively, we could define an isomorphism between frames as an isomorphism between the
-underlying posets. This would be equivalent since isomorphisms preserve meets and joins.
+We could of course strengthen this definition to: isomorphism between the underlying
+posets. This would be equivalent since isomorphisms already preserve meets and joins.
 \begin{defn}\label{defn:frame-iso-official}
   An isomorphism of frame $F$ and $G$ is simply an isomorphism of their underlying posets.
 \end{defn}
+We will consider notions of frame isomorphisms in detail in Sec.~\ref{sec:frame-univ}.
 
 \section{Some properties of frames}
 
@@ -268,6 +277,7 @@ underlying posets. This would be equivalent since isomorphisms preserve meets an
 \end{prop}
 The proof is trivial and therefore omitted.
 
+We will need the following important lemma when we get to the universal property.
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
   Let $\oftyI{F}{\framety{m}{n}{o}}$ and let $\oftyI{f}{\pity{a}{A}{B(a) \rightarrow \abs{F}}}$ for
   some $\oftyI{A}{\univ{}_o}$ and $\oftyI{B}{A \rightarrow \univ{}_o}$. The following equality
@@ -283,10 +293,10 @@ interesting and involves a non-trivial amount of bureaucracy. It can be found in
 \veragda{} formalisation, in the \modname{Frame} module; the constructed inhabitant is
 named \fnname{flatten}.
 
-The distributivity law we required in the definition of a frame is asymmetric: the join
-has to be the right operand of the meet for it to apply. Therefore we cannot
-simultaneously distribute the meet of two joins in a join of meets. Of course, this does
-not matter thanks to Prop.~\ref{prop:comm}, but it is a bit inconvenient to have to
+The distributivity law we required in the definition of a frame applies only in cases
+where we have the join as the right-hand conjunct of a meet. Therefore we cannot
+simultaneously distribute the meet of two joins to get a join of meets. Of course, this
+does not matter thanks to Prop.~\ref{prop:comm}, but it is a bit inconvenient to have to
 explicitly apply Prop.~\ref{prop:comm} for this purpose. Therefore we record the following
 fact for simultaneously distributing the meet of two joins.
 
@@ -303,7 +313,7 @@ fact for simultaneously distributing the meet of two joins.
   distributivity law again, and then flatten (using Lemma~\ref{lem:flatten}).
 \end{proof}
 
-\section{Frames form a univalent category}\label{sec:frame-univ}
+\section{Univalence for frames}\label{sec:frame-univ}
 
 It is common practice in mathematics to regard two isomorphic structures as equal.
 However, this requires isomorphisms to be viewed as the appropriate notion of equality on
@@ -334,9 +344,9 @@ function to preserve the structure defined in (1)).
 
 The result of Escardó~\cite{escardo-uf-intro} applies to a general notion of structure, as
 specified by (1) and (2). This requires us to describe the conditions under which a notion
-of isomorphism of structures is well-behaved. Such a well-behaved definition of what it
-means for an equivalence of carrier types to respect a given structure is called a
-\emph{standard notion of structure} by Escard\'{o}~\cite{escardo-uf-intro}.
+of isomorphism of structures is well-behaved. Such a definition of what it means for an
+equivalence of carrier types to respect a given structure is called a \emph{standard
+  notion of structure} by Escard\'{o}~\cite{escardo-uf-intro}.
 
 When is an isomorphism well-behaved? Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a
 structure, and let $\iota$ be a function expressing that a given equivalence between types $A$
@@ -359,9 +369,9 @@ and define $\iota$ as:
   \iota(P, Q, (f , \_)) \quad\is\quad \ismonotonic{f} \times \ismonotonic{\invequiv{f}}  .
 \end{equation*}
 This delineates those type equivalences between $\abs{P}$ and $\abs{Q}$ that have the
-virtue of preserving the poset structure on types $A$ and $B$. We call this a
-\emph{monotonic equivalence} and denote the type of monotonic equivalences between
-$\abs{P}$ and $\abs{Q}$ by $\posetequiv{P}{Q}$.
+virtue of preserving their poset structures. We call this a \emph{monotonic equivalence}
+and denote the type of monotonic equivalences between $\abs{P}$ and $\abs{Q}$ by
+$\posetequiv{P}{Q}$.
 \begin{defn}[Monotonic equivalence]\label{defn:poset-equiv}
   \begin{equation*}
     \posetequiv{P}{Q} \quad\is\quad \sigmaty{e}{\typequiv{\abs{P}}{\abs{Q}}}{\iota(P, Q, e)}
@@ -379,7 +389,7 @@ well-behaved characterisation of $S$-homomorphic equivalences.
       s = t \rightarrow \iota((A, s), (A, t), \idequiv{A}).
     \end{equation*}
     The second requirement is that this map is an equivalence for every type $A$ and for
-    every two structures $s$ and $t$ on it.
+    every two $S$-structures $s$ and $t$ on it.
 \end{enumerate}
 
 Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure and let $\oftyII{A}{B}{\univ{}_m}$
@@ -420,12 +430,12 @@ from this combined with the equivalence given by the SIP:
   \typequiv{(\posetiso{P}{Q})}{\typequiv{(\posetequiv{P}{Q})}{(P \equiv Q)}}.
 \end{equation*}
 
-In the case of frames, our notion of homomorphism does not even need to require the
-preservation of frame data for it to be an isomorphism (as remarked in
-Defn.~\ref{defn:frame-iso-official}); simply preserving the partial order suffices. It is,
-however, quite convenient to carry out the SNS proof with a notion of frame homomorphism
-that explicitly requires the preservation of frame data. It is for this reason that, in
-the \veragda{} formalisation, we first obtain the result (using the SIP)
+In the case of frames, our notion of isomorphism does not even need to require the
+preservation of frame data (as remarked in Defn.~\ref{defn:frame-iso-official}); simply
+preserving the partial order suffices. It is, however, quite convenient to carry out the
+SNS proof with a notion of frame homomorphism that explicitly requires the preservation of
+frame data. It is for this reason that, in the \veragda{} formalisation, we first obtain
+the result (using the SIP)
 \begin{equation}\label{eqn:frame-equiv-1}
   \typequiv{(\frameequiv{F}{G})}{(F \equiv G)},
 \end{equation}

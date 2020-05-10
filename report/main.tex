@@ -27,7 +27,7 @@
   frame, homotopy type theory, univalence, univalent foundations
 }
 
-\newcommand{\omitagdainappendix}{}
+%% \newcommand{\omitagdainappendix}{}
 
 \definecolor{darkgreen}{rgb}{0,0.45,0}
 \definecolor{darkred}{rgb}{0.45,0,0}
@@ -62,8 +62,8 @@
 \newcommand{\oftyI}[2]{#1\hspace{0.1mm}:\hspace{0.1mm}#2}
 \newcommand{\oftyII}[3]{#1, #2:#3}
 \newcommand{\refl}{\mathsf{refl}}
-\newcommand{\zero}{\rulename{\mathsf{zero}}}
-\newcommand{\sucnm}{\rulename{\mathsf{suc}}}
+\newcommand{\zero}{\mathsf{zero}}
+\newcommand{\sucnm}{\mathsf{suc}}
 \newcommand{\suc}[1]{\sucnm{}\left(#1\right)}
 
 \newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
@@ -181,7 +181,7 @@
 
 \newcommand{\frameequiv}[2]{#1 \frameequivnm{} #2}
 
-\newcommand{\invequiv}[1]{\mathsf{inv}\left(#1\right)}
+\newcommand{\invequiv}[1]{\hyperref[prop:iso-equiv-equiv]{\mathsf{inv}}\left(#1\right)}
 
 \newcommand{\vermono}{monotonicity}
 \newcommand{\versim}{simulation}
@@ -206,7 +206,8 @@
 
 \newcommand{\framestrnm}{\hyperref[defn:frame]{\mathsf{FrameStr}}}
 \newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
-\newcommand{\frameax}[1]{\hyperref[defn:frame]{\mathsf{FrameAx}}\left(#1\right)}
+\newcommand{\frameaxnm}{\hyperref[defn:frame]{\mathsf{FrameAx}}}
+\newcommand{\frameax}[1]{\frameaxnm{}\left(#1\right)}
 \newcommand{\framenm}{\hyperref[defn:frame]{\mathsf{Frame}}}
 \newcommand{\framety}[3]{\framenm{}_{#1, #2, #3}}
 
@@ -230,7 +231,7 @@
 \newcommand{\nucleus}{\hyperref[defn:nucleus]{\mathsf{Nucleus}}}
 
 \newcommand{\meet}[2]{#1 \wedge #2}
-\newcommand{\joinnm}[3]{\bigvee}
+\newcommand{\joinnm}{\bigvee}
 \newcommand{\join}[3]{\joinnm{}_{#1~:~#2} #3}
 
 \newcommand{\RHD}{\scalebox{1.2}{{\tt ▶}}}
@@ -262,9 +263,6 @@
 
 %% \newcommand{\paragraphsummary}[1]{{\color{orange} \textsc{#1}}}
 \newcommand{\paragraphsummary}[1]{}
-\newcommand{\todo}[1]{
-  {\color{red} \textsf{TODO: #1}}
-}
 
 %% \setmainfont{XITS}
 %% \setmathfont{XITS Math}
@@ -290,20 +288,22 @@
   the Cantor space and construct a proof that it is compact.
 
   The development that we present has been carried out using the cubical extension of
-  the \veragda{} proof assistant~\cite{cubical-agda}. The presentation in this thesis
-  amounts to an informalisation of this formal development.
+  the \veragda{} proof assistant~\cite{cubical-agda}. No postulates have been used and the
+  development typechecks with the \texttt{--safe} flag of \veragda{}. The presentation in
+  this thesis amounts to an informalisation of this formal development.
 \end{abstract}
 
 \begin{acknowledgements}
   I would like to start by thanking my supervisor Thierry Coquand for all his efforts that
-  have made this thesis possible. He has not only suggested the topic of this thesis and
-  closely supported all my work, but he has also inspired and shaped much of my thought on
-  type theory through various lectures and discussions, some in the context of
-  the \emph{Types for Programs and Proofs} course he co-taught in Fall 2018. I have in
-  fact greatly benefited from this course so I would like to thank the rest of its
-  teaching staff: Peter Dybjer, Andrea Vezzosi, and Fabian Ruch. Furthermore, I would like
-  to thank Nils Anders Danielsson, both for serving as the examiner of this thesis and
-  teaching an excellent course on models of computation.
+  have made this thesis possible. He has not only suggested the topic of this thesis,
+  closely supported all my work, and patiently answered my (at times never-ending)
+  questions, but he has also inspired and shaped much of my thought on type theory through
+  various lectures and discussions, some in the context of the \emph{Types for Programs
+  and Proofs} course he co-taught in Fall 2018. In fact, this course has been the most
+  important course I have taken at Chalmers so I would like to thank all of its teaching
+  staff: Peter Dybjer, Andrea Vezzosi, and Fabian Ruch. Furthermore, I would like to thank
+  Nils Anders Danielsson, both for serving as the examiner of this thesis and teaching an
+  excellent course on models of computation.
 
   Throughout the two years I have spent at Chalmers, I have had the opportunity to engage
   with the lively type theory community of Gothenburg, most importantly through
@@ -313,20 +313,19 @@
   Jesper Cockx, Carlos Tomé Cortiñas, Nachiappan Valiappan, and Sandro Stucki for
   undertaking the organisational efforts required to keep ITC going.
 
-  I am grateful to some of my friends for guidance and many stimulating discussions. I
-  would like to thank Joel Sjögren, Warrick Macmillan, Alexander Fuhs, Stefan
-  Ljung\-strand, Robert Krook, and Benjamin Lim for various discussions on logic, types,
-  categories, and much more. I would also like to thank Joel Sjögren for accepting to
-  serve as an opponent for this thesis. Joomy Korkut deserves special mention for getting
-  me interested in \veragda{} in the first place; thank you Joomy for effectively starting
-  the chain of events that ended up with me moving to Sweden in pursuit of type theory
-  enlightenment.
+  I would like to thank my friends Joel Sjögren, Warrick Macmillan, Alexander Fuhs, Stefan
+  Ljung\-strand, Robert Krook, and Benjamin Lim for helpful advice and various discussions
+  on logic, types, categories, and much more. I would also like to thank Joel Sjögren for
+  accepting to serve as an opponent for this thesis. Joomy Korkut deserves special mention
+  for getting me interested in \veragda{} in the first place: thank you Joomy for
+  effectively starting the chain of events that ended up with me moving to Sweden in
+  pursuit of type theory enlightenment.
 
-  Of course, everything I have done has been possible with the support of my parents to
-  whom I am and will always be grateful.
+  Of course, everything I have done has been possible thanks to the support of my parents
+  to whom I am and will always be grateful.
 
-  Finally, I would like to thank the Adlerbertska Foundation for funding my studies at
-  Chalmers through a generous scholarship.
+  Finally, I would like to thank the Adlerbert Foundation for funding my studies at
+  Chalmers through the Adlerbert Study Scholarship.
 \end{acknowledgements}
 
 \makelists{}
