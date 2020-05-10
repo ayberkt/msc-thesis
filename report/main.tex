@@ -86,6 +86,7 @@
 \newcommand{\iscompact}[1]{\hyperref[defn:compact]{\mathsf{isCompact}}\left(#1\right)}
 
 \newcommand{\unitty}{\mathsf{Unit}}
+\newcommand{\unittm}{\rulename{\star}}
 
 %% Homotopy levels.
 \newcommand{\iscontr}[1]{\hyperref[defn:contr]{\mathsf{isContr}}\left(#1\right)}
@@ -117,11 +118,14 @@
 \newcommand{\listty}[1]{\listtynm{}\left(#1\right)}
 \DeclareMathOperator{\cons}{\text{\texttt{∷}}}
 \newcommand{\bitlist}{\mathbb{B}}
-\newcommand{\singleton}[1]{\text{\texttt{[}}~#1~\text{\texttt{]}}}
-\newcommand{\bitI}{\text{\texttt{1}}}
-\newcommand{\bitO}{\text{\texttt{0}}}
-\newcommand{\emptylist}{\text{\texttt{[]}}}
-\newcommand{\snoc}[2]{#1 \frown #2}
+\newcommand{\singleton}[1]{%
+  \hyperref[defn:list]{\text{\texttt{[}}}~#1~\hyperref[defn:list]{\text{\texttt{]}}}
+}
+\newcommand{\bitI}{\mathbf{1}}
+\newcommand{\bitO}{\mathbf{0}}
+\newcommand{\emptylist}{\rulename{\text{\texttt{[]}}}}
+\DeclareMathOperator{\snocnm}{\rulename{\frown}}
+\newcommand{\snoc}[2]{#1 \snocnm{} #2}
 \newcommand{\cantoris}{\hyperref[defn:cantor-is]{\mathcal{C}}}
 
 \newcommand{\subsetofnm}{\hyperref[defn:inclusion]{\subseteq}}
@@ -143,8 +147,8 @@
 \newcommand{\memfam}[2]{#1 \memfamnm #2}
 \newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
 
-\DeclareMathOperator{\concat}{\textnormal{\texttt{++}}}
-\DeclareMathOperator{\append}{\text{\texttt{++}}}
+\DeclareMathOperator{\concat}{\hyperref[defn:concat]{\textnormal{\texttt{++}}}}
+\DeclareMathOperator{\append}{\textnormal{\texttt{++}}}
 
 \newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
 \newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
@@ -186,7 +190,7 @@
 \newcommand{\verposet}{\hyperref[defn:poset]{poset}}
 \newcommand{\verintrsys}{\hyperref[defn:intr-sys]{interaction system}}
 \newcommand{\veragda}{\textsc{Agda}}
-\newcommand{\verbool}{Boolean}
+\newcommand{\verbool}{boolean}
 
 \newcommand{\modname}[1]{{\color{AgdaModule} \texttt{#1}}}
 \newcommand{\fnname}[1]{{\color{AgdaFunction} \texttt{#1}}}
