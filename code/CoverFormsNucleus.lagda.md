@@ -9,7 +9,7 @@ open import Basis          hiding (A) renaming (squash to squash′)
 open import Poset
 open import Frame
 open import Cover
-open import Nucleus        using    (isNuclear; Nucleus; nuclear-fixed-point-frame; idem)
+open import Nucleus        using    (isNuclear; Nucleus; 𝔣𝔦𝔵; idem)
 open import Data.Bool      using    (Bool; true; false)
 open import FormalTopology renaming (pos to pos′)
 ```
@@ -90,7 +90,7 @@ We denote by `L` the frame of fixed points for `𝕛`.
 
 ```
   L : Frame (suc ℓ₀) ℓ₀ ℓ₀
-  L = nuclear-fixed-point-frame P↓ (𝕛 , 𝕛-nuclear)
+  L = 𝔣𝔦𝔵 P↓ (𝕛 , 𝕛-nuclear)
 
   ⦅_⦆ : ∣ L ∣F → 𝒫 ∣ P ∣ₚ
   ⦅ ((U , _) , _) ⦆ = U
