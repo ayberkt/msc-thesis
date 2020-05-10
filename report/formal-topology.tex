@@ -503,8 +503,7 @@ formal topology;
 
 \begin{thm}\label{thm:covering-nucleus}
   Let $\McF{}$ be a formal topology with an underlying poset $P$. The covering relation of
-  $\McF{}$ (defined in Defn.~\ref{defn:cover}) is a nucleus on
-  $\dcframe{P}$.
+  $\McF{}$ (defined in Defn.~\ref{defn:covering}) is a nucleus on $\dcframe{P}$.
 \end{thm}
 \begin{proof}
   $N_1$ is direct using the $\ruledir{}$ rule. $N_2$ is a direct application of
@@ -531,7 +530,7 @@ formal topology;
   \end{itemize}
 \end{proof}
 
-\section{Generating a frame from a formal topology}
+\section{Lifting into the generated frame}
 
 Now that we have shown the nuclearity of the covering relation $\covers{\_}{\_}$, we have
 everything we need for the procedure of generating a frame from a formal topology.
@@ -549,14 +548,15 @@ $\eta : \abs{P} \rightarrow \fix{\dcframe{P}}{\covernm{}}$ as follows:
 \end{align*}
 where $a\downarrow$ denotes the \emph{downwards-closure} of $a$: $\{ a'~|~a' \sqsubseteq a \}$. So $a' \in \eta(a)
 \equiv \covers{a'}{a\downarrow}$ is to say ``$a'$ eventually becomes something that $a$ becomes'' if we
-take the reading of stages \emph{evolving over time}. One can now see that $\eta(x)$ is
-downwards-closed and a fixed point for $\covers{\_}{\_}$, meaning its type can be refined
-to $\oftyI{\eta}{A_{\McF{}} \rightarrow \abs{L}}$.
+take the reading of stages of knowledge being refined over time. As we have proven in
+Prop.~\ref{prop:lem1}, $\eta(x)$ is downwards-closed. It is also a fixed point for
+$\covernm{}$, as we will show, so its type can be refined to
+$\oftyI{\eta}{\abs{P} \rightarrow \fix{\dcframe{P}}{\covernm{}}}$.
 
 \begin{defn}[$\eta$]
-  Let $\McF{}$ be a formal topology and denote its cover relation by $\covers{\_}{\_}$.
-  Let $L \is \fix{\dcsubset{A}}{\_\RHD\_}$. There exists a monotonic map from the
-  underlying poset of $P$ of $\McF{}$ to the underlying poset of $L$:
+  Let $\McF{}$ be a formal topology with underlying poset $P$ and cover relation
+  $\covers{\_}{\_}$. Let $L \is \fix{\dcsubset{A}}{\_\RHD\_}$. There exists a monotonic
+  map from $P$ to $\fix{\dcframe{P}}{\covernm{}}$, defined as:
   \begin{align*}
     \eta    \quad&:\quad P \rightarrow_m (\abs{L}, \_\sqsubseteq_L\_)\\
     \eta(a) \quad&\is\quad \covers{\_}{a\downarrow}.
