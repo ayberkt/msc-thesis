@@ -574,41 +574,50 @@ $\covernm{}$, as we will show, so its type can be refined to
 $\oftyI{\eta}{\abs{P} \rightarrow \fix{\dcframe{P}}{\covernm{}}}$.
 
 \begin{defn}[$\eta$]
-  Let $\McF{}$ be a formal topology with underlying poset $P$ and cover relation
-  $\covers{\_}{\_}$. Let $L \is \fix{\dcsubset{A}}{\_\RHD\_}$. There exists a monotonic
-  map from $P$ to $\fix{\dcframe{P}}{\covernm{}}$, defined as:
+  Let $\McF{}$ be a formal topology with underlying poset $P$ (note: $\abs{P} \equiv
+  A_{\McF{}}$) and cover relation $\covers{\_}{\_}$. There exists a monotonic map from $P$
+  to the underlying poset of $\fix{\dcframe{P}}{\covernm{}}$, defined as:
   \begin{align*}
-    \eta    \quad&:\quad P \rightarrow_m (\abs{L}, \_\sqsubseteq_L\_)\\
-    \eta(a) \quad&\is\quad \covers{\_}{a\downarrow}.
+    \eta    \quad&:\quad \mono{P}{\fix{\dcframe{\abs{P}}}{\_\RHD\_}}\\
+    \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}.
   \end{align*}
   The fact that $\eta$ is monotonic follows from Proposition~\ref{prop:lem1}. It remains to
-  be shown that it is a fixed point for $\_\RHD\_$. Let $\oftyI{a}{A_{\McF{}}}$. We need
-  to show that $\covers{\_}{(\covers{\_}{a})} = \covers{\_}{a}$. We proceed by
-  antisymmetry. $\covers{\_}{a\downarrow} \subseteq \covers{\_}{(\covers{\_}{a\downarrow})}$ follows by $N_1$. The
-  other direction is a direct application of Proposition~\ref{prop:lem4}.
+  be shown that $\eta(a)$ is a fixed point of $\covernm$ for every $\oftyI{a}{A_{\McF{}}}$.
+  Let $\oftyI{a}{A_{\McF{}}}$. We need to show $\covers{\_}{(\covers{\_}{\lifta{a}})} =
+  \covers{\_}{\lifta{a}}$. We proceed by antisymmetry. $\covers{\_}{\lifta{a}} \subseteq
+  \covers{\_}{(\covers{\_}{\lifta{a}})}$ follows by $N_1$. The other direction is a direct
+  application of Proposition~\ref{prop:lem4}.
 \end{defn}
 
 \section{Formal topologies present}\label{sec:universal-prop}
 
-\paragraphsummary{Explain the aim.} We are now ready to shift our focus on what can be
-called main theorem of this thesis: our notion of a formal topology is capable of
-presenting a frame. Let $\mathcal{F}$ be a formal topology and $F$ a frame. Consider a
-monotonic function $f : A_{\mathcal{F}} \rightarrow \abs{F}$ on the underlying posets. We will
-define a notion of $f$ representing $\McF{}$ in $F$.
+We are now ready to shift our focus on what can be called main theorem of this thesis:
+formal topologies, as we have defined them, present frames as expected. Let $\mathcal{F}$
+be a formal topology and $F$ a frame. Consider a monotonic function $f : A_{\mathcal{F}} \rightarrow
+\abs{\fix{\dcframe{A_{\McF{}}}}{\covernm{}}}$ on the underlying posets. We will define a
+notion of $f$ representing $\McF{}$ in $F$.
 
 \begin{defn}[Representation]\label{defn:rep}
-  Given a formal topology $\mathcal{F} = (A, B, C, d)$, a frame $F$, and a function
+  Given a formal topology $\mathcal{F} \equiv (A, B, C, d)$, a frame $F$, and a function
   $\oftyI{f}{A \rightarrow \abs{F}}$, we say that $f$ represents $\mathcal{F}$ in $F$ if the
   following type is inhabited:
   \begin{equation*}
     \represents{\mathcal{F}}{F}{f} \quad\is\quad
       \pity{a}{A}{
         \pity{b}{B(x)}{
-          f(a) \sqsubseteq \bigvee_{\oftyI{z}{C(a, b)}} f(d(a, b, c)).
+          f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c)).
         }
       }
   \end{equation*}
 \end{defn}
+
+Note what this property is expressing. We said that the reading of $\covers{a}{V}$ is $a =
+\bigcup_i V_i$. In the case we are dealing with a $V$ of the form $\setof{ d(a, b, c) ~|~
+  \oftyI{c}{C(a, b)} }$, it is clear that the $a \sqsubseteq \bigcup_i V_i$ direction holds meaning by the
+monotonicity of $f$: $f(a) \sqsubseteq \bigcup \setof{ f(d(a, b, c)) ~|~ \oftyI{c}{C(a, b)} }$. To assert
+$f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))$ is then to assert that $f$ maps $\McF{}$ to
+$R$ as to precisely make the $\covernm{}$ relation hold; hence the reading of this as
+``representation''.
 
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case
@@ -618,7 +627,7 @@ preserves these finite meets but we cannot mention the meets of $P$ as they do n
 exist. So what we want to do is to state that $f$ preserves those meets that \emph{do not
 exist yet} which we can do by requiring the following conditions:
 \begin{enumerate}
-  \item $\top_Q = \bigvee \img{f}{P}$, and
+  \item $\top_Q = \bigvee \setof{ f(a) ~|~ \oftyI{a}{\abs{P}} }$, and
   \item $\pity{x~y}{P}{f(x) \wedge f(y) = \bigvee \setof{ f(z) ~|~ z \sqsubseteq x\ \text{and}\ z \sqsubseteq y }}$.
 \end{enumerate}
 In our case, we will of course be interested in monotonic maps whose codomains are frames.
@@ -628,17 +637,18 @@ In our case, we will of course be interested in monotonic maps whose codomains a
     z \sqsubseteq y}$. A monotonic map $f : P \rightarrow F$ from $P$ to the underlying poset of the frame is
   called \emph{flat} if the following type is inhabited:
   \begin{alignat*}{5}
-    \isflat{f} \quad&\is\quad && &&\top_F &&= &&\bigvee f(P)\\
-      &\hspace{0.4em}\times &&\pity{a~b}{P}{&&f(a) \wedge f(b) &&= &&\bigvee_{\oftyI{(i, p)}{I}} f(i)}.
+    \isflat{f} \quad&\is\quad   && &&\top_F &&= &&\hspace{0.55em}\bigvee \setof{ f(a) ~|~ \oftyI{a}{\abs{P}} }\\
+      &\hspace{0.53em}\times &&\pity{a~b}{\abs{P}}{&&f(a) \wedge f(b) &&= &&\bigvee_{\oftyI{(i, \_)}{I}} f(i)}.
   \end{alignat*}
 \end{defn}
 
 \begin{figure}
   \centering
-  \caption{The universal property}
+  \caption[Universal property of formal topologies]{The universal property.}
   \begin{tikzcd}[row sep=40pt, column sep=40pt]\label{fig:comm-diag}
-    \McF{} \arrow[swap, rd, "f"] \arrow[r, "\eta"] & L \arrow[d, dashed, "g"] \\
-                                                & R
+    \McF{} \arrow[swap, rd, "f"] \arrow[r, "\eta"]
+      & \fix{\dcframe{A_{\McF{}}}}{\covernm{}} \arrow[d, dashed, "g"] \\
+      & R
   \end{tikzcd}
 \end{figure}
 
@@ -647,12 +657,14 @@ Using flat monotonic maps, the universal property can now be stated.
 \begin{thm}[Universal property for formal topologies]\label{thm:univ-prop}
   Given any formal topology $\McF{}$, frame $R$, flat monotonic map $f : A_{\McF{}} \rightarrow R$
   from the underlying poset of $\McF{}$ to the underlying poset of $R$, that represents
-  $\McF{}$ in $R$, there exists a unique \textbf{frame homomorphism} $\oftyI{g}{L \rightarrow R}$
-  such that $f = g \circ \eta$, as summarised in Fig.~\ref{fig:comm-diag}
+  $\McF{}$ in $R$, there exists a unique \textbf{frame homomorphism}
+  $\oftyI{g}{\framehomo{\fix{\dcframe{A_{\McF{}}}}{\covernm{}}}{R}}$ such that $f = g \circ
+  \eta$, as summarised in Fig.~\ref{fig:comm-diag}
 
-  We express this fully formally as follows:
+  We express this fully formally as follows. let
+  $L \is \fix{\dcframe{A_{\McF{}}}}{\covernm{}}$;
   \begin{align*}
-    \pity{\McF{}}{\mathsf{FT}_{n, n}}{
+    \pity{\McF{}}{\formaltopo{}_{n, n}}{
       &\pity{R}{\framety{n+1}{n}{n}}{
          \pity{f}{\mono{P}{R}}{
            \isflat{f} \rightarrow \represents{\McF{}}{F}{f} \rightarrow\\
@@ -666,20 +678,22 @@ Using flat monotonic maps, the universal property can now be stated.
 Before proceeding to the proof, let us first prove a lemma of key importance.
 
 \begin{lemma}\label{lem:main}
-  Let $\McF{}$ be a formal topology. Denote by $L$ the set of downwards-closed subsets of
-  $A_{\McF{}}$ that are fixed points for its covering nucleus. For any $\oftyI{U}{L}$,
-  it is the case that:
+  Let $\McF{}$ be a formal topology (with its cover denoted by $\covernm{}$) and let $L
+  \is \fix{\dcframe{A_{\McF{}}}}{\covernm{}}$. For any $\oftyI{U}{L}$, it is the case that:
   \begin{equation*}
-    U = \bigvee^L \setof{ \eta(u) ~|~ u \in U }.
+    U = \bigvee^L \setof{ \eta(u) ~|~ \mempow{u}{U} }.
   \end{equation*}
 \end{lemma}
 \begin{proof}
   Let $\oftyI{U}{L}$. We proceed by antisymmetry. The $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \in U }$
-  direction is immediate by an application for the $\ruledir{}$ rule. For the other
+  direction is immediate by an application of the $\ruledir{}$ rule. For the other
   direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
-  $a \in \bigvee^L \setof{ \eta(u) ~|~ u \in U }$. Recall that the join operation is defined by
-  applying the nucleus in the fixed point frame (Theorem \ref{thm:fixed-point-frame}).
-  This is to say that we have $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$.
+      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \in U }}$.
+  Recall that the join operation is defined by applying the nucleus in the fixed point
+  frame (Theorem \ref{thm:fixed-point-frame}). This is to say that we have
+      $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$.
+  The result follows by induction on the proof of this fact, in the $\ruledir{}$ case of
+  which Prop.~\ref{prop:lem4} and the induction principle of truncation are used.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
