@@ -188,7 +188,7 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
       least w f = ⋁[ _ ]-least _ λ o oεU → f o (π₀ (h o) oεU)
 
   flatten : (I : Type ℓ₂) (J : I → Type ℓ₂) (f : (i : I) → J i → ∣ F ∣F)
-          → ⋁[ F ] (Σ I J , uncurry f) ≡ ⋁[ F ] ⁅ ⋁[ F ] (J i , λ j → f i j) ∣ i ∶ I ⁆
+          → ⋁[ F ] (Σ I J , uncurry f) ≡ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
   flatten I J f = ⊑[ pos F ]-antisym _ _ down up
     where
       open PosetReasoning (pos F)
