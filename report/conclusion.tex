@@ -1,27 +1,18 @@
 \chapter{Conclusion}\label{chap:conc}
 
-
 The aim of formal topology is to make type-theoretical sense out of topology. The recent
-invention of \emph{univalent} type theories present interesting novelties for the future
-of type-theoretical mathematics. The meaning of these novelties are an active area of
-research and it is fair to say that they have not yet been fully understood. As pointed
-out by Urs Schreiber:
-\begin{quote}
-  The current situation of homotopy type theory reminds me a bit of the dot-com bubble
-  at the turn of the millenium.
-
-  Back then a technology had appeared which was as powerful as it was new: while everybody
-  had a sure \emph{feeling} that the technology would have dramatically valuable impact,
-  because it was so new nobody had an actual \emph{idea} what that would be.
-\end{quote}
-Taking this situation into account, we have set out to investigate a natural question:
-what is the meaning of formal topology in univalent type theory?
+formulation of \emph{univalent} type theories present interesting novelties for the future
+of type-theoretical mathematics. The meaning of these novelties for existing bodies of
+mathematical knowledge is an active area of research and it is fair to say that they have
+not yet been fully explored. Considering this, we have set out to investigate a
+natural question: what will formal topology look like in the context of univalent type
+theory?
 
 The first outcome of this investigation was a negative result: we have come to the
 conclusion that an \emph{as is} development of formal topology in univalent type theory is
 problematic as a consequence of the distinction between \emph{property} and
 \emph{structure}, rendered visible through the homotopical view of types. In particular,
-our development led to a situation in which the proof structure of a type has to be
+our development led to a situation in which the proof structure of a type had to be
 collapsed for it to behave as a property, and at the same time, kept intact for it to be
 used in succeeding proofs.
 
@@ -31,8 +22,8 @@ in our specific case, the imbalance between property and structure. This allowed
 successfully carry out a rudimentary development of formal topology in a univalent
 setting: we have been able to formulate a notion of formal topology and then prove its
 universal property. We hence conclude that formal topology is not only possible in
-univalent type theory but is possible in a way that makes non-trivial use of conceptual
-novelties introduced by univalent type theory.
+univalent type theory but is possible in a way that makes non-trivial use of its
+conceptual novelties.
 
 In addition to providing an answer to this question, we have carried out Coquand's idea of
 doing topology with interaction systems on posets~\cite{coq-posets} to a further extent.
@@ -40,51 +31,57 @@ We have found this to work well, and enable a presentation more eloquent than th
 traditional formal topology. Apart from addressing issues of univalence, this has been the
 secondary contribution of our development.
 
-As a proof of concept of the efficacy of the univalent approach to formal topology, we
-have implemented a fundamental example: the Cantor space. Furthermore, we have proven that
-the Cantor space, as represented as a formal topology, is a compact space. This
-exemplifies what we previously meant by ``making type-theoretical sense of topology'': we
-have stated and then proven a non-trivial theorem of topology in a way that is completely
-constructive and predicative.
+As a proof of concept of our approach to formal topology, we have implemented a
+fundamental example: the Cantor space. Furthermore, we have proven that the formal Cantor
+topology is compact. This exemplifies what we mean by ``making type-theoretical sense of
+topology'': we have stated and then proven a non-trivial theorem of topology in a way that
+is completely constructive and predicative.
 
 After all, our development remains but an \emph{esquisse}. There remains much more work to
-be done and it will be these that will put this approach to the test.
+be done and it will be the undertaking of this that will put this approach to the test. We
+now discuss some of these.
 
-Most saliently, there are many more topological and locale-theoretic results to be
-reconstructed in this setting. For instance, one of the fundamental theorems of topology
-is the Tychonoff theorem, formal versions of which have been
-constructed~\cite{coq-tychonoff}. It must be investigated if these will fit well within
-our approach. Furthermore, a crucial class of spaces in pointless topology is the
-\emph{Stone spaces}---indeed, the notion of a Stone space is what gave rise to the field.
-Such important examples of spaces must be developed within our approach.
+First and foremost, there are many more topological and locale-theoretic results to be
+reconstructed in the setting of our development. For instance, one of the fundamental
+theorems of topology is the Tychonoff theorem, formal versions of which have been
+constructed~\cite{coq-tychonoff}. It is an interesting question if these will fit well
+within our approach. Furthermore, a crucial class of spaces in pointless topology is the
+\emph{Stone spaces}~\cite{stone-spaces}; indeed, the notion of a Stone space is what
+brought the field into existence in the first place. Developing the theory of Stone spaces
+in the context our development is an important direction for further work.
 
-We have not been able to explore the notion of \emph{formal points}. A prime example of
-this is the space of real numbers, defined as the formal points of the formal topology of
-the real numbers.
+Another limitation of our development is that we have not been able to explore the notion
+of a \emph{formal point}, which can be introduced as a notion derived from the opens in
+formal topology~\cite[pg.~94]{coq-sambin}. A prime example of this is the space of real
+numbers, defined as the formal points of the formal topology of real numbers. It would be
+interesting to explore such a definition of real numbers in univalent type theory.
 
 Furthermore, formal topology has important connections to the theory of domains. As
-pointed out by Giovanni Sambin, it can be viewed as a ``branch of formal
-topology''~\cite{sambin-domains}. It was within our plans to provide a formal topological
-reconstruction of domain theory in \UF{} in the context of this development, although we
-have not been able to accomplish this due to time constraints. This would be a very
-interesting example as it would be likely make non-trivial use of the constructive
-properties of our development.
+pointed out by Sambin, domain theory can be viewed as a ``branch of formal
+topology''~\cite{sambin-domains}. It was within our plans to provide a formal-topological
+reconstruction of domain theory in univalent type theory, as an application of this
+development. We have not been able to accomplish this due to time constraints. This would
+be a very interesting example as it would likely make non-trivial use of the constructive
+properties of our development. Domain theory in a univalent setting has recently been
+investigated by de Jong~\cite{de-jong-domains}. A comparison of the two approaches might
+prove beneficial.
 
-Finally, let us also discuss some of the lower-level shortcomings of our development, and
-certain ways it could be improved.
+Let us also discuss some of the lower-level shortcomings of our development that could be
+more readily addressed.
 
 As remarked in Chapter~\ref{chap:formal-topo}, our method for generating a frame from a
 formal topology works only on formal topologies whose carrier set level and order level
 are equal. To reach full generality, these levels have to be generalised. We have not
 carried out this generalisation for the presentational simplicity of the powerset operator
-whose result is allowed to live at the same level as the type it's given.
+whose result is required to live at the same level as the type it is given.
 
-Furthermore, our statement of the universal property has not been modular. We have
-presented the universal property \emph{ad hoc}, for the specific case of our method of
-generating a frame. Ideally, this should be stated for \emph{any} frame with our current
-statement being one instance of it. Most importantly, this would allow us to prove state
-that two frames satisfying the universal property are isomorphic, and thanks to
-univalence, equal.
+Furthermore, our statement of the universal property has not been modular. In other words,
+we have not explained what it means, in general, for a frame to be the frame presented by
+a formal topology. Instead, we have presented the universal property in an ad hoc way, for
+the specific case of our generated frame. Ideally, this should be stated for \emph{any}
+frame with a lifting map, our current statement then being one instance of it. Most
+importantly, this would allow us to prove that two frames satisfying the universal
+property are isomorphic, and thanks to univalence, equal.
 
 A further direction to take for the modularisation of the universal property would be to
 state it using categorical terms. Conceptually, the universal property ought to amount to
@@ -93,9 +90,8 @@ what the category of formal topologies is, as the notion of a morphism between t
 interaction systems is not clear. Therefore, the resolution of this issue is likely not
 straightforward.
 
-It is our belief that the type-theoretical distillation of topology enables a conceptual
+We believe that the type-theoretical distillation of topology enables a conceptual
 clarification if it. Thanks to the invention of univalent type theory, type-theoretical
-mathematics has been invigorated, and now progressing at a fast pace. We hope that our
-rudimentary development of the beginnings of formal topology in univalent type theory will
-give rise to a renewed interest in formal topology, allowing it to benefit from these
-recent advancements.
+mathematics has been invigorated, and is now rapidly progressing. We hope the discipline
+of formal topology can benefit from this progress, ideally through a renewed interest by
+the type theory community.
