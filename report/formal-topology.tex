@@ -426,8 +426,28 @@ We now prove some crucial properties of the cover relation.
 \end{proof}
 
 \begin{prop}\label{prop:lem2}
+  Let $\McF{}$ be a formal topology with cover relation $\covernm{}$, and let
+  $\oftyII{U}{V}{\pow{A_{\McF{}}}}$ be subset of $A_{\McF{}}$ such that $V$ is
+  downwards-closed. For any $\oftyI{a}{A_{\McF{}}}$, if $\covers{a}{U}$ and
+  $\mempow{a}{V}$, then $\covers{a}{\intersect{U}{V}}$.
 \end{prop}
 \begin{proof}
+  Let $\oftyI{a}{A_{\McF{}}}$ such $\covers{a}{U}$ and $a \in  V$. We proceed by induction
+  on the proof of $\covers{a}{U}$.
+  \begin{itemize}
+    \item Case $\ruledir{}$. We have $\mempow{a}{U}$ and $\mempow{a}{V}$ so we are done by
+      the $\ruledir{}$ rule.
+    \item Case $\rulebranch{}$. We have some experiment $\oftyI{b}{a}$ such that
+      $\covers{d(a, b, c)}{U}$ for every outcome $\oftyI{c}{C(a, b)}$. We are done by the
+      $\rulebranch{}$ rule on $b$ if we can show that
+      $\covers{d(a, b, c)}{\intersect{U}{V}}$ for every $\oftyI{c}{C(a, b)}$.
+      Let $\oftyI{c}{C(a, b)}$. Notice that $d(a, b, c) \sqsubseteq a$ by the monotonicity property
+      (Defn.~\ref{defn:mono}) and hence by the downwards-closure of $V$, we have
+      $\mempow{d(a, b, c)}{V}$. This means that we have $\covers{d(a, b, c)}{U}$ and
+      $\mempow{d(a, b, c)}{V}$ so we are done by the inductive hypothesis which gives us
+      $\covers{d(a, b, c)}{\intersect{U}{V}}$.
+    \item Case $\rulesquash{}$. Immediate by the $\rulesquash{}$ rule.
+  \end{itemize}
 \end{proof}
 
 \begin{prop}\label{prop:lem3}
