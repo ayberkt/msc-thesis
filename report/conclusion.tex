@@ -1,27 +1,38 @@
 \chapter{Conclusion}\label{chap:conc}
 
 
-The aim of formal topology is to make type-theoretical sense out of topology. The
-homotopical insight into the structure of types that underlies \UF{} gives us a higher
-resolution image of type theory, allowing us to have a finer-grained understanding of the
-mathematical body of knowledge that is expressed in the language of types. Taking this
-into account, we have set out to investigate a natural question: what is the meaning of
-formal topology in \UF{}?
+The aim of formal topology is to make type-theoretical sense out of topology. The recent
+invention of \emph{univalent} type theories present interesting novelties for the future
+of type-theoretical mathematics. The meaning of these novelties are an active area of
+research and it is fair to say that they have not yet been fully understood. As pointed
+out by Urs Schreiber:
+\begin{quote}
+  The current situation of homotopy type theory reminds me a bit of the dot-com bubble
+  at the turn of the millenium.
+
+  Back then a technology had appeared which was as powerful as it was new: while everybody
+  had a sure \emph{feeling} that the technology would have dramatically valuable impact,
+  because it was so new nobody had an actual \emph{idea} what that would be.
+\end{quote}
+Taking this situation into account, we have set out to investigate a natural question:
+what is the meaning of formal topology in univalent type theory?
 
 The first outcome of this investigation was a negative result: we have come to the
-conclusion that an \emph{as is} development of formal topology in \UF{} is problematic, as
-a consequence of the distinction between \emph{property} and \emph{structure}, rendered
-visible through the homotopical view of types. In particular, our development led to a
-situation in which the proof structure of a type has to be collapsed for it to behave as a
-property, and at the same time, kept intact for it to be used in succeeding proofs.
+conclusion that an \emph{as is} development of formal topology in univalent type theory is
+problematic as a consequence of the distinction between \emph{property} and
+\emph{structure}, rendered visible through the homotopical view of types. In particular,
+our development led to a situation in which the proof structure of a type has to be
+collapsed for it to behave as a property, and at the same time, kept intact for it to be
+used in succeeding proofs.
 
-We have then found, somewhat unexpectedly, that \UF{} in fact \emph{do} contain a remedy
-for this situation, namely, HITs. Using HITs, we were able to reconcile, in our specific
-case, the imbalance between property and structure. This allowed us to successfully carry
-out a rudimentary development of formal topology in a univalent setting: we have been able
-to prove the universal property of formal topologies. We hence conclude that formal
-topology is not only possible in \UF{}, but possible precisely thanks to the conceptual
-novelties furnished by \UF{}.
+We have then found, somewhat unexpectedly, that univalent type theory \emph{does} in fact
+contain a remedy for this situation, namely, HITs. Using HITs, we were able to reconcile,
+in our specific case, the imbalance between property and structure. This allowed us to
+successfully carry out a rudimentary development of formal topology in a univalent
+setting: we have been able to formulate a notion of formal topology and then prove its
+universal property. We hence conclude that formal topology is not only possible in
+univalent type theory but is possible in a way that makes non-trivial use of conceptual
+novelties introduced by univalent type theory.
 
 In addition to providing an answer to this question, we have carried out Coquand's idea of
 doing topology with interaction systems on posets~\cite{coq-posets} to a further extent.
@@ -41,10 +52,11 @@ be done and it will be these that will put this approach to the test.
 
 Most saliently, there are many more topological and locale-theoretic results to be
 reconstructed in this setting. For instance, one of the fundamental theorems of topology
-is the Tychonoff theorem, formal versions of which have been constructed. It must be
-investigated if these will fit well within our approach. Furthermore, a very important of
-a class of space in pointless topology is the class of \emph{Stone spaces}. Such important
-examples of spaces must be developed within our approach.
+is the Tychonoff theorem, formal versions of which have been
+constructed~\cite{coq-tychonoff}. It must be investigated if these will fit well within
+our approach. Furthermore, a crucial class of spaces in pointless topology is the
+\emph{Stone spaces}---indeed, the notion of a Stone space is what gave rise to the field.
+Such important examples of spaces must be developed within our approach.
 
 We have not been able to explore the notion of \emph{formal points}. A prime example of
 this is the space of real numbers, defined as the formal points of the formal topology of
@@ -81,9 +93,9 @@ what the category of formal topologies is, as the notion of a morphism between t
 interaction systems is not clear. Therefore, the resolution of this issue is likely not
 straightforward.
 
-It is our belief that the type-theoretical distillation of topology, or rather, that which
-is the subject matter of topology, enables a conceptual clarification if it. Thanks to the
-invention of \UF{}, type-theoretical mathematics has been invigorated, and now progressing
-at a fast pace. We hope that our rudimentary sketch of the beginnings of formal topology
-in \UF{} will give rise to a renewed interest in formal topology, allowing it to benefit
-from these recent advancements.
+It is our belief that the type-theoretical distillation of topology enables a conceptual
+clarification if it. Thanks to the invention of univalent type theory, type-theoretical
+mathematics has been invigorated, and now progressing at a fast pace. We hope that our
+rudimentary development of the beginnings of formal topology in univalent type theory will
+give rise to a renewed interest in formal topology, allowing it to benefit from these
+recent advancements.
