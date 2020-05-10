@@ -9,7 +9,7 @@ open import Basis          hiding (A) renaming (squash to squash′)
 open import Poset
 open import Frame
 open import Cover
-open import Nucleus        using    (IsNuclear; Nucleus; nuclear-fixed-point-frame; idem)
+open import Nucleus        using    (isNuclear; Nucleus; nuclear-fixed-point-frame; idem)
 open import Data.Bool      using    (Bool; true; false)
 open import FormalTopology renaming (pos to pos′)
 ```
@@ -54,7 +54,7 @@ nothing but the map `U ↦ - <| U`.
 
   <<-antisym = ⊑[ pos P↓ ]-antisym
 
-  𝕛-nuclear : IsNuclear P↓ 𝕛
+  𝕛-nuclear : isNuclear P↓ 𝕛
   𝕛-nuclear = N₀ , N₁ , N₂
     where
       -- We reason by antisymmetry and prove in (d) 𝕛 (a₀ ⊓ a₁) ⊑ (𝕛 a₀) ⊓ (𝕛 a₁) and

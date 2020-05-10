@@ -9,8 +9,8 @@ open import Poset
 open import Frame
 
 -- A predicate expressing whether a function is a nucleus.
-IsNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Type (ℓ₀ ⊔ ℓ₁)
-IsNuclear L j = N₀ × N₁ × N₂
+isNuclear : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (∣ L ∣F → ∣ L ∣F) → Type (ℓ₀ ⊔ ℓ₁)
+isNuclear L j = N₀ × N₁ × N₂
   where
     N₀ = (x y : ∣ L ∣F) → j (x ⊓[ L ] y) ≡ (j x) ⊓[ L ] (j y)
     N₁ = (x   : ∣ L ∣F) → [ x ⊑[ pos L ] (j x) ]
@@ -18,7 +18,7 @@ IsNuclear L j = N₀ × N₁ × N₂
 
 -- The type of nuclei.
 Nucleus : Frame ℓ₀ ℓ₁ ℓ₂ → Type (ℓ₀ ⊔ ℓ₁)
-Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (IsNuclear L)
+Nucleus L = Σ (∣ L ∣F → ∣ L ∣F) (isNuclear L)
 
 -- The top element is fixed point for every nucleus.
 nuclei-resp-⊤ : (L : Frame ℓ₀ ℓ₁ ℓ₂) ((j , _) : Nucleus L) → j ⊤[ L ] ≡ ⊤[ L ]
@@ -49,7 +49,7 @@ mono L (j , N₀ , N₁ , N₂) x y x⊑y =
 -- This is essentially due to the fact that j (j ())
 nuclear-image : (L : Frame ℓ₀ ℓ₁ ℓ₂)
               → let ∣L∣ = ∣ L ∣F in (j : ∣L∣ → ∣L∣)
-              → IsNuclear L j
+              → isNuclear L j
               → (Σ[ b ∈ ∣L∣ ] ∥ Σ[ a ∈ ∣L∣ ] (b ≡ j a) ∥) ≡ (Σ[ a ∈ ∣L∣ ] (j a ≡ a))
 nuclear-image L j N@(n₀ , n₁ , n₂) = isoToPath (iso f g sec-f-g ret-f-g)
   where
