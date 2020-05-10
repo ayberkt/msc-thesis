@@ -30,8 +30,7 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
   private
     P       = pos′ F
     𝔉       = ∣ P ∣ₚ
-    F↓      = DCFrame P
-    P↓      = pos F↓
+    P↓      = DCFrame P
     _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
 
   open Test F public
@@ -41,7 +40,7 @@ Now, we define the *covering nucleus* which we denote by `𝕛`. At its heart, t
 nothing but the map `U ↦ - <| U`.
 
 ```
-  𝕛 : ∣ F↓ ∣F → ∣ F↓ ∣F
+  𝕛 : ∣ P↓ ∣F → ∣ P↓ ∣F
   𝕛 (U , U-down) = (λ - → U ▶ -) , U▶-dc
     where
       -- This is not propositional unless we force it to be using the HIT definition!
@@ -51,38 +50,40 @@ nothing but the map `U ↦ - <| U`.
       U▶-dc : [ isDownwardsClosed P (λ - → (- <| U) , squash) ]
       U▶-dc a a₀ aεU₁ a₀⊑a = ◀-lem₁ U-down a₀⊑a aεU₁
 
-  _<<_ : ∣ F↓ ∣F → ∣ F↓ ∣F → hProp ℓ₀
-  x << y = x ⊑[ pos F↓ ] y
+  _<<_ : ∣ P↓ ∣F → ∣ P↓ ∣F → hProp ℓ₀
+  x << y = x ⊑[ pos P↓ ] y
 
-  <<-antisym = ⊑[ pos F↓ ]-antisym
+  <<-antisym = ⊑[ pos P↓ ]-antisym
 
-  𝕛-nuclear : IsNuclear F↓ 𝕛
+  𝕛-nuclear : IsNuclear P↓ 𝕛
   𝕛-nuclear = N₀ , N₁ , N₂
     where
       -- We reason by antisymmetry and prove in (d) 𝕛 (a₀ ⊓ a₁) ⊑ (𝕛 a₀) ⊓ (𝕛 a₁) and
       -- in (u) (𝕛 a₀) ⊓ (𝕛 a₁) ⊑ 𝕛 (a₀ ⊓ a₁).
-      N₀ : (𝔘 𝔙 : ∣ F↓ ∣F) → 𝕛 (𝔘 ⊓[ F↓ ] 𝔙) ≡ (𝕛 𝔘) ⊓[ F↓ ] (𝕛 𝔙)
+      N₀ : (𝔘 𝔙 : ∣ P↓ ∣F) → 𝕛 (𝔘 ⊓[ P↓ ] 𝔙) ≡ (𝕛 𝔘) ⊓[ P↓ ] (𝕛 𝔙)
       N₀ 𝕌@(U , U-down) 𝕍@(V , V-down) =
-        <<-antisym (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) down up
+        <<-antisym (𝕛 (𝕌 ⊓[ P↓ ] 𝕍)) (𝕛 𝕌 ⊓[ P↓ ] 𝕛 𝕍) down up
         where
-          down : [ (𝕛 (𝕌 ⊓[ F↓ ] 𝕍)) << (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) ]
-          down a (dir p)        = dir (π₀ p) , dir (π₁ p)
-          down a (branch b f)   = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
+          down : [ (𝕛 (𝕌 ⊓[ P↓ ] 𝕍)) << (𝕛 𝕌 ⊓[ P↓ ] 𝕛 𝕍) ]
+          down a (dir (a∈U , a∈V)) = dir a∈U , dir a∈V
+          down a (branch b f)      = branch b (π₀ ∘ IH) , branch b (π₁ ∘ IH)
             where
-              IH : (c : outcome F b) → [ π₀ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) (next F c) ]
+              IH : (c : outcome F b) → [ π₀ (𝕛 𝕌 ⊓[ P↓ ] 𝕛 𝕍) (next F c) ]
               IH c = down (next F c) (f c)
           down a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
             where
+              _ : a <| π₀ (glb-of P↓ (U , U-down) (V , V-down))
+              _ = p
               IH₀ = down a p
               IH₁ = down a q
 
-          up : [ (𝕛 𝕌 ⊓[ F↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ F↓ ] 𝕍) ]
+          up : [ (𝕛 𝕌 ⊓[ P↓ ] 𝕛 𝕍) << 𝕛 (𝕌 ⊓[ P↓ ] 𝕍) ]
           up a (a◀U , a◀V) = lem3 V U V-down U-down (⊑[ P ]-refl a) a◀V a◀U
 
-      N₁ : (𝔘 : ∣ F↓ ∣F) → [ 𝔘 << (𝕛 𝔘) ]
+      N₁ : (𝔘 : ∣ P↓ ∣F) → [ 𝔘 << (𝕛 𝔘) ]
       N₁ _ a₀ a∈U = dir a∈U
 
-      N₂ : (𝔘 : ∣ F↓ ∣F) → [ π₀ (𝕛 (𝕛 𝔘)) ⊆ π₀ (𝕛 𝔘) ]
+      N₂ : (𝔘 : ∣ P↓ ∣F) → [ π₀ (𝕛 (𝕛 𝔘)) ⊆ π₀ (𝕛 𝔘) ]
       N₂ 𝔘@(U , _) = lem₄ (π₀ (𝕛 𝔘)) U (λ _ q → q)
 ```
 
@@ -90,7 +91,7 @@ We denote by `L` the frame of fixed points for `𝕛`.
 
 ```
   L : Frame (suc ℓ₀) ℓ₀ ℓ₀
-  L = nuclear-fixed-point-frame F↓ (𝕛 , 𝕛-nuclear)
+  L = nuclear-fixed-point-frame P↓ (𝕛 , 𝕛-nuclear)
 
   ⦅_⦆ : ∣ L ∣F → 𝒫 ∣ P ∣ₚ
   ⦅ ((U , _) , _) ⦆ = U
@@ -99,7 +100,7 @@ We denote by `L` the frame of fixed points for `𝕛`.
 Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
 
 ```
-  ↓-clos : stage F → ∣ F↓ ∣F
+  ↓-clos : stage F → ∣ P↓ ∣F
   ↓-clos x = x↓ , down-DC
     where
       x↓ = λ y → y ⊑[ P ] x
@@ -113,7 +114,7 @@ Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
 By composing this with the covering nucleus, we define a map `e` from `F` to `F↓`.
 
 ```
-  e : stage F → ∣ F↓ ∣F
+  e : stage F → ∣ P↓ ∣F
   e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
     where
       NTS : [ isDownwardsClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
@@ -125,11 +126,12 @@ x) = e x` for every `x`. We call the version `e` with the refined codomain `η`.
 
 ```
   fixing : (x : stage F) → 𝕛 (e x) ≡ e x
-  fixing x = ⊑[ P↓ ]-antisym (𝕛 (e x)) (e x) NTS up
+  fixing x = ⊑[ pos P↓ ]-antisym (𝕛 (e x)) (e x) down up
     where
-      NTS : ∀ y → [ π₀ (𝕛 (e x)) y ] → [ π₀ (e x) y ]
-      NTS = lem₄ (π₀ (e x)) (π₀ (↓-clos x)) (λ _ q → q)
-      up : [ e x ⊑[ P↓ ] 𝕛 (e x) ]
+      down : ∀ y → [ π₀ (𝕛 (e x)) y ] → [ π₀ (e x) y ]
+      down = lem₄ (π₀ (e x)) (π₀ (↓-clos x)) (λ _ q → q)
+
+      up : [ e x ⊑[ pos P↓ ] 𝕛 (e x) ]
       up = π₀ (π₁ 𝕛-nuclear) (e x)
 
   η : stage F → ∣ L ∣F
