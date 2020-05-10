@@ -31,10 +31,29 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
 ## Representation
 
 ```
-  represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R) → Type ℓ₀
+  represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (P ─m→ pos R) → Type ℓ₀
   represents R (f , _) =
-    (x : 𝔉) (y : exp F x) →
-      [ f x ⊑[ pos R ] (⋁[ R ] (outcome F y , λ u → f (next F u))) ]
+    (a : 𝔉) (b : exp F a) → [ f a ⊑[ pos R ] ⋁[ R ] ⁅ f (next F c) ∣ c ∶ outcome F b ⁆ ]
+```
+
+By the way, note that the converse is always true.
+
+```
+  represents⁻¹ : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R)
+                  → Type ℓ₀
+  represents⁻¹ R (f , _) =
+    (a : 𝔉) (b : exp F a) →
+      [ (⋁[ R ] ⁅ f (next F c) ∣ c ∶ outcome F b ⁆) ⊑[ pos R ] (f a) ]
+
+  conv : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) (f : P ─m→ pos R) → represents⁻¹ R f
+  conv R (f , f-mono) a b =
+    ⋁[ R ]-least (⁅ f (next F c) ∣ c ∶ outcome F b ⁆) (f a) NTS
+    where
+      NTS : [ ∀[ a′ ε ⁅ f (next F c) ∣ c ∶ outcome F b ⁆ ] (a′ ⊑[ pos R ] f a) ]
+      NTS a′ (i , eq) = subst (λ - → [ rel (pos R) - (f a) ]) eq NTS′
+        where
+          NTS′ : [ (π₁ (fmap′ (outcome F b) (λ c → f (next F c))) i) ⊑[ pos R ] (f a) ]
+          NTS′ = f-mono (next F i) a (mono F a b i)
 ```
 
 ## Flatness
@@ -43,9 +62,9 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
   _↓_↓ : 𝔉 → 𝔉 → 𝒫 𝔉
   _↓_↓ a b = λ - → - ⊑[ P ] a ⊓ - ⊑[ P ] b
 
-  IsFlat : (F : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos F) → Type (suc ℓ₀)
-  IsFlat F (f , _) = (⊤[ F ] ≡ ⋁[ F ] (𝔉 , f))
-                   × ((a b : 𝔉) → f a ⊓[ F ] f b ≡ ⋁[ F ] (f ⟨$⟩ ⟪ a ↓ b ↓ ⟫))
+  isFlat : (F : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos F) → Type (suc ℓ₀)
+  isFlat F (f , _) = (⊤[ F ] ≡ ⋁[ F ] ⁅ f a ∣ a ∶ ∣ P ∣ₚ ⁆)
+                   × ((a b : ∣ P ∣ₚ) → f a ⊓[ F ] f b ≡ ⋁[ F ] (f ⟨$⟩ ⟪ a ↓ b ↓ ⟫))
 ```
 
 ## The universal property
@@ -55,7 +74,7 @@ Statement.
 ```
   universal-prop : Type (suc (suc ℓ₀))
   universal-prop =
-    (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) (f : P ─m→ pos R) → IsFlat R f → represents R f →
+    (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) (f : P ─m→ pos R) → isFlat R f → represents R f →
       isContr (Σ[ g ∈ (L ─f→ R) ] (_∘m_ {P = P} {Q = pos L} {R = pos R} (π₀ g) ηm) ≡ f)
 ```
 
@@ -91,7 +110,7 @@ Proof.
 ```
   module MainProof (R      : Frame (suc ℓ₀) ℓ₀ ℓ₀)
                    (fm     : P ─m→ pos R)
-                   (f-flat : IsFlat R fm)
+                   (f-flat : isFlat R fm)
                    (rep    : represents R fm) where
     f      = _$ₘ_ fm
     f-mono = π₁ fm
