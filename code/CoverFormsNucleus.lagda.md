@@ -10,7 +10,6 @@ open import Poset
 open import Frame
 open import Cover
 open import Nucleus        using    (IsNuclear; Nucleus; nuclear-fixed-point-frame; idem)
-open import Family         using    (Fam; _⟨$⟩_; _$_; _ε_; index)
 open import Data.Bool      using    (Bool; true; false)
 open import FormalTopology renaming (pos to pos′)
 ```

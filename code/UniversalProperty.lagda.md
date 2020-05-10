@@ -8,7 +8,6 @@ open import Function      using (_∘_)
 open import Basis
 open import Frame
 open import Poset
-open import Family
 open import FormalTopology    renaming (pos to pos′)
 open import CoverFormsNucleus
 

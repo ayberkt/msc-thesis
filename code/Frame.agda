@@ -3,7 +3,6 @@
 module Frame where
 
 open import Basis
-open import Family
 open import Function                using    (_∘_; id)
 open import Data.Product            using    (uncurry)
 open import Cubical.Foundations.SIP renaming (SNS-≡ to SNS)

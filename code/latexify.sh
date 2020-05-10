@@ -3,7 +3,6 @@
 declare -a files=("Basis.lagda.md"
                   "Truncation.agda"
                   "Powerset.agda"
-                  "Family.agda"
                   "FormalTopology.agda"
                   "Cover.lagda.md"
                   "CoverFormsNucleus.lagda.md"
