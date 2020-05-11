@@ -80,7 +80,7 @@ Statement.
 Before the proof we will need some lemmas.
 
 ```
-  cover+ : {x y : ∣ P ∣ₚ} ((U , _) : ∣ F↓ ∣F) → [ x ∈ ⦅ η y ⦆ ] → [ y ∈ U ] → x <| U
+  cover+ : {x y : ∣ P ∣ₚ} ((U , _) : ∣ F↓ ∣F) → [ x ∈ ⦅ η y ⦆ ] → [ y ∈ U ] → x ◀ U
   cover+ {y = y} (_ , U-dc) x∈ηy y∈U = lem₄ _ _ (λ z z⊑y → dir (U-dc y z y∈U z⊑y)) _ x∈ηy
 ```
 
@@ -254,7 +254,7 @@ Proof.
 ### `g` makes the diagram commute
 
 ```
-    lem : (a a′ : ∣ P ∣ₚ) → a′ <| π₀ (↓-clos a) → [ f a′ ⊑[ pos R ] f a ]
+    lem : (a a′ : ∣ P ∣ₚ) → a′ ◀ π₀ (↓-clos a) → [ f a′ ⊑[ pos R ] f a ]
     lem a a′ (squash p q i) = is-true-prop (f a′ ⊑[ pos R ] f a) (lem _ _ p) (lem _ _ q) i
     lem a a′ (dir    a′⊑a)  = f-mono a′ a a′⊑a
     lem a a′ (branch b h)   =

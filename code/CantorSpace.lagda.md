@@ -138,10 +138,10 @@ cantor = ℂ-pos , ℂ-IS , ℂ-mono , ℂ-sim
 from which we get a covering relation
 
 ```
-open CoverLemmas cantor renaming (_<|_ to _◀_)
+open CoverLemmas cantor renaming (_◀_ to _<ℂ|_)
 
 _ : ℂ → (ℂ → hProp zero) → Type zero
-_ = _◀_
+_ = _<ℂ|_
 ```
 
 ## Statement of compactness
@@ -151,7 +151,7 @@ The statement of compactness then is as follows.
 ```
 module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
-  open CoverLemmas F using (_<|_)
+  open CoverLemmas F using (_◀_)
 
   private
     A = stage   F
@@ -165,7 +165,7 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
   isCompact : Type (suc ℓ₀)
   isCompact = (a : A) (U : 𝒫 A) (U-dc : [ isDownwardsClosed (pos F) U ]) →
-                a <| U → ∥ Σ[ as ∈ List A ] (a <| down as) × [ down as ⊆ U ] ∥
+                a ◀ U → ∥ Σ[ as ∈ List A ] (a ◀ down as) × [ down as ⊆ U ] ∥
 ```
 
 ## The Cantor formal topology is compact
@@ -203,10 +203,10 @@ compact : isCompact cantor
 ### Two little lemmas
 
 ```
-U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → [ U ⊆ V ] → xs ◀ U → xs ◀ V
+U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → [ U ⊆ V ] → xs <ℂ| U → xs <ℂ| V
 U⊆V⇒◀U⊆◀V xs U V U⊆V = lem₄ U V NTS xs
   where
-    NTS : (u : ℂ) → [ u ∈ U ] → u ◀ V
+    NTS : (u : ℂ) → [ u ∈ U ] → u <ℂ| V
     NTS u u∈U = dir (U⊆V u u∈U)
 
 ↓-++-left : (xss yss : List ℂ) → [ (λ - → - ↓ xss) ⊆ (λ - → - ↓ (xss ^ yss)) ]
@@ -251,7 +251,7 @@ The proof is by induction on the proof of `xs ◀ U`.
 ```
 compact xs U U-dc (dir xs∈U) = ∣ xs ∷ [] , NTS₀ , NTS₁ ∣
   where
-    NTS₀ : xs ◀ (λ - → - ↓ (xs ∷ []))
+    NTS₀ : xs <ℂ| (λ - → - ↓ (xs ∷ []))
     NTS₀ = dir ∣ inj₁ (⊑[ ℂ-pos ]-refl xs) ∣
 
     NTS₁ : [ (λ - → - ↓ (xs ∷ [])) ⊆ U ]
@@ -263,20 +263,20 @@ compact xs U U-dc (dir xs∈U) = ∣ xs ∷ [] , NTS₀ , NTS₁ ∣
 compact xs U U-dc (branch tt f) =
   let
     IH₀ : ∥ Σ[ yss₀ ∈ List ℂ ]
-              ((xs ⌢ true) ◀ (λ - → - ↓ yss₀)) × [ ℂ-down yss₀ ⊆ U ] ∥
+              ((xs ⌢ true) <ℂ| (λ - → - ↓ yss₀)) × [ ℂ-down yss₀ ⊆ U ] ∥
     IH₀ = compact (xs ⌢ true) U U-dc (f true)
     IH₁ : ∥ Σ[ yss ∈ List ℂ ]
-              ((xs ⌢ false) ◀ (λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]) ∥
+              ((xs ⌢ false) <ℂ| (λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]) ∥
     IH₁ = compact (xs ⌢ false) U U-dc (f false)
   in
     ∥∥-rec (∥∥-prop _) (λ φ → ∥∥-rec (∥∥-prop _) (λ ψ → ∣ NTS φ ψ ∣) IH₁) IH₀
   where
-    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀) × [ ℂ-down yss₀ ⊆ U ]
-        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁) × [ ℂ-down yss₁ ⊆ U ]
-        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]
+    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) <ℂ| λ - → - ↓ yss₀) × [ ℂ-down yss₀ ⊆ U ]
+        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) <ℂ| λ - → - ↓ yss₁) × [ ℂ-down yss₁ ⊆ U ]
+        → Σ[ yss  ∈ _ ] (xs <ℂ| λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]
     NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch tt g , NTS′
       where
-        g : (c : 𝔹) → (xs ⌢ c) ◀ (λ - → ℂ-down (yss ^ zss) -)
+        g : (c : 𝔹) → (xs ⌢ c) <ℂ| (λ - → ℂ-down (yss ^ zss) -)
         g false = U⊆V⇒◀U⊆◀V _ (ℂ-down zss) (ℂ-down (yss ^ zss)) (↓-++-right yss zss) ψ
         g true  = U⊆V⇒◀U⊆◀V _ (ℂ-down yss) (ℂ-down (yss ^ zss)) (↓-++-left  yss zss) φ
 

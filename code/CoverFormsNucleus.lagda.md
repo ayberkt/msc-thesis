@@ -36,7 +36,7 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
 ```
 
 Now, we define the *covering nucleus* which we denote by `𝕛`. At its heart, this is
-nothing but the map `U ↦ - <| U`.
+nothing but the map `U ↦ - ◀ U`.
 
 ```
   𝕛 : ∣ P↓ ∣F → ∣ P↓ ∣F
@@ -44,9 +44,9 @@ nothing but the map `U ↦ - <| U`.
     where
       -- This is not propositional unless we force it to be using the HIT definition!
       _▶_ : 𝒫 𝔉 → 𝒫 𝔉
-      U ▶ a = a <| U , squash
+      U ▶ a = a ◀ U , squash
 
-      U▶-dc : [ isDownwardsClosed P (λ - → (- <| U) , squash) ]
+      U▶-dc : [ isDownwardsClosed P (λ - → (- ◀ U) , squash) ]
       U▶-dc a a₀ aεU₁ a₀⊑a = ◀-lem₁ U-down a₀⊑a aεU₁
 
   _<<_ : ∣ P↓ ∣F → ∣ P↓ ∣F → hProp ℓ₀
@@ -71,7 +71,7 @@ nothing but the map `U ↦ - <| U`.
               IH c = down (next F c) (f c)
           down a (squash p q i) = squash (π₀ IH₀) (π₀ IH₁) i , squash (π₁ IH₀) (π₁ IH₁) i
             where
-              _ : a <| π₀ (glb-of P↓ (U , U-down) (V , V-down))
+              _ : a ◀ π₀ (glb-of P↓ (U , U-down) (V , V-down))
               _ = p
               IH₀ = down a p
               IH₁ = down a q
@@ -106,7 +106,7 @@ Given some `x` in `F`, we define a map taking `x` to its *downwards-closure*.
       down-DC : [ isDownwardsClosed P x↓ ]
       down-DC z y z⊑x y⊑z = ⊑[ P ]-trans y z x y⊑z z⊑x
 
-  x◀x↓ : (x : stage F) → x <| (λ - → - ⊑[ P ] x)
+  x◀x↓ : (x : stage F) → x ◀ (λ - → - ⊑[ P ] x)
   x◀x↓ x = dir (⊑[ P ]-refl x)
 ```
 
@@ -114,9 +114,9 @@ By composing this with the covering nucleus, we define a map `e` from `F` to `F�
 
 ```
   e : stage F → ∣ P↓ ∣F
-  e z = (λ a → (a <| (π₀ (↓-clos z))) , squash) , NTS
+  e z = (λ a → (a ◀ (π₀ (↓-clos z))) , squash) , NTS
     where
-      NTS : [ isDownwardsClosed P (λ a → (a <| (λ - → - ⊑[ P ] z)) , squash) ]
+      NTS : [ isDownwardsClosed P (λ a → (a ◀ (λ - → - ⊑[ P ] z)) , squash) ]
       NTS _ _ x y = ◀-lem₁ (λ _ _ x⊑y y⊑z → ⊑[ P ]-trans _ _ z y⊑z x⊑y) y x
 ```
 
