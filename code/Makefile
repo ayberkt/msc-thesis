@@ -1,6 +1,6 @@
 FILES := html/Main.html html/Poset.html html/Basis.html html/Frame.html\
          html/Cover.html html/Nucleus.html html/CoverFormsNucleus.html\
-         html/Powerset.html html/FormalTopology.html html/CantorSpace.html\
+         html/FormalTopology.html html/CantorSpace.html\
          html/SnocList.html html/ProductTopology.html html/UniversalProperty.html
 
 all: main
