@@ -20,30 +20,28 @@ in the following ``$\epsilon$-$\delta$'' definition of continuity: a function $f
 This definition embodies the idea that, to make $f(x)$ closer than $\epsilon$ to
 $f(y)$, it suffices to make $x$ closer than $\delta$ to $y$, for some certain $\delta$.
 
-\paragraphsummary{Generalise the notion of distance.}
 To pinpoint the essence of continuity, we will consider it in general form. $\reals{}$ is
 just one instance of a \emph{metric space}, a set that admits a well-behaved notion of
 distance, its distance function being:
 \begin{alignat*}{2}
-  d              \quad&:\quad  && \reals{} \times \reals{} \rightarrow \reals{} \\
-  d(\pair{x}{y}) \quad&:=\quad && | x - y |                      .
+  d       \quad&:\quad  && \reals{} \times \reals{} \rightarrow \reals{} \\
+  d(x, y) \quad&:=\quad && | x - y |                      .
 \end{alignat*}
-This is just \emph{one} instance of a notion of distance on a set viewed as a set of
-points. We can speak of the continuity of a function between any two metric spaces. Let
+This is just \emph{one} instance of a notion of distance on a set that is viewed as a set
+of points. We can speak of the continuity of a function between any two metric spaces. Let
 $X$ and $Y$ be two metric spaces. We now define continuity for any function $f : X \rightarrow Y$:
 \begin{equation}\label{cont-1}
-  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in Y.~ d_X(x, y) < \epsilon \rightarrow d_Y(f(x), f(y)) < \delta.
+  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in X.~ d_X(x, y) < \delta \rightarrow d_Y(f(x), f(y)) < \epsilon.
 \end{equation}
 
-\paragraphsummary{Transition to balls.}
-Notice that we could have written (\ref{cont-1}) in an alternative way. Given
-some $x \in X, \epsilon \in \reals{}$ define
+Notice that we could have written (\ref{cont-1}) in an alternative way. Given some $x \in X,
+\epsilon \in \reals{}$ define
 \begin{equation*}
   \ball{x}{\epsilon} \quad\is\quad \setof{ y \in X ~|~ d(x, y) < \epsilon }.
 \end{equation*}
 Now, the following is the same as (\ref{cont-1}):
 \begin{equation*}
-  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in Y.~ y \in \ball{x}{\delta} \rightarrow f(y) \in \ball{f(x)}{\epsilon},
+  \forall x \in X.~ \forall \epsilon > 0.~ \exists \delta > 0.~ \forall y \in X.~ y \in \ball{x}{\delta} \rightarrow f(y) \in \ball{f(x)}{\epsilon},
 \end{equation*}
 which could be expressed even more compactly as:
 \begin{equation}\label{cont-2}
