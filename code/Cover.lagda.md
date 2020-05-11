@@ -12,7 +12,7 @@ open import Basis
 ## Some lemmas about the cover relation
 
 ```
-module CoverLemmas (ℱ : FormalTopology ℓ ℓ′) where
+module CoverFromFormalTopology (ℱ : FormalTopology ℓ ℓ′) where
   private
     P    = pos ℱ
     D    = π₀ ℱ
