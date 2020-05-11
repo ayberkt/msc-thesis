@@ -121,9 +121,13 @@
 \newcommand{\singleton}[1]{%
   \hyperref[defn:list]{\text{\texttt{[}}}~#1~\hyperref[defn:list]{\text{\texttt{]}}}
 }
+\newcommand{\singletoncons}[1]{%
+  \text{\texttt{[}}~#1~\text{\texttt{]}}
+}
 \newcommand{\bitI}{\mathbf{1}}
 \newcommand{\bitO}{\mathbf{0}}
 \newcommand{\emptylist}{\rulename{\text{\texttt{[]}}}}
+\newcommand{\emptyconslist}{\textnormal{\texttt{[]}}}
 \DeclareMathOperator{\snocnm}{\rulename{\frown}}
 \newcommand{\snoc}[2]{#1 \snocnm{} #2}
 \newcommand{\cantoris}{\hyperref[defn:cantor-is]{\mathcal{C}}}

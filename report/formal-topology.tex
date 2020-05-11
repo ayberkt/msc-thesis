@@ -28,8 +28,8 @@ was inspired by Dragalin~\cite{dragalin}.
 This chapter corresponds to several modules in the \veragda{} formalisation. Sections
 \ref{sec:intr-sys}, \ref{sec:cover}, and \ref{sec:cover-nucleus} correspond respectively,
 to modules \modname{FormalTopology}, \modname{Cover}, and \modname{CoverFormsNucleus}.
-Sections \ref{sec:cover-nucleus} and \ref{sec:universal-prop} correspond to the
-\modname{UniversalProperty} module.
+Sections \ref{sec:lifting} and \ref{sec:universal-prop} correspond to the
+\modname{UniversalProperty} module..
 
 \section{Interaction systems}\label{sec:intr-sys}
 
@@ -118,8 +118,8 @@ $^{,}$%
 }:
 \begin{itemize}
   \item $A$: a type of stages of \emph{knowledge},
-  \item $B$: a type of \emph{experiments} $B(a)$ that one can perform at a certain stage
-    of knowledge $a$,
+  \item $B$: a type of \emph{experiments} that one can perform at a certain stage of
+    knowledge $a$,
   \item $C$: a type of \emph{outcomes} of an experiment $\oftyI{b}{B(a)}$ at some stage of
     knowledge $a$, and
   \item $d$: a function that expresses the act of \emph{revising} one's knowledge state
@@ -215,8 +215,8 @@ way.
 
 We are now ready to formally define the notion of a formal topology.
 \begin{defn}[Formal Topology]\label{defn:formal-topo}
-  A \emph{formal topology} is simply an interaction system, whose type $A$ of stages is a
-  poset, that satisfies the monotonicity and simulation properties:
+  A \emph{formal topology} is simply an interaction system on a poset $P$ of stages
+  that satisfies the monotonicity and simulation properties:
   \begin{align*}
     \formaltopo{} \quad\is\quad \sigmaty{P}{\poset{}_{n, n}}{%
       \sigmaty{\mathcal{I}}{\treestr{\abs{P}}}
@@ -244,9 +244,7 @@ The idea is as follows: given a set $A$ that we view like a set of \emph{basic o
 that is expected to pointlessly express the relation of being an \emph{open cover} i.e.,
 $x \covernm{} U$ iff $U$ is an open cover of $x$: $x = \bigvee_i U_i$. In other words, we are
 specifying which basic opens can be expressed as the join of which others. The information
-contained by this relation is sufficient to generate the topology (i.e., the frame). This
-generation process amounts to considering all possible joins of these basic opens minus
-those that are already joins of some other basic opens as expressed by the cover.
+contained by this relation is sufficient to generate the topology (i.e., the frame).
 
 The original formulation of formal topology by Sambin suffers a particular problem: it is
 not known how to define, predicatively, the coproduct of two frames using it. This problem
@@ -277,7 +275,7 @@ through the use of HITs.
     \infer2[$\rulebranch{}$]{\covers{a}{U}}
   \end{prooftree}
   \]
-  To emphasise the reading of this type as a relation, we write the constructors as rule
+  To emphasise the reading of these constructors as proof rules, we write them as rule
   names and refer to them as rules.
 \end{defn}
 
@@ -322,7 +320,7 @@ idempotence law would look like:
 \end{equation*}
 To prove this, we would need a lemma saying given any $a$, and subsets $U, V$,
 \begin{center}
-  if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$ for every $a'$, then
+  if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$ for every $\mempow{a'}{U}$, then
   $\trunc{\covers{a}{V}}$.
 \end{center}
 The $\ruledir{}$ case is easily verified. The $\rulebranch{}$ case, however, results in a
@@ -347,9 +345,8 @@ To remedy this, we will refrain from truncating the naive form of the cover rela
 we will instead add a path constructor that \emph{squashes} the difference between the
 $\ruledir{}$ and $\rulebranch{}$ constructors. The observation that the choice principle
 is no longer needed when the covering relation is defined this way is due to
-Coquand~\cite{another-way-out} (privately communicated to the author). We now provide the
-revised form, repeating the rules from Defn.~\ref{defn:naive-cover} for the sake of
-self-containment.
+Coquand~\cite{another-way-out}. We now provide the revised form, repeating the rules from
+Defn.~\ref{defn:naive-cover} for the sake of self-containment.
 \begin{defn}[Cover relation]\label{defn:covering}
   Given a formal topology
   $\mathcal{F}$ on type $A$, and given $\oftyI{a}{A}$, $U : \pow{A}$, the type
@@ -383,18 +380,20 @@ self-containment.
 \end{agdanotation}
 
 When trying to prove the idempotence law with this, we get from the inductive hypothesis a
-family $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is still
-``squashed'', but this squashing is an integral part of $\covers{\_}{\_}$ rather than a
-truncation that is imposed extrinsically upon it. This is sufficient for circumventing the
-problem that would have required a form of choice, and allows us to successfully complete
-the idempotence proof. The type of $\covers{\_}{\_}$ can be seen \emph{directly} to be
-$\pow{A} \rightarrow \pow{A} \rightarrow \hprop{}$ by the existence of the $\rulesquash{}$ constructor.
+product $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is
+still ``squashed'', but this squashing is an integral part of $\covers{\_}{\_}$ rather
+than a truncation that is imposed extrinsically upon it. This is sufficient for
+circumventing the problem that would have required a form of choice, and allows us to
+successfully complete the idempotence proof. The type of $\RHD$ can be seen
+\emph{directly} to be $\pow{A} \rightarrow \pow{A}$ by the existence of the $\rulesquash{}$
+constructor.
 
 We can now restrict $\pow{A}$ to $\dcsubset{A}$ since, given a downwards-closed subset
 $\oftyI{U}{\pow{A}}$, the subset of elements that are covered by $U$ (i.e.,
 $\covers{\_}{U}$) is itself downwards-closed.
 
-We now prove some crucial properties of the cover relation.
+We now prove some crucial properties of the cover relation, starting with
+downwards-closure.
 
 \begin{prop}\label{prop:lem1}
   Given a formal topology $\McF{}$, $\oftyII{a}{a'}{A_{\McF{}}}$ such that $a' \sqsubseteq a$, and a
@@ -427,7 +426,7 @@ We now prove some crucial properties of the cover relation.
 
 \begin{prop}\label{prop:lem2}
   Let $\McF{}$ be a formal topology with cover relation $\covernm{}$, and let
-  $\oftyII{U}{V}{\pow{A_{\McF{}}}}$ be subset of $A_{\McF{}}$ such that $V$ is
+  $\oftyII{U}{V}{\pow{A_{\McF{}}}}$ be subsets of $A_{\McF{}}$ such that $V$ is
   downwards-closed. For any $\oftyI{a}{A_{\McF{}}}$, if $\covers{a}{U}$ and
   $\mempow{a}{V}$, then $\covers{a}{\intersect{U}{V}}$.
 \end{prop}
@@ -444,25 +443,23 @@ We now prove some crucial properties of the cover relation.
       Let $\oftyI{c}{C(a, b)}$. Notice that $d(a, b, c) \sqsubseteq a$ by the monotonicity property
       (Defn.~\ref{defn:mono}) and hence by the downwards-closure of $V$, we have
       $\mempow{d(a, b, c)}{V}$. This means that we have $\covers{d(a, b, c)}{U}$ and
-      $\mempow{d(a, b, c)}{V}$ so we are done by the inductive hypothesis which gives us
-      $\covers{d(a, b, c)}{\intersect{U}{V}}$.
+      $\mempow{d(a, b, c)}{V}$ so we are done by the inductive hypothesis.
     \item Case $\rulesquash{}$. Immediate by the $\rulesquash{}$ rule.
   \end{itemize}
 \end{proof}
 
 \begin{prop}\label{prop:lem3}
   Given a formal topology $\McF{}$, $\oftyII{a}{a'}{A_{\McF{}}}$ such that $a' \sqsubseteq a$, and
-  downwards-closed subsets $U$ and $V$ of $A_{\McF{}}$, if $\covers{a'}{U}$ and
-  $\covers{a}{V}$ then $\covers{a'}{U \cap V}$.
+  downwards-closed subsets $U$ and $V$ of $A_{\McF{}}$, if $\covers{a}{U}$ and
+  $\covers{a'}{V}$ then $\covers{a'}{V \cap U}$.
 \end{prop}
 \begin{proof}
-  Let $\oftyII{a}{a'}{A_{\McF{}}}$ such that $a' \sqsubseteq a$ and assume $\covers{a'}{U}$ and
-  $\covers{a}{V}$. We need to show that $\covers{a'}{\intersect{U}{V}}$. We proceed by
+  Let $\oftyII{a}{a'}{A_{\McF{}}}$ such that $a' \sqsubseteq a$ and assume $\covers{a}{U}$ and
+  $\covers{a'}{V}$. We need to show that $\covers{a'}{\intersect{V}{U}}$. We proceed by
   induction on the proof of $\covers{a'}{U}$.
   \begin{itemize}
-    \item Case $\ruledir{}$. We have that $a \in U$. By the downwards-closure of $U$, this
-      means that $a' \in U$. The result then follows by Prop.~\ref{prop:lem2}.
-
+    \item Case $\ruledir{}$. We have $\mempow{a}{U}$ and hence $\mempow{a'}{U}$ by the
+      downwards-closure of $U$. The result then follows directly by Prop.~\ref{prop:lem2}.
     \item Case $\rulebranch{}$. We have some experiment $\oftyI{b}{a}$ such that
       $\covers{d(a, b, c)}{U}$ for every outcome $\oftyI{c}{C(a, b)}$. By the
       $\rulebranch{}$ rule, we are done if can exhibit some experiment $\oftyI{b'}{B(a')}$
@@ -474,7 +471,6 @@ We now prove some crucial properties of the cover relation.
       $d(a, b, c)$, $d(a', b' c')$, and the proof of $\covers{d(a, b, c)}{U}$ to show
       $d(a', b', c') \sqsubseteq d(a, b, c)$. This is precisely what the simulation property gives
       us.
-
     \item Case $\rulesquash{}$. We are done by the $\rulesquash{}$ rule.
   \end{itemize}
 \end{proof}
@@ -486,19 +482,20 @@ We now prove some crucial properties of the cover relation.
 \begin{proof}[Proof sketch]
   By induction on the covering proof. The $\ruledir{}$ case is direct by assumption. The
   $\rulebranch{}$ case follows by the $\rulebranch{}$ rule with a direct appeal to the
-  inductive hypothesis.
+  inductive hypothesis. The $\rulesquash{}$ case follows by the $\rulesquash{}$ rule.
 \end{proof}
 
 Let us now summarise our method for generating a frame out of a formal topology which
 comprises four steps.
 \begin{enumerate}
-  \item Start with a formal topology $\McF{}$ on type $A$.
+  \item Start with a formal topology $\McF{}$.
   \item $\McF{}$ has an underlying poset $P$; construct its frame of downwards-closed
     subsets $\dcframe{P}$ (as given in Theorem~\ref{thm:down-set-frame}).
   \item Note: $\covers{\_}{\_}$ is a nucleus on $\dcframe{P}$.
   \item We have shown (in Theorem~\ref{thm:fixed-point-frame}) that the set of
     fixed points for every nucleus is a frame. The generated frame is the frame of
-    elements of $\dcframe{P}$ that are fixed points for $\covers{\_}{\_}$.
+    elements of $\dcframe{P}$ that are fixed points for $\covers{\_}{\_}$
+    $\fix{\dcframe{P}}{\covernm{}}$.
 \end{enumerate}
 The only missing step is (3): we have not yet shown that the covering relation is a
 nucleus. We will do exactly this in Sec.~\ref{sec:cover-nucleus}.
@@ -550,7 +547,7 @@ formal topology;
   \end{itemize}
 \end{proof}
 
-\section{Lifting into the generated frame}
+\section{Lifting into the generated frame}\label{sec:lifting}
 
 Now that we have shown the nuclearity of the covering relation $\covers{\_}{\_}$, we have
 everything we need for the procedure of generating a frame from a formal topology.
@@ -564,14 +561,14 @@ $\fix{\dcframe{P}}{\covernm{}}$. Now, notice that we can define a lifting map
 $\eta : \abs{P} \rightarrow \fix{\dcframe{P}}{\covernm{}}$ as follows:
 \begin{align*}
   \eta    \quad&:\quad \abs{P} \rightarrow \pow{A_{\McF{}}}\\
-  \eta(a) \quad&\is\quad \covers{\_}{(a\downarrow)}
+  \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}
 \end{align*}
 where $a\downarrow$ denotes the \emph{downwards-closure} of $a$: $\{ a'~|~a' \sqsubseteq a \}$. So $a' \in \eta(a)
-\equiv \covers{a'}{a\downarrow}$ is to say ``$a'$ eventually becomes something that $a$ becomes'' if we
-take the reading of stages of knowledge being refined over time. As we have proven in
-Prop.~\ref{prop:lem1}, $\eta(x)$ is downwards-closed. It is also a fixed point for
-$\covernm{}$, as we will show, so its type can be refined to
-$\oftyI{\eta}{\abs{P} \rightarrow \fix{\dcframe{P}}{\covernm{}}}$.
+\equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage that $a$
+evolves into'' if we take the reading of stages of knowledge being refined over time. As
+we have proven in Prop.~\ref{prop:lem1}, $\eta(x)$ is downwards-closed. It is also a fixed
+point for $\covernm{}$, as we will show, so its type can be refined to $\oftyI{\eta}{\abs{P}
+  \rightarrow \fix{\dcframe{P}}{\covernm{}}}$.
 
 \begin{defn}[$\eta$]
   Let $\McF{}$ be a formal topology with underlying poset $P$ (note: $\abs{P} \equiv
@@ -613,11 +610,10 @@ notion of $f$ representing $\McF{}$ in $F$.
 
 Note what this property is expressing. We said that the reading of $\covers{a}{V}$ is $a =
 \bigcup_i V_i$. In the case we are dealing with a $V$ of the form $\setof{ d(a, b, c) ~|~
-  \oftyI{c}{C(a, b)} }$, it is clear that the $a \sqsubseteq \bigcup_i V_i$ direction holds meaning by the
-monotonicity of $f$: $f(a) \sqsubseteq \bigcup \setof{ f(d(a, b, c)) ~|~ \oftyI{c}{C(a, b)} }$. To assert
-$f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))$ is then to assert that $f$ maps $\McF{}$ to
-$R$ as to precisely make the $\covernm{}$ relation hold; hence the reading of this as
-``representation''.
+  \oftyI{c}{C(a, b)} }$, the other direction of what is expressed in the representation
+property always holds. To assert $f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))$ is then to
+assert that $f$ maps $\McF{}$ to $R$ as to precisely make the $\covernm{}$ relation hold;
+hence the reading of this as ``representation''.
 
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case

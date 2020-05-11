@@ -35,7 +35,7 @@ underlying interaction system of the Cantor topology.
   \centering
   \begin{forest}
     for tree={l sep=20pt}
-    [\texttt{[]}
+    [$\emptylist{}$
       [1, edge=dashed
         [0, edge=dashed
           [0, edge=dashed
@@ -222,16 +222,15 @@ As we have been representing topologies directly in terms of the notion of an op
 it will be not too hard for us to state this property for a formal topology. As we will
 now proceed to do this, let us first clarify some notation. We will assume the usual list
 type and denote the type of lists containing inhabitants of some type $A$, $\listty{A}$.
-The cons operator and the empty list are called $\_\cons\_$ and $\emptylist{}$
+The cons operator and the empty list are denoted $\_\cons\_$ and $\emptyconslist{}$
 respectively. Notice that we are denoting both empty lists of type $\bitlist{}$ and
-$\listty{A}$ by $\emptylist{}$, as its type should be obvious in context. Similarly, we
-will denote the singleton list and the append operation of both types using the same
-notations: $\singleton{\_}$, $\textnormal{\texttt{++}}$, respectively. Again, the type
+$\listty{A}$ by $\emptyconslist{}$, as its type should be obvious in context. Similarly,
+we will denote the singleton list and the append operation of both types using the same
+notations: $\singletoncons{\_}$, $\textnormal{\texttt{++}}$, respectively. Again, the type
 should be clear from the context. However, in the coloured version of this thesis, the
 $\textnormal{\texttt{++}}$ operation on $\bitlist{}$ will be coloured
 {\color{darkgreen}\emph{green}} as it is a definiendum we have introduced by means of a
-definitional equality (Defn.~\ref{defn:concat}); this should serve as an additional cue
-for disambiguation.
+definitional equality (Defn.~\ref{defn:concat}).
 
 One might wonder at this point why we are using two kinds of lists. We could certainly
 modify $\bitlist{}$ to accommodate polymorphic lists, and use this instead of
@@ -311,7 +310,8 @@ lemmas for the sake of clarity.
   Result follows by induction on $bss_1$.
 \end{proof}
 
-We are now ready to prove the compactness of the Cantor space.
+We are now ready to prove the compactness of the Cantor space. Note that we denote the two
+inhabitants of $\bool{}$ by $\bitI{}$ and $\bitO{}$.
 
 \begin{thm}
   $\cantoris{}$ is compact.
@@ -322,7 +322,7 @@ We are now ready to prove the compactness of the Cantor space.
   exists some $\oftyI{bss}{\listty{\bitlist{}}}$ such that $\covers{bs}{\fincover{bss}}$
   and $\fincover{bs} \subseteq U$. We proceed by induction on the proof of $\covers{bs}{U}$.
 
-  Case: $\ruledir{}$. Choose $bss \is \singleton{bs}$, namely, the singleton list
+  Case: $\ruledir{}$. Choose $bss \is \singletoncons{bs}$, namely, the singleton list
   consisting of $bs$. The first property follows by the $\ruledir{}$ rule and reflexivity
   whilst the second one holds by the downwards-closure of $U$.
 
