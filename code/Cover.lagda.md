@@ -9,10 +9,10 @@ open import Poset
 open import Basis
 ```
 
-## The test
+## Some lemmas about the cover relation
 
 ```
-module Test (ℱ : FormalTopology ℓ ℓ′) where
+module CoverLemmas (ℱ : FormalTopology ℓ ℓ′) where
   private
     P    = pos ℱ
     D    = π₀ ℱ

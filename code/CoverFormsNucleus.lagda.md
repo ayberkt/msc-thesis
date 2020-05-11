@@ -32,7 +32,7 @@ of `P` as `F↓`. `sim` and `mono` refer to the simulation and monotonicity prop
     P↓      = DCFrame P
     _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
 
-  open Test F public
+  open CoverLemmas F public
 ```
 
 Now, we define the *covering nucleus* which we denote by `𝕛`. At its heart, this is

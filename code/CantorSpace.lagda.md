@@ -138,7 +138,7 @@ cantor = ℂ-pos , ℂ-IS , ℂ-mono , ℂ-sim
 from which we get a covering relation
 
 ```
-open Test cantor renaming (_<|_ to _◀_)
+open CoverLemmas cantor renaming (_<|_ to _◀_)
 
 _ : ℂ → (ℂ → hProp zero) → Type zero
 _ = _◀_
@@ -151,7 +151,7 @@ The statement of compactness then is as follows.
 ```
 module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
-  open Test F using (_<|_)
+  open CoverLemmas F using (_<|_)
 
   private
     A = stage   F
