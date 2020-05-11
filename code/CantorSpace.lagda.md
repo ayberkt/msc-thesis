@@ -3,15 +3,12 @@
 
 module CantorSpace where
 
-open import Basis
+open import Basis                     hiding (A; B)
 open import Cubical.Data.Empty.Base   using (⊥; rec)
 open import Cubical.Data.Bool.Base    using (true; false; _≟_)   renaming (Bool to 𝔹)
 open import Data.List                 using (List; _∷_; [])      renaming (_++_ to _^_)
-open import Cubical.Foundations.Logic using ()                   renaming (⊥ to bot)
 open import Data.Sum                  using (_⊎_; inj₁; inj₂)
-open import Powerset                  hiding (U)
 open import Cover
-open import Truncation
 open import Poset
 open import FormalTopology
 ```
@@ -20,6 +17,11 @@ We open the `SnocList` module with the type `𝔹` of booleans.
 
 ```
 open import SnocList 𝔹  _≟_  renaming (SnocList to ℂ; SnocList-set to ℂ-set)
+
+data 𝟘 (ℓ : Level) : Type ℓ where
+
+bot : (ℓ : Level) → hProp ℓ
+bot ℓ = 𝟘 ℓ , λ ()
 ```
 
 The empty list and the snoc operator are called `[]` and `⌢` respectively. Concatenation
@@ -107,7 +109,10 @@ and simulation properties (given in `ℂ-mono` and `ℂ-sim`).
 ℂ-mono _ _ c = [] ⌢ c , refl
 
 ℂ-sim : hasSimulation ℂ-pos ℂ-IS
-ℂ-sim xs ys xs≤ys@([] , p)     tt = tt , λ c₀ → c₀ , [] , cong (λ - → - ⌢ c₀) p
+ℂ-sim xs ys xs≤ys@([] , p) tt = tt , NTS
+  where
+    NTS : (b₁ : 𝔹) → Σ[ b₀ ∈ 𝔹 ] [ (xs ⌢ b₁) ≤ (ys ⌢ b₀) ]
+    NTS b₁ = b₁ , subst (λ - → [ (xs ⌢ b₁) ≤ (- ⌢ b₁) ]) p (⊑[ ℂ-pos ]-refl _)
 ℂ-sim xs ys xs≤ys@(zs ⌢ z , p) tt = tt , NTS
   where
     NTS : (c₀ : 𝔹) → Σ[ c ∈ 𝔹 ] [ (xs ⌢ c₀) ≤ (ys ⌢ c) ]
@@ -139,25 +144,46 @@ _ : ℂ → (ℂ → hProp zero) → Type zero
 _ = _◀_
 ```
 
+## Statement of compactness
+
+The statement of compactness then is as follows.
+
+```
+module _ (F : FormalTopology ℓ₀ ℓ₀) where
+
+  open Test F using (_<|_)
+
+  private
+    A = stage   F
+    B = exp     F
+    C = outcome F
+    d = next    F
+
+  down : List A → 𝒫 A
+  down []         = λ _ → bot ℓ₀
+  down (xs ∷ xss) = λ ys → ∥ [ ys ⊑[ pos F ] xs ] ⊎ [ down xss ys ] ∥ , ∥∥-prop _
+
+  isCompact : Type (suc ℓ₀)
+  isCompact = (a : A) (U : 𝒫 A) (U-dc : [ isDownwardsClosed (pos F) U ]) →
+                a <| U → ∥ Σ[ as ∈ List A ] (a <| down as) × [ down as ⊆ U ] ∥
+```
+
 ## The Cantor formal topology is compact
 
 We now want to view a list of `ℂ`s as a _finite cover_. We associate with some
 `xss : List ℂ` a subset, being covered by which corresponds to being covered by this list.
 
 ```
-down : List ℂ → 𝒫 ℂ
-down []         = λ _ → bot
-down (xs ∷ xss) =
-  λ ys → ∥ [ ys ≤ xs ] ⊎ [ ys ↓ xss ] ∥ , ∥∥-prop _
+ℂ-down : List ℂ → 𝒫 ℂ
+ℂ-down = down cantor
 
-syntax down xss xs = xs ↓ xss
+syntax ℂ-down xss xs = xs ↓ xss
 ```
 
 This subset is downwards-closed.
 
 ```
-
-↓-dc : (xss : List ℂ) → [ IsDownwardClosed ℂ-pos (λ - → - ↓ xss) ]
+↓-dc : (xss : List ℂ) → [ isDownwardsClosed ℂ-pos (λ - → - ↓ xss) ]
 ↓-dc (xs ∷ xss) ys zs ys◀xs∷xss zs≤ys =
   ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss))) NTS ys◀xs∷xss
   where
@@ -168,22 +194,17 @@ This subset is downwards-closed.
     NTS (inj₂ ys◀xss) = ∣ inj₂ (↓-dc xss ys zs ys◀xss zs≤ys)    ∣
 ```
 
-The statement of compactness then is as follows.
+We claim that the Cantor space is compact.
 
 ```
-compact : (xs : ℂ) (U : 𝒫 ℂ) (U-dc : [ IsDownwardClosed ℂ-pos U ])
-        → xs ◀ U
-        → ∥ Σ[ yss ∈ List ℂ ]
-              (xs ◀ (λ - → - ↓ yss) × [ (λ - → - ↓ yss) ⊆ U ]) ∥
+compact : isCompact cantor
 ```
-
-We will now prove this.
 
 ### Two little lemmas
 
 ```
 U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → [ U ⊆ V ] → xs ◀ U → xs ◀ V
-U⊆V⇒◀U⊆◀V xs U V U⊆V = lem4 U V NTS xs
+U⊆V⇒◀U⊆◀V xs U V U⊆V = lem₄ U V NTS xs
   where
     NTS : (u : ℂ) → [ u ∈ U ] → u ◀ V
     NTS u u∈U = dir (U⊆V u u∈U)
@@ -239,31 +260,31 @@ compact xs U U-dc (dir xs∈U) = ∣ xs ∷ [] , NTS₀ , NTS₁ ∣
         NTS₁′ : [ ys ≤ xs ] ⊎ [ ys ↓ [] ] → [ U ys ]
         NTS₁′ (inj₁ ys≤xs) = U-dc xs ys xs∈U ys≤xs
 
-compact xs U U-dc (branch b f) =
+compact xs U U-dc (branch tt f) =
   let
     IH₀ : ∥ Σ[ yss₀ ∈ List ℂ ]
-              ((xs ⌢ true) ◀ (λ - → - ↓ yss₀)) × [ down yss₀ ⊆ U ] ∥
+              ((xs ⌢ true) ◀ (λ - → - ↓ yss₀)) × [ ℂ-down yss₀ ⊆ U ] ∥
     IH₀ = compact (xs ⌢ true) U U-dc (f true)
     IH₁ : ∥ Σ[ yss ∈ List ℂ ]
-              ((xs ⌢ false) ◀ (λ - → - ↓ yss) × [ down yss ⊆ U ]) ∥
+              ((xs ⌢ false) ◀ (λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]) ∥
     IH₁ = compact (xs ⌢ false) U U-dc (f false)
   in
     ∥∥-rec (∥∥-prop _) (λ φ → ∥∥-rec (∥∥-prop _) (λ ψ → ∣ NTS φ ψ ∣) IH₁) IH₀
   where
-    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀) × [ down yss₀ ⊆ U ]
-        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁) × [ down yss₁ ⊆ U ]
-        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss) × [ down yss ⊆ U ]
-    NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch b g , NTS′
+    NTS : Σ[ yss₀ ∈ _ ] ((xs ⌢  true) ◀ λ - → - ↓ yss₀) × [ ℂ-down yss₀ ⊆ U ]
+        → Σ[ yss₁ ∈ _ ] ((xs ⌢ false) ◀ λ - → - ↓ yss₁) × [ ℂ-down yss₁ ⊆ U ]
+        → Σ[ yss  ∈ _ ] (xs ◀ λ - → - ↓ yss) × [ ℂ-down yss ⊆ U ]
+    NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch tt g , NTS′
       where
-        g : (c : ℂ-out b) → (xs ⌢ c) ◀ (λ - → down (yss ^ zss) -)
-        g false = U⊆V⇒◀U⊆◀V _ (down zss) (down (yss ^ zss)) (↓-++-right yss zss) ψ
-        g true  = U⊆V⇒◀U⊆◀V _ (down yss) (down (yss ^ zss)) (↓-++-left  yss zss) φ
+        g : (c : 𝔹) → (xs ⌢ c) ◀ (λ - → ℂ-down (yss ^ zss) -)
+        g false = U⊆V⇒◀U⊆◀V _ (ℂ-down zss) (ℂ-down (yss ^ zss)) (↓-++-right yss zss) ψ
+        g true  = U⊆V⇒◀U⊆◀V _ (ℂ-down yss) (ℂ-down (yss ^ zss)) (↓-++-left  yss zss) φ
 
         NTS′ : [ (λ - → - ↓ (yss ^ zss)) ⊆ U ]
         NTS′ ys ys◀yss₀^yss₁ =
-          ∥∥-rec (is-true-prop (U ys)) NTS₂ (◀^-decide _ yss _ ys◀yss₀^yss₁)
+          ∥∥-rec (is-true-prop (ys ∈ U)) NTS₂ (◀^-decide _ yss _ ys◀yss₀^yss₁)
           where
-            NTS₂ : [ ys ↓ yss ] ⊎ [ ys ↓ zss ] → [ U ys ]
+            NTS₂ : [ ys ↓ yss ] ⊎ [ ys ↓ zss ] → [ ys ∈ U ]
             NTS₂ (inj₁ ys◀yss₀) = p ys ys◀yss₀
             NTS₂ (inj₂ ys◀yss₁) = q ys ys◀yss₁
 

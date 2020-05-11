@@ -1,0 +1,374 @@
+\chapter{The Cantor Space}\label{chap:cantor}
+
+Now that we have pinned down a notion of formal topology, let us make things a bit more
+concrete by looking at a prime example of a formal topology: the Cantor space. This
+chapter corresponds to the \modname{CantorSpace} module in the \veragda{} formalisation.
+
+For our purposes, the Cantor space is the type of boolean sequences: $\nats{} \rightarrow \bool{}$.
+If we were following a pointful road to the topology of the Cantor space, we would start
+by saying the points of this space are sequences $\oftyI{f}{\nats{} \rightarrow \bool{}}$. As we are
+taking a \emph{pointless} road instead, we will start by stating what the opens are:
+(finite) lists of booleans. Recalling the discussion about approximations from
+Chapter~\ref{chap:intro}, it is clear why this is the case: a function $\oftyI{f}{\nats{}
+  \rightarrow \bool{}}$ is an infinite object, meaning we will never be able to fully write it down
+(i.e., its extension). If we are to somehow understand its behaviour, this has to by
+\emph{experimenting with it}, namely, examining its output up to some
+$\oftyI{n}{\nats{}}$. In classical mathematics, we can indeed examine such a function up
+to infinity as the infinity of time is trivialised by the law of excluded middle. Setting
+philosophical debates aside, it is clear that this does not fit well with the
+computational view of topology we would like to adopt: if we write a program to analyse a
+bitstream, and expect to get any sort of useful output from this program, it has to
+analyse the given bitstream up to some finite $n$. This is precisely the point of
+pointless topology: infinite things make computational sense only by finitary
+examinations, which is what the opens are. Accordingly, we now start writing down the
+underlying interaction system of the Cantor topology.
+
+\begin{figure}
+  \caption[Visualisation of the Cantor space]{%
+    A visualisation of the Cantor space. Nodes correspond to stages of information (i.e.,
+    observed prefixes) about a sequence as there is a unique path from each node to the
+    root. Dashed lines denote possible outcomes whereas plain lines denote actual ones.
+    The encircled node is the stage of information at which the prefix $\emptylist{} \frown 0 \frown
+    0 \frown 1$ has been observed.
+  }
+  \label{fig:cantor}
+  \centering
+  \begin{forest}
+    for tree={l sep=20pt}
+    [$\emptylist{}$
+      [1, edge=dashed
+        [0, edge=dashed
+          [0, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [1, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ] ]
+        [1, edge=dashed
+          [0, edge=dashed [ $\vdots$~, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [1, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$~, edge=dashed ] ]
+        ]
+      ]
+      [\textbf{0}, edge=thick,
+        [\textbf{0}, edge=thick
+          [0, edge=dashed
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [\textbf{1}, edge=thick, circle, draw={red, radius=0.3pt, thick}
+            [ $\vdots$, edge=dashed ]
+            [ $\vdots$, edge=dashed ] ] ]
+        [1, edge=dashed
+          [0, edge=dashed
+            [ $\vdots$, edge=dashed ]
+            [ $\vdots$, edge=dashed ] ]
+          [ 1, edge=dashed
+            [ $\vdots$, edge=dashed ]
+            [ $\vdots$, edge=dashed ] ] ]
+      ] 
+    ]
+  \end{forest}
+\end{figure}
+
+\section{The Cantor interaction system}
+
+As we have explained in Section~\ref{sec:intr-sys}, we need to start defining the Cantor
+space by giving its interaction structure.
+\begin{description}
+  \item[Stages:] finite lists of booleans. A list of length $n$ is the stage of
+    information at which first $n$ bits of the sequence have been found out.
+  \item[Experiments:] at any stage, there is only one experiment that can be performed:
+    asking for the next bit. Each sequence can be thought of as a black-box computing
+    device with a button on it; whenever the button is pressed, it emits a new bit.
+  \item[Outcomes:] the outcome of the experiment of asking for a new bit is simply the
+    emitted bit itself
+  \item[Revision:] when we receive some bit $\oftyI{b}{\bool{}}$ at stage $bs$, we proceed
+    to the next stage by appending $b$ to $bs$. We will denote this $bs \frown b$.
+\end{description}
+
+To write this down formally, we first need to define the inductive type of (snoc) lists.
+
+\begin{defn}[Boolean snoc lists]\label{defn:list}
+  The type $\bitlist{}$ of lists of booleans is inductively defined by two constructors:
+  \[
+    \begin{prooftree}
+      \infer0{\oftyI{\emptylist{}}{\bitlist{}}}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \hypo{\oftyI{b}{\bool{}}}
+      \hypo{\oftyI{bs}{\bitlist{}}}
+      \infer2[.]{\oftyI{\snoc{bs}{b}}{\bitlist{}}}
+    \end{prooftree}
+  \]
+  We denote the singleton list consisting of $b$,
+      $\singleton{b} \is \snoc{\emptylist}{b}$.
+\end{defn}
+
+\begin{defn}[Prepend for snoc lists]\label{defn:concat}
+  Given two inhabitants $\oftyII{bs_0}{bs_1}{\bitlist{}}$, the operation of prepending of
+  $bs_0$ to $bs_1$, denoted $\concat$, is defined by recursion as follows:
+  \begin{alignat*}{3}
+    \_&\concat\_                      \quad&&:\quad   && \bitlist{} \rightarrow \bitlist{} \rightarrow \bitlist{} \\
+    bs_0 &\concat \emptylist          \quad&&\is\quad && bs_0                                 \\
+    bs_0 &\concat (\snoc{bs_1'}{b_1}) \quad&&\is\quad && \snoc{(bs_0 \concat bs_1')}{b_1}     .
+  \end{alignat*}
+\end{defn}
+
+The notation ``$\mathbb{B}$'' is mnemonic for \textbf{basic open} in that the inhabitants
+of $\bitlist{}$ are basic opens of the Cantor space.
+
+\begin{prop}\label{prop:list-set}
+  $\bitlist{}$ is an h-set.
+\end{prop}
+\begin{proof}[Proof sketch.]
+  It is easy to show that $\bitlist{}$ is discrete (Defn.~\ref{defn:discrete}) which is
+  the case precisely because the type of \verbool{}s is discrete. It is therefore a set by
+  Hedberg's theorem~(Theorem~\ref{thm:hedberg}).
+\end{proof}
+
+\begin{defn}[The Cantor poset]\label{defn:cantor-poset}
+  The set $\bitlist{}$ forms a poset under the following order. Let
+  $\oftyII{bs_0}{bs_1}{\bitlist{}}$;
+  \begin{equation*}
+    bs_1 \le bs_0 \quad\is\quad \sigmaty{bs_2}{\bitlist{}}{bs_1 = bs_0 \concat bs_2}.
+  \end{equation*}
+  We will refer to such a $bs_2$, that is the part of $bs_1$ after $bs_0$, as the
+  \emph{difference} of $bs_1$ from $bs_0$. The fact that $\bitlist{}$ is a set is
+  given in Proposition~\ref{prop:list-set}. Reflexivity is immediate by picking $bs_2 \is
+  \emptylist{}$. Transitivity boils down to to the associativity of $\concat$. For
+  antisymmetry, let $\oftyII{bs}{bs'}{\bitlist{}}$ such that $bs \le bs'$ and $bs' \le
+  bs$. The result is immediate in the cases where either difference is $\emptylist$, and
+  the case where it is not is impossible. This latter fact involves a non-trivial amount
+  of bureaucracy to prove in a completely precise way but is intuitively apparent.
+
+  Finally, note that the relation $\le$ is h-propositional (without the need for
+  truncation!). This follows from the injectivity of $bs_0 \concat \_$.
+\end{defn}
+
+Now let us write down the interaction system that underlies the Cantor space.
+\begin{defn}[The Cantor interaction system]\label{defn:cantor-is}
+  We will call the Cantor interaction system $\cantoris{}$. It is defined as
+  $\cantoris{} \is (A, B, C, d)$, where
+  \begin{alignat*}{2}
+    A                   \quad&\is\quad && \bitlist{}   \\
+    B(bs)               \quad&\is\quad && \unitty{}    \\
+    C(bs, \unittm{})    \quad&\is\quad && \bool{}      \\
+    d(bs, \unittm{}, b) \quad&\is\quad && \snoc{bs}{b} .
+  \end{alignat*}
+\end{defn}
+
+Definition~\ref{defn:cantor-is} provides the \emph{data} of the topology. Let us now prove
+this actually forms a formal topology.
+\begin{thm}[The Cantor formal topology]\label{thm:cantor-topo}
+  The Cantor interaction system on the Cantor poset forms a formal topology, that is, it
+  satisfies the monotonicity (Defn.~\ref{defn:mono}) and the simulation
+  (Defn.~\ref{defn:sim}) properties.
+\end{thm}
+\begin{proof}
+  Monotonicity is immediate since, given a boolean $b$, the operation $\snoc{\_}{b}$ of
+  snocing it onto a list of booleans clearly gets us in a more refined stage, as witnessed
+  by the difference of $\singleton{b}$.
+
+  For the simulation property (Defn.~\ref{defn:sim}), let
+  $\oftyII{bs_0}{bs_1}{\bitlist{}}$ and assume that $bs_1 \le bs_0$. Note that the
+  experiment type is trivial so it suffices to show that for any outcome of
+  $\oftyI{b_1}{C(bs_1, \unittm{})}$, there exists some $\oftyI{b_0}{C(bs_0, \unittm{})}$
+  such that
+  \begin{equation*}
+    d(bs_1, \unittm{}, b_1) \sqsubseteq d(bs_0, \unittm{}, b_0).
+  \end{equation*}
+  Unfolding the definitional equalities in this statement, we can restate our goal as
+  follows: for any boolean $b_1$ there exists some boolean $b_0$ such that
+  \begin{equation*}
+    \snoc{bs_1}{b_1} \le \snoc{bs_0}{b_0}.
+  \end{equation*}
+  Let $b_1$ be an arbitrary boolean. We shall now construct such a $b_0$. We proceed by
+  case analysis on the difference of $bs_1$ from $bs_0$.
+  \begin{itemize}
+    \item Case: $\emptylist{}$. This means that $bs_0 = bs_1$. We choose $b_0 \is b_1$. It
+      is clear that $\snoc{bs_1}{b_1} \le \snoc{bs_0}{b_1}$ by reflexivity.
+    \item Case: $\snoc{bs}{b}$. In this case, $bs_1 = bs_0 \concat{} (\snoc{bs}{b})$ and
+      we know that $\snoc{bs}{b}$ is nonempty. Call the first element (counting from left
+      to right) of $\snoc{bs}{b}$, $b_h$, and the rest of it, $bs_t$ ($h$ for ``head'' and
+      $t$ for ``tail''). We choose $b_0 \is b_h$. It remains to be shown that
+      $\snoc{bs_1}{b_1} \le \snoc{bs_0}{b_h}$.
+      Observe the following equality:
+      \begin{align*}
+        bs_1 \frown b_1 \quad&=\quad \snoc{(bs_0 \concat{} (\snoc{bs}{b}))}{b_1}       \\
+                   \quad&=\quad \snoc{(bs_0 \concat{} (b_h \concat{} bs_t))}{b_1} \\
+                   \quad&=\quad \snoc{((bs_0 \concat{} b_h) \concat{} bs_t)}{b_1} \\
+                   \quad&\equiv\quad (bs_0 \concat{} b_h) \concat{} (\snoc{bs_t}{b_1}) .
+      \end{align*}
+      This means that $bs_1 \frown b_1 \le bs_0 \frown b_h$ is witnessed by the difference
+      $bs_t \frown b_1$.
+  \end{itemize}
+\end{proof}
+
+\section{The Cantor space is compact}
+
+An important property of topological spaces in general topology is that of
+\emph{compactness}. A space $X$ is called compact if
+\begin{center}
+  every open cover of $X$ has a finite subcover.
+\end{center}
+We remarked that an open cover of space $X$ is a collection $\{ V_i ~|~ i \in I \}$ of open
+sets of $X$ such that $X = \bigcup_i V_i$. As we are viewing open sets as observable properties,
+this means that an open cover $\setof{ V_i ~|~ i \in I }$ is a way of decomposing $X$ into
+$\abs{I}$-many observable properties. If $X$ is compact, every time we can decompose $X$
+into such a collection of open subsets, we can find a \textbf{finite subset} of this
+collection that remains a decomposition of $X$ into observable properties. In other words,
+even though $X$ might not be finite, its behaviour can somehow be
+\emph{reduced to finitely many observable properties}.
+
+As we have been representing topologies directly in terms of the notion of an open cover,
+it will be not too hard for us to state this property for a formal topology. As we will
+now proceed to do this, let us first clarify some notation. We will assume the usual list
+type and denote the type of lists containing inhabitants of some type $A$, $\listty{A}$.
+The cons operator and the empty list are denoted $\_\cons\_$ and $\emptyconslist{}$
+respectively. Notice that we are denoting both empty lists of type $\bitlist{}$ and
+$\listty{A}$ by $\emptyconslist{}$, as its type should be obvious in context. Similarly,
+we will denote the singleton list and the append operation of both types using the same
+notations: $\singletoncons{\_}$, $\textnormal{\texttt{++}}$, respectively. Again, the type
+should be clear from the context. However, in the coloured version of this thesis, the
+$\textnormal{\texttt{++}}$ operation on $\bitlist{}$ will be coloured
+{\color{darkgreen}\emph{green}} as it is a definiendum we have introduced by means of a
+definitional equality (Defn.~\ref{defn:concat}).
+
+One might wonder at this point why we are using two kinds of lists. We could certainly
+modify $\bitlist{}$ to accommodate polymorphic lists, and use this instead of
+$\listtynm{}$. Our justification for this is that the presentation seems to be much more
+clear when we reserve snoc lists for the type $\bitlist{}$ to foreground its
+downwards-growing nature, as opposed to cons lists.
+
+Let us now define an auxiliary function that we will need when stating compactness.
+\begin{defn}\label{defn:fin-cover}
+  Given a poset $\oftyI{P}{\poset{}_{n, n}}$ and $\oftyI{xs}{\listty{\abs{P}}}$, we define
+  the following function expressing the subset of inhabitants of $\abs{P}$ that are below
+  at least one element of $xs$.
+  \begin{alignat*}{2}
+    \fincovernm{}            \quad&:\quad   &&\listty{A} \rightarrow \pow{A}                            \\
+    \fincover{\emptylist{}}  \quad&\is\quad &&\lambda \_.~\bot_n                                       \\
+    \fincover{x \cons xs'}   \quad&\is\quad &&\lambda ys.~\trunc{ys \sqsubseteq_P xs + ys \in \fincover{xs'}}   .
+  \end{alignat*}
+\end{defn}
+
+We can now state\footnote{%
+  This specific form of the compactness statement for a formal topology was communicated
+  to the author by \thesupervisor{}~\cite{email-compactness}, the supervisor.
+}
+the compactness of a formal topology.
+\begin{defn}[Compactness]\label{defn:compact}
+  A given formal topology $\McF{}$ is compact if the following type is inhabited:
+  \begin{align*}
+    &\iscompact{\McF{}} \quad\is\quad \\
+    &\hspace{2em}
+    \pity{a}{A}{\pity{(U, \_)}{\dcsubset{A}}{\\
+        &\hspace{4em}
+        \covers{a}{U} \rightarrow
+          \trunc{%
+            \sigmaty{as}{\listty{A}}{%
+              \covers{a}{\fincover{as}} \times \mempow{\fincover{as}}{U}
+            }
+          }.
+      }
+    }
+  \end{align*}
+\end{defn}
+
+Notice that the result type must be truncated due to the existence of the $\rulesquash{}$
+constructor. One could argue that it would have to be truncated \emph{anyway}, since
+compactness is a property and should therefore be propositional. However, one could
+consider refining this property so that it uniquely characterises the finite subcover.
+This would render the property naturally propositional, hence freeing us from the
+obligation to truncate it.
+
+We will now prove that the Cantor space is compact. For this, we first prove three small
+lemmas for the sake of clarity.
+
+\begin{lemma}\label{lem:comp1}
+  Given downwards-closed subsets $U$ and $V$ of the Cantor poset, if $\subsetof{U}{V}$
+  then $\subsetof{\covers{\_}{U}}{\covers{\_}{V}}$.
+\end{lemma}
+\begin{proof}
+  Corollary of Proposition~\ref{prop:lem4}.
+\end{proof}
+
+\begin{lemma}\label{lem:comp2}
+  Given two lists $\oftyII{bss_0}{bss_1}{\bitlist{}}$,
+  $\subsetof{\fincover{bss_0}}{\fincover{bss_0 \append bss_1}}$ and
+  $\subsetof{\fincover{bss_1}}{\fincover{bss_0 \append bss_1}}$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+  Straightforward induction. Notice, however that the recursion principle of propositional
+  truncation has to be invoked.
+\end{proof}
+
+\begin{lemma}\label{lem:comp3}
+  Given any $\oftyI{bs}{\bitlist{}}$ and $\oftyII{bss_0}{bss_1}{\listty{\bitlist{}}}$, if
+  $bs \in \fincover{bss_0 \append bss_1}$ then either $bs \in \fincover{bss_0}$ or
+  $bs \in \fincover{bss_1}$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+  Result follows by induction on $bss_1$.
+\end{proof}
+
+We are now ready to prove the compactness of the Cantor space. Note that we denote the two
+inhabitants of $\bool{}$ by $\bitI{}$ and $\bitO{}$.
+
+\begin{thm}
+  $\cantoris{}$ is compact.
+\end{thm}
+\begin{proof}
+  Let $\oftyI{bs}{\bitlist{}}$, and $U$, a downwards-closed subset of the Cantor poset
+  such that $\covers{bs}{U}$. We need to show that $U$ has a finite subcover i.e., there
+  exists some $\oftyI{bss}{\listty{\bitlist{}}}$ such that $\covers{bs}{\fincover{bss}}$
+  and $\fincover{bs} \subseteq U$. We proceed by induction on the proof of $\covers{bs}{U}$.
+
+  Case: $\ruledir{}$. Choose $bss \is \singletoncons{bs}$, namely, the singleton list
+  consisting of $bs$. The first property follows by the $\ruledir{}$ rule and reflexivity
+  whilst the second one holds by the downwards-closure of $U$.
+
+  Case: $\rulebranch{}$. We know that $\covers{\snoc{bs}{b}}{U}$ for \emph{any} $b$, by
+  the right premise of the $\rulebranch{}$ rule. Now, notice that we can appeal to the
+  inductive hypothesis with both of $\snoc{bs}{\bitO{}}$ and $\snoc{bs}{\bitI{}}$, as we
+  know $\covers{\snoc{bs}{\bitI{}}}{U}$ and $\covers{\snoc{bs}{\bitO{}}}{U}$. This gives
+  us some $bss_0$ and $bss_1$ such that not only
+    \begin{equation}\label{eqn:comp-ass-1}
+      \covers{\snoc{bs}{\bitO}}{\fincover{bss_0}}
+      \quad \text{and} \quad
+      \covers{\snoc{bs}{\bitI{}}}{\fincover{bss_1}},
+      \tag{$\dagger$}
+    \end{equation}
+    but also
+    \begin{equation}\label{eqn:comp-ass-2}
+      \subsetof{\fincover{bss₀}}{U}
+      \quad \text{and} \quad
+      \subsetof{\fincover{bss₁}}{U}.
+      \tag{$\ddagger$}
+    \end{equation}
+    We now pick $bss \is bss_0 \append bss_1$. It remains to be shown that
+    \begin{equation*}
+      \covers{bs}{\fincover{bss_0 \append bss_1}}
+      \quad\text{and}\quad
+      \subsetof{\fincover{bss_0 \append bss_1}}{U}.
+    \end{equation*}
+    The second conjunct is easy to verify. Let $bss' \in \fincover{bss_0 \append bss_1}$. By
+    Lemma~\ref{lem:comp3}, we have two cases: either $bss' \in \fincover{bss_0}$ or $bss' \in
+    \fincover{bss_1}$. In either case, we have that $bss' \in U$ by (\ref{eqn:comp-ass-2}).
+
+    For the left conjunct, notice that it suffices, by the $\rulebranch{}$ rule, to show
+    \begin{equation*}
+      \covers{\snoc{bs}{b}}{\fincover{bss_0 \append bss_1}}
+    \end{equation*}
+    for any $\oftyI{b}{\bool{}}$. Let $b$ be an arbitrary boolean. There are two cases for
+    $b$.
+    \begin{itemize}
+      \item Case $b \equiv \bitO{}$. By Lemma~\ref{lem:comp1}, and the fact that
+        \begin{equation*}
+          \subsetof{\fincover{bss_0}}{\fincover{bss_0 \append bss_1}}
+          \qquad\text{(by Lemma~\ref{lem:comp2})},
+        \end{equation*}
+        it suffices to show $\covers{\snoc{bs}{\bitO{}}}{\fincover{bss_0}}$ which we know
+        by (\ref{eqn:comp-ass-1}).
+      \item Case $b \equiv \bitI{}$. Exactly the same reasoning as in the $b \equiv \bitO{}$ case
+        but with $bss_1$ instead $bss_o$.
+    \end{itemize}
+\end{proof}

@@ -5,7 +5,6 @@ module Cover where
 
 open import Level
 open import FormalTopology
-open import Powerset
 open import Poset
 open import Basis
 ```
@@ -29,61 +28,58 @@ module Test (ℱ : FormalTopology ℓ ℓ′) where
 ```
 
 ```
-  ∩-comm : (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ) (a : ∣ P ∣ₚ)
-         → [ ((V ∩ U) a ⇒ (U ∩ V) a) ⊓ ((U ∩ V) a ⇒ (V ∩ U) a) ]
-  ∩-comm U V a =  V∩U⇒U∩V , U∩V⇒V∩U
-    where
-      V∩U⇒U∩V : [ (V ∩ U) a ] → [ (U ∩ V) a ]
-      V∩U⇒U∩V (aεV , aεU) = aεU , aεV
+  module _ {U : ∣ P ∣ₚ → hProp ℓ} (U-down : [ isDownwardsClosed P U ]) where
 
-      U∩V⇒V∩U : [ (U ∩ V) a ] → [ (V ∩ U) a ]
-      U∩V⇒V∩U (aεU , aεV) = aεV , aεU
-
-  <|-∩-comm : {U : 𝒫 ∣ P ∣ₚ} {V : 𝒫 ∣ P ∣ₚ} (a : ∣ P ∣ₚ) → a <| (V ∩ U) → a <| (U ∩ V)
-  <|-∩-comm {U = U} {V} a (dir p)          = dir (π₀ (∩-comm U V a) p)
-  <|-∩-comm {U = U} {V} a (branch b f)     = branch b (λ c → <|-∩-comm (next ℱ c) (f c))
-  <|-∩-comm {U = U} {V} a (squash p₀ p₁ i) = squash (<|-∩-comm a p₀) (<|-∩-comm a p₁) i
-
-  module _ {U : ∣ P ∣ₚ → hProp ℓ} (U-down : [ IsDownwardClosed P U ]) where
-
-    lem1 : {a a′ : ∣ P ∣ₚ} → [ a′ ⊑[ P ] a ] →  a <| U → a′ <| U
-    lem1 {_}     {_}  h (squash p₀ p₁ i) = squash (lem1 h p₀) (lem1 h p₁) i
-    lem1 {_}     {_}  h (dir q)          = dir (U-down _ _ q h)
-    lem1 {a = a} {a′} h (branch b f)     = branch b′ g
+    ◀-lem₁ : {a a′ : ∣ P ∣ₚ} → [ a′ ⊑[ P ] a ] →  a <| U → a′ <| U
+    ◀-lem₁ {_}     {_}  h (squash p₀ p₁ i) = squash (◀-lem₁ h p₀) (◀-lem₁ h p₁) i
+    ◀-lem₁ {_}     {_}  h (dir q)          = dir (U-down _ _ q h)
+    ◀-lem₁ {a = a} {a′} h (branch b f)     = branch b′ g
       where
         b′ : exp ℱ a′
         b′ = π₀ (sim ℱ a′ a h b)
 
         g : (c′ : out ℱ b′) → next ℱ c′ <| U
-        g c′ = lem1 (π₁ (π₁ (sim ℱ a′ a h b) c′)) (f c)
+        g c′ = ◀-lem₁ δc′⊑δc (f c)
           where
             c : out ℱ b
             c = π₀ (π₁ (sim ℱ a′ a h b) c′)
 
-  lem4 : (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ)
-       → ((u : ∣ P ∣ₚ) → [ U u ] → u <| V) → (a : ∣ P ∣ₚ) → a <| U → a <| V
-  lem4 U V h a (squash p₀ p₁ i) = squash (lem4 U V h a p₀) (lem4 U V h a p₁) i
-  lem4 U V h a (dir p)          = h a p
-  lem4 U V h a (branch b f)     = branch b (λ c → lem4  U V h (next ℱ c) (f c))
+            δc′⊑δc : [ next ℱ c′ ⊑[ P ] next ℱ c ]
+            δc′⊑δc = π₁ (π₁ (sim ℱ a′ a h b) c′)
 
-  module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ) (V-dc : [ IsDownwardClosed P V ]) where
+  lem₄ : (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ)
+       → ((u : ∣ P ∣ₚ) → [ u ∈ U ] → u <| V) → (a : ∣ P ∣ₚ) → a <| U → a <| V
+  lem₄ U V h a (squash p₀ p₁ i) = squash (lem₄ U V h a p₀) (lem₄ U V h a p₁) i
+  lem₄ U V h a (dir p)          = h a p
+  lem₄ U V h a (branch b f)     = branch b (λ c → lem₄  U V h (next ℱ c) (f c))
+
+  module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ) (V-dc : [ isDownwardsClosed P V ]) where
 ```
 
 ```
-    lem2 : {a : ∣ P ∣ₚ} → a <| U → [ V a ] → a <| (U ∩ V)
-    lem2 (squash p₀ p₁ i) h = squash (lem2 p₀ h) (lem2 p₁ h) i
-    lem2 (dir q)          h = dir (q , h)
-    lem2 (branch b f)     h = branch b (λ c → lem2 (f c) (V-dc _ _ h (mono ℱ _ b c)))
+    lem₂ : {a : ∣ P ∣ₚ} → a <| U → [ a ∈ V ] → a <| (U ∩ V)
+    lem₂ (squash p₀ p₁ i) h = squash (lem₂ p₀ h) (lem₂ p₁ h) i
+    lem₂ (dir q)          h = dir (q , h)
+    lem₂ (branch b f)     h = branch b (λ c → lem₂ (f c) (V-dc _ _ h (mono ℱ _ b c)))
 
   module _ (U : 𝒫 ∣ P ∣ₚ) (V : 𝒫 ∣ P ∣ₚ)
-           (U-dc : [ IsDownwardClosed P U ])
-           (V-dc : [ IsDownwardClosed P V ]) where
+           (U-dc : [ isDownwardsClosed P U ])
+           (V-dc : [ isDownwardsClosed P V ]) where
 
-    lem3 : (a a′ : ∣ P ∣ₚ) → [ a′ ⊑[ P ] a ] → a′ <| U → a <| V → a′ <| (U ∩ V)
-    lem3 a a′ h (squash p₀ p₁ i) q = squash (lem3 a a′ h p₀ q) (lem3 a a′ h p₁ q) i
-    lem3 a a′ h (dir p)          q = <|-∩-comm a′ (lem2 V U U-dc (lem1 V-dc h q) p)
-    lem3 a a′ h (branch b f)     q = branch b g
+    lem₃ : {a a′ : ∣ P ∣ₚ} → [ a′ ⊑[ P ] a ] → a <| U → a′ <| V → a′ <| (V ∩ U)
+    lem₃ {a} {a′} a′⊑a (squash p₀ p₁ i) q = squash (lem₃ a′⊑a p₀ q) (lem₃ a′⊑a p₁ q) i
+    lem₃ {a} {a′} a′⊑a (dir a∈U)        q = lem₂ V U U-dc q (U-dc a a′ a∈U a′⊑a)
+    lem₃ {a} {a′} a′⊑a (branch b f)     q = branch b′ g
       where
-        g : (c : out ℱ b) → next ℱ c <| (U ∩ V)
-        g c = lem3 a′ (next ℱ c) (mono ℱ a′ b c) (f c) (lem1 V-dc h q)
+        b′ : exp ℱ a′
+        b′ = π₀ (sim ℱ a′ a a′⊑a b)
+
+        g : (c′ : out ℱ b′) → next ℱ c′ <| (V ∩ U)
+        g c′ = lem₃ NTS (f c) (◀-lem₁ V-dc (mono ℱ a′ b′ c′) q)
+          where
+            c : out ℱ b
+            c = π₀ (π₁ (sim ℱ a′ a a′⊑a b) c′)
+
+            NTS : [ next ℱ c′ ⊑[ P ] next ℱ c ]
+            NTS = π₁ (π₁ (sim ℱ a′ a a′⊑a b) c′)
 ```

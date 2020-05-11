@@ -36,9 +36,9 @@ module _ (P : Poset ℓ₀ ℓ₁) (ℐ-str : InteractionStr ∣ P ∣ₚ) where
 
   hasSimulation : Type (ℓ₀ ⊔ ℓ₁)
   hasSimulation =
-    (a₀ a : ∣ P ∣ₚ) → [ a₀ ⊑[ P ] a ] →
-      (b : action ℐ a) → Σ (action ℐ a₀) (λ b₀ →
-        (c₀ : reaction ℐ b₀) → Σ (reaction ℐ b) (λ c → [ δ ℐ c₀ ⊑[ P ] δ ℐ c ]))
+    (a′ a : ∣ P ∣ₚ) → [ a′ ⊑[ P ] a ] →
+      (b : action ℐ a) → Σ[ b′ ∈ action ℐ a′ ]
+        ((c′ : reaction ℐ b′) → Σ[ c ∈ reaction ℐ b ] [ δ ℐ c′ ⊑[ P ] δ ℐ c ])
 
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 FormalTopology ℓ₀ ℓ₁ =
