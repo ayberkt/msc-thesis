@@ -110,6 +110,8 @@ _∩_ {A = A} U V = λ x → ([ U x ] × [ V x ]) , prop x
     prop x = isPropΣ (is-true-prop (x ∈ U)) λ _ → is-true-prop (V x)
 ```
 
+## Family
+
 ```
 Fam : (ℓ₀ : Level) → Type ℓ₁ → Type (suc ℓ₀ ⊔ ℓ₁)
 Fam ℓ₀ A = Σ (Set ℓ₀) (λ I → I → A)
