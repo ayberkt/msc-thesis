@@ -693,15 +693,16 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
-  Let $\McF{}$ be a formal topology and $R$ a frame. Let $\oftyI{f}{P \rightarrow_m R}$ be a
-  \emph{flat} monotonic map that represents $\McF{}$ in $R$
-  (as defined in Defn.~\ref{defn:rep}). We will show the \emph{unique existence} of a
-  \emph{frame homomorphism} $\oftyI{g}{L \rightarrow_f R}$ such that $f = g \circ \eta$.
+  Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
+  $\fix{\dcframe{A_{\McF{}}}}{\covernm{}}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
+  monotonic map that represents $\McF{}$ in $R$ (as defined in Defn.~\ref{defn:rep}). We
+  will show the \emph{unique existence} of a \emph{frame homomorphism}
+  $\oftyI{g}{\framehomo{L}{R}}$ such that $f = g \circ \eta$.
 
   We choose
   \begin{align*}
-    g    \quad&:\quad \abs{L} \rightarrow \abs{R} \\
-    g(U) \quad&\is\quad \bigvee^R f(U)        .
+    g    \quad&:\quad \abs{L} \rightarrow \abs{R}              \\
+    g(U) \quad&\is\quad \bigvee^R \setof{ f(u) ~|~ u \in U } .
   \end{align*}
   To show that the diagram commutes, it suffices by Proposition~\ref{prop:funext} to show
   $f(x) = g(\eta(x))$ for every $\oftyI{x}{A_{\McF{}}}$. Let $\oftyI{x}{A_{\McF{}}}$; we
@@ -710,17 +711,17 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   immediate since $x \in \eta(x)$.
 
   The other direction is the interesting one. First, we prove a lemma in preparation:
-  \emph{given any $\oftyII{a}{a'}{A_{\McF{}}}$ such that $\covers{a'}{a\downarrow}$, $f(a') \sqsubseteq f(a)$}.
-  Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{a}$. We proceed by induction on
-  the proof of $\covers{a'}{a}$.
+  \emph{given any $\oftyII{a}{a'}{A_{\McF{}}}$ such that $\covers{a'}{\lifta{a}}$, $f(a')
+    \sqsubseteq f(a)$}. Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{a}$. We proceed by
+  induction on the proof of $\covers{a'}{a}$.
   \begin{itemize}
-    \item Case: $\ruledir{}$. It must be that $a' \in a \downarrow$ i.e., $a' \sqsubseteq a$. We are done by
-      the monotonicity of $f$.
+    \item Case: $\ruledir{}$. It must be that $a' \in \lifta{a}$ i.e., $a' \sqsubseteq a$. We are done
+      by the monotonicity of $f$.
     \item Case: $\rulebranch{}$. There must be some $\oftyI{b}{B_{\McF{}}(a')}$ and a
-      function $h$ such that $\oftyI{h(c)}{\covers{d(a', b, c)}{a\downarrow}}$ for any
+      function $h$ such that $\oftyI{h(c)}{\covers{d(a', b, c)}{\lifta{a}}}$ for any
       $\oftyI{c}{C(a', b)}$. Notice that $f(a') \sqsubseteq \bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ by
       the assumption that $f$ \emph{represents} (Defn.~\ref{defn:rep}) so it remains to be
-      shown $$\bigvee_{\oftyI{c}{C(a', b)}}d(a, b, c) \sqsubseteq f(a).$$ As
+      shown $$\bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c)) \sqsubseteq f(a).$$ As
       $\bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ is a LUB, it suffices to show that $f(a)$ is an
       upper bound of the subset of $A_{\McF{}}$ delineated by $f(d(a', b, \_))$.
       Consider $f(d(a', b, c))$ for some $c$. We have that $\oftyI{h(c)}{\covers{d(a', b,
@@ -730,9 +731,10 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   \end{itemize}
 
   Now, we want to show that $\bigvee^R f(\eta(x)) \sqsubseteq f(x)$. Since $\bigvee^R$ is a LUB it suffices to show
-  that $f(x)$ is an upper bound of $\img{f}{\eta(x)}$. Let $$f(y) \epsilon \img{f}{\eta(x)}.$$ We need
-  to show that $f(y) \sqsubseteq f(x)$. By the lemma we have just proven, it suffices to show that
-  $\covers{y}{x\downarrow}$ and this holds directly because $f(y) \epsilon \img{f}{\eta(x)}$.
+  that $f(x)$ is an upper bound of $\img{f}{\eta(x)}$. Let $$\memfam{f(y)}{\img{f}{\eta(x)}}.$$
+  We need to show that $f(y) \sqsubseteq f(x)$. By the lemma we have just proven, it suffices to
+  show that $\covers{y}{\lifta{x}}$ and this holds directly because
+  $\memfam{f(y)}{\img{f}{\eta(x)}}$.
 
   There are two more things that have to be shown (1) $g$ is a frame homomorphism and (2)
   $g$ is unique.
@@ -742,12 +744,13 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   flatness (Defn.~\ref{defn:flat}). $g$ can also be seen to preserve binary meets by
   the following reasoning: let $\oftyII{U}{V}{L}$;
   \begin{align*}
-    g(U \cap V) &\equiv \bigvee^R \{ f(a) ~|~ a \in U \cap V \} \\
-             &= \bigvee^R \setof{ \bigvee \{ w ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \in U \times V }
+    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \in \intersect{U}{V} \}                  \\
+             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \in U \times V }
                && \text{[flatness]}                                                 \\
              &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \in U \times V }
                &&\text{[Prop.~\ref{prop:distr}]}                                    \\
-             &= \left( \bigvee^R \img{f}{U} \right) \wedge \left( \bigvee^R \img{f}{V} \right)       \\
+             &= \left( \bigvee^R \setof{ f(u) ~|~ u \in U } \right)
+              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \in V } \right)                         \\
              &\equiv g(U) \wedge g(V)                                                         .
   \end{align*}
   Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
@@ -755,7 +758,7 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   \begin{align*}
     g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \in \bigvee^L_i U_i } \\
              &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \in U_i}}} } &&\text{[Lemma~\ref{lem:flatten}]} \\
-             &= \bigvee^R \setof{ \bigvee^L \img{f}{U_i} ~|~ U_i \in U } \\
+             &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ U_i \in U } \\
              &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \in U }.
   \end{align*}
 
@@ -764,14 +767,8 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   $g = g'$. Let $\oftyI{U}{\abs{L}}$. $g(U) = g'(U)$ by the following equational proof:
   \begin{align*}
     g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \in U }
-            &&\text{[Lemma~\ref{lem:main}]} \\
-         &= g \left( \bigvee^L \setof{ \eta(u) ~|~ u \in U } \right) 
-            &&\text{[$g$ is a frame homomorphism]} \\
-         &= \bigvee^L \setof{ g(\eta(u)) ~|~ u \in U }
-            &&\text{[$g \circ \eta = f$]} \\
-         &= \bigvee^L \setof{ f(u) ~|~ u \in U }
-            &&\text{[$g' \circ \eta = f$]} \\
-         &= \bigvee^L \setof{ g'(\eta(u)) ~|~ u \in U }
+            &&\text{[$f = g' \circ \eta$]} \\
+         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \in U }
             &&\text{[$g'$ is a frame homomorphism]} \\
          &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \in U } \right)
             &&\text{[Lemma~\ref{lem:main}]} \\
