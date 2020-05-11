@@ -19,7 +19,6 @@ syntax compr (λ x → e) ℱ = ⁅ e ∣ x ∈ ℱ ⁆
 module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
   P       = pos′ F
-  𝔉       = ∣ pos′ F ∣ₚ
   F↓      = DCFrame P
   P↓      = pos F↓
   _⊑_     = λ (x y : stage F) → x ⊑[ P ] y
@@ -32,7 +31,8 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
 ```
   represents : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (P ─m→ pos R) → Type ℓ₀
   represents R (f , _) =
-    (a : 𝔉) (b : exp F a) → [ f a ⊑[ pos R ] ⋁[ R ] ⁅ f (next F c) ∣ c ∶ outcome F b ⁆ ]
+    (a : ∣ P ∣ₚ) (b : exp F a) →
+      [ f a ⊑[ pos R ] ⋁[ R ] ⁅ f (next F c) ∣ c ∶ outcome F b ⁆ ]
 ```
 
 By the way, note that the converse is always true.
@@ -41,7 +41,7 @@ By the way, note that the converse is always true.
   represents⁻¹ : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos R)
                   → Type ℓ₀
   represents⁻¹ R (f , _) =
-    (a : 𝔉) (b : exp F a) →
+    (a : ∣ P ∣ₚ) (b : exp F a) →
       [ (⋁[ R ] ⁅ f (next F c) ∣ c ∶ outcome F b ⁆) ⊑[ pos R ] (f a) ]
 
   conv : (R : Frame (suc ℓ₀) ℓ₀ ℓ₀) (f : P ─m→ pos R) → represents⁻¹ R f
@@ -58,7 +58,7 @@ By the way, note that the converse is always true.
 ## Flatness
 
 ```
-  _↓_↓ : 𝔉 → 𝔉 → 𝒫 𝔉
+  _↓_↓ : ∣ P ∣ₚ → ∣ P ∣ₚ → 𝒫 ∣ P ∣ₚ
   _↓_↓ a b = λ - → - ⊑[ P ] a ⊓ - ⊑[ P ] b
 
   isFlat : (F : Frame (suc ℓ₀) ℓ₀ ℓ₀) → (m : P ─m→ pos F) → Type (suc ℓ₀)
@@ -80,7 +80,7 @@ Statement.
 Before the proof we will need some lemmas.
 
 ```
-  cover+ : {x y : 𝔉} ((U , _) : ∣ F↓ ∣F) → [ x ∈ ⦅ η y ⦆ ] → [ y ∈ U ] → x <| U
+  cover+ : {x y : ∣ P ∣ₚ} ((U , _) : ∣ F↓ ∣F) → [ x ∈ ⦅ η y ⦆ ] → [ y ∈ U ] → x <| U
   cover+ {y = y} (_ , U-dc) x∈ηy y∈U = lem₄ _ _ (λ z z⊑y → dir (U-dc y z y∈U z⊑y)) _ x∈ηy
 ```
 
@@ -138,12 +138,12 @@ Proof.
     g-resp-𝟏 : g ⊤[ L ] ≡ ⊤[ R ]
     g-resp-𝟏 = g ⊤[ L ]                            ≡⟨ refl             ⟩
                ⋁[ R ] (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀))  ≡⟨ family-iff R NTS ⟩
-               ⋁[ R ] (𝔉 , f)                      ≡⟨ sym (π₀ f-flat)  ⟩
+               ⋁[ R ] (∣ P ∣ₚ , f)                      ≡⟨ sym (π₀ f-flat)  ⟩
                ⊤[ R ]                              ∎
       where
         NTS : (x : ∣ R ∣F)
-            → (x ε (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀)) → x ε (𝔉 , f))
-            × (x ε (𝔉 , f) → x ε (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀)))
+            → (x ε (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀)) → x ε (∣ P ∣ₚ , f))
+            × (x ε (∣ P ∣ₚ , f) → x ε (f ⟨$⟩ (∃ ⦅ ⊤[ L ] ⦆ , π₀)))
         NTS x = (λ { ((y , _) , eq) → y , eq }) , (λ { (y , eq) → (y , tt) , eq })
 ```
 
@@ -222,7 +222,7 @@ Proof.
             ψ o ((x , foo) , eq) = subst (λ - → [ - ⊑[ pos R ] RHS ]) eq (ϑ x foo)
               where
                 open PosetReasoning (pos R)
-                ϑ : (y : 𝔉) → [ y ∈ ⦅ ⋁[ L ] ℱ ⦆ ] → [ f y ⊑[ pos R ] RHS ]
+                ϑ : (y : ∣ P ∣ₚ) → [ y ∈ ⦅ ⋁[ L ] ℱ ⦆ ] → [ f y ⊑[ pos R ] RHS ]
                 ϑ y (dir mem) = ∥∥-rec
                                   (is-true-prop (f y ⊑[ pos R ] RHS))
                                   (λ { (j , cov) →
@@ -254,7 +254,7 @@ Proof.
 ### `g` makes the diagram commute
 
 ```
-    lem : (a a′ : 𝔉) → a′ <| π₀ (↓-clos a) → [ f a′ ⊑[ pos R ] f a ]
+    lem : (a a′ : ∣ P ∣ₚ) → a′ <| π₀ (↓-clos a) → [ f a′ ⊑[ pos R ] f a ]
     lem a a′ (squash p q i) = is-true-prop (f a′ ⊑[ pos R ] f a) (lem _ _ p) (lem _ _ q) i
     lem a a′ (dir    a′⊑a)  = f-mono a′ a a′⊑a
     lem a a′ (branch b h)   =
@@ -270,7 +270,7 @@ Proof.
 
     gm∘ηm = _∘m_ {P = P} {Q = pos L} {R = pos R} gm ηm
 
-    gm∘ηm~f : (x : 𝔉) → gm $ₘ (ηm $ₘ x) ≡ fm $ₘ x
+    gm∘ηm~f : (x : ∣ P ∣ₚ) → gm $ₘ (ηm $ₘ x) ≡ fm $ₘ x
     gm∘ηm~f x = ⊑[ pos R ]-antisym _ _ down (⋁[ R ]-upper _ _ ((x , x◀x↓ x) , refl))
       where
         down : [ (⋁[ R ] (∃ π₀ (e x) , f ∘ π₀)) ⊑[ pos R ] f x ]
