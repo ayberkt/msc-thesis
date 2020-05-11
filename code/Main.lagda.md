@@ -7,6 +7,7 @@ open import Basis
 open import Poset
 open import Frame
 open import Nucleus
+open import Cover
 open import CoverFormsNucleus
 open import BaireSpace
 open import UniversalProperty
