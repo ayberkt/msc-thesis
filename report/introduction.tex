@@ -37,7 +37,7 @@ $X$ and $Y$ be two metric spaces. We now define continuity for any function $f :
 Notice that we could have written (\ref{cont-1}) in an alternative way. Given some $x \in X,
 \epsilon \in \reals{}$ define
 \begin{equation*}
-  \ball{x}{\epsilon} \quad\is\quad \setof{ y \in X ~|~ d(x, y) < \epsilon }.
+  \ball{x}{\epsilon} \quad\is\quad \setof{ y \in X ~|~ d_X(x, y) < \epsilon }.
 \end{equation*}
 Now, the following is the same as (\ref{cont-1}):
 \begin{equation*}
@@ -50,12 +50,16 @@ which could be expressed even more compactly as:
 
 After having written down continuity in this more compact way, we consider the question:
 what is the meaning of $\ball{x}{\epsilon}$? Given some $x \in X$, $\ball{x}{\epsilon}$ expresses the set
-of points that are closer than $\epsilon$ to $x$. One intuitive reading of this is: $\ball{x}{\epsilon}$
-denotes the set of approximations of $x$ with a degree of accuracy of $\epsilon$. As $\epsilon$
-decreases, the accuracy with which $\ball{x}{\epsilon}$ represents $x$ increases. This situation
-is familiar from \emph{experimental} sciences: even though we might not be able to pin
-down an exact value $v$ (i.e., with $\epsilon \equiv 0$), we can approximate $v$ by conducting more
-accurate experiments, hence narrowing the value down to a $\ball{v}{\epsilon}$.
+of points that are \emph{closer than} $\epsilon$ to $x$. One intuitive reading of this is:
+$\ball{x}{\epsilon}$ denotes the set of approximations of $x$ with a degree of accuracy of $\epsilon$.
+As $\epsilon$ decreases, the accuracy with which $\ball{x}{\epsilon}$ represents $x$ increases. What is
+crucial here is that, as $x$ might be infinite, we cannot (decidably) judge the membership
+of an element in set $\setof{ x }$, but we can judge its membership in set $\ball{x}{\epsilon}$
+so this is an approximation of ``infinite precision'' properties by finitely observable
+ones. This situation is familiar from \emph{experimental} sciences: even though we might
+not be able to pin down an exact (i.e., with $\epsilon \equiv 0$) value $v$, we can approximate $v$ by
+conducting more accurate experiments, hence narrowing the value down to a tight
+$\ball{v}{\epsilon}$.
 
 To see continuity in its full generality, we now notice that the notion of distance is not
 crucial to what is expressed in (\ref{cont-2}). We have made use of the distance function
@@ -65,73 +69,66 @@ topology: instead of working with a notion of distance, we work directly with a
 specification of the approximations.
 
 The definition of a metric space ensures that the distance function is well-behaved. When
-one defines approximation sets in terms of such a distance function, they will be
-guaranteed to satisfy one's expectations from approximation sets. As we want to completely
-remove our dependency on a notion of distance, we will have to axiomatise the behaviour of
-approximation sets themselves instead.
+one defines approximation sets in terms of such a distance function, they are necessarily
+well-behaved: they satisfy one's expectations from a reasonable approximation structure.
+As we want to remove our dependency on a notion of distance, we will have to axiomatise
+the behaviour of approximation sets themselves instead.
 
-Any approximation set for a real number must contain that real number itself. In other
-words, we want approximations to give us ``error bars'' around some result and any notion
-of error bar that does not encircle the result is clearly not what we are looking for.
-
-\paragraphsummary{Axiomatisation of basis(2).}
-Furthermore, if we have two approximation sets for a real number, say $A_0$ and $A_1$,
-that real number must lie in $A_0 \cap A_1$. We can then pick out a \emph{finer}, more
-accurate approximation $A_2$ for the number such that $A_2 \subseteq A_1 \cap A_2$. For instance,
-$A_0$ might say that some $v$ lies within $3.0$ and $3.2$ and $A_1$ that it lies within
-$3.1$ and $3.5$ from which we can tell that it lies within $3.1$ and $3.2$. This will be
-our second requirement.
-
-\paragraphsummary{Formal defn.~ of basis.}
-The standard term in topology for such a class of sets is a \emph{basis for a topology}.
-We now summarise it precisely in the following definition.
+The standard term for such a class of sets embodying an approximation structure is a
+\emph{basis for a topology}~\cite{munkres}. We now summarise it precisely in the following
+definition.
 \begin{defn}[Basis for a topology]
   Given a set $X$, a basis for a topology on $X$ is a class $\mathcal{B}$ of subsets of
   $X$ such that:
   \begin{enumerate}
-    \item $\forall x \in X.~ \exists B \in \mathcal{B}.~x \in B$, which intuitively says ``approximations do
-      approximate'', and
-    \item $\forall x \in X.~ \exists B_0, B_1 \in \mathcal{B}.~ x \in B_0 \cap B_1 \rightarrow \exists B_2 \subseteq (B_0 \cap B_1).~
-      x \in B_2$, which says ``approximations can be combined''.
+  \item $\forall x \in X.~\exists B \in \mathcal{B}.~x \in B$, which intuitively says ``there is an
+    approximation for all points'', and
+  \item $\forall x \in X.~\forall B_0, B_1 \in \mathcal{B}.~x \in B_0 \cap B_1 \rightarrow
+    \exists B_2 \in \mathcal{B}.~ B_2 \subseteq (B_0 \cap B_1) \wedge x \in B_2$, which says
+    ``approximations can be combined to yield finer approximations''.
   \end{enumerate}
 \end{defn}
 
 \paragraphsummary{Continuity with bases.}
-Now, we can reformulate continuity in a more general way using basis elements. Given sets
-$X, Y$ with bases $\mathcal{B}_X, \mathcal{B}_Y$, a function $f : X \rightarrow Y$ is continuous if
+Now, we can reformulate continuity in a more general way, without relying on a notion of
+distance. Given sets $X, Y$ with bases $\mathcal{B}_X, \mathcal{B}_Y$, a function $f : X \rightarrow
+Y$ is continuous if
 \begin{equation}\label{cont-basis}
   \forall x \in X.~ \forall V \in \mathcal{B}_Y.~ f(x) \in V \rightarrow \exists U \in \mathcal{B}_X.~
     f(U) \subseteq V.
 \end{equation}
-This says exactly the same thing as (\ref{cont-2}), but talking directly about some given
-approximation sets rather than defining these through a notion of distance. In other
-words, we previously said that a function is continuous if we can make $f(x)$ closer than
-$\epsilon$ to $f(y)$ by making $x$ closer than $\delta$ to $y$. We are now saying that for every
-set approximating some $f(x)$, there is a set approximating $x$ such that the image of
-the latter is contained in the former, which corresponds directly to (\ref{cont-2}).
+This expresses the idea in (\ref{cont-2}), but talking directly about some given
+approximation structure rather than defining this structure through a notion of distance.
+In other words, we previously said that a function is continuous if we can make $f(x)$
+closer than $\epsilon$ to $f(y)$ by making $x$ closer than $\delta$ to $y$. We are now saying that for
+every set approximating some $f(x)$, there is a set approximating $x$ such that the image
+of the latter is contained in the former, which corresponds to the idea in (\ref{cont-2}).
 
 Given a basis $\mathcal{B}$ on set $X$, we say that the topology generated by
-$\mathcal{B}$, that we call $\mathbf{T}_{\mathcal{B}}$, is the class of all possible
-unions of $\mathcal{B}$. The idea here is that an element $U$ of
-$\mathbf{T}_{\mathcal{B}}$ is like a property of the set that we are interested in
-\emph{verifying}. To verify $U$, it suffices to show that it falls in one of the basis
-elements that constitute $U$ and since all of these are approximation sets, $U$ can be
-verified from a finite amount of data since approximations suffice to express it.
+$\mathcal{B}$ is the class of all possible unions of $\mathcal{B}$. The idea here is that
+an element $U$ of the topology is like a property of the points that we are interested in
+\emph{verifying}. To verify $x \in U$, it suffices to show that $x$ lies in one of the basis
+elements that constitute $U$ and since the basis elements are approximation sets, the fact
+that $x$ has property $U$ can be verified from a finite approximation of $x$, which
+requires only a finite amount of data (``finite precision'').
 
-In reality, it is often the case that we deal directly with the bases that generate
+In reality, it is often the case that we deal directly with bases that generate
 topologies. However, we will not have reached full generality until we can talk about
 \emph{topologies} directly i.e., properties of a set which can be verified via
-approximations. We will call such properties finitely verifiable or \emph{observable}. The
-topological term is ``open set'' in the sense that the set does not contain its own
-boundary.
+approximations. We will call such properties finitely verifiable or
+\emph{observable}~\cite{abramsky-thesis}. The topological term is ``open set'' in the
+sense that the set does not contain its own boundary.
 
-If we have two finitely verifiable properties, there should be some approximation sets
-approximations of degrees of accuracy of $ε₀$ and $ε₁$. Then, we can verify both by taking
-the higher between them so we can verify their intersection. If we have an arbitrary
-number of finitely verifiable properties, to verify the union it suffices to verify at
-least one, so if a point is in this set it must be in one of the finitely verifiable
-subsets, meaning the set itself is finitely verifiable. This brings us to the following
-definition of a topological space.
+If we have two finitely verifiable properties $U$ and $V$, and we know that a point
+satisfies both of them, there should be some degrees of accuracy, $ε₀$ and $ε₁$, at which
+$U$ and $V$ are verified. Then, we can verify both by taking the lower between them so we
+can verify their intersection. On the other hand, if we have an arbitrary number of
+finitely verifiable properties, to verify membership in the union, it suffices to verify
+membership in just one of the constituents, so if a point is in this set it must be in one
+of the finitely verifiable subsets, meaning the set itself is finitely verifiable as the
+degree of accuracy required to check membership in the constituent set is sufficient to
+check membership in the union. This brings us to the following definition of a topological
+space~\cite{munkres}.
 \begin{defn}[Topological space]\label{defn:topospace}
   A topology on a set $X$ is a class $\mathcal{T}$ of subsets of $X$ such that
   \begin{itemize}
@@ -142,15 +139,17 @@ definition of a topological space.
 \end{defn}
 
 By this definition, we start with a set $X$ of \emph{points} on which we are interested in
-making observations. The topology we attach to $X$ specifies these observable sets. In
-\emph{pointless topology}~\cite{johnstone-the-point}, we start with a primitive set of
-opens instead, and we study these directly. In other words, we reverse the conceptual
+making observations. The topology we attach to $X$ specifies these observable sets. The
+view of topology we will be concerned with in this thesis is called \emph{pointless}
+topology~\cite{johnstone-the-point}. In pointless topology, we start with a primitive set
+of opens instead, and we study these directly. In other words, we reverse the conceptual
 order of open sets being notions derived from points: we view points as being derived from
-opens instead. What is remarkable is that we can go a long way without mentioning the
-points.
+the opens instead. What is remarkable is that we can go a long way without mentioning the
+points~\cite{johnstone-the-point}.
 
-So how do we define open sets not as sets of points? We simply axiomatise the behaviour of
-the lattice of open sets. Let $\mathcal{O}$ be a set of opens.
+So how do we express the idea of open sets \emph{not} as sets of points? We simply
+axiomatise the behaviour of the lattice of open sets. Let $\mathcal{O}$ be a set of
+opens, that are some unspecified primitive entities.
 \begin{enumerate}
   \item Corresponding to the set-inclusion partial order in the pointful case, we require
     that there be a partial order $\_\sqsubseteq\_ \subseteq \mathcal{O} \times \mathcal{O}$.
@@ -165,7 +164,7 @@ In addition to these, we have to require that these operations satisfy an infini
 distributivity law, on which we will elaborate in Chapter~\ref{chap:frames}. The official
 name for such a lattice that embodies a logic of observable or finitely verifiable
 properties is \emph{frame}~\cite{vickers}. Indeed, frames form a category whose morphisms
-are frame homomorphisms. Objects of the opposite category are called \emph{locales}.
+are frame homomorphisms; objects of the opposite category are called \emph{locales}.
 Therefore, frames and locales are synonymous
 \emph{as long as no mentions to morphisms are made}~\cite{vickers, stone-spaces}
 
@@ -190,19 +189,19 @@ by Johnstone~\cite[pg.~46]{stone-spaces}:
   suspect to others) like unmotivated fanaticism. I have learned better since then.
 \end{quote}
 
-We will investigate topology as can be carried out in type theory in this thesis. The
-first prerequisite for this is that we be able to develop topology constructively, that
-is, without relying on classical principles. As pointed out by Johnstone, pointless
+In this thesis, we are interested in investigating topology in the context of type theory.
+The first prerequisite for this is that we be able to develop topology constructively,
+that is, without relying on classical principles. As pointed out by Johnstone, pointless
 topology can help us here as it allows us to understand topology in constructive terms.
 The goal of carrying out topology in type theory, however, presents further challenges: we
 have to understand topology not only constructively but also \emph{predicatively}.
 
 This is the subject matter of the branch of mathematics known as formal topology, first
 instigated by Martin-Löf and Sambin~\cite{int-formal-spaces} in the early days of type
-theory. The idea is that a formal topology recasts a frame into a form that resembles a
-formal proof system. In addition to enabling the importation of proof-theoretical ideas,
-such a formal presentation has the virtue of \emph{predicative} hence enabling the
-development of frames in type theory.
+theory. The idea is that a formal topology recasts the notion of a frame into a form that
+resembles a formal proof system. In addition to enabling the importation of
+proof-theoretical ideas, such a formal presentation has the virtue of being
+\emph{predicative} hence enabling the development of frames in type theory.
 
 In this thesis, we present a development of formal topology in univalent type
 theory~\cite{hottbook}. By now, it has become clear that univalence addresses certain
