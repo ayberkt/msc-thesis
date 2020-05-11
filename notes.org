@@ -20,6 +20,8 @@
      which gave us algorithmic information theory.
 ** `cubical` working commit
    - 43d5fcf 2020-02-06 | Mapping cones and dunce cap contraction (#214) (HEAD) [Matthew Yacavone]
+* Submission
+** SHA1 sum of first submission: `a605451576c7526baa173d4f7eebf085760ff7c4`.
 * Meetings
 ** <2019-09-27 Fri>
 *** Given a poset, the set of downward-closed subsets forms a frame.
