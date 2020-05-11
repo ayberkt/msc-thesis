@@ -54,7 +54,7 @@ A poset structure with level `ℓ₁`.
 
 ```
 PosetStr : (ℓ₁ : Level) → Type ℓ → Type (ℓ ⊔ suc ℓ₁)
-PosetStr ℓ₁ = add-to-structure (Order ℓ₁) λ A _⊑_ → [ PosetAx A _⊑_ ]
+PosetStr ℓ₁ A = Σ[ ⊑ ∈ Order ℓ₁ A ] [ PosetAx A ⊑ ]
 
 PosetStr-set : (ℓ₁ : Level) (A : Type ℓ₀) → isSet (PosetStr ℓ₁ A)
 PosetStr-set ℓ₁ A =
