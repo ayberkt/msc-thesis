@@ -1,0 +1,41 @@
+\documentclass[xcolor={dvipsnames}]{beamer}
+\usetheme{metropolis}
+
+\title{Formal Topology in Univalent Foundations}
+\date{\today}
+\author{Ayberk Tosun}
+\institute{Chalmers University of Technology}
+
+\setmonofont[Scale=0.85]{PragmataPro Mono Liga}
+
+\definecolor{AgdaFunction}{HTML}{0000CD}
+\definecolor{AgdaString}{HTML}{B22222}
+
+\newcommand{\fnname}[1]{{\color{AgdaFunction} {\tt #1}}}
+\newcommand{\prgoutput}[1]{{\color{AgdaString} {\tt #1}}}
+
+%% Color customisation.
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{What is topology?}
+  \large
+  \begin{itemize}
+    \item \fnname{P} is some program.
+    \item We want to \alert{experiment} with \fnname{P}.
+    \item We run \fnname{P}; it \emph{starts by} printing out:
+      \begin{center}
+        \prgoutput{4~~~8~~~15~~~{\color{black} $\cdots$}}
+      \end{center}
+    \item We want to check if \fnname{P} satisfies certain \alert{properties};
+      for instance:
+      \begin{center}
+        ``\fnname{P} eventually prints \prgoutput{42}'' \qquad
+        ``\fnname{P} never prints \prgoutput{7}''
+      \end{center}
+  \end{itemize}
+\end{frame}
+
+\end{document}
