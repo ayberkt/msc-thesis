@@ -10,9 +10,11 @@
 
 \definecolor{AgdaFunction}{HTML}{0000CD}
 \definecolor{AgdaString}{HTML}{B22222}
+\definecolor{codecolour}{RGB}{27, 134, 236}
+\definecolor{gerbesred}{RGB}{164, 30, 50}
 
-\newcommand{\fnname}[1]{{\color{AgdaFunction} {\tt #1}}}
-\newcommand{\prgoutput}[1]{{\color{AgdaString} {\tt #1}}}
+\newcommand{\fnname}[1]{{\color{codecolour} {\tt #1}}}
+\newcommand{\prgoutput}[1]{{\color{codecolour} {\tt #1}}}
 
 %% Color customisation.
 
@@ -21,21 +23,112 @@
 \maketitle
 
 \begin{frame}{What is topology?}
-  \large
+  \Large
+  A topological space is a set $X$ together with a collection $\Omega(X)$ of its subsets
+  such that
   \begin{itemize}
-    \item \fnname{P} is some program.
-    \item We want to \alert{experiment} with \fnname{P}.
-    \item We run \fnname{P}; it \emph{starts by} printing out:
-      \begin{center}
-        \prgoutput{4~~~8~~~15~~~{\color{black} $\cdots$}}
-      \end{center}
-    \item We want to check if \fnname{P} satisfies certain \alert{properties};
-      for instance:
-      \begin{center}
-        ``\fnname{P} eventually prints \prgoutput{42}'' \qquad
-        ``\fnname{P} never prints \prgoutput{7}''
-      \end{center}
+    \item $\emptyset, X \in \Omega(X)$,
+    \item $\Omega(X)$ is closed under \alert{finite} intersections, and
+    \item $\Omega(x)$ is closed under \alert{arbitrary} unions.
   \end{itemize}
+\end{frame}
+
+\begin{frame}{What is topology?}
+  \Large
+  \fnname{P}: a program that prints out a sequence of integers.
+  \vspace{1em}
+  \begin{center}
+  \prgoutput{7~~11~~2~~2~~8~~42~~}~$\cdots$
+  \end{center}
+  \vspace{1em}
+  We can consider certain properties \fnname{P}:
+  \begin{center}
+    ``\fnname{P} eventually prints \fnname{17}''\\
+    \vspace{1em}
+    ``\fnname{P} prints no more than two \fnname{2}s''
+  \end{center}
+\end{frame}
+
+\begin{frame}{What is topology?}
+  \Large
+  \begin{center}
+    ``$P$ is an \alert{observable property}''
+
+    \vspace{2em}
+    $\leftrightarrow$
+    \vspace{2em}
+
+    There exists a prefix $i$ of the output $\sigma$ at which $P$ is \alert{verified} to
+    satisfy $P$: all extensions of $\sigma_i$ satisfy $P$.
+  \end{center}
+\end{frame}
+
+\begin{frame}{What is topology?}
+  Let $\phi_0, \ldots \phi_n$ be a \alert{finite} number of observable properties.
+
+  \vspace{1em}
+
+  Suppose $\phi_0 \wedge \ldots \wedge \phi_n$ holds.
+
+  \vspace{1em}
+
+  There must be \alert{stages} $i_0, \cdots, i_n$ such that $\phi_k$ is verified at stage $i_k$.
+
+  \vspace{1em}
+
+  $\phi_0 \wedge \cdots \wedge \phi_n$ must then be verified at $\max(i_0, \cdots, i_n)$.
+
+  \vspace{1em}
+
+  $\phi_0 \wedge \cdots \wedge \phi_n$ is \alert{observable}.
+\end{frame}
+
+\begin{frame}{What is topology?}
+    Let $\{~\psi_i ~|~ i \in I~\}$ be an \alert{arbitrary} number of observable properties.
+
+    \vspace{1em}
+
+    Suppose $\bigvee_i \psi_i$ holds.
+
+    \vspace{1em}
+
+    Some $\psi_k$ must hold so there exists a stage $i$ at which $\psi_k$ is verified.
+
+    \vspace{1em}
+
+    $\bigvee_i \psi_i$ is hence verified at stage $i$.
+
+    \vspace{1em}
+
+    This means that $\bigvee_i \psi_i$ is \alert{observable}.
+\end{frame}
+
+\begin{frame}{What is topology?}
+  \Huge
+  \begin{center}
+    Topology is the mathematical theory of \alert{observable} properties.
+  \end{center}
+\end{frame}
+
+\begin{frame}{Frames}
+  A \alert{frame} is a poset $\mathcal{O}$ such that
+  \begin{itemize}
+    \item \alert{finite subsets} of $\mathcal{O}$ have \alert{meets},
+    \item \alert{all subsets} of $\mathcal{O}$ have \alert{joins}, and
+    \item binary meets distribute over arbitrary joins:
+      \begin{equation*}
+        a \wedge \left( \bigvee_{i~\in~I} b_i \right) = \bigvee_{i~\in~I} \left( a \wedge b_i \right),
+      \end{equation*}
+      for any $a \in \mathcal{O}$ and $I$-indexed family $b$ over $\mathcal{O}$.
+  \end{itemize}
+
+  {\large
+    In \alert{type theory}, the quantification over subsets is problematic.
+  }
+\end{frame}
+
+\begin{frame}{Formal Topologies}
+  
 \end{frame}
 
 \end{document}
