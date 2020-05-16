@@ -4,3 +4,6 @@ presentation.nav
 presentation.out
 presentation.snm
 presentation.toc
+presentation.fdb_latexmk
+presentation.fls
+autobuild.sh
