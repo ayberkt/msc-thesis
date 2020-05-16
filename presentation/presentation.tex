@@ -1,4 +1,5 @@
 \documentclass[xcolor={dvipsnames}]{beamer}
+\usepackage{amsmath}
 \usetheme{metropolis}
 
 \title{Formal Topology in Univalent Foundations}
@@ -15,6 +16,9 @@
 
 \newcommand{\fnname}[1]{{\color{codecolour} {\tt #1}}}
 \newcommand{\prgoutput}[1]{{\color{codecolour} {\tt #1}}}
+
+\newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
+\newcommand{\univ}{\mathsf{Type}}
 
 %% Color customisation.
 
@@ -36,11 +40,11 @@
 \begin{frame}{What is topology?}
   \Large
   \fnname{P}: a program that prints out a sequence of integers.
-  \vspace{1em}
+
   \begin{center}
   \prgoutput{7~~11~~2~~2~~8~~42~~}~$\cdots$
   \end{center}
-  \vspace{1em}
+
   We can consider certain properties \fnname{P}:
   \begin{center}
     ``\fnname{P} eventually prints \fnname{17}''\\
@@ -106,7 +110,7 @@
 \begin{frame}{What is topology?}
   \Huge
   \begin{center}
-    Topology is the mathematical theory of \alert{observable} properties.
+    Topology is a mathematical theory of \alert{observable} properties.
   \end{center}
 \end{frame}
 
@@ -122,13 +126,53 @@
       for any $a \in \mathcal{O}$ and $I$-indexed family $b$ over $\mathcal{O}$.
   \end{itemize}
 
-  {\large
-    In \alert{type theory}, the quantification over subsets is problematic.
+  \uncover<2>{
+    {\large
+      In \alert{type theory}, the quantification over subsets is problematic.
+    }
   }
 \end{frame}
 
 \begin{frame}{Formal Topologies}
-  
+  \large
+  \begin{quote}
+    ``What is formal topology? A good approximation to the correct answer is: formal
+    topology is topology as developed in (Martin-Löf's) type theory.''
+  \end{quote}
+
+  \vspace{2em}
+
+  \uncover<2>{
+    One way to interpret frames \alert{predicatively} is to restrict attention to their
+    presentations as \alert{formal topologies}.
+  }
+\end{frame}
+
+\begin{frame}{Formal Topologies --- as Interaction Systems}
+  \large
+
+  An \alert{interaction system} on some type $A$ comprises three functions.
+
+  \begin{align*}
+    B  &\quad:\quad A \rightarrow \univ{}                              \\
+    C  &\quad:\quad \pity{a}{A}{B(a) \rightarrow \univ{}}              \\
+    d  &\quad:\quad \pity{a}{A}{\pity{b}{B(a)}{C(a, b) \rightarrow A}}
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Formal Topologies --- as Interaction Systems}
+  \large
+
+  A \alert{formal topology} is an interaction system $(B, C, d)$ on some poset $P$ that
+  satisfies the following two conditions.
+
+  \begin{enumerate}
+    \item \textbf{Monotonicity}: $\forall a~b~c.~d(a, b, c) \sqsubseteq a$.
+    \item \textbf{Simulation}:
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Formal Topologies --- as Interaction Systems}
 \end{frame}
 
 \end{document}
