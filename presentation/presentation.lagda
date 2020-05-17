@@ -1,5 +1,7 @@
 \documentclass[xcolor={dvipsnames}]{beamer}
 \usepackage{amsmath}
+\usepackage{latex/agda}
+\usepackage{wasysym}
 \usetheme{metropolis}
 
 \title{Formal Topology in Univalent Foundations}
@@ -18,7 +20,13 @@
 \newcommand{\prgoutput}[1]{{\color{codecolour} {\tt #1}}}
 
 \newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
+\newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
+\newcommand{\pow}[1]{\mathcal{P}\left(#1\right)}
 \newcommand{\univ}{\mathsf{Type}}
+\newcommand{\trunc}[1]{\left\| #1 \right\|}
+\newcommand{\is}{:\equiv}
+
+\newcommand{\covers}[2]{#1 \LHD #2}
 
 %% Color customisation.
 
@@ -58,9 +66,9 @@
   \begin{center}
     ``$P$ is an \alert{observable property}''
 
-    \vspace{2em}
+    \vspace{0.5em}
     $\leftrightarrow$
-    \vspace{2em}
+    \vspace{0.5em}
 
     There exists a prefix $i$ of the output $\sigma$ at which $P$ is \alert{verified} to
     satisfy $P$: all extensions of $\sigma_i$ satisfy $P$.
@@ -133,6 +141,34 @@
   }
 \end{frame}
 
+\begin{frame}{Frames --- a prime example}
+  \large
+
+  Given a poset
+  \begin{align*}
+    A &\quad:\quad \univ{}_m\\
+    \sqsubseteq &\quad:\quad A \rightarrow A \rightarrow \mathsf{hProp}_m
+  \end{align*}
+  the type of \alert{downward-closed subsets} of $A$ is:
+  \[ \sigmaty{U}{\pow{A}}{\pity{x~y}{A}{x \in U \rightarrow y \sqsubseteq x \rightarrow y \in U}}, \]
+  \begin{center}
+    where
+  \end{center}
+  \begin{align*}
+    &\mathcal{P} : \univ{}_m \rightarrow \univ{}_{m+1}\\
+    &\mathcal{P}(A) \is A \rightarrow \mathsf{hProp}_m.
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Frames --- a prime example}
+  This forms a \alert{locale}:
+  \begin{align*}
+    \top           &\quad\is{}\quad \lambda \_.~ \mathsf{Unit}\\
+    A \wedge B       &\quad\is{}\quad \lambda x.~ (x \in A) \times (x \in B)\\
+    \bigvee_{i~:~I} B_i &\quad\is{}\quad \lambda x.~ \trunc{\sigmaty{i}{I}{x \in B_i}}
+  \end{align*}
+\end{frame}
+
 \begin{frame}{Formal Topologies}
   \large
   \begin{quote}
@@ -151,13 +187,15 @@
 \begin{frame}{Formal Topologies --- as Interaction Systems}
   \large
 
-  An \alert{interaction system} on some type $A$ comprises three functions.
+  An \alert{interaction structure} on some type $A$ comprises three functions.
 
   \begin{align*}
     B  &\quad:\quad A \rightarrow \univ{}                              \\
     C  &\quad:\quad \pity{a}{A}{B(a) \rightarrow \univ{}}              \\
     d  &\quad:\quad \pity{a}{A}{\pity{b}{B(a)}{C(a, b) \rightarrow A}}
   \end{align*}
+
+  An \alert{interaction system} is a type $A$ equipped with an interaction structure.
 \end{frame}
 
 \begin{frame}{Formal Topologies --- as Interaction Systems}
@@ -173,6 +211,64 @@
 \end{frame}
 
 \begin{frame}{Formal Topologies --- as Interaction Systems}
+  \begin{code}[hide]
+    {-# OPTIONS --cubical #-}
+
+    open import Cubical.Core.Everything renaming (ℓ-max to _⊔_)
+    open import Cubical.Foundations.HLevels
+    open import Cubical.Foundations.Logic hiding (_⊔_)
+    open import Cubical.Data.Sigma using (Σ; Σ-syntax; _×_)
+
+    private
+      variable
+        ℓ ℓ₀ ℓ₁ ℓ₂ : Level
+
+    postulate
+      Poset : (ℓ₀ ℓ₁ : Level) → Type ((ℓ-suc ℓ₀) ⊔ (ℓ-suc ℓ₁))
+      ∣_∣ₚ  : Poset ℓ₀ ℓ₁ → Type ℓ₀
+      rel   : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → ∣ P ∣ₚ → hProp ℓ₁
+
+    infix 9 rel
+    syntax rel P x y = x ⊑[ P ] y
+  \end{code}
+  \begin{code}
+    InteractionStr : (A : Type ℓ) → Type (ℓ-suc ℓ)
+    InteractionStr {ℓ = ℓ} A = Σ[ B ∈ (A → Type ℓ)             ]
+                                Σ[ C ∈ ({x : A} → B x → Type ℓ) ]
+                                  ({x : A} → {y : B x} → C y → A)
+
+    InteractionSys : (ℓ : Level) → Type (ℓ-suc ℓ)
+    InteractionSys ℓ = Σ[ A ∈ Type ℓ ] InteractionStr A
+  \end{code}
+\end{frame}
+
+\begin{frame}{Formal Topologies --- as Interaction Systems}
+  \begin{code}
+    hasMono : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type _
+    hasMono P i@(B , C , d) =
+      (a : ∣ P ∣ₚ) (b : B a) (c : C b) → [ d c ⊑[ P ] a ]
+
+    hasSimulation : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type _
+    hasSimulation P (B , C , d) =
+      (a′ a : ∣ P ∣ₚ) → [ a′ ⊑[ P ] a ] →
+        (b : B a) → Σ[ b′ ∈ B a′ ]
+          ((c′ : C b′) → Σ[ c ∈ C b ] [ d c′ ⊑[ P ] d c ])
+
+    FormalTopology : (ℓ₀ ℓ₁ : Level) → Type _
+    FormalTopology ℓ₀ ℓ₁ = Σ[ P ∈ Poset ℓ₀ ℓ₁ ]
+                             Σ[ ℐ ∈ InteractionStr ∣ P ∣ₚ ]
+                               hasMono P ℐ × hasSimulation P ℐ
+  \end{code}
+\end{frame}
+
+\begin{frame}{Cover}
+  \large
+
+  Let $\mathcal{F}$ be a formal topology with underlying poset $P$
+
+  \[ \covers{x}{U} \]
+
+  This relation expresses the property of being an \alert{open cover}.
 \end{frame}
 
 \end{document}
