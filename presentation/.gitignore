@@ -6,4 +6,9 @@ presentation.snm
 presentation.toc
 presentation.fdb_latexmk
 presentation.fls
+presentation.bbl
+presentation.bcf
+presentation.blg
+presentation.run.xml
+presentation.vrb
 autobuild.sh
