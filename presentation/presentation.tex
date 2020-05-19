@@ -83,7 +83,7 @@
 
 \begin{frame}[c]{What is topology?}
   \large
-  \vspace{2em}
+  \vspace{1em}
 
   Let \fnname{P} be a program. When run, it prints a sequence of integers.
 
@@ -99,18 +99,18 @@
   \begin{center}
     ``\tikzmarknode{a}{\fnname{P}} eventually prints \fnname{17}'', or\\
     \vspace{1em}
-    ``\fnname{P} prints no more than two \fnname{2}s\tikzmarknode{b}{''}.
+    ``\fnname{P} prints no more than two \tikzmarknode{b}{\fnname{2}}s''.
   \end{center}
 
   \uncover<2>{
+    \vspace{1em}
     {\color{gerbesred}
-      \vspace{1em}
       \tikzmarknode{txt}{Observable}%
-      \hspace{14.4em}%
-      \tikzmarknode{not-obs}{\textbf{Not} observable}
+      \hspace{13.7em}%
+      \tikzmarknode{not-obs}{\emph{Not} observable}
     \begin{tikzpicture}[remember picture, overlay]
       \draw[->, line width=0.3mm, shorten >=3mm] (txt.north) to[out=90, in=-180] (a.west);
-      \draw[->, line width=0.3mm, shorten >=3mm] (not-obs.north) to[out=80, in=0] (b.east);
+      \draw[->, line width=0.3mm, shorten >=5mm] (not-obs.north) to[out=80, in=0] (b.east);
     \end{tikzpicture}
     }
   }
@@ -125,8 +125,8 @@
     $\leftrightarrow$
     \vspace{0.5em}
 
-    If a program satisfies $\phi$, there exists a stage $i$ of the output $\sigma$ at which the
-    program is \alert{verified} to satisfy $\phi$: all extensions of $\sigma|_i$ satisfy $\phi$.
+    If a program satisfies $\phi$, there exists a stage $m$ of the output $\sigma$ at which the
+    program is \alert{verified} to satisfy $\phi$: all extensions of $\sigma|_m$ satisfy $\phi$.
   \end{center}
 \end{frame}
 
@@ -139,15 +139,15 @@
 
   \vspace{1em}
 
-  There must be \alert{stages} $i_1, \cdots , i_n$ such that $\phi_k$ is verified at stage $i_k$.
+  There must be \alert{stages} $m_1, \cdots , m_n$ such that $\phi_k$ is verified at $m_k$.
 
   \vspace{1em}
 
-  $\phi_1 \wedge \cdots \wedge \phi_n$ must then be verified at $\max(i_1, \cdots, i_n)$.
+  $\phi_1 \wedge \cdots \wedge \phi_n$ must then be verified at $\max(m_1, \cdots, m_n)$.
 
   \vspace{1em}
 
-  This means that $\phi_1 \wedge \cdots \wedge \phi_n$ is \alert{observable}.
+  If $\phi_1, \cdots, \phi_n$ are \alert{observable} then so is $\phi_1 \wedge \cdots \wedge \phi_n$.
 \end{frame}
 
 \begin{frame}{What is topology?}
@@ -159,15 +159,15 @@
 
     \vspace{1em}
 
-    Some $\psi_i$ holds meaning it must be verified at some stage $m$.
+    Some $\psi_i$ holds meaning it must be verified at some \alert{stage} $m$.
 
     \vspace{1em}
 
-    $\bigvee_i \psi_i$ is hence verified at stage $m$.
+    $\bigvee_i \psi_i$ is hence verified at \alert{stage} $m$.
 
     \vspace{1em}
 
-    This means that $\bigvee_i \psi_i$ is \alert{observable}.
+    If $\{~\psi_i ~|~ i \in I~\}$ are \alert{observable} then so is $\bigvee_i \psi_i$.
 \end{frame}
 
 \begin{frame}{What is topology?}
@@ -212,7 +212,7 @@
     }
     \end{center}
     \begin{tikzpicture}[remember picture, overlay]
-      \draw[->, line width=0.3mm, shorten >=5mm] (b.west) to[out=180, in=-180] (a.west);
+      \draw[->, line width=0.3mm, shorten >=4mm] (b.west) to[out=120, in=-180] (a.west);
     \end{tikzpicture}
     }
   }
@@ -348,7 +348,7 @@
 
   The set
   \begin{equation*}
-    \{ x \in \abs{F} ~|~ \nuclapp{x} = x \}
+    \sigmaty{x}{\abs{F}}{\nuclapp{x} = x}
   \end{equation*}
   of \alert{fixed points} for $\nuclnm{}$ is itself a frame:
   \begin{align*}
@@ -456,7 +456,7 @@
   \end{equation*}
   \begin{quote}
     {\scriptsize
-    for every formal topology $\McF{}$ with underlying poset $P$, $a : \abs{P}$, and
+    for every formal topology $\McF{}$ with underlying poset $P$, $a:\abs{P}$, and
     downwards-closed subsets $U, V : \pow{\abs{P}}$.
     }
   \end{quote}
@@ -476,8 +476,8 @@
 
   \uncover<2->{
     \begin{center}
-      \Large
-      This would require (a form of) the axiom of choice.
+      \large
+      This inference would require (a form of) the axiom of choice.
 
       In fact, the form of choice needed is provably false~\cite[Lemma 3.8.5]{hottbook}.
     \end{center}
@@ -519,6 +519,8 @@
   \end{equation*}
   \hrule
 
+  \vspace{1em}
+
   \uncover<2>{%
     \begin{center}
       \Large
@@ -544,7 +546,7 @@
 
 \begin{frame}{Flat monotonic maps}
   To state the presentation theorem, we will have to talk about meet-preserving monotonic
-  maps between posets.
+  maps.
 
   \vspace{0.5em}
 
