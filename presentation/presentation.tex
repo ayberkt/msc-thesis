@@ -286,22 +286,26 @@
 
   \begin{enumerate}
     \item \textbf{Monotonicity}:
+      {\normalsize
       \begin{equation*}
         \pity{a}{A}{\pity{b}{B(a)}{\pity{c}{C(a, b)}{d(a, b, c) \sqsubseteq a}}}.
       \end{equation*}
+      }
     \item \textbf{Simulation}:
+      {\normalsize
       \begin{align*}
         &\pity{a'~a}{A}{
           a' \sqsubseteq a \rightarrow\\
             &\quad\pity{b}{B(a)}{%
               \sigmaty{b'}{B(a')}{
                 \pity{c'}{C(a', b')}{
-                  d(a', b', c') \sqsubseteq d(a, b, c)
+                  \sigmaty{c}{C(a, b)}{d(a', b', c') \sqsubseteq d(a, b, c)}
                 }
               }
             }
         }.
       \end{align*}
+      }
   \end{enumerate}
 \end{frame}
 
