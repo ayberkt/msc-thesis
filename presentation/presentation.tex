@@ -7,6 +7,7 @@
 \usepackage{tikz}
 \usepackage{tikz-cd}
 \usetikzlibrary{tikzmark}
+\usetikzlibrary{calc}
 \usepackage[backend=biber]{biblatex}
 \addbibresource{references.bib}
 
@@ -98,12 +99,13 @@
 
   \uncover<2>{
     {\color{gerbesred}
+      \vspace{1em}
       \tikzmarknode{txt}{Observable}%
       \hspace{14.4em}%
       \tikzmarknode{not-obs}{\textbf{Not} observable}
     \begin{tikzpicture}[remember picture, overlay]
-      \draw[->, line width=0.3mm] (txt.north) to[out=90, in=-210] (a.west);
-      \draw[->, line width=0.3mm] (not-obs.north) to[out=70, in=40] (b.east);
+      \draw[->, line width=0.3mm, shorten >=3mm] (txt.north) to[out=90, in=-180] (a.west);
+      \draw[->, line width=0.3mm, shorten >=3mm] (not-obs.north) to[out=80, in=0] (b.east);
     \end{tikzpicture}
     }
   }
@@ -118,8 +120,8 @@
     $\leftrightarrow$
     \vspace{0.5em}
 
-    There exists a prefix $i$ of the output $\sigma$ at which the program is \alert{verified}
-    to satisfy $\phi$: all extensions of $\sigma_i$ satisfy $\phi$.
+    There exists a stage $i$ of the output $\sigma$ at which the program is \alert{verified} to
+    satisfy $\phi$: all extensions of $\sigma|_i$ satisfy $\phi$.
   \end{center}
 \end{frame}
 
@@ -140,7 +142,7 @@
 
   \vspace{1em}
 
-  $\phi_0 \wedge \cdots \wedge \phi_n$ is \alert{observable}.
+  This means that $\phi_0 \wedge \cdots \wedge \phi_n$ is \alert{observable}.
 \end{frame}
 
 \begin{frame}{What is topology?}
@@ -199,7 +201,7 @@
     }
     \end{center}
     \begin{tikzpicture}[remember picture, overlay]
-      \draw[->, line width=0.3mm] (b.west) to[out=180, in=-230] (a.west);
+      \draw[->, line width=0.3mm, shorten >=5mm] (b.west) to[out=180, in=-180] (a.west);
     \end{tikzpicture}
     }
   }
@@ -253,7 +255,7 @@
 
     \vspace{1em}
 
-    For us, that structure will be a \alert{formal topology}.
+    That structure is a \alert{formal topology}.
   }
 \end{frame}
 
@@ -281,7 +283,7 @@
   \begin{enumerate}
     \item \textbf{Monotonicity}:
       \begin{equation*}
-        \pity{a~b~c}{A}{d(a, b, c) \sqsubseteq a}.
+        \pity{a}{A}{\pity{b}{B(a)}{\pity{c}{C(a, b)}{d(a, b, c) \sqsubseteq a}}}.
       \end{equation*}
     \item \textbf{Simulation}:
       \begin{align*}
@@ -307,7 +309,7 @@
     &\pity{x~y}{\abs{F}}{~&& \nuclapp{x \wedge y}       \quad&&=\quad \nuclapp{x} \wedge \nuclapp{y}}
       &&\qquad\text{[meet preservation],}\\
     &\pity{x~~}{\abs{F}}{~&& x                     \quad&&\sqsubseteq\quad \nuclapp{x}}
-      &&\qquad\text{[extensiveness], and}\\
+      &&\qquad\text{[inflation], and}\\
     &\pity{x~~}{\abs{F}}{~&& \nuclapp{\nuclapp{x}} \quad&&\sqsubseteq\quad \nuclapp{x}}
       &&\qquad\text{[idempotence].}
   \end{alignat*}
@@ -319,6 +321,27 @@
       This is a meet-preserving, \alert{idempotent monad}!
     \end{center}
   }
+\end{frame}
+
+\begin{frame}{Nuclei}
+  \large
+
+  Let $F$ be a frame, and $\nuclnm{} : \abs{F} \rightarrow \abs{F}$ a nucleus on it.
+
+  \vspace{1em}
+
+  The set
+  \begin{equation*}
+    \{ x \in \abs{F} ~|~ \nuclapp{x} = x \}
+  \end{equation*}
+  of \alert{fixed points} for $\nuclnm{}$ is itself a frame:
+  \begin{align*}
+    \top       \quad&\is\quad \top_F                \\
+    \_\wedge\_   \quad&\is\quad \_\wedge_F\_            \\
+    \bigvee_i x_i \quad&\is\quad \nuclapp{\bigvee^F_i x_i} .
+  \end{align*}
+
+  We denote this $\fix{F}{\nuclnm{}}$.
 \end{frame}
 
 \begin{frame}{Nuclei}
@@ -336,13 +359,9 @@
 
   \vspace{1.5em}
 
-  The set of \alert{fixed points of a nucleus} on a frame is itself a frame.
-
-  \vspace{1em}
-
   \uncover<2>{
-    In the posetal case, we will pick this operator to be the \alert{covering} relation of
-    a formal topology.
+    In the posetal case, our \emph{modality} will be the \alert{covering} relation induced
+    by the structure of a formal topology.
   }
 \end{frame}
 
@@ -350,9 +369,11 @@
   \large
 
   Let\\
-  \quad$\McF{}$ be a formal topology with underlying poset $P$,\\
-  \quad$a : \abs{P}$, and\\
-  \quad$U : \pow{\abs{P}}$, a downwards-closed subset of $P$.
+  \begin{itemize}
+    \item $\McF{}$ be a formal topology with underlying poset $P$,\\
+    \item $a : \abs{P}$, and\\
+    \item $U : \pow{\abs{P}}$, a downwards-closed subset of $P$.
+  \end{itemize}
 
   \vspace{\baselineskip}
 
@@ -379,21 +400,24 @@
 \end{frame}
 
 \begin{frame}{The covering nucleus --- naive attempt}
+  \large
+
   $\rhd$ could be shown to be a \alert{nucleus}, \textbf{if it had the type}
   \begin{align*}
-    \lhd \quad&:\quad \pow{\abs{P}} \rightarrow \abs{P} \rightarrow \hprop{} \\
-    \rhd \quad&:\quad \pow{\abs{P}} \rightarrow \pow{\abs{P}}
+    \lhd \quad&:\quad \abs{P} \rightarrow \pow{\abs{P}} \rightarrow \hprop{} \\
+    \rhd \quad&:\quad \pow{\abs{P}} \rightarrow \pow{\abs{P}},
   \end{align*}
   but its type is
   \begin{align*}
-    \lhd \quad&:\quad \pow{\abs{P}} \rightarrow \abs{P} \rightarrow \univ{}.
+    \lhd \quad&:\quad \abs{P} \rightarrow \pow{\abs{P}} \rightarrow \univ{}.
   \end{align*}
 
   \uncover<2>{%
-    \Large
-    \begin{center}
-      \emph{Idea: use propositional truncation.}
-    \end{center}
+    \textbf{Idea}: use propositional truncation:
+    \begin{align*}
+      \trunc{\_ \lhd \_} &: \abs{P} \rightarrow \pow{\abs{P}} \rightarrow \hprop{} \\
+      \trunc{\_ \rhd \_} &: \pow{\abs{P}} \rightarrow \pow{\abs{P}}      .
+    \end{align*}
   }
 \end{frame}
 
@@ -412,8 +436,14 @@
   \begin{equation*}
     \covers{a}{U}
     \times
-    \left(\pity{u}{\abs{P}}{u \in U \rightarrow \trunc{\covers{u}{V}}\right) \rightarrow \trunc{\covers{a}{V}}}.
+    \left(\pity{u}{\abs{P}}{u \in U \rightarrow \trunc{\covers{u}{V}}\right) \rightarrow \trunc{\covers{a}{V}}},
   \end{equation*}
+  \begin{quote}
+    {\scriptsize
+    for every formal topology $\McF{}$ with underlying poset $P$, $a : \abs{P}$, and
+    downwards-closed subsets $U, V : \pow{\abs{P}}$.
+    }
+  \end{quote}
 \end{frame}
 
 \begin{frame}{The covering nucleus --- naive attempt}
@@ -431,10 +461,9 @@
   \uncover<2->{
     \begin{center}
       \Large
-      This would require (a form of) the Axiom of Choice.
+      This would require (a form of) the axiom of choice.
 
-      In fact, the form of choice needed is \textbf{provably}
-      false~\cite[pg.~120, Lemma 3.8.5]{hottbook}.
+      In fact, the form of choice needed is provably false~\cite[Lemma 3.8.5]{hottbook}.
     \end{center}
   }
 \end{frame}
@@ -486,7 +515,6 @@
 \begin{frame}{Generating frames from formal topologies}
   \large
 
-  We can now summarise the procedure for generating a frame from a formal topology.
   \begin{enumerate}
     \item Start with formal topology $\McF{}$ with underlying poset $P$.
     \item Take the frame of downwards-closed subsets of $P$, denoted $P\downarrow$.
@@ -510,15 +538,25 @@
 
   The solution is to consider those monotonic maps preserving \alert{latent meets}: these
   are called \alert{flat monotonic maps}.
+
+  \vspace{0.5em}
+
+  Let $f : P \rightarrow F$ be a \textbf{monotonic map} from a poset $P$ to the underlying poset of
+  a frame $F$. We say that it is \alert{flat} if:
   \begin{alignat*}{4}
-    & &&\top_F &&= &&\hspace{0.55em}\bigvee \{ f(a) ~|~ a : \abs{P} \}\\
-    &\pity{a~b}{\abs{P}}{&&f(a) \wedge f(b) &&= &&\bigvee_{(i, \_) : I} f(i)}.
+    & &&\top_F &&\quad=\quad &&\bigvee \{ f(a) ~|~ a : \abs{P} \},\quad\text{and}\\
+    &\pity{a_0~a_1}{\abs{P}}{&&f(a_0) \wedge f(a_1) &&\quad=\quad &&\bigvee \{ f(a_2) ~|~ a_2 \sqsubseteq a_0 ~\text{and}~ a_2 \sqsubseteq a_1 \} }.
   \end{alignat*}
 \end{frame}
 
 \begin{frame}{Representation}
-  Let $\McF{}$ be a formal topology, $R$, a frame, and $f : \abs{\McF{}} \rightarrow \abs{F}$, a
-  function.
+  Let
+  \begin{itemize}
+    \item $\McF{}$ be a formal topology,
+    \item $R$, a frame, and
+    \item $f : \abs{\McF{}} \rightarrow \abs{R}$, a function.
+  \end{itemize}
+  
 
   \vspace{1em}
 
@@ -533,31 +571,44 @@
   \begin{itemize}
     \item a formal topology $\McF{}$ with underlying poset $P$,
     \item a frame $R$, and
-    \item a \textbf{flat} monotonic map $f : \abs{\McF{}} \rightarrow \abs{R}$;
+    \item a \textbf{flat} monotonic map $f : P \rightarrow R$;
   \end{itemize}
   \begin{center}
     if $f$ represents $\McF{}$ in $R$, then there exists a \textbf{unique} frame
-    homomorphism $g : \fix{P\downarrow}{\rhd} \rightarrow R$ making the following diagram commute.
+    homomorphism $g$ making the following diagram commute:
   \end{center}
 
   \begin{center}
     \begin{tikzcd}[row sep=40pt, column sep=40pt]\label{fig:comm-diag}
-      \McF{} \arrow[swap, rd, "f"] \arrow[r, "\eta"]
+      P \arrow[swap, rd, "f"] \arrow[r, "\eta"]
         & \fix{P\downarrow}{\rhd} \arrow[d, dashed, "g"] \\
         & R
-    \end{tikzcd}
+    \end{tikzcd}\\
+    \vspace{0.5em}
+    {\footnotesize where $\eta(a) \is \covers{\_}{ \{ a' ~|~ a' \sqsubseteq a \} }$.}
   \end{center}
 \end{frame}
 
 \begin{frame}{Closing remarks}
   Conclusion.
   \begin{itemize}
-    \item We have reconstructed the notion of a covering in the univalent context as an
-      HIT.
+    \item We have reconstructed the notion of a covering within the univalent doctrine as
+      an HIT.
     \item We have sketched the beginnings of an approach for carrying out formal topology
       in univalent type theory.
+    \item No postulates, no setoids, no impredicativity.
   \end{itemize}
 \end{frame}
+
+\begin{frame}{Further work}
+  Further work.
+  \begin{itemize}
+    \item Develop more topology this way!
+    \item What is the category of formal topologies?
+    \item How can the presentation theorem be stated as an adjunction?
+  \end{itemize}
+\end{frame}
+
 
 \section{QEF}
 
