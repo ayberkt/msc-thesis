@@ -434,9 +434,15 @@ and is known as Hedberg's theorem.
 \section{Powersets}\label{sec:pow}
 
 Given a type $A$, we would like to talk about its powerset: the type of \emph{properties}
-inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$. It is here
-that the property-structure distinction starts to become visible: one would simply use
-$A \rightarrow \univ{}$ for this purpose in non-univalent type theory.
+inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$. Note that the
+codomain is $\hprop{}$ rather than $\univ{}$; it is here that the property-structure
+distinction starts to become visible: one would have to use $A \rightarrow \univ{}$ for this purpose
+in non-univalent type theory. Of course, $\hprop{}$ could be defined in non-univalent type
+theory as well, but non-univalent type theory is too restrictive for one to engage in
+sophisticated developments that maintain this distinction between structure and property.
+Most importantly, there are no methods for turning structure into property in
+non-univalent type theory meaning one would not be able to express many crucial
+inhabitants of $A \rightarrow \hprop{}$ as they would involve non-trivial proof structure.
 
 We represent the subsets of inhabitants of a type using the powerset. This is just one
 such representation; we will present another common approach in Section~\ref{sec:fam}.
