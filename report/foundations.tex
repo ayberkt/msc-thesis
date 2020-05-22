@@ -758,7 +758,7 @@ We now give the definition of propositional truncation as an HIT.
 \begin{defn}[Propositional truncation]\label{defn:truncation}
   Given a type $A$, its propositional truncation $\trunc{A}$ is an HIT given by one point
   constructor, $\rulename{|}\_\rulename{|}$, and one path constructor,
-  $\rulename{trsquash}$.
+  $\rulename{trunc}$.
   \begin{equation*}
     \begin{prooftree}
       \hypo{\oftyI{x}{A}}
@@ -768,7 +768,7 @@ We now give the definition of propositional truncation as an HIT.
     \begin{prooftree}
       \hypo{\oftyI{x}{\trunc{A}}}
       \hypo{\oftyI{y}{\trunc{A}}}
-      \infer2{\oftyI{\rulename{trsquash}}{x = y}}
+      \infer2{\oftyI{\rulename{trunc}}{x = y}}
     \end{prooftree}
   \end{equation*}
   The recursion principle for propositional truncation is the following: given any two
@@ -785,7 +785,7 @@ construct two terms: (1) an inhabitant of $B$ for the base case, and (2) a
 $\nats{}$-indexed family of inhabitants of $B \rightarrow B$ for the inductive case; these
 correspond to the types of the (non-dependent) constructors $\oftyI{\zero{}}{\nats{}}$ and
 $\oftyI{\sucnm{}}{\nats{} \rightarrow \nats{}}$. In the case of truncation, we have a (dependent)
-constructor of the form $\oftyI{\rulename{trsquash}}{\pity{x~y}{A}{x =_A y}}$.
+constructor of the form $\oftyI{\rulename{trunc}}{\pity{x~y}{A}{x =_A y}}$.
 Accordingly, in addition to some term of type $A \rightarrow B$ for the $\rulename{|}\_\rulename{|}$
 constructor, we now have to require a $(B \times B)$-indexed family of equality proofs: for
 each $\oftyII{x}{y}{B}$, a proof of $x = y$, which is none other than the requirement of
