@@ -754,7 +754,6 @@ one of $P$ or $Q$ it comes from. For this to become propositional, we have to so
 \emph{forget} this information; propositional truncation allows us to do precisely this.
 
 We now give the definition of propositional truncation as an HIT.
-
 \begin{defn}[Propositional truncation]\label{defn:truncation}
   Given a type $A$, its propositional truncation $\trunc{A}$ is an HIT given by one point
   constructor, $\rulename{|}\_\rulename{|}$, and one path constructor,
@@ -778,6 +777,9 @@ We now give the definition of propositional truncation as an HIT.
     \isprop{B} \rightarrow (A \rightarrow B) \rightarrow \trunc{A} \rightarrow B.
   \end{equation*}
 \end{defn}
+The $\rulename{trunc}$ rule is often called $\rulename{squash}$ but we choose this name to
+prevent ambiguity as we will later introduce another HIT featuring a rule called
+$\rulename{squash}$.
 
 Intuitively, why does the recursion principle have this form? To define a function
 $\nats{} \rightarrow B$ on the natural numbers using their elimination principle, we need to
