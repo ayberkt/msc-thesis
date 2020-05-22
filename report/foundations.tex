@@ -753,11 +753,11 @@ allow us to \emph{forget} the proof structure of a type, or in other words, forc
 non-propositional type to be propositional by collapsing its proof structure.
 
 This turns out to be quite convenient as it gives us a way of turning structure into
-property. Consider for instance two propositions $\oftyII{P}{Q}{\hprop{}_n}$. We would
-like to be able to express their logical disjunction, $P + Q$, and we would also like it
-to be a proposition itself. It will clearly not be propositional due to the fundamental,
-proof-relevant nature of type theory: the inhabitant will contain the information of which
-one of $P$ or $Q$ it comes from. For this to become propositional, we have to somehow
+property. Consider for instance two propositions $\oftyII{P}{Q}{\hprop{}}$. We would like
+to be able to express their logical disjunction and we would like this to be a proposition
+itself. It would clearly not be propositional if we were to define their disjunction as
+the sum type $P + Q$ since inhabitants of sum types contain the information of which one
+of the summands they come from. For this to become propositional, we have to somehow
 \emph{forget} this information; propositional truncation allows us to do precisely this.
 
 We now give the definition of propositional truncation as an HIT.
