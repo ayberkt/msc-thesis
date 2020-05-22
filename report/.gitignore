@@ -1,2 +1,15 @@
 literate-latex
+main.logmain.aux
+main.bbl
+main.bcf
+main.blg
+main.fdb_latexmk
+main.fls
+main.lof
+main.lot
+main.out
+main.ptb
+main.run.xml
+main.toc
+main.aux
 main.log
