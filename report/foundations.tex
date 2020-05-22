@@ -14,12 +14,15 @@ HoTT Book~\cite{hottbook}, (2) Martín Escardó's introductory exposition of HoT
 \section{Formal vs.~informal mathematics}
 
 Our goal in this thesis is to use type theory in an informal way, much like how set theory
-is frequently used without committing to a specific one of its implementations. Indeed,
-the work to be presented is the \emph{informalisation} of a completely formalised
-development, for which the formal system of choice is Cubical Type Theory
-(CTT)~\cite{CCHM, cubical-agda}. However, CTT is just one specific instance of a univalent
-foundation and its details will therefore not concern us in this thesis. We will instead
-abstract over the implementation, and use univalent type theory as a \emph{practical}
+is frequently used without committing to a specific one of its implementations. The work
+to be presented is in fact the \emph{informalisation} of a completely formalised
+development, for which the formal system of choice is Cubical Type Theory\footnote{%
+  The implementation of Cubical Type Theory in the cubical extension of
+  \veragda{}~\cite{cubical-agda}, to be specific.
+}
+(CTT)~\cite{CCHM}. CTT is just one instance of a univalent foundation, and its details
+will therefore not concern us in this thesis. We will instead abstract over the
+implementation, and use univalent type theory as a \emph{practical}
 foundation~\cite{PFOM, PFPL} whose formal details are left unspecified. The reader
 interested in the details of the formal development can find the (cubical) \veragda{}
 formalisation in Appendix~\ref{app:agda-form}.
