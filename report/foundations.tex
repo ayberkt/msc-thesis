@@ -269,8 +269,9 @@ notational abuse of denoting this projection by $A$ itself. In the \veragda{}
 formalisation, we use the notation of the \libcub{}~\cite{agda-cubical} library in which
 this is denoted \fnname{[} $A$ \fnname{]}.
 
-Once we introduce this delineation of the class of propositional types, we have to make
-sure that types that are thought of as properties are actually propositional types. For
+Once we introduce this delineation of the class of propositional types, we have to be
+careful about the distinction between \emph{property} and \emph{structure}. Ideally, types
+that are thought of as expressing propositions should always be propositional. For
 instance, the definition of equivalence we gave (in Defn.~\ref{defn:equiv}) has the
 crucial property that it is propositional. This would not always be the
 case~\cite{hottbook} if we were to use the usual notion of equivalence as an invertible
