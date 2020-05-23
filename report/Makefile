@@ -30,4 +30,4 @@ remove-log: main.pdf
 
 .PHONY: clean
 clean:
-	rm -f main.pdf
+	rm -f main.pdf *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.loq *.lot *.out *.ptb *.run.xml *.toc *.aux *.log
