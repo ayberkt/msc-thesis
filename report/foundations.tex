@@ -14,22 +14,26 @@ HoTT Book~\cite{hottbook}, (2) Martín Escardó's introductory exposition of HoT
 \section{Formal vs.~informal mathematics}
 
 Our goal in this thesis is to use type theory in an informal way, much like how set theory
-is frequently used without committing to a specific one of its implementations. Indeed,
-the work to be presented is the \emph{informalisation} of a completely formalised
-development, for which the formal system of choice is Cubical Type Theory
-(CTT)~\cite{CCHM, cubical-agda}. However, CTT is just one specific instance of a univalent
-foundation and its details will therefore not concern us in this thesis. We will instead
-abstract over the implementation, and use univalent type theory as a \emph{practical}
+is frequently used without committing to a specific one of its implementations. The work
+to be presented is in fact the \emph{informalisation} of a completely formalised
+development, for which the formal system of choice is Cubical Type Theory\footnote{%
+  The implementation of Cubical Type Theory in the cubical extension of
+  \veragda{}~\cite{cubical-agda}, to be specific.
+}
+(CTT)~\cite{CCHM}. CTT is just one instance of a univalent foundation, and its details
+will therefore not concern us in this thesis. We will instead abstract over the
+implementation, and use univalent type theory as a \emph{practical}
 foundation~\cite{PFOM, PFPL} whose formal details are left unspecified. The reader
 interested in the details of the formal development can find the (cubical) \veragda{}
 formalisation in Appendix~\ref{app:agda-form}.
 
 To keep our informal presentation precise, we will closely follow the notational
-conventions of the HoTT Book~\cite{hottbook}, as explained in Section~I.1. For instance,
-we will often make use of pattern matching: we will write
-$\oftyI{(x, \_)}{\sigmaty{a}{A}{B(a)}}$ rather than using the projection notation for
-projecting out the first component. There will be some minor notational deviations and
-abuses of language, which will be addressed locally, in the relevant sections.
+conventions of the HoTT Book~\cite{hottbook}, as explained in
+\cite[Sec.~I.1]{hottbook}. For instance, we will often make use of pattern matching: we
+will write $\oftyI{(x, \_)}{\sigmaty{a}{A}{B(a)}}$ rather than using the projection
+notation for projecting out the first component. There will be some minor notational
+deviations and abuses of language, which will be addressed locally, in the relevant
+sections.
 
 Finally, we note that we will be introducing new definitional equalities in various
 definitions. For the convenience of the reader who is reading this thesis electronically,
@@ -78,18 +82,22 @@ minor modification to type theory: first, make sure that the rich structures of 
 not trivialised by the likes of Axiom K, and then add a simple axiom---the univalence
 axiom---allowing one to prove that \emph{equivalent} types are equal.
 
-The motivation for this axiom is bolstered by the fact that it also solves many
-significant problems of type theory. For instance, it was proven by Voevodsky that
-univalence implies function extensionality, which is not a theorem of non-univalent type
-theory.
-
-In the remainder of this chapter, we first present the technicalities required for
-formulating univalence. Subsequently, we present the basics of univalent type theory.
+One immediate application of this axiom is that it allows one to prove function
+extensionality, that is commonly added as a postulate to type theory. The fact that one
+has to extend type theory with a postulate for something as natural as function
+extensionality can be considered a deficiency of type theory, and that univalence renders
+it into a theorem can therefore be considered an noteworthy improvement.
 
 \section{Equivalence and univalence}
 
 At the heart of univalent type theory lies the notion of \emph{type equivalence}. We build
-up to its definition given in Definition~\ref{defn:equiv}.
+up to its definition (Defn.~\ref{defn:equiv}) in this section.
+
+Following the HoTT book~\cite[Sec.~I.1.12]{hottbook}, we denote by $x =_A y$ the type of
+identity proofs (or ``identifications'') between terms $x$ and $y$. This is given by the
+constructor $$\oftyI{\mathsf{refl}}{\pity{x}{A}{x =_A x}},$$ whose elimination counterpart
+is the usual path induction rule. As mentioned before, we will abstract over such
+technicalities and engage in a high-level use of univalent type theory.
 
 We start by delineating the class of types that have exactly one inhabitant.
 \begin{defn}[Contractible]\label{defn:contr}
@@ -158,12 +166,9 @@ equality. Formally, this amounts to saying that $\idtoeqvnm{}$ is an equivalence
   \end{equation*}
 \end{ax}
 
-Although we use the word ``axiom'' here, we do not mean it to have the same sense as the
-word ``postulate'' in the context of proof assistants; we merely assume it and investigate
-its consequences. It might very well be a theorem, which it indeed is in CTT~\cite{CCHM}.
-
 The addition of this simple axiom into type theory has some surprising consequences.
-Perhaps most importantly, it allows us to \emph{prove} function extensionality.
+Perhaps most importantly, it allows us to \emph{prove} function extensionality as
+mentioned.
 \begin{defn}[Extensional equality]\label{defn:exteq}
   Given types $\oftyI{A}{\univ{}_m}$, $\oftyI{B}{\univ{}_n}$, and functions
   $\oftyII{f}{g}{A \rightarrow B}$, $f$ and $g$ are said to be extensionally equal if the following
@@ -177,18 +182,26 @@ Perhaps most importantly, it allows us to \emph{prove} function extensionality.
   Two functions are equal whenever they are extensionally equal.
 \end{prop}
 
-This was first proven by Voevodsky using the \textsc{Coq} proof assistant.
+This result was first proven by Voevodsky\footnote{%
+  Attributed to Voevodsky in \cite{escardo-uf-intro}.
+}.
 
 \section{Homotopy levels}
 
-One of the most interesting observations arising from the association of type theory with
+One of the fundamental observations arising from the association of type theory with
 homotopy theory is that we can classify types with respect to the nontrivial homotopy
-structure they bear. A space containing no nontrivial homotopy above dimension $n$ is
-called a homotopy $n$-type (or said to be of homotopy level $n$).
+structure they bear. Let $A$ be a type. Given any $\oftyII{x}{y}{A}$, the identity type $x
+= y$ is the type of equality proofs between $x$ and $y$. Given, then, some
+$\oftyII{p}{q}{x = y}$, we can talk about the type $p = q$ of equality proofs between the
+equality proofs. We can repeat this process \emph{ad infinitum} meaning any type $A$
+induces an infinite tower of types of equality proofs. When we use the term
+\emph{dimension}, we are referring to levels of this tower. A space containing no
+nontrivial homotopy above dimension $n$ is called a homotopy $n$-type (or said to be of
+homotopy level $n$).
 
 We then recursively define a predicate expressing that a given type has homotopy level
-$n$. The idea is that we increase the dimension by one (i.e., go from a space to its path
-space) at each step.
+$n$. The idea is that we increase the dimension by one (i.e., go from talking about a type
+to talking about its type of equality proofs) at each step.
 \begin{defn}[Homotopy level]\label{defn:hlevel}
   We will say that the homotopy level of a type $A$ is $\oftyI{n}{\mathbb{N}}$ if
   $\isofhlevel{A}{n}$ as inhabited:
@@ -270,11 +283,13 @@ notational abuse of denoting this projection by $A$ itself. In the \veragda{}
 formalisation, we use the notation of the \libcub{}~\cite{agda-cubical} library in which
 this is denoted \fnname{[} $A$ \fnname{]}.
 
-Once we introduce this delineation of the class of propositional types, we have to make
-sure that types that are thought of as properties are actually propositional types. For
+Once we introduce this delineation of the class of propositional types, we have to be
+careful about the distinction between \emph{property} and \emph{structure}. Ideally, types
+that are thought of as expressing propositions should always be propositional. For
 instance, the definition of equivalence we gave (in Defn.~\ref{defn:equiv}) has the
-crucial property that it is propositional. This would not be the case~\cite{hottbook} if
-we were to use the usual notion of equivalence as an invertible function.
+crucial property that it is propositional. This would not always be the
+case~\cite{hottbook} if we were to use the usual notion of equivalence as an invertible
+function.
 
 Many types that are expected to behave like propositions behave naturally like
 propositions so it suffices to prove their propositionality; for those that do not,
@@ -308,8 +323,10 @@ Note also the following fact.
   inhabitants $\oftyII{(x, p)}{(y, q)}{\sigmaty{a}{A}{B(a)}}$, if $x = y$ then
   $(x, p) = (y, q)$.
 \end{prop}
-Such a type $\sigmaty{a}{A}{B(a)}$ can be thought of as a ``subtype'' of $A$: the
-restriction of $A$ to its inhabitants that satisfy the \emph{property} $B$.
+This can in fact be strengthened to an equivalence but this form will be sufficient for
+our purposes. Such a type $\sigmaty{a}{A}{B(a)}$, where $B$ is a family of propositions,
+can be thought of as a ``subtype'' of $A$: the restriction of $A$ to its inhabitants that
+satisfy the \emph{property} $B$.
 
 As we view propositional types as embodying properties, it is natural to expect the right
 notion of equivalence between them to be logical equivalence.
@@ -321,8 +338,7 @@ notion of equivalence between them to be logical equivalence.
   \end{equation*}
 \end{defn}
 
-Indeed, it is sufficient in univalent type theory to show logical equivalence to establish
-the equivalence of two propositional types.
+We can indeed show that logically equivalent h-propositions are equivalent.
 \begin{prop}\label{prop:iff-equiv}
   Given propositions $\oftyI{P}{\univ{}_m}$, $\oftyI{Q}{\univ{}_n}$, if $\logequiv{P}{Q}$
   then $\typequiv{A}{B}$.
@@ -423,7 +439,8 @@ A type is called discrete if its type of equality proofs is decidable.
   \end{equation*}
 \end{defn}
 
-The following theorem was proven by Michael Hedberg in 1998~\cite{hedberg}.
+The following sufficient condition for setness is due to Michael Hedberg~\cite{hedberg}
+and is known as Hedberg's theorem.
 \begin{thm}[Hedberg]\label{thm:hedberg}
   Every discrete type is a set.
 \end{thm}
@@ -431,9 +448,15 @@ The following theorem was proven by Michael Hedberg in 1998~\cite{hedberg}.
 \section{Powersets}\label{sec:pow}
 
 Given a type $A$, we would like to talk about its powerset: the type of \emph{properties}
-inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$. It is here
-that the property-structure distinction starts to become visible: one would simply use
-$A \rightarrow \univ{}$ for this purpose in non-univalent type theory.
+inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$. Note that the
+codomain is $\hprop{}$ rather than $\univ{}$; it is here that the property-structure
+distinction starts to become visible: one would have to use $A \rightarrow \univ{}$ for this purpose
+in non-univalent type theory. Of course, $\hprop{}$ could be defined in non-univalent type
+theory as well, but non-univalent type theory is too restrictive for one to engage in
+sophisticated developments that maintain this distinction between structure and property.
+Most importantly, there are no methods for turning structure into property in
+non-univalent type theory meaning one would not be able to express many crucial
+inhabitants of $A \rightarrow \hprop{}$ as they would involve non-trivial proof structure.
 
 We represent the subsets of inhabitants of a type using the powerset. This is just one
 such representation; we will present another common approach in Section~\ref{sec:fam}.
@@ -517,75 +540,6 @@ use the more familiar notation:
 \end{equation}
 What is meant by such notational sugar is expected to be obvious to the reader.
 
-In the \veragda{} formalisation, we use similar notational conventions. For instance, the
-syntax we have exemplified in (\ref{eqn:join-syntax}) is implemented in the
-\modname{JoinSyntax} submodule of the \modname{Frame} module.
-\begin{code}%
-\>[0]\AgdaKeyword{module}\AgdaSpace{}%
-\AgdaModule{JoinSyntax}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Type}\AgdaSpace{}%
-\AgdaGeneralizable{ℓ₀}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{\{}\AgdaBound{ℓ₂}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPostulate{Level}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{join}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Fam}\AgdaSpace{}%
-\AgdaBound{ℓ₂}\AgdaSpace{}%
-\AgdaBound{A}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{A}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaKeyword{where}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-\>[0][@{}l@{\AgdaIndent{0}}]%
-\>[2]\AgdaFunction{join-of}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaSymbol{\{}\AgdaBound{I}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Type}\AgdaSpace{}%
-\AgdaBound{ℓ₂}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{I}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{A}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{A}\<%
-\\
-%
-\>[2]\AgdaFunction{join-of}\AgdaSpace{}%
-\AgdaSymbol{\{}\AgdaArgument{I}\AgdaSpace{}%
-\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaBound{I}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaBound{f}\AgdaSpace{}%
-\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaBound{join}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{I}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
-\AgdaBound{f}\AgdaSymbol{)}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
-\>[2]\AgdaKeyword{syntax}\AgdaSpace{}%
-\AgdaFunction{join-of}\AgdaSpace{}%
-\AgdaSymbol{(λ}\AgdaSpace{}%
-\AgdaBound{i}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{e}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaFunction{⋁⟨}\AgdaSpace{}%
-\AgdaBound{i}\AgdaSpace{}%
-\AgdaFunction{⟩}\AgdaSpace{}%
-\AgdaBound{e}\<%
-\end{code}
-
-The bracketed index \fnname{⟨}$i$\fnname{⟩} is intended to be a plain text approximation
-of subscripting.
-
 \begin{defn}[Family membership]\label{defn:fam-mem}
   Given a type $A$, some $\oftyI{x}{A}$, and a family $U \equiv (I, f)$, we say
   that $x$ is a member of $U$ if the fiber of $f$ over $x$ is inhabited:
@@ -605,71 +559,6 @@ presented in this thesis.
   the image of $g$ over $U$ is nothing but the family $(I, g \circ f)$. We will denote this
   $\img{g}{U}$ or $\setof{ g(f(i)) ~|~ \oftyI{i}{I} }$.
 \end{defn}
-
-\paragraph*{Remark on Agda notation.}
-Again, we use similar syntactic sugaring in the \veragda{} formalisation. As the curly
-bracket symbols, \fnname{\{} and \fnname{\}}, are not available in \veragda{}, we
-approximate these as \fnname{\textlquill} and \fnname{\textrquill} for the comprehension notation. One
-instance of such a syntax declaration can be found in the \modname{Family} module.
-
-\begin{center}
-\begin{code}%
-\>[0]\AgdaFunction{img}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Type}\AgdaSpace{}%
-\AgdaGeneralizable{ℓ₀}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaSymbol{\{}\AgdaBound{Y}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Type}\AgdaSpace{}%
-\AgdaGeneralizable{ℓ₁}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{g}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaBound{X}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{Y}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{U}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Fam}\AgdaSpace{}%
-\AgdaGeneralizable{ℓ₂}\AgdaSpace{}%
-\AgdaBound{X}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaFunction{Fam}\AgdaSpace{}%
-\AgdaGeneralizable{ℓ₂}\AgdaSpace{}%
-\AgdaBound{Y}\<%
-\\
-\>[0]\AgdaFunction{img}\AgdaSpace{}%
-\AgdaBound{g}\AgdaSpace{}%
-\AgdaBound{(I , f)}\AgdaSpace{}%
-\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaBound{I}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
-\AgdaBound{g}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∘}}\AgdaSpace{}%
-\AgdaBound{f}\AgdaSpace{}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaKeyword{syntax}\AgdaSpace{}%
-\AgdaFunction{img}\AgdaSpace{}%
-\AgdaSymbol{(λ}\AgdaSpace{}%
-\AgdaBound{x}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{e}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaBound{ℱ}\AgdaSpace{}%
-\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaFunction{⁅}\AgdaSpace{}%
-\AgdaBound{e}\AgdaSpace{}%
-\AgdaFunction{∣}\AgdaSpace{}%
-\AgdaBound{x}\AgdaSpace{}%
-\AgdaFunction{ε}\AgdaSpace{}%
-\AgdaBound{U}\AgdaSpace{}%
-\AgdaFunction{⁆}\<%
-\end{code}
-\end{center}
 
 Given an inhabitant $U$ of the powerset of some type $A$, we can represent $U$ as a family
 as defined below.
@@ -744,19 +633,18 @@ allow us to \emph{forget} the proof structure of a type, or in other words, forc
 non-propositional type to be propositional by collapsing its proof structure.
 
 This turns out to be quite convenient as it gives us a way of turning structure into
-property. Consider for instance two propositions $\oftyII{P}{Q}{\hprop{}_n}$. We would
-like to be able to express their logical disjunction, $P + Q$, and we would also like it
-to be a proposition itself. It will clearly not be propositional due to the fundamental,
-proof-relevant nature of type theory: the inhabitant will contain the information of which
-one of $P$ or $Q$ it comes from. For this to become propositional, we have to somehow
+property. Consider for instance two propositions $\oftyII{P}{Q}{\hprop{}}$. We would like
+to be able to express their logical disjunction and we would like this to be a proposition
+itself. It would clearly not be propositional if we were to define their disjunction as
+the sum type $P + Q$ since inhabitants of sum types contain the information of which one
+of the summands they come from. For this to become propositional, we have to somehow
 \emph{forget} this information; propositional truncation allows us to do precisely this.
 
 We now give the definition of propositional truncation as an HIT.
-
 \begin{defn}[Propositional truncation]\label{defn:truncation}
   Given a type $A$, its propositional truncation $\trunc{A}$ is an HIT given by one point
   constructor, $\rulename{|}\_\rulename{|}$, and one path constructor,
-  $\rulename{trsquash}$.
+  $\rulename{trunc}$.
   \begin{equation*}
     \begin{prooftree}
       \hypo{\oftyI{x}{A}}
@@ -766,7 +654,7 @@ We now give the definition of propositional truncation as an HIT.
     \begin{prooftree}
       \hypo{\oftyI{x}{\trunc{A}}}
       \hypo{\oftyI{y}{\trunc{A}}}
-      \infer2{\oftyI{\rulename{trsquash}}{x = y}}
+      \infer2{\oftyI{\rulename{trunc}}{x = y}}
     \end{prooftree}
   \end{equation*}
   The recursion principle for propositional truncation is the following: given any two
@@ -776,6 +664,9 @@ We now give the definition of propositional truncation as an HIT.
     \isprop{B} \rightarrow (A \rightarrow B) \rightarrow \trunc{A} \rightarrow B.
   \end{equation*}
 \end{defn}
+The $\rulename{trunc}$ rule is often called $\rulename{squash}$ but we choose this name to
+prevent ambiguity as we will later introduce another HIT featuring a rule called
+$\rulename{squash}$.
 
 Intuitively, why does the recursion principle have this form? To define a function
 $\nats{} \rightarrow B$ on the natural numbers using their elimination principle, we need to
@@ -783,7 +674,7 @@ construct two terms: (1) an inhabitant of $B$ for the base case, and (2) a
 $\nats{}$-indexed family of inhabitants of $B \rightarrow B$ for the inductive case; these
 correspond to the types of the (non-dependent) constructors $\oftyI{\zero{}}{\nats{}}$ and
 $\oftyI{\sucnm{}}{\nats{} \rightarrow \nats{}}$. In the case of truncation, we have a (dependent)
-constructor of the form $\oftyI{\rulename{trsquash}}{\pity{x~y}{A}{x =_A y}}$.
+constructor of the form $\oftyI{\rulename{trunc}}{\pity{x~y}{\trunc{A}}{x = y}}$.
 Accordingly, in addition to some term of type $A \rightarrow B$ for the $\rulename{|}\_\rulename{|}$
 constructor, we now have to require a $(B \times B)$-indexed family of equality proofs: for
 each $\oftyII{x}{y}{B}$, a proof of $x = y$, which is none other than the requirement of
