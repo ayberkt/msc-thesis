@@ -176,18 +176,26 @@ mentioned.
   Two functions are equal whenever they are extensionally equal.
 \end{prop}
 
-This result was first proven by Voevodsky.
+This result was first proven by Voevodsky\footnote{%
+  Attributed to Voevodsky in \cite{escardo-uf-intro}.
+}.
 
 \section{Homotopy levels}
 
 One of the fundamental observations arising from the association of type theory with
 homotopy theory is that we can classify types with respect to the nontrivial homotopy
-structure they bear. A space containing no nontrivial homotopy above dimension $n$ is
-called a homotopy $n$-type (or said to be of homotopy level $n$).
+structure they bear. Let $A$ be a type. Given any $\oftyII{x}{y}{A}$, the identity type $x
+= y$ is the type of equality proofs between $x$ and $y$. Given, then, some
+$\oftyII{p}{q}{x = y}$, we can talk about the type $p = q$ of equality proofs between the
+equality proofs. We can repeat this process \emph{ad infinitum} meaning any type $A$
+induces an infinite tower of types of equality proofs. When we use the term
+\emph{dimension}, we are referring to levels of this tower. A space containing no
+nontrivial homotopy above dimension $n$ is called a homotopy $n$-type (or said to be of
+homotopy level $n$).
 
 We then recursively define a predicate expressing that a given type has homotopy level
-$n$. The idea is that we increase the dimension by one (i.e., go from a space to its path
-space) at each step.
+$n$. The idea is that we increase the dimension by one (i.e., go from talking about a type
+to talking about its type of equality proofs) at each step.
 \begin{defn}[Homotopy level]\label{defn:hlevel}
   We will say that the homotopy level of a type $A$ is $\oftyI{n}{\mathbb{N}}$ if
   $\isofhlevel{A}{n}$ as inhabited:
