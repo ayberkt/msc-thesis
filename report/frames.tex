@@ -180,6 +180,8 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
   \begin{equation*}
     \rawframestr{n}{o}{A} \quad\is\quad \posetstr{n}{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{o}{A} \rightarrow A).
   \end{equation*}
+  The prefix ``raw'' is used to signify that it is the \emph{structural} component of the
+  definition: it is merely some data that may or may not satisfy the laws imposed upon it.
   Such a raw structure that obeys the following axioms is called a \emph{frame}.
   \begin{alignat*}{2}
     \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad             &&\mathsf{isTop}(\top) \times
