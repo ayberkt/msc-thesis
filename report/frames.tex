@@ -282,7 +282,10 @@ We will consider notions of frame isomorphisms in detail in Sec.~\ref{sec:frame-
 \begin{prop}[Meet commutativity]\label{prop:comm}
   In any frame $F$, $x \wedge_F y = y \wedge_F x$ for all $\oftyII{x}{y}{\abs{F}}$.
 \end{prop}
-The proof is trivial and therefore omitted.
+\begin{proof}
+  By antisymmetry, it suffices to show $x \wedge_F y \sqsubseteq_F y \wedge_F x$ and $y \wedge_F x \sqsubseteq x \wedge_F y$. This
+  is direct since both of $x \wedge_F y$ and $y \wedge_F x$ are lower bounds of $x$ and $y$.
+\end{proof}
 
 We will need the following important lemma when we get to the universal property.
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
