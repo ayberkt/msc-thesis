@@ -93,7 +93,7 @@ Let us formally summarise the notion of downwards-closure.
   We first define a predicate expressing that a given subset $\oftyI{U}{\pow{\abs{P}}}$ of
   some poset $P$ is downwards-closed:
   \begin{alignat*}{2}
-    \isdcnm{}   &\quad:\quad     &&\poset{} \rightarrow \pow{\abs{P}} \rightarrow \hprop{}                        \\
+    \isdcnm{}   &\quad:\quad     &&\left(\sigmaty{P}{\poset{}}{\pow{\abs{P}}}\right) \rightarrow \hprop{}                        \\
     \isdc{P, U} &\quad\is{}\quad &&\pity{x~y}{\abs{P}}{\mempow{x}{U} \rightarrow y \sqsubseteq x \rightarrow \mempow{y}{U}} .
   \end{alignat*}
   The propositionality follows by Prop.~\ref{prop:pi-prop}. We then define the
