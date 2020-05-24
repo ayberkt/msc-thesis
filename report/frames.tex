@@ -58,8 +58,12 @@ This section corresponds to the \modname{Poset} module in the \veragda{} develop
                     &\hspace{0.3em}\times \hspace{0.3em}\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}   \\
                     &\hspace{0.3em}\times \isset{A}
   \end{align*}
-  Propositionality of $\posetaxnm{}$ follows by propositions \ref{prop:sigma-prop},
-  \ref{prop:pi-prop}, and \ref{prop:set-prop}.
+  The function name $\posetstrnm{}$ is intended to be an abbreviation of ``poset
+  structure'', that is, an ordered structure subject to the axioms for a partial order.
+  The predicate expressing that a given ordered structure satisfies these axioms is in
+  turn abbreviated by the function name $\posetaxnm{}$. Propositionality of $\posetaxnm{}$
+  follows by propositions \ref{prop:sigma-prop}, \ref{prop:pi-prop}, and
+  \ref{prop:set-prop}.
 \end{defn}
 
 Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in cases where there might
