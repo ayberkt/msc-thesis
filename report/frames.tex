@@ -620,10 +620,11 @@ corresponding \veragda{} proof can be found in the \modname{Nucleus} module unde
   The binary meets and the top element are taken directly from the frame $F$; we need to
   show, however, that they respect the fixed point property. The top element $\top$ is a
   fixed point by Prop.~\ref{prop:nucleus-resp-top}. For the meet operation, let
-  $\oftyII{x}{y}{\abs{F}}$ such that $j(x) = x$ and $j(y) = y$. $x \wedge y \sqsubseteq j(x \wedge y)$ by
-  $N_1$ so it suffices to show $j(x \wedge y) \sqsubseteq x \wedge y$. By $N_0$, $j(x \wedge y) = j(x) \wedge j(y)$.
-  Furthermore, $j(x) \wedge j(y) \sqsubseteq j(x) = x$ and $j(x) \wedge j(y) \sqsubseteq j(y) = y$. This means that $j(x
-  \wedge y)$ is a lower bound of $x$ and $y$ so we have $j(x \wedge y) \sqsubseteq x \wedge y$.
+  $\oftyII{x}{y}{\abs{F}}$ such that $j(x) = x$ and $j(y) = y$. We have:
+  \begin{align*}
+    j(x \wedge y) &= j(x) \wedge j(y) && [N_0] \\
+             &= x \wedge y       && [j(x) = x~\text{and}~j(y) = y].
+  \end{align*}
 
   We define the join of a family $\setof{ x_i ~|~ i \in I }$ using $\bigvee^F$ but applying $j$ on
   the result:
