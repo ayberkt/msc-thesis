@@ -486,7 +486,7 @@ has not been defined yet.
   \ref{defn:intersection}). The join operation is defined as follows: let $U$ be a family
   of downwards-closed subsets with index set $I$;
   \begin{align*}
-    \bigvee_i U_i \quad\is\quad \lambda x.~ \trunc{\sigmaty{i}{I}{x \in U_i}}
+    \bigvee_i U_i \quad\is\quad \lambda x.~ \trunc{\sigmaty{i}{I}{\mempow{x}{U_i}}}
       && \text{(using truncation as given in Defn.~\ref{defn:truncation})}.
   \end{align*}
   $\entire{\abs{P}}$ and $\intersectnm{}$ are propositional by construction whereas $\bigvee$
