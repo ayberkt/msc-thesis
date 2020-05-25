@@ -209,14 +209,13 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
       }
   \end{alignat*}
   A minor notational clarification: the scope of the $\prod$ types do not extend to the new
-  line in the cases where the lines are separated by $\times$. We collect frames in the
-  following type:
-  \begin{equation*}
-    \framety{m}{n}{o} \quad\is\quad
-      \sigmaty{A}{\univ{}_m}{
-        \sigmaty{s}{\rawframestr{n}{o}{A}}{\frameax{s}}
-      }.
-  \end{equation*}
+  line in the cases where the lines are separated by $\times$. We then define the type of
+  frames as:
+  \begin{align*}
+    \framety{m}{n}{o} \quad&\is\quad \sigmaty{A}{\univ{}_m}{\framestr{A}},            \\
+                       &\text{where}                                          \\
+    \framestr{A}      \quad&\is\quad \sigmaty{s}{\rawframestr{n}{o}{A}}{\frameax{s}}  .
+  \end{align*}
 \end{defn}
 
 We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
