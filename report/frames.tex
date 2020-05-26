@@ -572,19 +572,28 @@ Notice that every nucleus preserves the top element.
   Clearly, $j(\top_F) \sqsubseteq \top_F$ and $\top_F \sqsubseteq j(\top_F)$ by $N_1$. We are done by antisymmetry.
 \end{proof}
 
-Notice also that every nucleus is monotonic.
+Notice also that every nucleus is monotonic (given in Prop.~\ref{prop:nucleus-mono}).
+
+\begin{lemma}\label{lem:meet-eq}
+  $x \sqsubseteq y$ if and only if $x = x \wedge y$ in any frame.
+\end{lemma}
+\begin{proof}
+  Let $F$ be a frame and let $\oftyII{x}{y}{\abs{F}}$. Suppose that $x \sqsubseteq y$. We have $x \wedge
+  y \sqsubseteq x$ so it suffices by antisymmetry to show $x \sqsubseteq x \wedge y$. This holds as well since $x \wedge
+  y$ is greater than any other lower bound and $x$ is a lower bound of $x$ and $y$: $x \sqsubseteq
+  x$ and $x \sqsubseteq y$. For the other direction, suppose that $x = x \wedge y$. We have $x \sqsubseteq x \wedge y \sqsubseteq
+  y$.
+\end{proof}
+
 \begin{prop}\label{prop:nucleus-mono}
   Every nucleus is monotonic.
 \end{prop}
 \begin{proof}
-  Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$ a nucleus on it. Let
-  $\oftyII{x}{y}{\abs{F}}$ and suppose $x \sqsubseteq y$. We need to show that $j(x) \sqsubseteq j(y)$. First,
-  notice that $x = \meet{x}{y}$ by antisymmetry since $\meet{x}{y} \sqsubseteq x$ and $x \sqsubseteq
-  \meet{x}{y}$, as $\meet{x}{y}$ is greater than any other lower bound and $x$ is a lower
-  bound of $x$ and $y$ as it is less than both itself and $y$. Notice that this must mean
-  $j(x) \sqsubseteq j(y)$ since:
+  Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$, a nucleus on it. Let
+  $\oftyII{x}{y}{\abs{F}}$ and suppose $x \sqsubseteq y$. It can be observed that $j(x) \sqsubseteq j(y)$ is
+  the case as follows:
   \begin{align*}
-    j(x) &\quad=\quad j(\meet{x}{y})        && [x = \meet{x}{y}]                              \\
+    j(x) &\quad=\quad j(\meet{x}{y})        && [\text{Lemma~\ref{lem:meet-eq}}]               \\
          &\quad=\quad \meet{j(x)}{j(y)}     && [N_0]                                          \\
          &\quad\sqsubseteq\quad {j(y)}                && [\text{$\meet{j(x)}{j(x)}$ is a lower bound}]  .
   \end{align*}
