@@ -321,13 +321,17 @@ idempotence law would look like:
 \begin{equation*}
   \trunc{\covers{a}{\trunc{\lambda x.~\covers{x}{U}}}} \rightarrow \trunc{\covers{a}{U}}.
 \end{equation*}
-To prove this, we would need a lemma saying given any $a$, and subsets $U, V$,
+In our attempt to prove this, we had to use a lemma saying given any $a$, and subsets
+$U, V$,
 \begin{center}
   if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$ for every $\mempow{a'}{U}$, then
   $\trunc{\covers{a}{V}}$.
 \end{center}
-The $\ruledir{}$ case is easily verified. The $\rulebranch{}$ case, however, results in a
-situation where we are trying to show
+It is perhaps possible to avoid using such a lemma, but we have not been able to achieve
+this; we therefore believe that such a lemma would be necessarily needed.
+
+The $\ruledir{}$ case of this lemma is easily verified. The $\rulebranch{}$ case, however,
+results in a situation where we are trying to show
 \begin{equation*}
   \trunc{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}}
 \end{equation*}
