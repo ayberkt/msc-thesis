@@ -319,7 +319,7 @@ nucleus $\RHD : \dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? If 
 the truncated form of $\covernm{}$ (as defined in Defn.~\ref{defn:naive-cover}), the
 idempotence law would look like:
 \begin{equation*}
-  \trunc{\covers{a}{\trunc{\covers{-}{U}}}} \rightarrow \trunc{\covers{a}{U}}.
+  \trunc{\covers{a}{\trunc{\lambda x.~\covers{x}{U}}}} \rightarrow \trunc{\covers{a}{U}}.
 \end{equation*}
 To prove this, we would need a lemma saying given any $a$, and subsets $U, V$,
 \begin{center}
