@@ -166,18 +166,19 @@ Given an interaction system $\mathcal{I}$, the monotonicity property is then
 formally expressed as given in the following definition.
 \begin{defn}[Monotonicity property of an interaction system]\label{defn:mono}
   An interaction system $\mathcal{I}$, whose type $A_{\mathcal{I}}$ of stages is equipped
-  with a poset structure $\sqsubseteq$, is said to have the monotonicity property if the following
-  type is inhabited:
-  \begin{equation*}
-    \hasmono{\mathcal{I}, \sqsubseteq} \quad\is\quad
-      \pity{a}{A_{\mathcal{I}}}{%
+  with a partial order, is said to have the monotonicity property if the following type is
+  inhabited:
+  \begin{alignat*}{2}
+    \hasmononm{} \quad&:\quad &&\left( \sigmaty{P}{\poset{}}{\treestr{\abs{P}}} \right) \rightarrow \univ{} \\
+    \hasmono{P, \mathcal{I}} \quad&\is\quad
+    &&\pity{a}{A_{\mathcal{I}}}{%
         \pity{b}{B_{\mathcal{I}}(a)}{%
           \pity{c}{C_{\mathcal{I}}(a, b)}{%
-              d(a, b, c) \sqsubseteq a
+              d(a, b, c) \sqsubseteq_P a
           }
         }
       }.
-  \end{equation*}
+  \end{alignat*}
 \end{defn}
 
 We have not yet fully explained the simulation property so let us now address that. We
