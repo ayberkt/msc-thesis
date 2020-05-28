@@ -307,6 +307,23 @@ interesting and involves a non-trivial amount of bureaucracy. It can be found in
 \veragda{} formalisation, in the \modname{Frame} module; the constructed inhabitant is
 named \fnname{flatten}.
 
+The following proposition will be useful when proving the equality of joins of two
+``logically equivalent'' families. Suppose that we have two families $U$ and $V$ and we
+know that $\logequiv{\memfam{x}{U}}{\memfam{x}{V}}$. We cannot infer from this that
+$U = V$, in the way we have defined families. We will, however, not need this result and
+it will be satisfactory for our purposes to prove merely that $\bigvee_i U_i = \bigvee_i V_i$.
+\begin{prop}\label{prop:family-iff}
+  Let $F$ be a frame and $U, V$ be two families over $\abs{F}$. The following type is then
+  inhabited:
+  \begin{equation*}
+    \left(\pity{x}{\abs{F}}{\logequiv{\memfam{x}{U}}{\memfam{x}{V}}}\right)
+      \rightarrow \bigvee_i U_i = \bigvee_i V_i.
+  \end{equation*}
+\end{prop}
+\begin{proof}[Proof sketch]
+  Follows directly from the LUB property.
+\end{proof}
+
 The distributivity law we required in the definition of a frame applies only in cases
 where we have the join as the right-hand conjunct of a meet. Therefore we cannot
 simultaneously distribute the meet of two joins to get a join of meets. Of course, this
@@ -323,8 +340,9 @@ fact for simultaneously distributing the meet of two joins.
   \end{equation*}
 \end{prop}
 \begin{proof}[Proof sketch]
-  Apply the distributivity law, use commutativity (Prop.~\ref{prop:comm}), apply the
-  distributivity law again, and then flatten (using Lemma~\ref{lem:flatten}).
+  Usin Prop.~\ref{prop:family-iff}, apply the distributivity law, use
+  Prop.~\ref{prop:comm} (commutativity), apply the distributivity law again, and then
+  flatten (using Lemma~\ref{lem:flatten}).
 \end{proof}
 
 \section{Univalence for frames}\label{sec:frame-univ}
