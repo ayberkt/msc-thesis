@@ -631,10 +631,10 @@ hence the reading of this as ``representation''.
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case
 where the categories we are working with are posets. Consider a monotonic map $f : P \rightarrow Q$,
-where $Q$ has finite meets but $P$ does not. We would like to assert somehow that $f$
-preserves these finite meets but we cannot mention the meets of $P$ as they do not exist.
-So we instead require $f$ to preserve those meets that \emph{do not exist yet} which we
-can do by requiring the following conditions:
+where $Q$ has finite meets but $P$ possibly does not. We would like to assert somehow that
+$f$ preserves these finite meets but we cannot mention the meets of $P$ as they do not
+exist. So we instead require $f$ to preserve those meets that \emph{do not exist yet}
+which we can do by requiring the following conditions:
 \begin{enumerate}
   \item $\top_Q = \bigvee \setof{ f(a) ~|~ \oftyI{a}{\abs{P}} }$, and
   \item $\pity{x~y}{P}{f(x) \wedge f(y) = \bigvee \setof{ f(z) ~|~ z \sqsubseteq x\ \text{and}\ z \sqsubseteq y }}$.
