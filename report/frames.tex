@@ -228,8 +228,11 @@ Notice at this point the source of the predicativity problems: in the definition
 $\mathsf{isLUB}$, we are quantifying over \emph{subsets}. We have a type that quantifies
 over other types, which in type theory, is a ``large'' type. This quickly gives rise to
 problems: if we were to work with this, we would be able to have only joins of families
-whose index types live in $\univ{}_0$; this would be sufficient for entertaining only
-trivial examples of topologies.
+whose index types live in $\univ{}_0$ (see~\cite{sambin-tutorial, coq-sambin} for
+details). This would be too restricted for developing (pointless) topology in type theory.
+For instance, in Chapter~\ref{chap:cantor}, we will present an important example of a
+pointless topology: the Cantor space. It would not be possible to define this directly as
+a frame as we could not prove that it is \emph{complete} (i.e. has all joins).
 
 Let us now note that $\frameaxnm{}$ is propositional as one would expect.
 \begin{prop}\label{prop:frame-ax-prop}
