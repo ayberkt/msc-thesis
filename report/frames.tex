@@ -406,14 +406,25 @@ well-behaved characterisation of $S$-homomorphic equivalences.
     (1), is an equivalence.
 \end{enumerate}
 
-Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure and let $\oftyII{A}{B}{\univ{}_m}$
-be two types equipped with $S$-structures $s$ and $t$. The SIP~\cite{escardo-uf-intro, agda-cubical}
-then gives us the following result:
-\begin{quote}
-  if $S$ is standard in the sense that there is some $\iota$ satisfying (1) and (2) for it,
-  the type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to the identity
-  type between them.
-\end{quote}
+Given some $S$, we say that it forms a \emph{standard notion of structure} and write
+$\formssns{S}$ if there exists an $\iota$ satisfying (1) and (2).
+
+Let us now state exactly what result is given by the
+SIP~\cite{escardo-uf-intro, agda-cubical}.
+\begin{defn}[Structure identity principle]
+  Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure and let $\oftyII{A}{B}{\univ{}_m}$
+  be two types equipped with $S$-structures $s$ and $t$. if $S$ is standard in the sense
+  that there is some $\iota$ satisfying witnessing that it forms an SNS (i.e.~satisfies (1)
+  and (2)), the type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to
+  the identity type between them. Formally,
+  \begin{equation*}
+    \pity{M~N}{\sigmaty{A}{\univ{}_m}{S(A)}}{\typequiv{(M = N)}{(M \simeq_{\iota} N)}}
+  \end{equation*}
+  where
+  \begin{equation*}
+    A \simeq_{\iota} B \quad\is\quad \sigmaty{e}{\typequiv{A}{B}}{\iota(e)}
+  \end{equation*}
+\end{defn}
 
 We have explained already how we use the SIP for posets. Let us now explain how we use it
 for frames. The situation is quite similar; frames form an SNS with $S \is
