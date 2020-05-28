@@ -77,7 +77,8 @@
 \newcommand{\typequiv}[2]{#1 \hyperref[defn:equiv]{\simeq} #2}
 \newcommand{\istypiso}[1]{\hyperref[defn:type-iso]{\mathsf{isIso}}\left(#1\right)}
 \newcommand{\typiso}[2]{#1 \hyperref[defn:type-iso]{\cong} #2}
-\newcommand{\logequiv}[2]{#1 \hyperref[defn:iff]{\leftrightarrow} #2}
+\DeclareMathOperator{\logequivnm}{\hyperref[defn:iff]{\leftrightarrow}}
+\newcommand{\logequiv}[2]{#1 \logequivnm{} #2}
 \newcommand{\exteq}[2]{#1 \hyperref[defn:exteq]{\sim} #2}
 \newcommand{\idfn}[1]{\mathsf{id}_{#1}}
 
@@ -98,6 +99,8 @@
 
 \newcommand{\intersectnm}{\hyperref[defn:intersection]{\cap}}
 \newcommand{\intersect}[2]{#1 \intersectnm{} #2}
+
+\newcommand{\formssns}[1]{\mathsf{SNS}\left(#1\right)}
 
 \newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
 \newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
@@ -184,6 +187,9 @@
 \DeclareMathOperator{\frameequivnm}{\hyperref[defn:frame-equiv]{\simeq_f}}
 
 \newcommand{\frameequiv}[2]{#1 \frameequivnm{} #2}
+
+\DeclareMathOperator{\frameisonm}{\hyperref[defn:frame-iso]{\cong_f}}
+\newcommand{\frameiso}[2]{#1 \frameisonm{} #2}
 
 \newcommand{\invequiv}[1]{\hyperref[prop:iso-equiv-equiv]{\mathsf{inv}}\left(#1\right)}
 

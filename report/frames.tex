@@ -29,12 +29,13 @@ frame. Put simply:
 
 We now start presenting our formal development of frames. We start with partially ordered
 sets in Section~\ref{sec:poset}. In Section~\ref{sec:frame}, we present the definition of
-a frame. In Section~\ref{sec:frame-univ}, we present a theorem unique to univalent
-foundations: isomorphic frames are equal. In sections \ref{sec:down-set-frame} and
-\ref{sec:nuclei}, we prove two important lemmas in preparation for the chapter on formal
-topology (Chapter~\ref{chap:formal-topo}): (1) the set of downwards-closed subsets of a
-poset forms a frame and (2) given a nucleus (a technical notion to be introduced) on a
-frame, its set of fixed points is itself a frame.
+a frame. In Section~\ref{sec:frame-univ}, we discuss our proof that isomorphic frames are
+equal, which can be considered the hallmark of the fact that our development takes place
+in a univalent context. In sections \ref{sec:down-set-frame} and \ref{sec:nuclei}, we
+prove two important lemmas in preparation for the chapter on formal topology
+(Chapter~\ref{chap:formal-topo}): (1) the set of downwards-closed subsets of a poset forms
+a frame and (2) given a nucleus (a technical notion to be introduced) on a frame, its set
+of fixed points is itself a frame.
 
 \section{Partially ordered sets}\label{sec:poset}
 
@@ -51,14 +52,18 @@ This section corresponds to the \modname{Poset} module in the \veragda{} develop
   \end{center}
   \begin{align*}
     \posetstr{n}{A} \quad&\is\quad \sigmaty{R}{\order{n}{A}}{\posetax{A, R}}              \\
-    \posetaxnm \quad&:\quad \pity{A}{\univ{}_m}{\order{n}{A} \rightarrow \hprop{}_{\max(m, n)}}           \\
+    \posetaxnm \quad&:\quad \left(\sigmaty{A}{\univ{}_m}{\order{n}{A}}\right) \rightarrow \hprop{}  \\
     \posetax{A, R} \quad&\is\quad ~~\pity{x}{A}{R(x, x)}                      \\
                     &\hspace{0.3em}\times \pity{x~y~z}{A}{R(x, y) \rightarrow R(y, z) \rightarrow R(x, z)} \\
                     &\hspace{0.3em}\times \hspace{0.3em}\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}   \\
-                    &\hspace{0.3em}\times \isset{A}
+                    &\hspace{0.3em}\times \isset{A}.
   \end{align*}
-  Propositionality of $\posetaxnm{}$ follows by propositions \ref{prop:sigma-prop},
-  \ref{prop:pi-prop}, and \ref{prop:set-prop}.
+  The function name $\posetstrnm{}$ is intended to be an abbreviation of ``poset
+  structure'', that is, an ordered structure subject to the axioms for a partial order.
+  The predicate expressing that a given ordered structure satisfies these axioms is in
+  turn abbreviated by the function name $\posetaxnm{}$. Propositionality of $\posetaxnm{}$
+  follows by propositions \ref{prop:sigma-prop}, \ref{prop:pi-prop}, and
+  \ref{prop:set-prop}.
 \end{defn}
 
 Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in cases where there might
@@ -70,25 +75,25 @@ include all elements below their elements. One way of reading this is as express
 property of being closed under refinement or ``collection of more information''. Take a
 certain element $x : \abs{P}$ that we view as a stage of information. For some other
 $\oftyI{y}{\abs{P}}$, $y \sqsubseteq x$ expresses the idea that $y$ is a \emph{finer} stage of
-information i.e., it contains more information hence admitting less approximations. Let
-$U$ be a subset of $\abs{P}$. The property that $U$ is downwards-closed is then nothing
-but:
+information: it approximates the result better meaning it confines it into a
+\emph{narrower} range. Let $U$ be a subset of $\abs{P}$. The property that $U$ is
+downwards-closed is then nothing but:
 \begin{equation*}
   \mempow{x}{U} \rightarrow y \sqsubseteq x \rightarrow \mempow{y}{U},
 \end{equation*}
 the intuitive reading of which is: $U$ is closed under the reception of more information.
 In other words, regardless of how things unfold after $x$ has been reached, the stage of
 information we end up at will still be in $U$. One can therefore say that $U$ is itself
-like a finitely verifiable property on $\abs{P}$ in that a judgement of membership of a
-set $x_0 \sqsupseteq x_1 \sqsupseteq \ldots$ of elements can be made just by observing the membership of
-$\mempow{x_i}{U}$ for some $x_i$.
+like an observable property on $\abs{P}$: given a sequence $x_0 \sqsupseteq x_1 \sqsupseteq \cdots$ of stages of
+information that eventually ``hits'' $U$, no further examination will be needed as soon as
+we find the first element that hits $U$.
 
-Let us formally summarise the notion of downwards-closure.
+Let us now formally summarise the notion of downwards-closure.
 \begin{defn}[Downwards-closed subset]\label{defn:dc-subset}
   We first define a predicate expressing that a given subset $\oftyI{U}{\pow{\abs{P}}}$ of
   some poset $P$ is downwards-closed:
   \begin{alignat*}{2}
-    \isdcnm{}   &\quad:\quad     &&\poset{} \rightarrow \pow{\abs{P}} \rightarrow \hprop{}                        \\
+    \isdcnm{}   &\quad:\quad     &&\left(\sigmaty{P}{\poset{}}{\pow{\abs{P}}}\right) \rightarrow \hprop{}                        \\
     \isdc{P, U} &\quad\is{}\quad &&\pity{x~y}{\abs{P}}{\mempow{x}{U} \rightarrow y \sqsubseteq x \rightarrow \mempow{y}{U}} .
   \end{alignat*}
   The propositionality follows by Prop.~\ref{prop:pi-prop}. We then define the
@@ -140,8 +145,9 @@ We can now proceed to construct the poset of downwards-closed subsets.
   be the case by Prop.~\ref{prop:iff-equiv} as we know $\logequiv{U(x)}{V(x)}$.
 \end{proof}
 
-Observe that we have not only made use of function extensionality, which depends on
-univalence, but we also had to directly invoke univalence itself.
+Observe that we have made use univalence and function extensionality here. If we were
+working in a non-univalent setting, we would already have to resort to postulates or start
+using setoids at this point.
 
 \subsection{Monotonic functions}
 
@@ -180,6 +186,8 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
   \begin{equation*}
     \rawframestr{n}{o}{A} \quad\is\quad \posetstr{n}{A} \times A \times (A \rightarrow A \rightarrow A) \times (\sub{o}{A} \rightarrow A).
   \end{equation*}
+  The prefix ``raw'' is used to signify that it is the \emph{structural} component of the
+  definition: it is merely some data that may or may not satisfy the laws imposed upon it.
   Such a raw structure that obeys the following axioms is called a \emph{frame}.
   \begin{alignat*}{2}
     \frameax{\sqsubseteq, \top, \wedge, \bigvee} \quad&\is\quad             &&\mathsf{isTop}(\top) \times
@@ -201,13 +209,14 @@ found in the \modname{Frame} module in the \veragda{} formalisation.
           x \wedge \bigvee_i U_i} =_A \bigvee_i \left( x \wedge U_i \right)
       }
   \end{alignat*}
-  We collect frames in the following type:
-  \begin{equation*}
-    \framety{m}{n}{o} \quad\is\quad
-      \sigmaty{A}{\univ{}_m}{
-        \sigmaty{s}{\rawframestr{n}{o}{A}}{\frameax{s}}
-      }.
-  \end{equation*}
+  A minor notational clarification: the scope of the $\prod$ types do not extend to the new
+  line in the cases where the lines are separated by $\times$. We then define the type of
+  frames as:
+  \begin{align*}
+    \framety{m}{n}{o} \quad&\is\quad \sigmaty{A}{\univ{}_m}{\framestr{A}},            \\
+                       &\text{where}                                          \\
+    \framestr{A}      \quad&\is\quad \sigmaty{s}{\rawframestr{n}{o}{A}}{\frameax{s}}  .
+  \end{align*}
 \end{defn}
 
 We will use the notation $\abs{F}$ for referring to the underlying set of a frame, as we
@@ -219,8 +228,11 @@ Notice at this point the source of the predicativity problems: in the definition
 $\mathsf{isLUB}$, we are quantifying over \emph{subsets}. We have a type that quantifies
 over other types, which in type theory, is a ``large'' type. This quickly gives rise to
 problems: if we were to work with this, we would be able to have only joins of families
-whose index types live in the ground universe; this would be sufficient for entertaining
-only trivial examples of topologies.
+whose index types live in $\univ{}_0$ (see~\cite{sambin-tutorial, coq-sambin} for
+details). This would be too restricted for developing (pointless) topology in type theory.
+For instance, in Chapter~\ref{chap:cantor}, we will present an important example of a
+pointless topology: the Cantor space. It would not be possible to define this directly as
+a frame as we could not prove that it is \emph{complete} (i.e. has all joins).
 
 Let us now note that $\frameaxnm{}$ is propositional as one would expect.
 \begin{prop}\label{prop:frame-ax-prop}
@@ -263,10 +275,12 @@ to preserve this structure.
   homomorphism.
 \end{defn}
 
-We could of course strengthen this definition to: isomorphism between the underlying
-posets. This would be equivalent since isomorphisms already preserve meets and joins.
+We could strengthen this definition so that it requires only the preservation of the
+underlying order. This would be equivalent since all poset isomorphisms preserve meets and
+joins.
 \begin{defn}\label{defn:frame-iso-official}
-  An isomorphism of frame $F$ and $G$ is simply an isomorphism of their underlying posets.
+  An isomorphism between fames $F$ and $G$ is simply an isomorphism of their underlying
+  posets.
 \end{defn}
 We will consider notions of frame isomorphisms in detail in Sec.~\ref{sec:frame-univ}.
 
@@ -275,7 +289,10 @@ We will consider notions of frame isomorphisms in detail in Sec.~\ref{sec:frame-
 \begin{prop}[Meet commutativity]\label{prop:comm}
   In any frame $F$, $x \wedge_F y = y \wedge_F x$ for all $\oftyII{x}{y}{\abs{F}}$.
 \end{prop}
-The proof is trivial and therefore omitted.
+\begin{proof}
+  By antisymmetry, it suffices to show $x \wedge_F y \sqsubseteq_F y \wedge_F x$ and $y \wedge_F x \sqsubseteq x \wedge_F y$. This
+  is direct since both of $x \wedge_F y$ and $y \wedge_F x$ are lower bounds of $x$ and $y$.
+\end{proof}
 
 We will need the following important lemma when we get to the universal property.
 \begin{lemma}[Flattening lemma]\label{lem:flatten}
@@ -293,6 +310,23 @@ interesting and involves a non-trivial amount of bureaucracy. It can be found in
 \veragda{} formalisation, in the \modname{Frame} module; the constructed inhabitant is
 named \fnname{flatten}.
 
+The following proposition will be useful when proving the equality of joins of two
+``logically equivalent'' families. Suppose that we have two families $U$ and $V$ and we
+know that $\logequiv{\memfam{x}{U}}{\memfam{x}{V}}$. We cannot infer from this that
+$U = V$, in the way we have defined families. We will, however, not need this result and
+it will be satisfactory for our purposes to prove merely that $\bigvee_i U_i = \bigvee_i V_i$.
+\begin{prop}\label{prop:family-iff}
+  Let $F$ be a frame and $U, V$ be two families over $\abs{F}$. The following type is then
+  inhabited:
+  \begin{equation*}
+    \left(\pity{x}{\abs{F}}{\logequiv{\memfam{x}{U}}{\memfam{x}{V}}}\right)
+      \rightarrow \bigvee_i U_i = \bigvee_i V_i.
+  \end{equation*}
+\end{prop}
+\begin{proof}[Proof sketch]
+  Follows directly from the LUB property.
+\end{proof}
+
 The distributivity law we required in the definition of a frame applies only in cases
 where we have the join as the right-hand conjunct of a meet. Therefore we cannot
 simultaneously distribute the meet of two joins to get a join of meets. Of course, this
@@ -309,8 +343,9 @@ fact for simultaneously distributing the meet of two joins.
   \end{equation*}
 \end{prop}
 \begin{proof}[Proof sketch]
-  Apply the distributivity law, use commutativity (Prop.~\ref{prop:comm}), apply the
-  distributivity law again, and then flatten (using Lemma~\ref{lem:flatten}).
+  Using Prop.~\ref{prop:family-iff}, apply the distributivity law, use
+  Prop.~\ref{prop:comm} (commutativity), apply the distributivity law again, and then
+  flatten (using Lemma~\ref{lem:flatten}).
 \end{proof}
 
 \section{Univalence for frames}\label{sec:frame-univ}
@@ -328,8 +363,9 @@ are equal. In fact, we prove that there is an equivalence between the type of is
 between two frames and the type of equality proofs between them. For this, we make use of
 a \emph{structure identity principle} (SIP for short): a description of the identity type
 between two structures in terms of (well-behaved) equivalences of the carrier types (as
-explained by Escardó~\cite{escardo-uf-intro}). The first SIP was formulated by Coquand and
-Danielsson~\cite{coq-nad} and another one is given in the HoTT Book~\cite{hottbook}.
+explained by Escardó~\cite{escardo-uf-intro}). The fist published SIP was formulated by
+Coquand and Danielsson~\cite{coq-nad} and another one (due to Peter Aczel) is given in the
+HoTT Book~\cite{hottbook}.
 
 We use the SIP due to Martín Escardó~\cite{escardo-uf-intro}, as implemented in the
 \texttt{cubical} library~\cite{agda-cubical} of \veragda{}. Instead of going into the
@@ -383,23 +419,33 @@ well-behaved characterisation of $S$-homomorphic equivalences.
 \begin{enumerate}
   \item The identity equivalence meets the $\iota$ criterion: for every $$\oftyI{(A,
     s)}{\sigmaty{X}{\univ{}}{S(X)}},$$ $\iota((A, s), (A, s), \idequiv{A})$ is inhabited.
-  \item Given some $\iota$ satisfying (1), and given a type $A$ with two structures
-    $\oftyII{s}{t}{S(A)}$, there is a map:
+  \item The map of type
     \begin{equation*}
-      s = t \rightarrow \iota((A, s), (A, t), \idequiv{A}).
+      s = t \rightarrow \iota((A, s), (A, t), \idequiv{A}),
     \end{equation*}
-    The second requirement is that this map is an equivalence for every type $A$ and for
-    every two $S$-structures $s$ and $t$ on it.
+    that one can define for any type $A$, $S$-structures $s$ and $t$, and $\iota$ satisfying
+    (1), is an equivalence.
 \end{enumerate}
 
-Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure and let $\oftyII{A}{B}{\univ{}_m}$
-be two types equipped with $S$-structures $s$ and $t$. The SIP~\cite{escardo-uf-intro, agda-cubical}
-then gives us the following result:
-\begin{quote}
-  if $S$ is standard in the sense that there is some $\iota$ satisfying (1) and (2) for it,
-  the type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to the identity
-  type between them.
-\end{quote}
+Given some $S$, we say that it forms a \emph{standard notion of structure} and write
+$\formssns{S}$ if there exists an $\iota$ satisfying (1) and (2).
+
+Let us now state exactly what result is given by the
+SIP~\cite{escardo-uf-intro, agda-cubical}.
+\begin{defn}[Structure identity principle]
+  Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure and let $\oftyII{A}{B}{\univ{}_m}$
+  be two types equipped with $S$-structures $s$ and $t$. if $S$ is standard in the sense
+  that there is some $\iota$ satisfying witnessing that it forms an SNS (i.e.~satisfies (1)
+  and (2)), the type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to
+  the identity type between them. Formally,
+  \begin{equation*}
+    \pity{M~N}{\sigmaty{A}{\univ{}_m}{S(A)}}{\typequiv{(M = N)}{(M \simeq_{\iota} N)}}
+  \end{equation*}
+  where
+  \begin{equation*}
+    A \simeq_{\iota} B \quad\is\quad \sigmaty{e}{\typequiv{A}{B}}{\iota(e)}
+  \end{equation*}
+\end{defn}
 
 We have explained already how we use the SIP for posets. Let us now explain how we use it
 for frames. The situation is quite similar; frames form an SNS with $S \is
@@ -424,13 +470,15 @@ instead use the familiar notion of categorical isomorphism, as we gave in defini
 \ref{defn:poset-iso} and \ref{defn:frame-iso}.
 
 In the case of posets, we prove the equivalence of $\posetequiv{P}{Q}$ with
-$\posetiso{P}{Q}$ for any two posets $P$ and $Q$. The desired final result then follows
-from this combined with the equivalence given by the SIP:
+$\posetiso{P}{Q}$ for any two posets $P$ and $Q$. The final result then follows from this
+combined with the equivalence given by the SIP:
 \begin{equation*}
   \typequiv{(\posetiso{P}{Q})}{\typequiv{(\posetequiv{P}{Q})}{(P \equiv Q)}}.
 \end{equation*}
 
-In the case of frames, our notion of isomorphism does not even need to require the
+In the case of frames, the situation is similar: we have that $\frameequiv{F}{G}$ is
+equivalent to $\frameiso{F}{G}$ for any two frames $F$ and $G$. However, this result could
+be strengthened as the notion of frame isomorphism does not even need to require the
 preservation of frame data (as remarked in Defn.~\ref{defn:frame-iso-official}); simply
 preserving the partial order suffices. It is, however, quite convenient to carry out the
 SNS proof with a notion of frame homomorphism that explicitly requires the preservation of
@@ -443,28 +491,28 @@ and after this:
 \begin{equation}\label{eqn:frame-equiv-2}
   \typequiv{(\posetiso{\posof{F}}{\posof{G}})}{(\frameequiv{F}{G})}.
 \end{equation}
-The desired result,
+The final result,
 \begin{equation}\label{eqn:frame-equiv-3}
   \typequiv{(\posetiso{\posof{F}}{\posof{G}})}{(F \equiv G)},
 \end{equation}
 is then just a combination of (\ref{eqn:frame-equiv-1}) and (\ref{eqn:frame-equiv-2})
 
-\paragraph*{Remark on the \veragda{} formalisation.} As this result requires a high amount
-of bureaucracy (such as multiple notions of ``isomorphism''), the reader might want to
-look at its purely formal form as constructed in the \veragda{} formalisation. All of
-these results that involve frames live in the \modname{Frame} module. The term witnessing
-the truth of (\ref{eqn:frame-equiv-1}) is called \fnname{≃f≃\equiv} whilst the one for
-(\ref{eqn:frame-equiv-2}) is called \fnname{≃f≃≅ₚ}. The witness of the main result
-(\ref{eqn:frame-equiv-3}) is called \fnname{≅ₚ≃≡}.
+As this result requires a high amount of bureaucracy (such as multiple notions of
+isomorphism), the reader might want to look at its completely formal form as constructed
+in the \veragda{} formalisation. All of these results that involve frames live in the
+\modname{Frame} module. The term witnessing the truth of (\ref{eqn:frame-equiv-1}) is
+called \fnname{≃f≃\equiv} whilst the one for (\ref{eqn:frame-equiv-2}) is called
+\fnname{≃f≃≅ₚ}. The witness of the main result (\ref{eqn:frame-equiv-3}) is called
+\fnname{≅ₚ≃≡}.
 
 The result given in (\ref{eqn:frame-equiv-3}) is remarkable from the perspective of formal
 topology. In Chapter~\ref{chap:formal-topo}, we will present a method for generating a
-frame from a formal topology and prove that this satisfies the universal property of the
-generated frame. Indeed, one can prove that this universal property characterises the
-generated frame uniquely \emph{up to isomorphism}. A direct corollary of
-(\ref{eqn:frame-equiv-3}) is that \emph{isomorphic frames are equal} so we can now drop
-the ``up to isomorphism'' and say that the universal property characterises the generated
-frame \emph{uniquely}.
+frame from a formal topology, and then prove that it is correct in the sense that the
+frame generated following this method satisfies a certain universal property. Indeed, one
+can prove that this universal property characterises the generated frame uniquely
+\emph{up to isomorphism}. A direct corollary of (\ref{eqn:frame-equiv-3}) is that
+\emph{isomorphic frames are equal} so we can now drop the ``up to isomorphism'' and say
+that the universal property characterises the generated frame \emph{uniquely}.
 
 \section{Frame of downwards-closed subsets}\label{sec:down-set-frame}
 
@@ -475,7 +523,7 @@ has not been defined yet.
 
 \begin{thm}\label{thm:down-set-frame}
   Given a poset $P$, the poset of downwards-closed subsets of $P$ (i.e.,
-  $\dcsubset{\abs{P}}$) (as constructed in Theorem~\ref{prop:dc-poset}), is a frame.
+  $\dcsubset{\abs{P}}$) (as constructed in Prop.~\ref{prop:dc-poset}), is a frame.
 \end{thm}
 \begin{proof}
   The top element and the meet operation are just those of the subset inclusion order:
@@ -483,11 +531,11 @@ has not been defined yet.
   \ref{defn:intersection}). The join operation is defined as follows: let $U$ be a family
   of downwards-closed subsets with index set $I$;
   \begin{align*}
-    \bigvee_i U_i \quad\is\quad \lambda x.~ \trunc{\sigmaty{i}{I}{x \in U_i}}
+    \bigvee_i U_i \quad\is\quad \lambda x.~ \trunc{\sigmaty{i}{I}{\mempow{x}{U_i}}}
       && \text{(using truncation as given in Defn.~\ref{defn:truncation})}.
   \end{align*}
-  $\entire{\abs{P}}$ and $\intersectnm{}$ are propositional by construction whereas $\bigvee$
-  requires a truncation to be forced to be propositional. Downwards-closure and the
+  $\entire{\abs{P}}$ and $\intersectnm{}$ are propositional by construction whereas $\bigvee$ is
+  not and is hence forced to be propositional using truncation. Downwards-closure and the
   LUB/GLB properties are easy to verify. For the distributivity law, let $U$ be a
   downwards-closed subset and $\setof{ V_i ~|~ \oftyI{i}{I} }$, a family of
   downward-closed subsets. We must show
@@ -499,9 +547,10 @@ has not been defined yet.
   \end{align*}
   This follows easily by antisymmetry combined with the induction principle of truncation
   (Defn.~\ref{defn:truncation}), the use of which is made possible by the propositionality
-  of both sides of the equality. We will denote the frame of downwards-closed subsets of a
-  poset $P$ by $\dcframe{P}$.
+  of both sides of the equality.
 \end{proof}
+
+We will denote the frame of downwards-closed subsets of a poset $P$ by $\dcframe{P}$.
 
 \section{Nuclei and their fixed points}\label{sec:nuclei}
 
@@ -557,19 +606,28 @@ Notice that every nucleus preserves the top element.
   Clearly, $j(\top_F) \sqsubseteq \top_F$ and $\top_F \sqsubseteq j(\top_F)$ by $N_1$. We are done by antisymmetry.
 \end{proof}
 
-Notice also that every nucleus is monotonic.
+Notice also that every nucleus is monotonic (given in Prop.~\ref{prop:nucleus-mono}).
+
+\begin{lemma}\label{lem:meet-eq}
+  $x \sqsubseteq y$ if and only if $x = x \wedge y$ in any frame.
+\end{lemma}
+\begin{proof}
+  Let $F$ be a frame and let $\oftyII{x}{y}{\abs{F}}$. Suppose that $x \sqsubseteq y$. We have $x \wedge
+  y \sqsubseteq x$ so it suffices by antisymmetry to show $x \sqsubseteq x \wedge y$. This holds as well since $x \wedge
+  y$ is greater than any other lower bound and $x$ is a lower bound of $x$ and $y$: $x \sqsubseteq
+  x$ and $x \sqsubseteq y$. For the other direction, suppose that $x = x \wedge y$. We have $x \sqsubseteq x \wedge y \sqsubseteq
+  y$.
+\end{proof}
+
 \begin{prop}\label{prop:nucleus-mono}
   Every nucleus is monotonic.
 \end{prop}
 \begin{proof}
-  Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$ a nucleus on it. Let
-  $\oftyII{x}{y}{\abs{F}}$ and suppose $x \sqsubseteq y$. We need to show that $j(x) \sqsubseteq j(y)$. First,
-  notice that $x = \meet{x}{y}$ by antisymmetry since $\meet{x}{y} \sqsubseteq x$ and $x \sqsubseteq
-  \meet{x}{y}$, as $\meet{x}{y}$ is greater than any other lower bound and $x$ is a lower
-  bound of $x$ and $y$ as it is less than both itself and $y$. Notice that this must mean
-  $j(x) \sqsubseteq j(y)$ since:
+  Let $F$ be a frame and $j : \abs{F} \rightarrow \abs{F}$, a nucleus on it. Let
+  $\oftyII{x}{y}{\abs{F}}$ and suppose $x \sqsubseteq y$. It can be observed that $j(x) \sqsubseteq j(y)$ is
+  the case as follows:
   \begin{align*}
-    j(x) &\quad=\quad j(\meet{x}{y})        && [x = \meet{x}{y}]                              \\
+    j(x) &\quad=\quad j(\meet{x}{y})        && [\text{Lemma~\ref{lem:meet-eq}}]               \\
          &\quad=\quad \meet{j(x)}{j(y)}     && [N_0]                                          \\
          &\quad\sqsubseteq\quad {j(y)}                && [\text{$\meet{j(x)}{j(x)}$ is a lower bound}]  .
   \end{align*}
@@ -587,7 +645,7 @@ frame.
   \begin{equation*}
     \sigmaty{x}{\abs{F}}{j(x) = x}
   \end{equation*}
-   of $j$-closed elements forms a poset.
+   of $j$-closed elements forms a poset under the ordering $\sqsubseteq_F$.
 \end{prop}
 \begin{proof}[Proof sketch]
   The proof amounts to forgetting the information of being a fixed point. For
@@ -602,33 +660,34 @@ frame.
 \end{proof}
 
 The \veragda{} construction corresponding to Prop.~\ref{prop:fixed-point-poset} can be
-found in the \modname{Poset} module under the name \fnname{DCPoset}.
+found in the \modname{Nucleus} module under the name \fnname{𝔣𝔦𝔵-pos}.
 
 Now, we are ready to prove the main theorem of this section: this poset of $j$-closed
 elements of a frame is itself a frame. The proof we present is an adaptation of
 Johnstone's proof \cite[II.2.2, pg.~49]{stone-spaces} to the type-theoretical setting. The
-corresponding \veragda{} proof can be found in the \modname{Frame} module under the name
-\fnname{DCFrame}.
+corresponding \veragda{} proof can be found in the \modname{Nucleus} module under the name
+\fnname{𝔣𝔦𝔵}.
 
 \begin{thm}\label{thm:fixed-point-frame}
-  The set of fixed points for a nucleus $j$ on some frame $F$ forms a frame.
-\end{thm}
-\begin{proof}
-  The binary meets and the top element are taken directly from the frame $F$; we need to
-  show, however, that they respect the fixed point property. The top element $\top$ is a
-  fixed point by Prop.~\ref{prop:nucleus-resp-top}. For the meet operation, let
-  $\oftyII{x}{y}{\abs{F}}$ such that $j(x) = x$ and $j(y) = y$. $x \wedge y \sqsubseteq j(x \wedge y)$ by
-  $N_1$ so it suffices to show $j(x \wedge y) \sqsubseteq x \wedge y$. By $N_0$, $j(x \wedge y) = j(x) \wedge j(y)$.
-  Furthermore, $j(x) \wedge j(y) \sqsubseteq j(x) = x$ and $j(x) \wedge j(y) \sqsubseteq j(y) = y$. This means that $j(x
-  \wedge y)$ is a lower bound of $x$ and $y$ so we have $j(x \wedge y) \sqsubseteq x \wedge y$.
-
-  We define the join of a family $\setof{ x_i ~|~ i \in I }$ using $\bigvee^F$ but applying $j$ on
-  the result:
+  The set of fixed points for a nucleus $j$ on some frame $F$ forms a frame, with the meet
+  operator ($\_\wedge\_$) and the top element ($\top$) taken directly from $F$, and the join
+  defined as:
   \begin{equation*}
     \bigvee_i x_i \quad\is\quad j \left( \bigvee^F_i x_i \right).
   \end{equation*}
-  Notice that this gives a LUB. Let $\{ x_i ~|~ i \in I \}$ be a family of $j$-closed
-  elements and let $\oftyI{i}{I}$. We have
+\end{thm}
+\begin{proof}
+  We start by showing that the meets and the top element respect the fixed point property.
+  $\top$ is a fixed point by Prop.~\ref{prop:nucleus-resp-top}. For the meet operation, let
+  $\oftyII{x}{y}{\abs{F}}$ such that $j(x) = x$ and $j(y) = y$. We have:
+  \begin{align*}
+    j(x \wedge y) &= j(x) \wedge j(y) && [N_0] \\
+             &= x \wedge y       && [j(x) = x~\text{and}~j(y) = y].
+  \end{align*}
+
+  We now show that the join operator, defined by applying $j$ on the join of $F$, actually
+  yields a LUB. Let $\setof{ x_i ~|~ i \in I }$ be a family of $j$-closed elements and let
+  $\oftyI{i}{I}$. We have
   \begin{equation*}
     x_i \sqsubseteq \bigvee^F_k x_k \sqsubseteq j\left( \bigvee^F_k x_k \right)
   \end{equation*}
@@ -650,10 +709,10 @@ corresponding \veragda{} proof can be found in the \modname{Frame} module under 
       &\quad=\quad j \left( \bigvee^F_i x \wedge y_i \right)                                          \\
       &\quad\equiv\quad \bigvee_i x \wedge y_i                                                             .
   \end{align*}
-
-  Given a frame $F$, and a nucleus $j$ on it, we will refer to the frame of $j$-closed
-  elements as $\fix{F}{j}$.
 \end{proof}
+
+Given a frame $F$, and a nucleus $j$ on it, we will refer to the frame of $j$-closed
+elements as $\fix{F}{j}$.
 
 \begin{agdanotation}
   The corresponding function in the \veragda{} formalisation is called
