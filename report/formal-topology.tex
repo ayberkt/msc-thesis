@@ -789,11 +789,16 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
   $\abs{L}$.
   \begin{align*}
-    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \in \bigvee^L_i U_i } \\
-             &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \in U_i}}} } &&\text{[Lemma~\ref{lem:flatten}]} \\
-             &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ U_i \in U } \\
-             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \in U }.
+    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \mempownm \bigvee^L_i U_i } \\
+             &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \mempownm U_i}}} } &&\text{[Lemma~\ref{lem:flatten}]} \\
+             &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ \oftyI{i}{I} } \\
+             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \mempownm U }.
   \end{align*}
+  To be precise about the use of Lemma~\ref{lem:flatten}, we note that it used on the
+  function:
+  \begin{equation*}
+    \lambda\_~(a, \_).~f(a).
+  \end{equation*}
 
   Finally, we conclude the proof by showing uniqueness of $g$: let $g'$ be a frame
   homomorphism from $L$ to $R$ that makes the diagram commute. We need to show that
