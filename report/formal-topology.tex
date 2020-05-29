@@ -216,11 +216,11 @@ always a corresponding experiment ($b'$) that will get us to a stage that is at 
 refined as the one we can reach from the less refined stage.
 
 We are now ready to formally define the notion of a formal topology.
-\begin{defn}[Formal Topology]\label{defn:formal-topo}
+\begin{defn}[Formal topology]\label{defn:formal-topo}
   A \emph{formal topology} is simply an interaction system on a poset $P$ of stages
   that satisfies the monotonicity and simulation properties:
   \begin{align*}
-    \formaltopo{} \quad\is\quad \sigmaty{P}{\poset{}_{n, n}}{%
+    \formaltopo{}_{m, n} \quad\is\quad \sigmaty{P}{\poset{}_{m, n}}{%
       \sigmaty{\mathcal{I}}{\treestr{\abs{P}}}
         \hasmono{\mathcal{I}, \sqsubseteq_P} \times \hassim{\mathcal{I}, \sqsubseteq_P}
     }.
