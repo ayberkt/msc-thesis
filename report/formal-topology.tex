@@ -684,6 +684,21 @@ Using flat monotonic maps, the universal property can now be stated.
   \end{align*}
 \end{thm}
 
+First, observe how $\iscontrnm{}$ (Defn.~\ref{defn:contr}) expresses ``there exists a
+unique'' in the statement of this theorem. Given some type $A$ and a family of
+propositions $\oftyI{B}{A \rightarrow \univ{}}$ on $A$, to assert
+\begin{equation*}
+  \iscontr{\sigmaty{x}{A}{B(x)}},
+\end{equation*}
+is to assert precisely the existence of some $\oftyI{c}{A}$ satisfying $B$ such that every
+other $\oftyI{x}{A}$ satisfying $B$ is equal to $c$. This is the case due to the
+propositionality of $B$. Furthermore, notice also that this statement is talking only
+about formal topologies whose carrier levels and relation levels are the same. We have
+preferred this to keep the level bureaucracy manageable. For instance, we would have to
+generalise the levels of the powerset operator (Defn.~\ref{defn:pow}) to generalise these
+levels. We believe that such generalisations are not essential for our purposes in this
+thesis.
+
 Before proceeding to the proof, let us first prove a lemma of key importance.
 
 \begin{lemma}\label{lem:main}
