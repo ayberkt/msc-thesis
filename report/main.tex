@@ -153,7 +153,9 @@
 
 \DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\in}}
 \newcommand{\memfam}[2]{#1 \memfamnm #2}
-\newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
+
+\DeclareMathOperator{\mempownm}{\hyperref[defn:pow]{\in}}
+\newcommand{\mempow}[2]{#1 \mempownm #2}
 
 \DeclareMathOperator{\concat}{\hyperref[defn:concat]{\textnormal{\texttt{++}}}}
 \DeclareMathOperator{\append}{\textnormal{\texttt{++}}}
@@ -251,7 +253,7 @@
 \newcommand{\covers}[2]{#1 \covernm{} #2}
 
 \newcommand{\setof}[1]{\left\{ #1 \right\}}
-\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ a \in #2 }}
+\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ \mempow{a}{#2} }}
 
 \newcommand{\formaltopo}{\hyperref[defn:formal-topo]{\mathsf{FT}}}
 

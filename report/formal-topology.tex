@@ -267,7 +267,7 @@ through the use of HITs.
   $\covers{a}{U}$ is inductively defined with the following two constructors.
   \[
   \begin{prooftree}
-    \hypo{ a \in U }
+    \hypo{ a \mempownm U }
     \infer1[$\ruledir{}$]{\covers{a}{U}}
   \end{prooftree}
   \qquad
@@ -281,13 +281,13 @@ through the use of HITs.
   names and refer to them as rules.
 \end{defn}
 
-One way of reading $\covers{a}{U}$ is as a relaxation of $a \in U$ to ``it is eventually the
-case that $a \in U$'' if one views the refining of $a$ as an evolution over time. In other
-words, it might not be that $a \in U$ but once stage $a$ has been reached, all paths that do
-not lead to $U$ have been ruled out: regardless of what experiments are run, they will
-eventually lead to a stage in $U$. Topologically, this is to say that the exterior of open
-$a$ is a subset of the exterior of $U$ i.e., being disjoint from $a$ is a sufficient
-condition for being disjoint from $U$.
+One way of reading $\covers{a}{U}$ is as a relaxation of $a \mempownm U$ to ``it is
+eventually the case that $a \mempownm U$'' if one views the refining of $a$ as an evolution over
+time. In other words, it might not be that $a \mempownm U$ but once stage $a$ has been reached,
+all paths that do not lead to $U$ have been ruled out: regardless of what experiments are
+run, they will eventually lead to a stage in $U$. Topologically, this is to say that the
+exterior of open $a$ is a subset of the exterior of $U$ i.e., being disjoint from $a$ is a
+sufficient condition for being disjoint from $U$.
 
 Let us now turn our attention to the question of how to present a frame using the cover
 relation of a formal topology. The cover relation has the following type:
@@ -366,7 +366,7 @@ Defn.~\ref{defn:naive-cover} for the sake of self-containment.
   $\covers{a}{U}$ is inductively defined with the following two constructors:
   \[
   \begin{prooftree}
-    \hypo{ a \in U }
+    \hypo{ a \mempownm U }
     \infer1[$\ruledir{}$]{\covers{a}{U}}
   \end{prooftree}
   \qquad
@@ -417,8 +417,8 @@ down\-wards-closure.
   $\covers{a'}{U}$. Our proof proceeds by (higher) induction on the proof of
   $\covers{a}{U}$.
   \begin{itemize}
-    \item Case $\ruledir{}$. It must be that $a \in U$ and hence, by the downwards-closure of
-      $U$, $a' \in U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
+    \item Case $\ruledir{}$. It must be that $a \mempownm U$ and hence, by the
+      downwards-closure of $U$, $a' \mempownm U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
     \item Case $\rulebranch{}$. We have some experiment $b$ on $a$ and a function
       $$\oftyI{f}{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}.$$ Using the $\rulebranch{}$
       rule, we are done if we can exhibit some experiment $\oftyI{b'}{B(a')}$ along with a
@@ -444,8 +444,8 @@ down\-wards-closure.
   $\mempow{a}{V}$, then $\covers{a}{\intersect{U}{V}}$.
 \end{prop}
 \begin{proof}
-  Let $\oftyI{a}{A_{\McF{}}}$ such $\covers{a}{U}$ and $a \in  V$. We proceed by induction
-  on the proof of $\covers{a}{U}$.
+  Let $\oftyI{a}{A_{\McF{}}}$ such $\covers{a}{U}$ and $a \mempownm V$. We proceed by
+  induction on the proof of $\covers{a}{U}$.
   \begin{itemize}
     \item Case $\ruledir{}$. We have $\mempow{a}{U}$ and $\mempow{a}{V}$ so we are done by
       the $\ruledir{}$ rule.
@@ -550,7 +550,7 @@ formal topology;
   $\oftyI{a}{A}$ such that $\covers{a}{\intersect{U}{V}}$. We proceed by induction on this
   proof.
   \begin{itemize}
-    \item Case $\ruledir{}$. $a \in \intersect{U}{V}$ meaning $\mempow{a}{U}$ and
+    \item Case $\ruledir{}$. $a \mempownm \intersect{U}{V}$ meaning $\mempow{a}{U}$ and
       $\mempow{a}{V}$ hence we are done by two applications of $\ruledir{}$.
     \item Case $\rulebranch{}$. Follows by two uses of the $\rulebranch{}$ rule on two
       conjuncts of the inductive hypothesis.
@@ -577,7 +577,7 @@ $\eta : \abs{P} \rightarrow \fix{\dcframe{P}}{\RHD}$ as follows:
   \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}
 \end{align*}
 where $\lifta{a}$ denotes the \emph{downwards-closure} of $a$: $\{ a'~|~a' \sqsubseteq a \}$. So $a'
-\in \eta(a) \equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage that $a$
+\mempownm \eta(a) \equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage that $a$
 evolves into'' if we take the reading of stages of knowledge being refined over time. As
 we have proven in Prop.~\ref{prop:lem1}, $\eta(x)$ is downwards-closed. It is also a fixed
 point for $\covernm{}$, as we will show, so its type can be refined to $\oftyI{\eta}{\abs{P}
@@ -709,16 +709,17 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   \end{equation*}
 \end{lemma}
 \begin{proof}
-  Let $\oftyI{U}{L}$. We proceed by antisymmetry. The $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \in U }$
+  Let $\oftyI{U}{L}$. We proceed by antisymmetry. The
+  $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }$
   direction is immediate by an application of the $\ruledir{}$ rule. For the other
   direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
-      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \in U }}$.
+      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }}$.
   Recall that the join operation of the frame of fixed points for a nucleus (Theorem
   \ref{thm:fixed-point-frame}) of some frame $F$ is defined by applying the nucleus on the
   join operator of $F$. This is to say that we have
-  $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$. The result follows by induction on the proof
-  of this fact, in the $\ruledir{}$ case of which Prop.~\ref{prop:lem4} and the induction
-  principle of truncation are used.
+  $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \mempownm U }}$. The result follows by induction on the
+  proof of this fact, in the $\ruledir{}$ case of which Prop.~\ref{prop:lem4} and the
+  induction principle of truncation are used.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
@@ -731,13 +732,13 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   We choose
   \begin{align*}
     g    \quad&:\quad \abs{L} \rightarrow \abs{R}              \\
-    g(U) \quad&\is\quad \bigvee^R \setof{ f(u) ~|~ u \in U } .
+    g(U) \quad&\is\quad \bigvee^R \setof{ f(u) ~|~ u \mempownm U } .
   \end{align*}
   To show that the diagram commutes, it suffices by Proposition~\ref{prop:funext} to show
   $f(x) = g(\eta(x))$ for every $\oftyI{x}{A_{\McF{}}}$. Let $\oftyI{x}{A_{\McF{}}}$; we
   proceed by antisymmetry. The $f(x) \sqsubseteq g(\eta(x))$ direction is easy: $g(\eta(x)) = \bigvee^R f(\eta(x))$
-  and $\bigvee^R$ is an upper bound of $f(\eta(x))$ so it suffices to show $f(x) \in f(\eta(x))$. This is
-  immediate since $x \in \eta(x)$.
+  and $\bigvee^R$ is an upper bound of $f(\eta(x))$ so it suffices to show
+  $f(x) \mempownm f(\eta(x))$. This is immediate since $x \mempownm \eta(x)$.
 
   The other direction is the interesting one. First, we prove a lemma in preparation:
   \emph{%
@@ -747,8 +748,8 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{\lifta{a}}$. We proceed by
   induction on the proof of $\covers{a'}{\lifta{a}}$.
   \begin{itemize}
-    \item Case: $\ruledir{}$. It must be that $a' \in \lifta{a}$ which is to say $a' \sqsubseteq a$.
-      We are then done by the monotonicity of $f$.
+    \item Case: $\ruledir{}$. It must be that $a' \mempownm \lifta{a}$ which is to say $a'
+      \sqsubseteq a$. We are then done by the monotonicity of $f$.
     \item Case: $\rulebranch{}$. There must be some $\oftyI{b}{B_{\McF{}}(a')}$ and a
       function $h$ such that $\oftyI{h(c)}{\covers{d(a', b, c)}{\lifta{a}}}$ for any
       $\oftyI{c}{C(a', b)}$. Notice that $f(a') \sqsubseteq \bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ by
@@ -777,13 +778,13 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   (Defn.~\ref{defn:flat}): $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$. $g$ can also be seen to
   preserve binary meets by the following reasoning: let $\oftyII{U}{V}{L}$;
   \begin{align*}
-    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \in \intersect{U}{V} \}                  \\
-             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \in U \times V }
+    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}          \\
+             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
                && \text{[flatness]}                                                 \\
-             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \in U \times V }
+             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \mempownm U \times V }
                &&\text{[Prop.~\ref{prop:distr}]}                                    \\
-             &= \left( \bigvee^R \setof{ f(u) ~|~ u \in U } \right)
-              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \in V } \right)                         \\
+             &= \left( \bigvee^R \setof{ f(u) ~|~ u \mempownm U } \right)
+              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \mempownm V } \right)                 \\
              &\equiv g(U) \wedge g(V)                                                         .
   \end{align*}
   Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
@@ -804,11 +805,11 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   homomorphism from $L$ to $R$ that makes the diagram commute. We need to show that
   $g = g'$. Let $\oftyI{U}{\abs{L}}$. $g(U) = g'(U)$ by the following equational proof:
   \begin{align*}
-    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \in U }
+    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \mempownm U }
             &&\text{[$f = g' \circ \eta$]} \\
-         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \in U }
+         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \mempownm U }
             &&\text{[$g'$ is a frame homomorphism]} \\
-         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \in U } \right)
+         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \mempownm U } \right)
             &&\text{[Lemma~\ref{lem:main}]} \\
          &= g'(U).
   \end{align*}
