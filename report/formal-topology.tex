@@ -713,11 +713,12 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   direction is immediate by an application of the $\ruledir{}$ rule. For the other
   direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
       $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \in U }}$.
-  Recall that the join operation is defined by applying the nucleus in the fixed point
-  frame (Theorem \ref{thm:fixed-point-frame}). This is to say that we have
-      $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$.
-  The result follows by induction on the proof of this fact, in the $\ruledir{}$ case of
-  which Prop.~\ref{prop:lem4} and the induction principle of truncation are used.
+  Recall that the join operation of the frame of fixed points for a nucleus (Theorem
+  \ref{thm:fixed-point-frame}) of some frame $F$ is defined by applying the nucleus on the
+  join operator of $F$. This is to say that we have
+  $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$. The result follows by induction on the proof
+  of this fact, in the $\ruledir{}$ case of which Prop.~\ref{prop:lem4} and the induction
+  principle of truncation are used.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
