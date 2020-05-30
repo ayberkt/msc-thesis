@@ -26,15 +26,16 @@ of doing formal topology with interaction systems is due to Coquand~\cite{coq-po
 was inspired by Dragalin~\cite{dragalin}.
 
 This chapter corresponds to several modules in the \veragda{} formalisation. Sections
-\ref{sec:intr-sys}, \ref{sec:cover}, and \ref{sec:cover-nucleus} correspond respectively,
-to modules \modname{FormalTopology}, \modname{Cover}, and \modname{CoverFormsNucleus}.
-Sections \ref{sec:lifting} and \ref{sec:universal-prop} correspond to the
-\modname{UniversalProperty} module..
+\ref{sec:intr-sys} and \ref{sec:cover} correspond, respectively, to modules
+\modname{FormalTopology} and \modname{Cover}. Sections \ref{sec:cover-nucleus} and
+\ref{sec:lifting} correspond to the \modname{CoverFormsNucleus} module.
+Section~\ref{sec:universal-prop} corresponds to the \modname{UniversalProperty} module.
 
 \section{Interaction systems}\label{sec:intr-sys}
 
 The fundamental idea of an interaction system is simple. Consider the progression of a
-two-player game. First, there is a type of \emph{game states}; call it $A$:
+two-player game from the perspective of one of the two players. First, there is a type of
+\emph{game states}; call it $A$:
 \begin{equation*}
   A~:~\univ.
 \end{equation*}
@@ -131,9 +132,7 @@ instance,~\cite{philosophically-plausible}):
 Once we adopt this view, what the monotonicity property says becomes much more clear: if
 we perform an experiment $b$ while we have knowledge $a$ and revise our knowledge based on
 some outcome $c$ of $b$, the new state of knowledge we arrive at must contain at least as
-much information. In fact, if we would like to view things sensibly as experiments, it
-makes sense to reserve this terminology to interaction systems with orders satisfying the
-monotonicity property
+much information.
 
 Now, to proceed towards the definition of a formal topology, let us first formally define
 interaction systems.
@@ -159,7 +158,7 @@ interaction systems.
   \fnname{state}, \fnname{action}, \fnname{reaction}, and \fnname{δ}. Furthermore,
   arguments that can be inferred have been made implicit. For \fnname{\delta}, for instance,
   the stage and the experiment can be inferred from the outcome so, given an outcome
-  $\oftyI{c}{C(a, b)}$, we write $\fnname{\delta}(c)$ in \veragda{} for what we express here as
+  $\oftyI{c}{C(a, b)}$, we write $\fnname{\delta}~c$ in \veragda{} for what we express here as
   $d(a, b, c)$.
 \end{agdanotation}
 
@@ -167,18 +166,19 @@ Given an interaction system $\mathcal{I}$, the monotonicity property is then
 formally expressed as given in the following definition.
 \begin{defn}[Monotonicity property of an interaction system]\label{defn:mono}
   An interaction system $\mathcal{I}$, whose type $A_{\mathcal{I}}$ of stages is equipped
-  with a poset structure $\sqsubseteq$, is said to have the monotonicity property if the following
-  type is inhabited:
-  \begin{equation*}
-    \hasmono{\mathcal{I}, \sqsubseteq} \quad\is\quad
-      \pity{a}{A_{\mathcal{I}}}{%
+  with a partial order, is said to have the monotonicity property if the following type is
+  inhabited:
+  \begin{alignat*}{2}
+    \hasmononm{} \quad&:\quad &&\left( \sigmaty{P}{\poset{}}{\treestr{\abs{P}}} \right) \rightarrow \univ{} \\
+    \hasmono{P, \mathcal{I}} \quad&\is\quad
+    &&\pity{a}{A_{\mathcal{I}}}{%
         \pity{b}{B_{\mathcal{I}}(a)}{%
           \pity{c}{C_{\mathcal{I}}(a, b)}{%
-              d(a, b, c) \sqsubseteq a
+              d(a, b, c) \sqsubseteq_P a
           }
         }
       }.
-  \end{equation*}
+  \end{alignat*}
 \end{defn}
 
 We have not yet fully explained the simulation property so let us now address that. We
@@ -212,15 +212,15 @@ mapped to \emph{some} outcome of the above experiment and that this experiment w
 to a stage below the one given by the outcome of the experiment above. In other words, as
 we choose to perform certain experiments and proceed to more refined stages, we do not
 lose the ability to perform the experiments we previously chose not to perform: there is
-always an equivalent experiment ($b'$) that will refine our knowledge in an equivalent
-way.
+always a corresponding experiment ($b'$) that will get us to a stage that is at least as
+refined as the one we can reach from the less refined stage.
 
 We are now ready to formally define the notion of a formal topology.
-\begin{defn}[Formal Topology]\label{defn:formal-topo}
+\begin{defn}[Formal topology]\label{defn:formal-topo}
   A \emph{formal topology} is simply an interaction system on a poset $P$ of stages
   that satisfies the monotonicity and simulation properties:
   \begin{align*}
-    \formaltopo{} \quad\is\quad \sigmaty{P}{\poset{}_{n, n}}{%
+    \formaltopo{}_{m, n} \quad\is\quad \sigmaty{P}{\poset{}_{m, n}}{%
       \sigmaty{\mathcal{I}}{\treestr{\abs{P}}}
         \hasmono{\mathcal{I}, \sqsubseteq_P} \times \hassim{\mathcal{I}, \sqsubseteq_P}
     }.
@@ -267,7 +267,7 @@ through the use of HITs.
   $\covers{a}{U}$ is inductively defined with the following two constructors.
   \[
   \begin{prooftree}
-    \hypo{ a \in U }
+    \hypo{ a \mempownm U }
     \infer1[$\ruledir{}$]{\covers{a}{U}}
   \end{prooftree}
   \qquad
@@ -281,13 +281,13 @@ through the use of HITs.
   names and refer to them as rules.
 \end{defn}
 
-One way of reading $\covers{a}{U}$ is as a relaxation of $a \in U$ to ``it is eventually the
-case that $a \in U$'' if one views the refining of $a$ as an evolution over time. In other
-words, it might not be that $a \in U$ but once stage $a$ has been reached, all paths that do
-not lead to $U$ have been ruled out: regardless of what experiments are run, they will
-eventually lead to a stage in $U$. Topologically, this is to say that the exterior of open
-$a$ is a subset of the exterior of $U$ i.e., being disjoint from $a$ is a sufficient
-condition for being disjoint from $U$.
+One way of reading $\covers{a}{U}$ is as a relaxation of $a \mempownm U$ to ``it is
+eventually the case that $a \mempownm U$'' if one views the refining of $a$ as an evolution over
+time. In other words, it might not be that $a \mempownm U$ but once stage $a$ has been reached,
+all paths that do not lead to $U$ have been ruled out: regardless of what experiments are
+run, they will eventually lead to a stage in $U$. Topologically, this is to say that the
+exterior of open $a$ is a subset of the exterior of $U$ i.e., being disjoint from $a$ is a
+sufficient condition for being disjoint from $U$.
 
 Let us now turn our attention to the question of how to present a frame using the cover
 relation of a formal topology. The cover relation has the following type:
@@ -305,12 +305,13 @@ been able to write it like:
 \end{equation}
 but this is not the case as the relation has been defined using more than one constructor:
 it can have multiple, distinct proofs. If (\ref{eqn:expected-cover-type}) were the case,
-we could restrict this to get an endofunction on the set of downwards-closed subsets:
+we could at least try restricting it to get an endofunction on the set of downwards-closed
+subsets:
 \begin{equation*}
   \_\RHD\_ : \dcsubset{A} \rightarrow \dcsubset{A}
 \end{equation*}
-which would then be a nucleus. (\ref{eqn:expected-cover-type}), however, is not the case
-so we first have to deal with this problem.
+which could then shown to be a nucleus. (\ref{eqn:expected-cover-type}), however, is not
+the case so we first have to deal with this problem.
 
 It is tempting to try to achieve this by truncating $\covers{\_}{\_}$. When we do this,
 however, it becomes impossible (ostensibly) to prove the idempotence law for the purported
@@ -318,15 +319,19 @@ nucleus $\RHD : \dcsubset{A} \rightarrow \dcsubset{A}$. Why exactly is that? If 
 the truncated form of $\covernm{}$ (as defined in Defn.~\ref{defn:naive-cover}), the
 idempotence law would look like:
 \begin{equation*}
-  \trunc{\covers{a}{\trunc{\covers{-}{U}}}} \rightarrow \trunc{\covers{a}{U}}.
+  \trunc{\covers{a}{\trunc{\lambda x.~\covers{x}{U}}}} \rightarrow \trunc{\covers{a}{U}}.
 \end{equation*}
-To prove this, we would need a lemma saying given any $a$, and subsets $U, V$,
+In our attempt to prove this, we had to use a lemma saying given any $a$, and subsets
+$U, V$,
 \begin{center}
   if $\trunc{\covers{a}{U}}$ and $\trunc{\covers{a'}{V}}$ for every $\mempow{a'}{U}$, then
   $\trunc{\covers{a}{V}}$.
 \end{center}
-The $\ruledir{}$ case is easily verified. The $\rulebranch{}$ case, however, results in a
-situation where we are trying to show
+It is perhaps possible to avoid using such a lemma, but we have not been able to achieve
+this; we therefore believe that such a lemma would be necessarily needed.
+
+The $\ruledir{}$ case of this lemma is easily verified. The $\rulebranch{}$ case, however,
+results in a situation where we are trying to show
 \begin{equation*}
   \trunc{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}}
 \end{equation*}
@@ -334,14 +339,20 @@ whereas all we get from the inductive hypothesis is
 \begin{equation*}
   \pity{c}{C(a, b)}{\trunc{\covers{d(a, b, c)}{V}}}.
 \end{equation*}
-An inference of the former from the latter would require the use of a classical reasoning
-principle looking a lot like the axiom of choice~\cite[pg.~119, Lemma~3.8.2]{hottbook}:
+An inference of the former from the latter would most likely require the use of a
+classical reasoning principle looking a lot like the axiom of
+choice~\cite[pg.~119, Lemma~3.8.2]{hottbook}:
 \begin{equation*}
-  \pity{x}{A}{\trunc{B(x)}} \rightarrow \trunc{\pity{x}{A}{B(x)}},
+  \left( \pity{x}{A}{\trunc{B(x)}} \right) \rightarrow \trunc{\pity{x}{A}{B(x)}},
 \end{equation*}
 with the difference that neither $A$ nor $B$ are required to be h-sets. Notice at this
 point that this not just not provable in type theory, but is in fact
 \emph{provably false}~\cite[pg.~120, Lemma~3.8.5]{hottbook}!
+
+We would like to clarify at this point that we have not proven the fact that the
+idempotence law is not provable without this (generalised) choice axiom: we have merely
+\emph{failed} to prove it. We conjecture, however, that it is not provable. At the time
+of writing, no answer to this question has been found.
 
 To remedy this, we will refrain from truncating the naive form of the cover relation, and
 we will instead add a path constructor that \emph{squashes} the difference between the
@@ -355,7 +366,7 @@ Defn.~\ref{defn:naive-cover} for the sake of self-containment.
   $\covers{a}{U}$ is inductively defined with the following two constructors:
   \[
   \begin{prooftree}
-    \hypo{ a \in U }
+    \hypo{ a \mempownm U }
     \infer1[$\ruledir{}$]{\covers{a}{U}}
   \end{prooftree}
   \qquad
@@ -380,6 +391,15 @@ Defn.~\ref{defn:naive-cover} for the sake of self-containment.
   The definition of this cover relation can be found in the \modname{Cover} module in the
   \veragda{} formalisation and is denoted {\color{AgdaDatatype}\fnname{◀}}.
 \end{agdanotation}
+
+We note that a similar idea is employed in the construction of the Cauchy reals as a
+higher inductive-inductive type in the HoTT Book~\cite[Defn.~11.3.2]{hottbook}. Here, a
+path constructor is used to avoid using the axiom of countable choice. Given that the
+topology of the real numbers is a prime example of a topology, it is perhaps not a
+coincidence that the need to use a similar trick arises when one sets out to investigate
+topology in univalent type theory. It is an interesting direction for further work to
+investigate the relation between these, for instance by defining the formal topology of
+the real numbers.
 
 When trying to prove the idempotence law with this, we get from the inductive hypothesis a
 product $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is
@@ -406,8 +426,8 @@ down\-wards-closure.
   $\covers{a'}{U}$. Our proof proceeds by (higher) induction on the proof of
   $\covers{a}{U}$.
   \begin{itemize}
-    \item Case $\ruledir{}$. It must be that $a \in U$ and hence, by the downwards-closure of
-      $U$, $a' \in U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
+    \item Case $\ruledir{}$. It must be that $a \mempownm U$ and hence, by the
+      downwards-closure of $U$, $a' \mempownm U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
     \item Case $\rulebranch{}$. We have some experiment $b$ on $a$ and a function
       $$\oftyI{f}{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}.$$ Using the $\rulebranch{}$
       rule, we are done if we can exhibit some experiment $\oftyI{b'}{B(a')}$ along with a
@@ -433,8 +453,8 @@ down\-wards-closure.
   $\mempow{a}{V}$, then $\covers{a}{\intersect{U}{V}}$.
 \end{prop}
 \begin{proof}
-  Let $\oftyI{a}{A_{\McF{}}}$ such $\covers{a}{U}$ and $a \in  V$. We proceed by induction
-  on the proof of $\covers{a}{U}$.
+  Let $\oftyI{a}{A_{\McF{}}}$ such $\covers{a}{U}$ and $a \mempownm V$. We proceed by
+  induction on the proof of $\covers{a}{U}$.
   \begin{itemize}
     \item Case $\ruledir{}$. We have $\mempow{a}{U}$ and $\mempow{a}{V}$ so we are done by
       the $\ruledir{}$ rule.
@@ -470,7 +490,7 @@ down\-wards-closure.
         b')}$. Notice that $d(a', b', c') \sqsubseteq a'$ by monotonicity. This means, by the
       downwards-closure of $\covers{\_}{V}$ (Prop.~\ref{prop:lem1}), that
       $\covers{d(a', b', c')}{V}$. It suffices, then, by the inductive hypothesis on
-      $d(a, b, c)$, $d(a', b' c')$, and the proof of $\covers{d(a, b, c)}{U}$ to show
+      $d(a, b, c)$, $d(a', b', c')$, and the proof of $\covers{d(a, b, c)}{U}$ to show
       $d(a', b', c') \sqsubseteq d(a, b, c)$. This is precisely what the simulation property gives
       us.
     \item Case $\rulesquash{}$. We are done by the $\rulesquash{}$ rule.
@@ -497,7 +517,7 @@ comprises four steps.
   \item We have shown (in Theorem~\ref{thm:fixed-point-frame}) that the set of
     fixed points for every nucleus is a frame. The generated frame is the frame of
     elements of $\dcframe{P}$ that are fixed points for $\covers{\_}{\_}$
-    $\fix{\dcframe{P}}{\covernm{}}$.
+    $\fix{\dcframe{P}}{\RHD}$.
 \end{enumerate}
 The only missing step is (3): we have not yet shown that the covering relation is a
 nucleus. We will do exactly this in Sec.~\ref{sec:cover-nucleus}.
@@ -539,7 +559,7 @@ formal topology;
   $\oftyI{a}{A}$ such that $\covers{a}{\intersect{U}{V}}$. We proceed by induction on this
   proof.
   \begin{itemize}
-    \item Case $\ruledir{}$. $a \in \intersect{U}{V}$ meaning $\mempow{a}{U}$ and
+    \item Case $\ruledir{}$. $a \mempownm \intersect{U}{V}$ meaning $\mempow{a}{U}$ and
       $\mempow{a}{V}$ hence we are done by two applications of $\ruledir{}$.
     \item Case $\rulebranch{}$. Follows by two uses of the $\rulebranch{}$ rule on two
       conjuncts of the inductive hypothesis.
@@ -557,27 +577,27 @@ everything we need for the procedure of generating a frame from a formal topolog
 Let $\McF{}$ be a formal topology with underlying poset $P$. We know by
 Theorem~\ref{thm:down-set-frame} that the set of downwards-closed subsets of the
 underlying poset of $\McF{}$ is a frame; denote this by $\dcframe{P}$. As we know that
-$\covers{\_}{\_}$ is a nucleus on this frame (by Theorem~\ref{thm:covering-nucleus}), we
-know that the set of fixed points for $\covers{\_}{\_}$ is a frame as well; we denote this
-$\fix{\dcframe{P}}{\covernm{}}$. Now, notice that we can define a lifting map
-$\eta : \abs{P} \rightarrow \fix{\dcframe{P}}{\covernm{}}$ as follows:
+$\RHD$ is a nucleus on this frame (by Theorem~\ref{thm:covering-nucleus}), we know that
+the set of fixed points for $\RHD$ is a frame as well; we denote this
+$\fix{\dcframe{P}}{\RHD}$. Now, notice that we can define a lifting map
+$\eta : \abs{P} \rightarrow \fix{\dcframe{P}}{\RHD}$ as follows:
 \begin{align*}
   \eta    \quad&:\quad \abs{P} \rightarrow \pow{A_{\McF{}}}\\
   \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}
 \end{align*}
-where $a\downarrow$ denotes the \emph{downwards-closure} of $a$: $\{ a'~|~a' \sqsubseteq a \}$. So $a' \in \eta(a)
-\equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage that $a$
+where $\lifta{a}$ denotes the \emph{downwards-closure} of $a$: $\{ a'~|~a' \sqsubseteq a \}$. So $a'
+\mempownm \eta(a) \equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage that $a$
 evolves into'' if we take the reading of stages of knowledge being refined over time. As
 we have proven in Prop.~\ref{prop:lem1}, $\eta(x)$ is downwards-closed. It is also a fixed
 point for $\covernm{}$, as we will show, so its type can be refined to $\oftyI{\eta}{\abs{P}
-  \rightarrow \fix{\dcframe{P}}{\covernm{}}}$.
+  \rightarrow \fix{\dcframe{P}}{\RHD}}$.
 
 \begin{defn}[$\eta$]
   Let $\McF{}$ be a formal topology with underlying poset $P$ (note: $\abs{P} \equiv
   A_{\McF{}}$) and cover relation $\covers{\_}{\_}$. There exists a monotonic map from $P$
-  to the underlying poset of $\fix{\dcframe{P}}{\covernm{}}$, defined as:
+  to the underlying poset of $\fix{\dcframe{P}}{\RHD}$, defined as:
   \begin{align*}
-    \eta    \quad&:\quad \mono{P}{\fix{\dcframe{\abs{P}}}{\_\RHD\_}}\\
+    \eta    \quad&:\quad \mono{P}{\fix{\dcframe{\abs{P}}}{\RHD}}\\
     \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}.
   \end{align*}
   The fact that $\eta$ is monotonic follows from Proposition~\ref{prop:lem1}. It remains to
@@ -593,7 +613,7 @@ point for $\covernm{}$, as we will show, so its type can be refined to $\oftyI{\
 We are now ready to shift our focus on what can be called main theorem of this thesis:
 formal topologies, as we have defined them, present frames as expected. Let $\mathcal{F}$
 be a formal topology and $F$ a frame. Consider a monotonic function $f : A_{\mathcal{F}} \rightarrow
-\abs{\fix{\dcframe{A_{\McF{}}}}{\covernm{}}}$ on the underlying posets. We will define a
+\abs{\fix{\dcframe{A_{\McF{}}}}{\RHD}}$ on the underlying posets. We will define a
 notion of $f$ representing $\McF{}$ in $F$.
 
 \begin{defn}[Representation]\label{defn:rep}
@@ -610,25 +630,28 @@ notion of $f$ representing $\McF{}$ in $F$.
   \end{equation*}
 \end{defn}
 
-Note what this property is expressing. We said that the reading of $\covers{a}{V}$ is $a =
-\bigcup_i V_i$. In the case we are dealing with a $V$ of the form $\setof{ d(a, b, c) ~|~
-  \oftyI{c}{C(a, b)} }$, the other direction of what is expressed in the representation
-property always holds. To assert $f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))$ is then to
-assert that $f$ maps $\McF{}$ to $R$ as to precisely make the $\covernm{}$ relation hold;
-hence the reading of this as ``representation''.
+It can be shown that the opposite direction of the inequality asserted by $\representsnm$
+always holds. To assert $\represents{\McF}{F}{f}$ is then to assert
+\begin{equation*}
+  \pity{a}{A}{\pity{b}{B(x)}{f(a) = \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))}}.
+\end{equation*}
+This property therefore expresses that $R$ behaves like a model of the covering relation
+of the formal topology $\McF$, that is, the join of $R$ reflects the covering relation
+induced by the formal-topological structure of $\McF$. This is the idea underlying the
+name ``representation''.
 
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case
 where the categories we are working with are posets. Consider a monotonic map $f : P \rightarrow Q$,
-where $Q$ has finite meets but $P$ does not. We would like to assert somehow that $f$
-preserves these finite meets but we cannot mention the meets of $P$ as they do not
-exist. So what we want to do is to state that $f$ preserves those meets that \emph{do not
-exist yet} which we can do by requiring the following conditions:
+where $Q$ has finite meets but $P$ possibly does not. We would like to assert somehow that
+$f$ preserves these finite meets but we cannot mention the meets of $P$ as they do not
+exist. So we instead require $f$ to preserve those meets that \emph{do not exist yet}
+which we can do by requiring the following conditions:
 \begin{enumerate}
   \item $\top_Q = \bigvee \setof{ f(a) ~|~ \oftyI{a}{\abs{P}} }$, and
   \item $\pity{x~y}{P}{f(x) \wedge f(y) = \bigvee \setof{ f(z) ~|~ z \sqsubseteq x\ \text{and}\ z \sqsubseteq y }}$.
 \end{enumerate}
-In our case, we will of course be interested in monotonic maps whose codomains are frames.
+In our case, we will be considering those monotonic maps whose codomains are frames.
 
 \begin{defn}[Flat monotonic map]\label{defn:flat}
   Let $P$ be a poset and $F$ a frame. Denote by $I$ the type $\sigmaty{z}{\abs{F}}{z \sqsubseteq x \times
@@ -645,7 +668,7 @@ In our case, we will of course be interested in monotonic maps whose codomains a
   \caption[Universal property of formal topologies]{The universal property.}
   \begin{tikzcd}[row sep=40pt, column sep=40pt]\label{fig:comm-diag}
     \McF{} \arrow[swap, rd, "f"] \arrow[r, "\eta"]
-      & \fix{\dcframe{A_{\McF{}}}}{\covernm{}} \arrow[d, dashed, "g"] \\
+      & \fix{\dcframe{A_{\McF{}}}}{\RHD} \arrow[d, dashed, "g"] \\
       & R
   \end{tikzcd}
 \end{figure}
@@ -656,11 +679,11 @@ Using flat monotonic maps, the universal property can now be stated.
   Given any formal topology $\McF{}$, frame $R$, flat monotonic map $f : A_{\McF{}} \rightarrow R$
   from the underlying poset of $\McF{}$ to the underlying poset of $R$, that represents
   $\McF{}$ in $R$, there exists a unique \textbf{frame homomorphism}
-  $\oftyI{g}{\framehomo{\fix{\dcframe{A_{\McF{}}}}{\covernm{}}}{R}}$ such that $f = g \circ
+  $\oftyI{g}{\framehomo{\fix{\dcframe{A_{\McF{}}}}{\RHD}}{R}}$ such that $f = g \circ
   \eta$, as summarised in Fig.~\ref{fig:comm-diag}
 
   We express this fully formally as follows. let
-  $L \is \fix{\dcframe{A_{\McF{}}}}{\covernm{}}$;
+  $L \is \fix{\dcframe{A_{\McF{}}}}{\RHD}$;
   \begin{align*}
     \pity{\McF{}}{\formaltopo{}_{n, n}}{
       &\pity{R}{\framety{n+1}{n}{n}}{
@@ -673,30 +696,92 @@ Using flat monotonic maps, the universal property can now be stated.
   \end{align*}
 \end{thm}
 
+First, observe how $\iscontrnm{}$ (Defn.~\ref{defn:contr}) expresses ``there exists a
+unique'' in the statement of this theorem. Given some type $A$ and a family of
+propositions $\oftyI{B}{A \rightarrow \univ{}}$ on $A$, to assert
+\begin{equation*}
+  \iscontr{\sigmaty{x}{A}{B(x)}},
+\end{equation*}
+is to assert precisely the existence of some $\oftyI{c}{A}$ satisfying $B$ such that every
+other $\oftyI{x}{A}$ satisfying $B$ is equal to $c$. This is the case due to the
+propositionality of $B$. Furthermore, notice also that this statement is talking only
+about formal topologies whose carrier levels and relation levels are the same. We have
+preferred this to keep the level bureaucracy manageable. For instance, we would have to
+generalise the levels of the powerset operator (Defn.~\ref{defn:pow}) to generalise these
+levels. We believe that such generalisations are not essential for our purposes in this
+thesis.
+
 Before proceeding to the proof, let us first prove a lemma of key importance.
 
 \begin{lemma}\label{lem:main}
   Let $\McF{}$ be a formal topology (with its cover denoted by $\covernm{}$) and let $L
-  \is \fix{\dcframe{A_{\McF{}}}}{\covernm{}}$. For any $\oftyI{U}{L}$, it is the case that:
+  \is \fix{\dcframe{A_{\McF{}}}}{\RHD}$. For any $\oftyI{U}{L}$, it is the case that:
   \begin{equation*}
     U = \bigvee^L \setof{ \eta(u) ~|~ \mempow{u}{U} }.
   \end{equation*}
 \end{lemma}
 \begin{proof}
-  Let $\oftyI{U}{L}$. We proceed by antisymmetry. The $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \in U }$
+  Let $\oftyI{U}{L}$. We proceed by antisymmetry. The
+  $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }$
   direction is immediate by an application of the $\ruledir{}$ rule. For the other
   direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
-      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \in U }}$.
-  Recall that the join operation is defined by applying the nucleus in the fixed point
-  frame (Theorem \ref{thm:fixed-point-frame}). This is to say that we have
-      $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \in U }}$.
-  The result follows by induction on the proof of this fact, in the $\ruledir{}$ case of
-  which Prop.~\ref{prop:lem4} and the induction principle of truncation are used.
+      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }}$.
+  Recall that the join operation of the frame of fixed points for a nucleus (Theorem
+  \ref{thm:fixed-point-frame}) of some frame $F$ is defined by applying the nucleus on the
+  join operator of $F$. This is to say that we have
+  $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \mempownm U }}$. The result follows by induction on the
+  proof of this fact, in the $\ruledir{}$ case of which Prop.~\ref{prop:lem4} and the
+  induction principle of truncation are used.
+\end{proof}
+
+\begin{lemma}\label{lem:resp-join}
+  Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
+  $\fix{\dcframe{A_{\McF{}}}}{\RHD}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
+  monotonic map that represents $\McF{}$ in $R$ (as defined in Defn.~\ref{defn:rep}).
+  Given any $\oftyI{x}{A_{\McF}}$, and $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$,
+  if $x \mempownm \bigvee_L U$ then
+  \begin{equation*}
+    f(x)
+    =
+    \bigvee^R \setof{
+          f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+        }
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  We proceed by antisymmetry. The ($\sqsupseteq$) direction easily follows by the LUB property.
+  For the ($\sqsubseteq$) direction, it suffices to by the LUB property to show
+  \begin{equation*}
+    \pity{x}{A_{\McF}}{%
+      x \mempownm \bigvee^L U \rightarrow f(x) \sqsubseteq
+        \bigvee^R \setof{
+              f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+            }
+    }
+  \end{equation*}
+  Let $\oftyI{x}{A_{\McF}}$ such that $x \mempownm \bigvee^L U \rightarrow f(x)$. We proceed by induction
+  on the proof of $x \mempownm \bigvee^L U \rightarrow f(x)$.
+  \begin{itemize}
+    \item Case $\ruledir{}$. Direct by the recursion principle of truncation and the
+      fact that $\bigvee^R$ is an upper bound.
+    \item Case $\rulebranch{}$. We have some experiment $\oftyI{b}{B(x)}$ such that for
+      every $\oftyI{c}{C(x, b)}$, $\covers{d(x, b, c)}{U}$.
+      \begin{alignat*}{3}
+               & && f(x) &&                                   \\
+        \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(d(x, b, c)) ~|~ c : C(x, b) }
+               &&\quad [\text{$f$ represents}] \\
+        \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(a) ~|~ (\_, (a, \_))
+                            : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+                            }
+               &&\quad [\text{LUB and IH}].
+      \end{alignat*}
+    \item Case $\rulesquash{}$. Follows by the propositionality of $\sqsubseteq_R$.
+  \end{itemize}
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
   Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
-  $\fix{\dcframe{A_{\McF{}}}}{\covernm{}}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
+  $\fix{\dcframe{A_{\McF{}}}}{\RHD}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
   monotonic map that represents $\McF{}$ in $R$ (as defined in Defn.~\ref{defn:rep}). We
   will show the \emph{unique existence} of a \emph{frame homomorphism}
   $\oftyI{g}{\framehomo{L}{R}}$ such that $f = g \circ \eta$.
@@ -704,21 +789,24 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   We choose
   \begin{align*}
     g    \quad&:\quad \abs{L} \rightarrow \abs{R}              \\
-    g(U) \quad&\is\quad \bigvee^R \setof{ f(u) ~|~ u \in U } .
+    g(U) \quad&\is\quad \bigvee^R \setof{ f(u) ~|~ u \mempownm U } .
   \end{align*}
   To show that the diagram commutes, it suffices by Proposition~\ref{prop:funext} to show
   $f(x) = g(\eta(x))$ for every $\oftyI{x}{A_{\McF{}}}$. Let $\oftyI{x}{A_{\McF{}}}$; we
   proceed by antisymmetry. The $f(x) \sqsubseteq g(\eta(x))$ direction is easy: $g(\eta(x)) = \bigvee^R f(\eta(x))$
-  and $\bigvee^R$ is an upper bound of $f(\eta(x)$ so it suffices to show $f(x) \in f(\eta(x))$. This is
-  immediate since $x \in \eta(x)$.
+  and $\bigvee^R$ is an upper bound of $f(\eta(x))$ so it suffices to show
+  $f(x) \mempownm f(\eta(x))$. This is immediate since $x \mempownm \eta(x)$.
 
   The other direction is the interesting one. First, we prove a lemma in preparation:
-  \emph{given any $\oftyII{a}{a'}{A_{\McF{}}}$ such that $\covers{a'}{\lifta{a}}$, $f(a')
-    \sqsubseteq f(a)$}. Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{a}$. We proceed by
-  induction on the proof of $\covers{a'}{a}$.
+  \emph{%
+    given any $\oftyII{a}{a'}{A_{\McF{}}}$ such that $\covers{a'}{\lifta{a}}$, $f(a') \sqsubseteq
+    f(a)$
+  }.
+  Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{\lifta{a}}$. We proceed by
+  induction on the proof of $\covers{a'}{\lifta{a}}$.
   \begin{itemize}
-    \item Case: $\ruledir{}$. It must be that $a' \in \lifta{a}$ i.e., $a' \sqsubseteq a$. We are done
-      by the monotonicity of $f$.
+    \item Case: $\ruledir{}$. It must be that $a' \mempownm \lifta{a}$ which is to say $a'
+      \sqsubseteq a$. We are then done by the monotonicity of $f$.
     \item Case: $\rulebranch{}$. There must be some $\oftyI{b}{B_{\McF{}}(a')}$ and a
       function $h$ such that $\oftyI{h(c)}{\covers{d(a', b, c)}{\lifta{a}}}$ for any
       $\oftyI{c}{C(a', b)}$. Notice that $f(a') \sqsubseteq \bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ by
@@ -726,8 +814,9 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
       shown $$\bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c)) \sqsubseteq f(a).$$ As
       $\bigvee_{\oftyI{c}{C(a', b)}}f(d(a, b, c))$ is a LUB, it suffices to show that $f(a)$ is an
       upper bound of the subset of $A_{\McF{}}$ delineated by $f(d(a', b, \_))$.
-      Consider $f(d(a', b, c))$ for some $c$. We have that $\oftyI{h(c)}{\covers{d(a', b,
-          c)}{a\downarrow}}$ meaning $f(d(a', b, c)) \sqsubseteq f(a)$ by the inductive hypothesis.
+      Consider $f(d(a', b, c))$ for some $c$. We have that
+      $\oftyI{h(c)}{\covers{d(a', b, c)}{\lifta{a}}}$ meaning $f(d(a', b, c)) \sqsubseteq f(a)$ by
+      the inductive hypothesis.
     \item Case $\rulesquash{}$. We combine the inductive hypotheses using the fact that
       the result type $f(a') \sqsubseteq f(a)$ is propositional.
   \end{itemize}
@@ -738,42 +827,76 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   show that $\covers{y}{\lifta{x}}$ and this holds directly because
   $\memfam{f(y)}{\img{f}{\eta(x)}}$.
 
-  There are two more things that have to be shown (1) $g$ is a frame homomorphism and (2)
+  There are two more things that have to be shown: (1) $g$ is a frame homomorphism and (2)
   $g$ is unique.
 
-  Let us first address (1). The fact that $g$ preserves the top element of $L$ is given
-  by the flatness assumption: $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$ by
-  flatness (Defn.~\ref{defn:flat}). $g$ can also be seen to preserve binary meets by
-  the following reasoning: let $\oftyII{U}{V}{L}$;
+  Let us first address (1). The fact that $g$ is monotonic follows by the LUB property.
+  The fact that $g$ preserves the top element of $L$ is given by the flatness assumption
+  (Defn.~\ref{defn:flat}): $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$. To see that $g$ also
+  preserves binary meets, let $\oftyII{U}{V}{L}$. First, we show:
+  \begin{equation}\label{eqn:pres-meet}
+      \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+    = \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }.
+  \end{equation}
+  This follows by antisymmetry. For the ($\sqsubseteq$) direction, it suffices by the fact that
+  $\bigvee^R$ is a LUB, to show that
+  \begin{equation*}
+    \mathsf{RHS} \quad\is\quad
+      \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
+  \end{equation*}
+  is an upper bound of $\setof{ f(a) ~|~ \mempow{a}{U \capp V} }$. Let
+  $\oftyI{a}{A_{\McF{}}}$ such that $a \mempownm U$ and $a \mempownm V$. The fact that
+  $f(a) \sqsubseteq \mathsf{RHS}$ can be seen to hold by the LUB property of $\bigvee^R$. For the ($\sqsupseteq$)
+  direction, it is sufficient, since $\bigvee^R$ is less than any other upper
+  bound, to show that
+  \begin{equation*}
+    \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+  \end{equation*}
+  is an upper bound of
+  \begin{equation*}
+    \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }.
+  \end{equation*}
+  This follows straightforwardly by the LUB property combined with the downwards-closure
+  of $U$ and $V$. The result that $g$ preserves binary meets then follows as:
   \begin{align*}
-    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \in \intersect{U}{V} \}                  \\
-             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \in U \times V }
-               && \text{[flatness]}                                                 \\
-             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \in U \times V }
+    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+               && [\text{(\ref{eqn:pres-meet})}] \\
+             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
+               && [\text{flatness}]                                                 \\
+             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \mempownm U \times V }
                &&\text{[Prop.~\ref{prop:distr}]}                                    \\
-             &= \left( \bigvee^R \setof{ f(u) ~|~ u \in U } \right)
-              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \in V } \right)                         \\
+             &= \left( \bigvee^R \setof{ f(u) ~|~ u \mempownm U } \right)
+              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \mempownm V } \right)                 \\
              &\equiv g(U) \wedge g(V)                                                         .
   \end{align*}
   Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
   $\abs{L}$.
   \begin{align*}
-    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \in \bigvee^L_i U_i } \\
-             &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \in U_i}}} } &&\text{[Lemma~\ref{lem:flatten}]} \\
-             &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ U_i \in U } \\
-             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \in U }.
+    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \mempownm \bigvee^L_i U_i }
+                && [\text{Lemma~\ref{lem:resp-join}}]\\
+    &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \mempownm U_i}}} }
+                && [\text{Lemma~\ref{lem:flatten}}] \\
+             &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ \oftyI{i}{I} } \\
+             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \mempownm U }.
   \end{align*}
+  To be precise about the use of Lemma~\ref{lem:flatten}, we note that it used on the
+  function:
+  \begin{equation*}
+    \lambda\_~(a, \_).~f(a).
+  \end{equation*}
 
   Finally, we conclude the proof by showing uniqueness of $g$: let $g'$ be a frame
   homomorphism from $L$ to $R$ that makes the diagram commute. We need to show that
   $g = g'$. Let $\oftyI{U}{\abs{L}}$. $g(U) = g'(U)$ by the following equational proof:
   \begin{align*}
-    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \in U }
+    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \mempownm U }
             &&\text{[$f = g' \circ \eta$]} \\
-         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \in U }
+         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \mempownm U }
             &&\text{[$g'$ is a frame homomorphism]} \\
-         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \in U } \right)
+         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \mempownm U } \right)
             &&\text{[Lemma~\ref{lem:main}]} \\
          &= g'(U).
   \end{align*}
+  Note that we are making implicit use of Prop.~\ref{prop:to-subtype} as we are concluding
+  $(g, p) = (g' , q)$ where $p$ and $q$ are the respective homomorphism proofs.
 \end{proof}

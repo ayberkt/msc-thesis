@@ -90,7 +90,8 @@
 \newcommand{\unittm}{\rulename{\star}}
 
 %% Homotopy levels.
-\newcommand{\iscontr}[1]{\hyperref[defn:contr]{\mathsf{isContr}}\left(#1\right)}
+\newcommand{\iscontrnm}{\hyperref[defn:contr]{\mathsf{isContr}}}
+\newcommand{\iscontr}[1]{\iscontrnm{}\left(#1\right)}
 \newcommand{\isprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
 \newcommand{\isset}[1]{\hyperref[defn:hset]{\mathsf{isSet}}\left(#1\right)}
 \newcommand{\isofhlevel}[2]{%
@@ -98,6 +99,7 @@
 }
 
 \newcommand{\intersectnm}{\hyperref[defn:intersection]{\cap}}
+\newcommand{\capp}{\hyperref[defn:intersection]{\cap}}
 \newcommand{\intersect}[2]{#1 \intersectnm{} #2}
 
 \newcommand{\formssns}[1]{\mathsf{SNS}\left(#1\right)}
@@ -150,9 +152,11 @@
 \newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
 \newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
 
-\DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\mathtt{\epsilon}}}
+\DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\in}}
 \newcommand{\memfam}[2]{#1 \memfamnm #2}
-\newcommand{\mempow}[2]{#1 \hyperref[defn:pow]{\in} #2}
+
+\DeclareMathOperator{\mempownm}{\hyperref[defn:pow]{\in}}
+\newcommand{\mempow}[2]{#1 \mempownm #2}
 
 \DeclareMathOperator{\concat}{\hyperref[defn:concat]{\textnormal{\texttt{++}}}}
 \DeclareMathOperator{\append}{\textnormal{\texttt{++}}}
@@ -175,7 +179,8 @@
 \DeclareMathOperator{\framehomonm}{\hyperref[defn:frame-homo]{\rightarrow_f}}
 \newcommand{\framehomo}[2]{#1 \framehomonm{} #2}
 
-\newcommand{\hasmono}[1]{\hyperref[defn:mono]{\mathsf{hasMono}}\left(#1\right)}
+\newcommand{\hasmononm}{\hyperref[defn:mono]{\mathsf{hasMono}}}
+\newcommand{\hasmono}[1]{\hasmononm{}\left(#1\right)}
 \newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
 
 \DeclareMathOperator{\posetisonm}{\hyperref[defn:poset-iso]{\cong_p}}
@@ -249,7 +254,7 @@
 \newcommand{\covers}[2]{#1 \covernm{} #2}
 
 \newcommand{\setof}[1]{\left\{ #1 \right\}}
-\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ a \in #2 }}
+\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ \mempow{a}{#2} }}
 
 \newcommand{\formaltopo}{\hyperref[defn:formal-topo]{\mathsf{FT}}}
 
