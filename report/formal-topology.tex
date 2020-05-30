@@ -630,12 +630,15 @@ notion of $f$ representing $\McF{}$ in $F$.
   \end{equation*}
 \end{defn}
 
-Note what this property is expressing. We said that the reading of $\covers{a}{V}$ is $a =
-\bigcup_i V_i$. In the case we are dealing with a $V$ of the form $\setof{ d(a, b, c) ~|~
-  \oftyI{c}{C(a, b)} }$, the other direction of what is expressed in the representation
-property always holds. To assert $f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))$ is then to
-assert that $f$ maps $\McF{}$ to $R$ as to precisely make the $\covernm{}$ relation hold;
-hence the reading of this as ``representation''.
+It can be shown that the opposite direction of the inequality asserted by $\representsnm$
+always holds. To assert $\represents{\McF}{F}{f}$ is then to assert
+\begin{equation*}
+  \pity{a}{A}{\pity{b}{B(x)}{f(a) = \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))}}.
+\end{equation*}
+This property therefore expresses that $R$ behaves like a model of the covering relation
+of the formal topology $\McF$, that is, the join of $R$ reflects the covering relation
+induced by the formal-topological structure of $\McF$. This is the idea underlying the
+name ``representation''.
 
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case
