@@ -18,4 +18,4 @@ literate-latex:
 
 .PHONY: clean
 clean:
-	rm -f main.pdf *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.loq *.lot *.out *.ptb *.run.xml *.toc *.aux *.log
+	rm -f main.pdf *.bbl *.bcf *.blg *.fdb_latexmk *.fls *.loq *.lot *.out *.ptb *.run.xml *.toc *.aux *.log *.lof
