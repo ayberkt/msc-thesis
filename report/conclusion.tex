@@ -12,24 +12,34 @@ The first outcome of this investigation was a negative result: we have come to t
 conclusion that an \emph{as is} development of formal topology in univalent type theory is
 problematic as a consequence of the distinction between \emph{property} and
 \emph{structure}, rendered visible through the homotopical view of types. In particular,
-our development led to a situation in which the proof structure of a type had to be
-collapsed for it to behave as a property, and at the same time, kept intact for it to be
-used in succeeding proofs.
+our development led to a situation in which the proof structure of the covering relation
+had to be collapsed for it to behave as a property, and at the same time, kept intact for
+it to be used in succeeding proofs.
 
-We have then found, somewhat unexpectedly, that univalent type theory \emph{does} in fact
-contain a remedy for this situation, namely, HITs. Using HITs, we were able to reconcile,
-in our specific case, the imbalance between property and structure. This allowed us to
-successfully carry out a rudimentary development of formal topology in a univalent
-setting: we have been able to formulate a notion of formal topology and then prove its
-universal property. We hence conclude that formal topology is not only possible in
-univalent type theory but is possible in a way that makes non-trivial use of its
-conceptual novelties.
+We have then found, somewhat unexpectedly, that this problem can be circumvented by using
+HITs. Using HITs, we were able to reconcile, in our specific case, the imbalance between
+property and structure. This allowed us to successfully carry out a rudimentary
+development of formal topology in a univalent setting: we have been able to formulate a
+notion of formal topology and then prove its universal property. We hence conclude that
+formal topology is not only possible in univalent type theory but is possible in a way
+that makes non-trivial use of its conceptual novelties.
 
-In addition to providing an answer to this question, we have carried out Coquand's idea of
-doing topology with interaction systems on posets~\cite{coq-posets} to a further extent.
-We have found this to work well, and enable a presentation more eloquent than that of
-traditional formal topology. Apart from addressing issues of univalence, this has been the
-secondary contribution of our development.
+HITs have been previously used for similar purposes, and have allowed the circumvention of
+of choice principles. The relevant work known to the author includes the higher
+inductive-inductive definition of the Cauchy reals in the HoTT
+book~\cite[Defn.~11.3.2]{hottbook} and the reconstruction of the partiality monad by
+Altenkirch, Danielsson, and Kraus~\cite{partiality-revisited}. The latter seems to be
+especially relevant to our use of HITs, as the view of topology as a theory of observable
+properties is closely related to partial computations (see, for instance,
+\cite{synthetic-topology, shulman-logic-of-space}).
+
+In addition to providing a preliminary answer to the question of doing formal topology in
+univalent type theory, we have carried out Coquand's idea of doing topology with
+interaction systems on posets~\cite{coq-posets} to a further extent. We have found this to
+work well in the context of univalent type theory. Apart from addressing issues of
+univalence, this has been the secondary contribution of our development. To the author's
+knowledge, this is the first formalised development of formal topologies as interaction
+systems.
 
 As a proof of concept of our approach to formal topology, we have implemented a
 fundamental example: the Cantor space. Furthermore, we have proven that the formal Cantor
@@ -44,11 +54,12 @@ now discuss some of these.
 First and foremost, there are many more topological and locale-theoretic results to be
 reconstructed in the setting of our development. For instance, one of the fundamental
 theorems of topology is the Tychonoff theorem, formal versions of which have been
-constructed~\cite{coq-tychonoff}. It is an interesting question if these will fit well
-within our approach. Furthermore, a crucial class of spaces in pointless topology is the
-\emph{Stone spaces}~\cite{stone-spaces}; indeed, the notion of a Stone space is what
-brought the field into existence in the first place. Developing the theory of Stone spaces
-in the context our development is an important direction for further work.
+constructed~\cite{coq-tychonoff, vickers-tychonoff}. It is an interesting question if
+these will fit well within our approach. Furthermore, a crucial class of spaces in
+pointless topology is the \emph{Stone spaces}~\cite{stone-spaces}; indeed, the notion of a
+Stone space is what brought the field into existence in the first place. Developing the
+theory of Stone spaces in the context our development is an important direction for
+further work.
 
 Another limitation of our development is that we have not been able to explore the notion
 of a \emph{formal point}, which can be introduced as a notion derived from the opens in
@@ -71,22 +82,23 @@ more readily addressed.
 
 As remarked in Chapter~\ref{chap:formal-topo}, our method for generating a frame from a
 formal topology works only on formal topologies whose carrier set level and order level
-are equal. To reach full generality, these levels have to be generalised. We have not
-carried out this generalisation for the presentational simplicity of the powerset operator
-whose result is required to live at the same level as the type it is given.
+are equal---this is a restriction we have imposed for the sake of presentational simplicity.
+To reach full generality, these levels have to be generalised.
 
-Furthermore, our statement of the universal property has not been modular. In other words,
-we have not explained what it means, in general, for a frame to be the frame presented by
-a formal topology. Instead, we have presented the universal property in an ad hoc way, for
+Furthermore, our statement of the universal property has not been modular. We have proven
+that a frame generated from a formal topology using our method presents the frame. The
+statement of this theorem, however, does not express what it means for an arbitrary formal
+topology to present an arbitrary frame. Instead, we have stated this in an ad hoc way, for
 the specific case of our generated frame. Ideally, this should be stated for \emph{any}
 frame with a lifting map, our current statement then being one instance of it. Most
-importantly, this would allow us to prove that two frames satisfying the universal
-property are isomorphic, and thanks to univalence, equal.
+importantly, this would allow us to attempt to prove (which we think would be a successful
+attempt) that two frames satisfying the universal property are isomorphic. As we proved
+that isomorphic frames are equal, this would mean two such frames are \emph{equal}.
 
 A further direction to take for the modularisation of the universal property would be to
 state it using categorical terms. Conceptually, the universal property ought to amount to
-the existence of an adjoint pair of a free and forgetful functor. However, it is not clear
-what the category of formal topologies is, as the notion of a morphism between two
+the existence of an adjoint pair of a free and a forgetful functor. However, it is not
+clear what the category of formal topologies is, as the notion of a morphism between two
 interaction systems is not clear. Therefore, the resolution of this issue is likely not
 straightforward.
 
