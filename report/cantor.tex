@@ -193,13 +193,13 @@ this actually forms a formal topology.
       $\snoc{bs_1}{b_1} \le \snoc{bs_0}{b_h}$.
       Observe the following equality:
       \begin{align*}
-        bs_1 \frown b_1 \quad&=\quad \snoc{(bs_0 \concat{} (\snoc{bs}{b}))}{b_1}       \\
-                   \quad&=\quad \snoc{(bs_0 \concat{} (b_h \concat{} bs_t))}{b_1} \\
-                   \quad&=\quad \snoc{((bs_0 \concat{} b_h) \concat{} bs_t)}{b_1} \\
-                   \quad&\equiv\quad (bs_0 \concat{} b_h) \concat{} (\snoc{bs_t}{b_1}) .
+        bs_1 \frown b_1 \quad&=\quad \snoc{(bs_0 \concat{} (\snoc{bs}{b}))}{b_1}                   \\
+                   \quad&=\quad \snoc{(bs_0 \concat{} (\singleton{b_h} \concat{} bs_t))}{b_1} \\
+                   \quad&=\quad \snoc{((bs_0 \concat{} \singleton{b_h}) \concat{} bs_t)}{b_1} \\
+                   \quad&\equiv\quad (bs_0 \concat{} \singleton{b_h}) \concat{} (\snoc{bs_t}{b_1}) .
       \end{align*}
-      This means that $bs_1 \frown b_1 \le bs_0 \frown b_h$ is witnessed by the difference
-      $bs_t \frown b_1$.
+      This means that $bs_1 \frownn b_1 \le bs_0 \frownn b_h$ is witnessed by the difference
+      $bs_t \frownn b_1$.
   \end{itemize}
 \end{proof}
 
