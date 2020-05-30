@@ -1,5 +1,11 @@
 all: main.pdf
 
+main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex cantor.tex agda.sty
+	latexmk -xelatex -interaction=nonstopmode main.tex
+
+.PHONY: update-refs
+update-refs: references.bib main.pdf
+
 .PHONY: references.bib
 references.bib:
 	curl http://127.0.0.1:23119/better-bibtex/collection?/1/NGA6LCZ3.biblatex > $@
@@ -9,23 +15,6 @@ literate-latex:
 	rm -rf literate-latex
 	cd ../code && ./latexify.sh
 	mv ../code/literate-latex .
-
-main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex cantor.tex agda.sty
-	xelatex -interaction=nonstopmode $<
-	biber main.bcf
-	xelatex -interaction=nonstopmode $<
-	xelatex -interaction=nonstopmode $<
-
-keep-log: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex agda.sty
-	xelatex -interaction=nonstopmode $<
-	biber main.bcf
-	xelatex -interaction=nonstopmode $<
-	xelatex -interaction=nonstopmode $<
-	rm -f main.aux main.bbl main.bcf main.blg main.lof main.lot main.out main.ptb main.run.xml main.toc
-
-.PHONY: remove-log
-remove-log: main.pdf
-	rm -f main.log
 
 .PHONY: clean
 clean:
