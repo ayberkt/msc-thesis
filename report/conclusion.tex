@@ -16,20 +16,30 @@ our development led to a situation in which the proof structure of the covering 
 had to be collapsed for it to behave as a property, and at the same time, kept intact for
 it to be used in succeeding proofs.
 
-We have then found, somewhat unexpectedly, that univalent type theory \emph{does} in fact
-contain a remedy for this situation, namely, HITs. Using HITs, we were able to reconcile,
-in our specific case, the imbalance between property and structure. This allowed us to
-successfully carry out a rudimentary development of formal topology in a univalent
-setting: we have been able to formulate a notion of formal topology and then prove its
-universal property. We hence conclude that formal topology is not only possible in
-univalent type theory but is possible in a way that makes non-trivial use of its
-conceptual novelties.
+We have then found, somewhat unexpectedly, that this problem can be circumvented by using
+HITs. Using HITs, we were able to reconcile, in our specific case, the imbalance between
+property and structure. This allowed us to successfully carry out a rudimentary
+development of formal topology in a univalent setting: we have been able to formulate a
+notion of formal topology and then prove its universal property. We hence conclude that
+formal topology is not only possible in univalent type theory but is possible in a way
+that makes non-trivial use of its conceptual novelties.
 
-In addition to providing an answer to this question, we have carried out Coquand's idea of
-doing topology with interaction systems on posets~\cite{coq-posets} to a further extent.
-We have found this to work well, and enable a presentation more eloquent than that of
-traditional formal topology. Apart from addressing issues of univalence, this has been the
-secondary contribution of our development.
+HITs have been previously used for similar purposes, and have allowed the circumvention of
+of choice principles. The relevant work known to the author includes the higher
+inductive-inductive definition of the Cauchy reals in the HoTT
+book~\cite[Defn.~11.3.2]{hottbook} and the reconstruction of the partiality monad by
+Altenkirch, Danielsson, and Kraus~\cite{partiality-revisited}. The latter seems to be
+especially relevant to our use of HITs, as the view of topology as a theory of observable
+properties is closely related to partial computations (see, for instance,
+\cite{synthetic-topology, shulman-logic-of-space}).
+
+In addition to providing a preliminary answer to the question of doing formal topology in
+univalent type theory, we have carried out Coquand's idea of doing topology with
+interaction systems on posets~\cite{coq-posets} to a further extent. We have found this to
+work well, and enable a presentation more eloquent than that of traditional formal
+topology. Apart from addressing issues of univalence, this has been the secondary
+contribution of our development. To the author's knowledge, this is the first formalised
+development of formal topologies as interaction systems.
 
 As a proof of concept of our approach to formal topology, we have implemented a
 fundamental example: the Cantor space. Furthermore, we have proven that the formal Cantor
