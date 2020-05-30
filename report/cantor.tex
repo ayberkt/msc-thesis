@@ -274,11 +274,12 @@ the compactness of a formal topology.
 \end{defn}
 
 Notice that the result type must be truncated due to the existence of the $\rulesquash{}$
-constructor. One could argue that it would have to be truncated \emph{anyway}, since
-compactness is a property and should therefore be propositional. However, one could
-consider refining this property so that it uniquely characterises the finite subcover.
-This would render the property naturally propositional, hence freeing us from the
-obligation to truncate it.
+constructor: otherwise it would be hard to define proofs inhabiting this type due to the
+induction principle of covering. One could argue that it would have to be truncated
+\emph{anyway}, since compactness is a property and should therefore be propositional.
+However, one could consider refining this property so that it uniquely characterises the
+finite subcover. This would render the property naturally propositional, hence freeing us
+from the obligation to truncate it.
 
 We will now prove that the Cantor space is compact. For this, we first prove three small
 lemmas for the sake of clarity.
