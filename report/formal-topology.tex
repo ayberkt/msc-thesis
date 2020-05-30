@@ -392,6 +392,15 @@ Defn.~\ref{defn:naive-cover} for the sake of self-containment.
   \veragda{} formalisation and is denoted {\color{AgdaDatatype}\fnname{◀}}.
 \end{agdanotation}
 
+We note that a similar idea is employed in the construction of the Cauchy reals as a
+higher inductive-inductive type in the HoTT Book~\cite[Defn.~11.3.2]{hottbook}. Here, a
+path constructor is used to avoid using the axiom of countable choice. Given that the
+topology of the real numbers is a prime example of a topology, it is perhaps not a
+coincidence that the need to use a similar trick arises when one sets out to investigate
+topology in univalent type theory. It is an interesting direction for further work to
+investigate the relation between these, for instance by defining the formal topology of
+the real numbers.
+
 When trying to prove the idempotence law with this, we get from the inductive hypothesis a
 product $\pity{c}{C(a, b)}{\covers{d(a, b, c)}{V}}$ where $\covers{d(a, b, c)}{V}$ is
 still ``squashed'', but this squashing is an integral part of $\covers{\_}{\_}$ rather
