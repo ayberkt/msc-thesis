@@ -722,6 +722,51 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   induction principle of truncation are used.
 \end{proof}
 
+\begin{lemma}\label{lem:resp-join}
+  Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
+  $\fix{\dcframe{A_{\McF{}}}}{\RHD}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
+  monotonic map that represents $\McF{}$ in $R$ (as defined in Defn.~\ref{defn:rep}).
+  Given any $\oftyI{x}{A_{\McF}}$, and $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$,
+  if $x \mempownm \bigvee_L U$ then
+  \begin{equation*}
+    f(x)
+    =
+    \bigvee^R \setof{
+          f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+        }
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  We proceed by antisymmetry. The ($\sqsupseteq$) direction easily follows by the LUB property.
+  For the ($\sqsubseteq$) direction, it suffices to by the LUB property to show
+  \begin{equation*}
+    \pity{x}{A_{\McF}}{%
+      x \mempownm \bigvee^L U \rightarrow f(x) \sqsubseteq
+        \bigvee^R \setof{
+              f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+            }
+    }
+  \end{equation*}
+  Let $\oftyI{x}{A_{\McF}}$ such that $x \mempownm \bigvee^L U \rightarrow f(x)$. We proceed by induction
+  on the proof of $x \mempownm \bigvee^L U \rightarrow f(x)$.
+  \begin{itemize}
+    \item Case $\ruledir{}$. Direct by the recursion principle of truncation and the
+      fact that $\bigvee^R$ is an upper bound.
+    \item Case $\rulebranch{}$. We have some experiment $\oftyI{b}{B(x)}$ such that for
+      every $\oftyI{c}{C(x, b)}$, $\covers{d(x, b, c)}{U}$.
+      \begin{alignat*}{3}
+               & && f(x) &&                                   \\
+        \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(d(x, b, c)) ~|~ c : C(x, b) }
+               &&\quad [\text{$f$ represents}] \\
+        \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(a) ~|~ (\_, (a, \_))
+                            : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+                            }
+               &&\quad [\text{LUB and IH}].
+      \end{alignat*}
+    \item Case $\rulesquash{}$. Follows by the propositionality of $\sqsubseteq_R$.
+  \end{itemize}
+\end{proof}
+
 \begin{proof}[Proof of Theorem~\ref{thm:univ-prop}]
   Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
   $\fix{\dcframe{A_{\McF{}}}}{\RHD}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
@@ -775,12 +820,37 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
 
   Let us first address (1). The fact that $g$ is monotonic follows by the LUB property.
   The fact that $g$ preserves the top element of $L$ is given by the flatness assumption
-  (Defn.~\ref{defn:flat}): $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$. $g$ can also be seen to
-  preserve binary meets by the following reasoning: let $\oftyII{U}{V}{L}$;
+  (Defn.~\ref{defn:flat}): $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$. To see that $g$ also
+  preserves binary meets, let $\oftyII{U}{V}{L}$. First, we show:
+  \begin{equation}\label{eqn:pres-meet}
+      \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+    = \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }.
+  \end{equation}
+  This follows by antisymmetry. For the ($\sqsubseteq$) direction, it suffices by the fact that
+  $\bigvee^R$ is a LUB, to show that
+  \begin{equation*}
+    \mathsf{RHS} \quad\is\quad
+      \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
+  \end{equation*}
+  is an upper bound of $\setof{ f(a) ~|~ \mempow{a}{U \capp V} }$. Let
+  $\oftyI{a}{A_{\McF{}}}$ such that $a \mempownm U$ and $a \mempownm V$. The fact that
+  $f(a) \sqsubseteq \mathsf{RHS}$ can be seen to hold by the LUB property of $\bigvee^R$. For the ($\sqsupseteq$)
+  direction, it is sufficient, since $\bigvee^R$ is less than any other upper
+  bound, to show that
+  \begin{equation*}
+    \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+  \end{equation*}
+  is an upper bound of
+  \begin{equation*}
+    \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }.
+  \end{equation*}
+  This follows straightforwardly by the LUB property combined with the downwards-closure
+  of $U$ and $V$. The result that $g$ preserves binary meets then follows as:
   \begin{align*}
-    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}          \\
+    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+               && [\text{(\ref{eqn:pres-meet})}] \\
              &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
-               && \text{[flatness]}                                                 \\
+               && [\text{flatness}]                                                 \\
              &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \mempownm U \times V }
                &&\text{[Prop.~\ref{prop:distr}]}                                    \\
              &= \left( \bigvee^R \setof{ f(u) ~|~ u \mempownm U } \right)
@@ -790,8 +860,10 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
   $\abs{L}$.
   \begin{align*}
-    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \mempownm \bigvee^L_i U_i } \\
-             &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \mempownm U_i}}} } &&\text{[Lemma~\ref{lem:flatten}]} \\
+    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \mempownm \bigvee^L_i U_i }
+                && [\text{Lemma~\ref{lem:resp-join}}]\\
+    &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \mempownm U_i}}} }
+                && [\text{Lemma~\ref{lem:flatten}}] \\
              &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ \oftyI{i}{I} } \\
              &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \mempownm U }.
   \end{align*}
