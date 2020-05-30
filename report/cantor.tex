@@ -244,9 +244,9 @@ Let us now define an auxiliary function that we will need when stating compactne
   the following function expressing the subset of inhabitants of $\abs{P}$ that are below
   at least one element of $xs$.
   \begin{alignat*}{2}
-    \fincovernm{}            \quad&:\quad   &&\listty{A} \rightarrow \pow{A}                            \\
-    \fincover{\emptylist{}}  \quad&\is\quad &&\lambda \_.~\bot_n                                       \\
-    \fincover{x \cons xs'}   \quad&\is\quad &&\lambda ys.~\trunc{ys \sqsubseteq_P xs + ys \in \fincover{xs'}}   .
+    \fincovernm{}            \quad&:\quad   &&\listty{A} \rightarrow \pow{A}                          \\
+    \fincover{\emptylist{}}  \quad&\is\quad &&\lambda \_.~\bot_n                                     \\
+    \fincover{x \cons xs'}   \quad&\is\quad &&\lambda y.~\trunc{y \sqsubseteq_P x + y \inn \fincover{xs'}}  .
   \end{alignat*}
 \end{defn}
 
