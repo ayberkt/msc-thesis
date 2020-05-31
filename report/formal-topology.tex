@@ -255,12 +255,12 @@ inductively. We follow this approach in our development. In fact, as we will exp
 later, we will define this relation not just as an inductive type but as a \emph{higher}
 inductive one.
 
-We now proceed to define the cover relation on a given formal topology. Our presentation
-will recapitulate the progression of our development: we first explain our naive attempt,
-which we found out not to work in univalent type theory, and after that its remedied form
-(thanks to a (privately communicated) suggestion by Thierry
-Coquand~\cite{another-way-out}) that circumvents this problem
-through the use of HITs.
+We now proceed to define the cover relation on a given formal topology. Our
+presentation will recapitulate the progression of our development: we first
+explain our naive attempt, which we found out not to work in univalent type
+theory, and after that its remedied form (thanks to a (privately communicated)
+suggestion by Thierry Coquand) that circumvents this problem through the use of
+HITs.
 \begin{defn}[Naive cover relation]\label{defn:naive-cover}
   Given a formal topology
   $\mathcal{F}$ on type $A$, and given $\oftyI{a}{A}$, $U : \pow{A}$, the type
@@ -357,9 +357,9 @@ of writing, no answer to this question has been found.
 To remedy this, we will refrain from truncating the naive form of the cover relation, and
 we will instead add a path constructor that \emph{squashes} the difference between the
 $\ruledir{}$ and $\rulebranch{}$ constructors. The observation that the choice principle
-is no longer needed when the covering relation is defined this way is due to
-Coquand~\cite{another-way-out}. We now provide the revised form, repeating the rules from
-Defn.~\ref{defn:naive-cover} for the sake of self-containment.
+is no longer needed when the covering relation is defined this way is due to Coquand. We
+now provide the revised form, repeating the rules from Defn.~\ref{defn:naive-cover} for
+the sake of self-containment.
 \begin{defn}[Cover relation]\label{defn:covering}
   Given a formal topology
   $\mathcal{F}$ on type $A$, and given $\oftyI{a}{A}$, $U : \pow{A}$, the type
