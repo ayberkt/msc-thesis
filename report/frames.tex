@@ -58,13 +58,20 @@ This section corresponds to the \modname{Poset} module in the \veragda{} develop
                     &\hspace{0.3em}\times \hspace{0.3em}\pity{x~y}{A}{R(x, y) \rightarrow R(y, x) \rightarrow x =_A y}   \\
                     &\hspace{0.3em}\times \isset{A}.
   \end{align*}
-  The function name $\posetstrnm{}$ is intended to be an abbreviation of ``poset
-  structure'', that is, an ordered structure subject to the axioms for a partial order.
-  The predicate expressing that a given ordered structure satisfies these axioms is in
-  turn abbreviated by the function name $\posetaxnm{}$. Propositionality of $\posetaxnm{}$
-  follows by propositions \ref{prop:sigma-prop}, \ref{prop:pi-prop}, and
-  \ref{prop:set-prop}.
+  Propositionality of $\posetaxnm{}$ follows by propositions \ref{prop:sigma-prop},
+  \ref{prop:pi-prop}, and \ref{prop:set-prop}.
 \end{defn}
+
+The function name $\posetstrnm{}$ is intended to be an abbreviation of ``poset
+structure'', that is, an ordered structure subject to the axioms for a partial order. The
+predicate expressing that a given ordered structure satisfies these axioms is in turn
+abbreviated by the function name $\posetaxnm{}$.
+
+Let us also note a minor deviation from the \veragda{} formalisation here. The function
+$\posetaxnm{}$ is curried in the \veragda{} code. It is more conventional in traditional
+(``pen-and-paper'') mathematics to work with uncurried functions, whereas the exact
+opposite is more conventional in formalised mathematics. Instead of importing the
+conventions of one into the other, we take the correspondence to be self-evident.
 
 Given a poset $P$, we will refer to its relation as $\_\sqsubseteq_P\_$ (in cases where there might
 be ambiguity) and the underlying set of $P$ as $\abs{P}$. Notice that the fourth component
