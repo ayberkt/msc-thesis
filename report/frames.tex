@@ -417,9 +417,9 @@ and define $\iota$ as:
   \iota(P, Q, (f , \_)) \quad\is\quad \ismonotonic{f} \times \ismonotonic{\invequiv{f}}  .
 \end{equation*}
 This delineates those type equivalences between $\abs{P}$ and $\abs{Q}$ that have the
-virtue of preserving their poset structures. We call this a \emph{monotonic equivalence}
-and denote the type of monotonic equivalences between $\abs{P}$ and $\abs{Q}$ by
-$\posetequiv{P}{Q}$.
+virtue of preserving the poset structures. We call such equivalences
+\emph{monotonic equivalences} and denote the type of monotonic equivalences between
+$\abs{P}$ and $\abs{Q}$ by $\posetequiv{P}{Q}$.
 \begin{defn}[Monotonic equivalence]\label{defn:poset-equiv}
   \begin{equation*}
     \posetequiv{P}{Q} \quad\is\quad \sigmaty{e}{\typequiv{\abs{P}}{\abs{Q}}}{\iota(P, Q, e)}
@@ -446,16 +446,16 @@ Let us now state exactly what result is given by the
 SIP~\cite{escardo-uf-intro, agda-cubical}.
 \begin{defn}[Structure identity principle]
   Let $\oftyI{S}{\univ{}_m \rightarrow \univ{}_n}$ be a structure and let $\oftyII{A}{B}{\univ{}_m}$
-  be two types equipped with $S$-structures $s$ and $t$. if $S$ is standard in the sense
-  that there is some $\iota$ satisfying witnessing that it forms an SNS (i.e.~satisfies (1)
-  and (2)), the type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to
-  the identity type between them. Formally,
+  be two types equipped with $S$-structures $s$ and $t$. If $S$ is standard in the sense
+  that there is some $\iota$ witnessing that it forms an SNS (i.e.~satisfies (1) and (2)), the
+  type of $\iota$-equivalences between $(A, s)$ and $(B, t)$ is equivalent to the identity
+  type between them. Formally,
   \begin{equation*}
-    \pity{M~N}{\sigmaty{A}{\univ{}_m}{S(A)}}{\typequiv{(M = N)}{(M \simeq_{\iota} N)}}
+    \pity{M~N}{\sigmaty{A}{\univ{}_m}{S(A)}}{\typequiv{(M = N)}{(M \simeq_{\iota} N)}},
   \end{equation*}
   where
   \begin{equation*}
-    A \simeq_{\iota} B \quad\is\quad \sigmaty{e}{\typequiv{A}{B}}{\iota(e)}
+    M \simeq_{\iota} N \quad\is\quad \sigmaty{e}{\typequiv{\abs{M}}{\abs{N}}}{\iota(M, N, e)}.
   \end{equation*}
 \end{defn}
 
