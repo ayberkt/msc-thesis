@@ -1,5 +1,5 @@
 ```
-{-# OPTIONS --without-K --cubical --safe #-}
+{-# OPTIONS --cubical --safe #-}
 
 module Main where
 
