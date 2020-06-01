@@ -10,6 +10,10 @@ update-refs: references.bib main.pdf
 references.bib:
 	curl http://127.0.0.1:23119/better-bibtex/collection?/1/NGA6LCZ3.biblatex > $@
 
+.PHONY: dropbox
+dropbox: main.pdf
+	cp -f main.pdf ~/Dropbox/thesis/main.pdf
+
 .PHONY: literate-latex
 literate-latex:
 	rm -rf literate-latex
