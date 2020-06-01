@@ -174,6 +174,11 @@ structure of a poset: monotonic maps.
   \end{equation*}
 \end{defn}
 
+For reasons that will be explained in Section~\ref{sec:frame-univ}, the \veragda{}
+formalisation follows a slightly different approach to this definition: it starts by
+defining the notion of a morphism between ordered structures in general
+(i.e.~$\ordernm{}$) and then defines monotonic maps as a special case of that.
+
 \begin{defn}[Poset isomorphism]\label{defn:poset-iso}
   An isomorphism between two posets is a monotonic function with a monotonic inverse.
   We will denote the type of isomorphisms between two posets $P$ and $Q$ by
