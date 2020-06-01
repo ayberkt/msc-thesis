@@ -36,21 +36,21 @@ deviations and abuses of language, which will be addressed locally, in the relev
 sections.
 
 Finally, we note that we will be introducing new definitional equalities in various
-definitions. For the convenience of the reader who is reading this thesis electronically,
-the definienda have been made clickable, which is marked by the
-{\color{darkgreen} dark green} colour.
+definitions. The definienda introduced by these definitional equalities are hyperlinked to
+their definitions, which might be useful to the reader who is reading this thesis
+electronically. Such hyperlinked definienda are coloured {\color{darkgreen} dark green}.
 
 \section{Univalent foundations: the idea}
 
 Starting with the work of Hofmann and Streicher~\cite{hofmann-streicher}, the idea that
 types (as conceived in intensional type theory) have connections to homotopy theory had
-been brewing in the type theory community, the key idea being that types and their types
-of equality proofs can be viewed as spaces (identified up to homotopy) and
-their spaces of \emph{paths}. The solidification of this idea started around 2006, through
-the efforts of various researchers~\cite{warren-fmcs, uppsala-awodey, uppsala-garner, uppsala-van-den-berg, voevodsky-very-short}
-exploring this connection from different perspectives. It was around this time that the
-concept of univalence emerged. We will refrain from addressing the history of the subject
-in detail.
+been brewing in the type theory community, the key observation being that types and their
+types of equality proofs can be viewed as spaces (identified up to homotopy) and their
+spaces of \emph{paths}. The solidification of this idea started around 2006, through the
+efforts of various researchers~\cite{warren-fmcs, uppsala-awodey, uppsala-garner,
+  uppsala-van-den-berg, voevodsky-very-short} exploring this connection from different
+perspectives. It was around this time that the concept of univalence emerged. We will
+refrain from addressing the history of the subject in detail.
 
 Among these researchers, Vladimir Voevodsky~\cite{voevodsky-bernays} emphasised the
 possibility of transforming type theory through insights arising from this line of work.
@@ -69,7 +69,7 @@ A reasonable expectation from a foundational system for mathematics is that it b
 accommodate the common practices occurring in its high-level use in a natural way. Both
 set theory and type theory have suffered the problem that they could not accommodate this
 practice well. In the context of type theory, however, this problem can be seen more
-clearly: the implementation this informal practice in type theory gave rise to what is
+clearly: the implementation of this informal practice in type theory gives rise to what is
 known as ``setoid hell''~\cite{homotopy-heaven}.
 
 Homotopy type theory, being the first of univalent type theories, is arguably the first
@@ -348,7 +348,7 @@ As we mentioned before, Voevodsky's notion of type equivalence enjoys the crucia
 that it is propositional. Let us consider the familiar notion of equivalence between
 types.
 \begin{defn}[Type isomorphism]\label{defn:type-iso}
-  Given types $A$ and $B$, the type of type isomorphisms between them is denoted by
+  Given types $A$ and $B$, the type of type isomorphisms between them is denoted
   $\typiso{A}{B}$:
   \begin{alignat*}{2}
     \istypiso{f}   \quad&\is\quad && \sigmaty{g}{B \rightarrow A}{\exteq{g \circ f}{\idfn{A}} \times \exteq{f \circ g}{\idfn{B}}} \\
@@ -360,15 +360,14 @@ This would not be a viable definition of type equivalence in univalent type theo
 suffers the problem that it is not propositional: although the inverse a function is
 necessarily unique, the invertibility proofs of are not unique in the general case when we
 are dealing with $n$-types. Therefore, Definition~\ref{defn:type-iso} is logically
-equivalent but not equivalent to Definition~\ref{defn:equiv}.
+equivalent but \emph{not} equivalent to Definition~\ref{defn:equiv}.
 
 \begin{prop}\label{prop:iso-equiv-equiv}
   Definitions \ref{defn:type-iso} and \ref{defn:equiv} are logically equivalent.
 \end{prop}
 
-
-Notice, however, that this logical equivalence is an equivalence in the special where the
-domain and the codomain are h-sets.
+Notice, however, that this logical equivalence is an equivalence in the special case where
+the domain and the codomain are h-sets.
 
 When we have some $\oftyI{f}{A \rightarrow B}$ such that $\isequiv{f}$, we will speak of the inverse
 of $f$ and denote this $\invequiv{f}$. This expression refers implicitly to this logical
@@ -425,10 +424,11 @@ Notice also that the type expressing that a given type is a set is a proposition
 We conclude this section by presenting a highly useful sufficient condition for setness.
 Let us write down the usual definition of a decidable type.
 \begin{defn}\label{defn:decidable}
-  A type $A$ is called is decidable if it satisfies the law of excluded middle:
+  A type $A$ is called decidable if it satisfies the law of excluded middle:
   \begin{equation*}
-    \isdec{A} \quad\is\quad \pity{x~y}{A}{A + \neg A}.
+    \isdec{A} \quad\is\quad A + \neg A,
   \end{equation*}
+  where $+$ denotes the binary sum type as in the HoTT Book~\cite{hottbook}.
 \end{defn}
 
 A type is called discrete if its type of equality proofs is decidable.
@@ -448,15 +448,15 @@ and is known as Hedberg's theorem.
 \section{Powersets}\label{sec:pow}
 
 Given a type $A$, we would like to talk about its powerset: the type of \emph{properties}
-inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$. Note that the
-codomain is $\hprop{}$ rather than $\univ{}$; it is here that the property-structure
-distinction starts to become visible: one would have to use $A \rightarrow \univ{}$ for this purpose
-in non-univalent type theory. Of course, $\hprop{}$ could be defined in non-univalent type
-theory as well, but non-univalent type theory is too restrictive for one to engage in
-sophisticated developments that maintain this distinction between structure and property.
-Most importantly, there are no methods for turning structure into property in
-non-univalent type theory meaning one would not be able to express many crucial
-inhabitants of $A \rightarrow \hprop{}$ as they would involve non-trivial proof structure.
+inhabitants of $A$ might have. This is nothing but the type $A \rightarrow \hprop{}$. It is here
+that the property-structure distinction starts to become visible: one would have to use $A
+\rightarrow \univ{}$ for this purpose in non-univalent type theory. Of course, $\hprop{}$ could be
+defined in non-univalent type theory as well, but non-univalent type theory is too
+restrictive for one to engage in sophisticated developments that maintain this distinction
+between structure and property. Most importantly, there are no methods for turning
+structure into property in non-univalent type theory meaning one would not be able to
+express many crucial inhabitants of $A \rightarrow \hprop{}$ as they would involve non-trivial proof
+structure.
 
 We represent the subsets of inhabitants of a type using the powerset. This is just one
 such representation; we will present another common approach in Section~\ref{sec:fam}.
@@ -481,7 +481,7 @@ We can define the usual inclusion order on the powerset of a given type.
   Given a type $\oftyI{A}{\univ{}_n}$ and subsets $\oftyII{U}{V}{\pow{A}}$,
   $U$ is a subset of $B$ if the following type is inhabited:
   \begin{equation*}
-    \subsetof{U}{V} \quad\is\quad \pity{x}{A}{x \in U \rightarrow x \in V}.
+    \subsetof{U}{V} \quad\is\quad \pity{x}{A}{x \inn U \rightarrow x \inn V}.
   \end{equation*}
   The propositionality follows from Prop.~\ref{prop:pi-prop}.
 \end{defn}
@@ -512,8 +512,8 @@ live in the universe level we provide it as an argument; we denote this using a 
 \section{Families}\label{sec:fam}
 
 In type theory, we have two common notions of ``subset of inhabitants of a type''. One of
-these is the powerset as we presented in Sec.~\ref{sec:pow}. We now briefly summarise the
-other approach in which we view a subset of a type $A$ as an $A$-valued function (on some
+these is the powerset presented in Sec.~\ref{sec:pow}. We now briefly summarise the other
+approach in which we view a subset of a type $A$ as an $A$-valued function (on some
 domain).
 
 \begin{defn}[Family]\label{defn:fam}
