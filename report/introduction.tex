@@ -242,8 +242,16 @@ problematic (at least ostensibly), although this issue can be remedied by using 
 inductive types (similar to how the Cauchy reals are constructed in the HoTT
 book~\cite{hottbook}). The secondary contribution is the development of Coquand's idea of
 doing formal topology with interaction systems to a further extent. To the author's
-knowledge, this thesis presents the first formalised development of this approach to
-formal topology.
+knowledge, this thesis presents the first formalised\footnote{%
+  The \veragda{} formalisation is given in Appendix~\ref{app:agda-form} and can also be
+  downloaded at:
+  \begin{center}
+    \url{https://ayberkt.gitlab.io/msc-thesis/thesis-agda-formalisation.tar}.
+  \end{center}
+  The \modname{Index} module provides a list explaining how each definition and
+  proposition from the thesis maps to the \veragda{} code.
+}%
+development of this approach to formal topology.
 
 This thesis is structured as follows. In Chapter~\ref{chap:foundations}, we summarise the
 fundamentals of univalent type theory. In Chapter~\ref{chap:frames}, we present our
