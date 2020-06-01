@@ -16,9 +16,9 @@ pages:
   script:
   - ./mark_version.sh CantorSpace.lagda.md
   - make
-  - make release.zip
+  - make release.tar
   - mv html ../public
-  - mv release.zip ../public/release.zip
+  - mv release.tar ../public/release.tar
   artifacts:
     paths:
     - public
