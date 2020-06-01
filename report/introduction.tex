@@ -1,13 +1,13 @@
 \chapter{Introduction}\label{chap:intro}
 
 This thesis is about topology, the branch of mathematics that studies \emph{continuous}
-transformations which are expressed through the notion of a topological space. The idea of
-continuity pervades practically all of mathematics as pointed out by
-Sylvester~\cite[pg.~27]{armstrong-topology}: ``if I were asked to name, in one word, the
-pole star round which the mathematical firmament revolves, the central idea which pervades
-the whole corpus of mathematical doctrine, I should point to Continuity as contained in
-our notions of space, and say, it is this, it is this!''. Let us then start by considering
-the question of what topology is, especially from the perspective of computer science.
+transformations between topological spaces. The raison d'être of topological spaces is to
+allow the formulation of the notion of continuity that pervades practically all of
+mathematics, as pointed out by Sylvester~\cite[pg.~27]{armstrong-topology}: ``if I were
+asked to name, in one word, the pole star round which the mathematical firmament revolves,
+the central idea which pervades the whole corpus of mathematical doctrine, I should point
+to Continuity as contained in our notions of space, and say, it is this, it is this!''.
+Let us then start by considering the question of what topology is.
 
 The usual definition of a topological space is the following~\cite{munkres}.
 \begin{defn}[Topological space]\label{defn:topospace}
@@ -17,21 +17,21 @@ The usual definition of a topological space is the following~\cite{munkres}.
     \item $\mathcal{T}$ is closed under \emph{finite} intersections, and
     \item $\mathcal{T}$ is closed under \emph{arbitrary} unions.
   \end{itemize}
+  A topological space is a set $X$ equipped with a topology $\mathcal{T}$.
 \end{defn}
-When some set $X$ is equipped with such a topology $\mathcal{T}$, it is said to form a
-topological space. Its elements are then called \emph{points} and the members of
-$\mathcal{T}$ are called \emph{open sets} of $X$.
 
-A noteworthy thing about this definition is the asymmetry between intersection and union:
-a topology is required to be closed only under finite intersection whereas it \emph{must}
-be closed under arbitrary unions. The same asymmetry is also encountered in computer
-science.
+When a set $X$ forms a topological space i.e.~is equipped with some topology
+$\mathcal{T}$, its elements are called \emph{points} and the members of $\mathcal{T}$ are
+called \emph{open sets} of $X$. A noteworthy thing about this definition is the asymmetry
+between intersection and union: a topology is required to be closed only under finite
+intersection whereas it \emph{must} be closed under arbitrary union.
 
-Let $P$ be a program whose internal structure we do not have access to. One could say it
-is a ``black box'' although this is not to say it is a scenario occurring only in theory;
-black boxes \emph{do} occur in practice. A compiled program whose source code one does not
-have access to, or even, a program whose source code is not familiar to one, can be seen
-as examples of black boxes from one's perspective.
+This asymmetry is familiar to computer scientists from computability theory. Let $P$ be a
+program whose internal structure we do not have access to. One could say it is a ``black
+box'' although this is not to say it is a scenario occurring only in theory; black boxes
+\emph{do} occur in practice. A compiled program whose source code one does not have access
+to, or even, a program whose source code is not familiar to one, can be seen as examples
+of black boxes from one's perspective.
 
 One way or another, suppose that we are in a situation in which we have to understand the
 behaviour of some program $P$ by running it and examining its output. For the sake of
@@ -53,8 +53,8 @@ sufficient to judge that $P$ satisfies this property. In other words, at the poi
 at which we make the observation (\ref{eqn:prg-output-1}), we have gathered complete
 evidence for the fact that $P$ satisfies this property: there is no need to make any
 further examination. Whenever a program satisfies Property~\ref{eqn:obs-prop}, there will
-be a \emph{finite} prefix of the output of the program by observing which we will able
-judge for sure that $P$ satisfies this property. We refer to such properties as
+be such a \emph{finite} prefix of the output of the program by observing which we will
+able judge for sure that $P$ satisfies this property. We refer to such properties as
 \emph{observable properties}.
 
 Some properties of $P$, on the other hand, are not observable. Consider, for instance,
@@ -72,19 +72,18 @@ that $P$ does not print a third $\mathtt{2}$.
 Let us then make precise what exactly we mean by an ``observable property''.
 \begin{defn}[Observable property (informal)]
   Let $P$ be a program that prints a possibly infinite sequence $\sigma$ of integers. We say
-  that an extensional property $\phi$ of $P$ is observable iff
+  that an extensional property $\phi$ of $P$ is observable if and only if:
   \begin{center}
     if $P$ satisfies the property $\phi$, there exists a finite prefix $\sigma|_i$ of the output
     $\sigma$ of $P$ such that $P$ is \emph{verified} to satisfy $\phi$ on the basis of $\sigma|_i$:
-    given any $\sigma'$ that has $\sigma|_i$ as a prefix, $P$ will still satisfy the property even
-    if its output is $\sigma'$.
+    no extension of $\sigma|_i$ can disrupt the fact that $P$ satisfies $\phi$.
   \end{center}
 \end{defn}
 
 Another name for the class of observable properties in this context is ``semidecidable''
-although we will prefer the term ``observable'' as we will soon be generalising it to
-things that are not programs. Let us now consider some properties of the class of
-observable properties themselves.
+although we will use the term ``observable'' as we will soon be generalising it to things
+that are not programs. Let us now consider some properties of the class of observable
+properties themselves.
 
 Let $\phi_1, \cdots ,\phi_n$ be a \emph{finite} number of observable properties and assume that
 \begin{equation*}
@@ -94,8 +93,11 @@ holds. There must be \emph{stages}
 \begin{equation*}
   m_1, \cdots , m_n
 \end{equation*}
-such that $\phi_k$ is verified at stage $m_k$. $\phi_1 \wedge \cdots \wedge \phi_n$ must then be verified at
-$\max(m_1, \cdots, m_n)$. This is to say: if $\phi_1, \cdots, \phi_n$ are \emph{observable} then so is
+such that $\phi_k$ is verified at stage $m_k$. $\phi_1 \wedge \cdots \wedge \phi_n$ must then be verified at stage
+\begin{equation*}
+  \max(m_1, \cdots, m_n).
+\end{equation*}
+This is to say: if $\phi_1, \cdots, \phi_n$ are \emph{observable} then so is
 $\phi_1 \wedge \cdots \wedge \phi_n$. In other words,
 \begin{center}
   \emph{the class of observable properties is closed under finite intersection}.
@@ -110,10 +112,10 @@ some $\psi_i$ holds, meaning it must be verified at some stage $m$ as it is obse
   \emph{the class of observable properties is closed under arbitrary union}.
 \end{center}
 
-We have given an informal argument that the class of observable properties of programs
-forms a topology. This will be the perspective towards topology we will adopt in this
+We have given an informal argument that the class of observable properties of programs is
+a topology. This characterises be the perspective towards topology we will adopt in this
 thesis: we will view it as a mathematical theory of observable properties. This
-perspective towards topology has been suggested by many researchers. Although it probably
+perspective towards topology has been developed by many researchers. Although it
 originates in the work of Dana Scott~\cite{scott-original}, it was first made explicit by
 Michael Smyth~\cite{smyth-handbook}. It was then subsequently developed by,
 most saliently,
@@ -131,30 +133,28 @@ entirely compatible with our computational view of topology.
 
 We said that we are viewing programs as black boxes meaning we do not have full
 understanding of their behaviour; we only have partial understanding that we form on the
-bases of finite examinations of a given program. To work with the points directly then is
-to trivialise the fact that we do not, in general, have complete understanding of
-programs.
+bases of finite examinations. To work with the points directly then is to trivialise the
+fact that we cannot, in general, fully understand the behaviour of a program by partial
+examinations.
 
 A view of topology more compatible with this perspective is what is called
-\emph{pointless} topology~\cite{johnstone-the-point}. In pointless topology, points take a
-back seat to open sets: instead of starting with a set of points, from which the notion of
-an open set is derived, we start with a primitive set of observable properties (called the
-``opens''), and we then axiomatise the behaviour of these to reflect that they behave as a
-system of observable properties. In other words, we axiomatise the behaviour of the
-lattice of open sets of a topological space directly, that is, as an arbitrary lattice
-rather that a lattice of subsets.
+\emph{pointless} topology~\cite{johnstone-the-point}, originating from the seminal work of
+Marshall Stone~\cite{stone--original}. In pointless topology, points take a back seat to
+open sets: instead of starting with a set of points, from which the notion of an open set
+is derived, we start with a primitive set of observable properties (called the ``opens''),
+and we then axiomatise the behaviour of these to reflect that they behave as a system of
+observable properties. In other words, we axiomatise the behaviour of the lattice of open
+sets of a topological space directly, that is, as an arbitrary lattice rather than a
+lattice of subsets. The points can then be defined in terms of the opens but what is
+interesting is that one can entertain important questions of topology without mentioning
+the points at all~\cite{johnstone-the-point}.
 
 Why is this view of topology more compatible with our perspective? We said previously that
 if we are to understand the behaviour of a black-box program, we have to do this by
 examining its output up to some finite stage simply because these are the manifestations
 of the program's behaviour we can computationally access. The pointless vantage point can
 then be motivated by the fact that we only want to write down things that we can
-computationally access (i.e.~construct). The precise relationship between these two
-approaches is an \emph{adjunction} called \emph{Stone duality}, originating from the
-seminal work of Marshall Stone. More precisely, spaces are equivalent to their pointless
-representation exactly when they satisfy the property of being sober. We will not go into
-this topic in detail; the interested reader is referred to the work of
-Johstone~\cite{johnstone-the-point, stone-spaces}.
+computationally access (i.e.~construct).
 
 We have not yet precisely defined what a pointless topology is so let us do that now. As
 mentioned, the idea is to axiomatise the behaviour of the lattice of open sets. Let
@@ -177,13 +177,24 @@ are frame homomorphisms; objects of the opposite category are called \emph{local
 Therefore, frames and locales are synonymous
 \emph{as long as no mentions to morphisms are made}~\cite{vickers, stone-spaces}
 
+The precise relationship between the pointful and the pointless approaches is an
+\emph{adjunction} called \emph{Stone duality}, that is not an equivalence in general. More
+precisely, this adjunction is between the category of topological spaces and the category
+of frames, and it comprises the following functor pair: the functor taking a topological
+space to its frame of open subsets, and the functor taking a frame to the topological
+spaces formed by its set of points (which we will not define here). Spaces are equivalent
+to their pointless representation exactly when they satisfy the property of being sober.
+We will not go into this topic in detail; The interested reader is referred to the work of
+Johstone~\cite{johnstone-the-point, stone-spaces}.
+
+
 We have provided some preliminary motivation for pointless topology that applies in the
-context where we are viewing topology as a theory of observable properties. Does regular
-topology gain anything from this pointless approach? Topology notoriously relies on
+context where we are viewing it as a theory of observable properties. Does this motivation
+apply also from the perspective of general topology? Topology notoriously relies on
 classical reasoning in many of its fundamental theorems such as the Tychonoff theorem. A
 more concrete advantage of pointless topology is that by doing topology pointlessly, we
 can avoid classical reasoning and hence gain a computational understanding of it---most
-saliently of such important theorems such as the
+saliently of its crucial theorems such as the
 Tychonoff theorem~\cite{coq-tychonoff, vickers-tychonoff}. This point was put eloquently
 by Johnstone~\cite[pg.~46]{stone-spaces}:
 \begin{quote}
@@ -199,7 +210,7 @@ by Johnstone~\cite[pg.~46]{stone-spaces}:
   suspect to others) like unmotivated fanaticism. I have learned better since then.
 \end{quote}
 
-In this thesis, we are interested in investigating topology in the context of type theory,
+This thesis is concerned with investigating topology in the context of type theory,
 \emph{without} modifying its logic by the addition of postulates. The first prerequisite
 for this is that we be able to develop topology constructively, that is, without relying
 on classical principles. As pointed out by Johnstone, pointless topology can help us here
@@ -214,14 +225,24 @@ resembles a formal proof system. In addition to enabling the importation of
 proof-theoretical ideas, such a formal presentation has the virtue of being
 \emph{predicative} hence enabling the development of pointless topology in type theory.
 
-Our goal in this thesis is to investigate formal topology in the context of univalent type
-theory~\cite{hottbook, escardo-uf-intro}. By now, it has become clear that univalence,
+Our goal in this thesis is to carry out formal topology in the context of univalent type
+theory~\cite{hottbook, escardo-uf-intro}. By now, it has become clear that univalence
 addresses certain severe shortcomings of type theory, and presents a new way of engaging
-in mathematical developments in type theory. The question of what novelties it presents
-for formal topology is therefore a natural one. In attempting to answer this question, we
-follow a particular approach to formal topology, implementing an idea of
-Coquand~\cite{coq-posets} to define formal topologies as posets endowed with
-``interaction'' structures~\cite{tree-sets, hancock-interaction-systems}.
+in mathematical developments in it. The question of what novelties it presents for formal
+topology is therefore a natural one. In attempting to answer this question, we follow a
+particular approach to formal topology, implementing an idea of Coquand~\cite{coq-posets}
+to define formal topologies as posets endowed with ``interaction''
+structures~\cite{tree-sets, hancock-interaction-systems}.
+
+In summary, this thesis presents two contributions. The primary contribution is an answer
+to the question how formal topology can be done in univalent type theory. In particular,
+we find that an as is development of formal topology in univalent type theory is
+problematic (at least ostensibly), although this issue can be remedied by using higher
+inductive types (similar to how the Cauchy reals are constructed in the HoTT
+book~\cite{hottbook}). The secondary contribution is the development of Coquand's idea of
+doing formal topology with interaction systems to a further extent. To the author's
+knowledge, this thesis presents the first formalised development of this approach to
+formal topology.
 
 This thesis is structured as follows. In Chapter~\ref{chap:foundations}, we summarise the
 fundamentals of univalent type theory. In Chapter~\ref{chap:frames}, we present our
