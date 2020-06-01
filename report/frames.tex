@@ -492,8 +492,11 @@ equivalences between frames $F$ and $G$ by $\frameequiv{F}{G}$
 \begin{defn}[Frame-homomorphic equivalence]\label{defn:frame-equiv}
   Let $\oftyI{(f , p)}{\typequiv{A}{B}}$ be an equivalence between types $A$ and $B$ that
   are equipped with frame structures $s_A$ and $s_B$. $(f, p)$ is called frame-homomorphic
-  if both $f$ and $g \is \invequiv{f}$ are frame homomorphisms. We denote the type of such
-  equivalences by $\frameequiv{(A, s_A)}{(B , s_B)}$.
+  if both $f$ and $g \is \invequiv{f}$ are frame homomorphisms. We denote this by
+  $\isframehomoeqv{f, p}$, and collect all frame-homomorphic equivalences in the type:
+  \begin{equation*}
+    \frameequiv{F}{G} \quad\is\quad \sigmaty{e}{\typequiv{A}{B}}{\isframehomoeqv{e}}.
+  \end{equation*}
 \end{defn}
 
 We noted in Chapter~\ref{chap:foundations} that the type of type isomorphisms is
@@ -548,6 +551,32 @@ the generated frame uniquely \emph{up to isomorphism}. A direct corollary of
 (\ref{eqn:frame-equiv-3}) is that \emph{isomorphic frames are equal} so we can now drop
 the ``up to isomorphism'' and talk about the universal property characterising the
 generated frame \emph{uniquely}.
+
+We conclude this section by briefly explaining how it is that frames form an SNS. The
+first requirement that the identity equivalence be a frame-homomorphism is direct. We
+then have to prove the second requirement: let $A$ be a type with two frame structures
+$s$ and $t$; we have to show that the map
+\begin{equation*}
+  s = t \rightarrow \isframehomoeqv{(A, s), (A, t), \idequivnm{}}
+\end{equation*}
+is an equivalence. This is achieved by defining the inverse
+\begin{equation*}
+  \isframehomoeqv{(A, s), (A, t), \idequivnm{}} \rightarrow s = t
+\end{equation*}
+using the fact that the identity function is a frame-homomorphic equivalence. This fact
+gives us, for instance, directly that $\top_s = \top_t$, and that
+\begin{equation*}
+  \pity{x~y}{A}{x \wedge_s y = x \wedge_t y}
+\end{equation*}
+from which one can conclude, by function extensionality, that $\wedge_s = \wedge_t$. In other words,
+the fact that the identity equivalence is frame-homomorphic gives us exactly that the
+structure in $s$ and $t$ can be mapped to each other without loss of information.
+
+Once this map has been defined, we prove that it is a section and a retraction follows
+from various h-level theorems that we have proven in the \veragda{} formalisation but not
+here. These include the fact that $\rawframestrnm{}$ is an h-set, being a frame
+homomorphism is an h-prop and so on. These are not particularly interesting except for
+this result which is our justification for omitting them from the thesis.
 
 \section{Frames of downwards-closed subsets}\label{sec:down-set-frame}
 
