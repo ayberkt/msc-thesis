@@ -18,7 +18,7 @@ html/%.html: html/%.md
 	pandoc $*.md --css Agda.css -o $*.html
 
 release.zip: Main.lagda.md Basis.lagda.md Poset.lagda.md Frame.agda Nucleus.agda FormalTopology.agda Cover.lagda.md CoverFormsNucleus.lagda.md UniversalProperty.lagda.md SnocList.agda CantorSpace.lagda.md
-	zip $@ $^
+	tar -c -f $@ $^
 
 .PHONY:
 clean:
