@@ -459,19 +459,41 @@ SIP~\cite{escardo-uf-intro, agda-cubical}.
   \end{equation*}
 \end{defn}
 
-We have explained already how we use the SIP for posets. Let us now explain how we use it
-for frames. The situation is quite similar; frames form an SNS with $S \is
-\framestrnm{}_{n, o}$ and $\iota$ expressing the notion of an equivalence being homomorphic by
-requiring both directions to be frame homomorphisms as defined in
-Defn.~\ref{defn:frame-homo}. We will denote such frame-homomorphic equivalences between
-frames $F$ and $G$ by $\frameequiv{F}{G}$
+How does univalence allow us to prove this equivalence? Although the technical details are
+not relevant for the rest of the development, let us briefly explain. Let $A$ be a type,
+$\oftyI{B}{A \rightarrow \univ{}}$, a family of types, and let
+\begin{equation*}
+  \oftyII{(x, p)}{(y, q)}{\sigmaty{x}{A}{B(x)}}.
+\end{equation*}
+We can then prove that the identity type $(x , p) = (y , q)$ is equivalent to the product
+of $x = y$ and $p = q$. Of course, we need to transport $p$ or $q$ by a given proof
+$\oftyI{p}{x = y}$ of equality to even be able to write this down, but the key idea is
+that the type of identity proofs between two inhabitants of a $\Sigma$ type is equivalent to
+the product of the identity types of the multiplicands.
+
+Let $S$ be standard notion of structure, witnessed by some $\iota$, and let
+$\oftyII{(A, s)}{(B, t)}{\sigmaty{A}{\univ{}}{S(A)}}$. Suppose that $(A, s) \simeq_\iota (B, t)$.
+We already have an equivalence between $A \simeq B$ meaning we have an inhabitant $p$ of the
+identity type $A = B$ by univalence. What is then needed is an inhabitant of the identity
+type between $s = t$ (modulo transportation by $p$). This comes from the
+$\iota$-equivalence between $s$ and $t$ which is ensured by SNS condition (2) to be strong
+enough to give us this result. At this point, it might not be clear how a notion of structure is proven
+to satisfy (2). We will explain how frames are proven to form an SNS soon which we hope
+will clarify this.
+
+Let us now explain how we use the SIP for frames before explaining how they form an SNS.
+The situation is quite similar to the case of posets; frames form an SNS with $S \is
+\framestrnm{}_{n, o}$ and some $\iota$ expressing the notion of an equivalence being
+homomorphic by requiring both of its directions to be frame homomorphisms as defined in
+Defn.~\ref{defn:frame-homo}. We will call such equivalences
+\emph{frame-homomorphic equivalences} and will denote the type of frame-homomorphic
+equivalences between frames $F$ and $G$ by $\frameequiv{F}{G}$
 
 \begin{defn}[Frame-homomorphic equivalence]\label{defn:frame-equiv}
-  Let $\oftyI{e}{\typequiv{A}{B}}$ be an equivalence between types $A$ and $B$ that are
-  equipped with frame structures $s_A$ and $s_B$. $e$ is called frame-homomorphic if both
-  $f \is \mathsf{pr}_1(e)$ and $g \is \mathsf{pr}_1(\invequiv{e})$ are frame
-  homomorphisms. We denote the type of such equivalences by
-  $\frameequiv{(A, s_A)}{(B , s_B)}$.
+  Let $\oftyI{(f , p)}{\typequiv{A}{B}}$ be an equivalence between types $A$ and $B$ that
+  are equipped with frame structures $s_A$ and $s_B$. $(f, p)$ is called frame-homomorphic
+  if both $f$ and $g \is \invequiv{f}$ are frame homomorphisms. We denote the type of such
+  equivalences by $\frameequiv{(A, s_A)}{(B , s_B)}$.
 \end{defn}
 
 We noted in Chapter~\ref{chap:foundations} that the type of type isomorphisms is
@@ -520,11 +542,12 @@ called \fnname{≃f≃\equiv} whilst the one for (\ref{eqn:frame-equiv-2}) is ca
 The result given in (\ref{eqn:frame-equiv-3}) is remarkable from the perspective of formal
 topology. In Chapter~\ref{chap:formal-topo}, we will present a method for generating a
 frame from a formal topology, and then prove that it is correct in the sense that the
-frame generated following this method satisfies a certain universal property. Indeed, one
-can prove that this universal property characterises the generated frame uniquely
-\emph{up to isomorphism}. A direct corollary of (\ref{eqn:frame-equiv-3}) is that
-\emph{isomorphic frames are equal} so we can now drop the ``up to isomorphism'' and say
-that the universal property characterises the generated frame \emph{uniquely}.
+frame generated following this method satisfies a certain universal property. One could
+likely prove (although we have not done this) that this universal property characterises
+the generated frame uniquely \emph{up to isomorphism}. A direct corollary of
+(\ref{eqn:frame-equiv-3}) is that \emph{isomorphic frames are equal} so we can now drop
+the ``up to isomorphism'' and talk about the universal property characterising the
+generated frame \emph{uniquely}.
 
 \section{Frames of downwards-closed subsets}\label{sec:down-set-frame}
 
