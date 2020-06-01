@@ -59,7 +59,7 @@ proceed to a new game state. This is formally expressed by a function:
 In four pieces, namely $(A, B, C, d)$, we characterise structures that involve some kind
 of \emph{interaction}. Even though the game analogy is useful, interaction systems are
 more general than games: they express anything that can be viewed as a \emph{dialogue}
-i.e., involving two parties interacting with each other.
+i.e.~involving two parties interacting with each other.
 Hancock~\cite{hancock-interaction-systems} provides a table of various structures that can
 be viewed as interaction systems. We reproduce this (with minor notational modifications)
 in Table~\ref{tab:hancock}.
@@ -115,7 +115,7 @@ $^{,}$%
   freely used for \emph{all} interaction systems in the literature (as exemplified by
   Table~\ref{tab:hancock} as well). Our justification is that it makes no sense to call
   $B$ a type of experiments if the experiments might be \emph{taking away} existing
-  knowledge i.e., not satisfying the monotonicity property.
+  knowledge i.e.~not satisfying the monotonicity property.
 }
 (though similar notions are common in the literature, see, for
 instance,~\cite{philosophically-plausible}):
@@ -239,14 +239,14 @@ cover as an inductive type originated in the joint work of Coquand, Sambin, et
 al.~\cite{coq-sambin}.
 
 The idea is as follows: given a set $A$ that we view like a set of \emph{basic opens}
-(i.e., opens not made up using the join operator), we require a relation:
+(i.e.~opens not made up using the join operator), we require a relation:
 \begin{equation*}
   \_\covernm{}\_ : A \rightarrow \pow{A} \rightarrow \hprop{}
 \end{equation*}
 that is expected to pointlessly express the relation of being an \emph{open cover} i.e.,
 $x \covernm{} U$ iff $U$ is an open cover of $x$: $x = \bigvee_i U_i$. In other words, we are
 specifying which basic opens can be expressed as the join of which others. The information
-contained by this relation is sufficient to generate the topology (i.e., the frame).
+contained by this relation is sufficient to generate the topology (i.e.~the frame).
 
 The original formulation of formal topology by Sambin suffers a particular problem: it is
 not known how to define, predicatively, the coproduct of two frames using it. This problem
@@ -286,7 +286,7 @@ eventually the case that $a \mempownm U$'' if one views the refining of $a$ as a
 time. In other words, it might not be that $a \mempownm U$ but once stage $a$ has been reached,
 all paths that do not lead to $U$ have been ruled out: regardless of what experiments are
 run, they will eventually lead to a stage in $U$. Topologically, this is to say that the
-exterior of open $a$ is a subset of the exterior of $U$ i.e., being disjoint from $a$ is a
+exterior of open $a$ is a subset of the exterior of $U$ i.e.~being disjoint from $a$ is a
 sufficient condition for being disjoint from $U$.
 
 Let us now turn our attention to the question of how to present a frame using the cover
