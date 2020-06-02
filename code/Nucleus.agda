@@ -2,8 +2,6 @@
 
 module Nucleus where
 
-open import Function using (_∘_; id)
-
 open import Basis
 open import Poset
 open import Frame
@@ -32,18 +30,12 @@ idem L (j , N₀ , N₁ , N₂) x = ⊑[ pos L ]-antisym _ _ (N₂ x) (N₁ (j x
 mono : (L : Frame ℓ₀ ℓ₁ ℓ₂) ((j , _) : Nucleus L)
      → (x y : ∣ L ∣F) → [ x ⊑[ pos L ] y ] → [ (j x) ⊑[ pos L ] (j y) ]
 mono L (j , N₀ , N₁ , N₂) x y x⊑y =
-  j x             ⊑⟨ ≡⇒⊑ (pos L) (cong j x≡x⊓y) ⟩
-  j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)       ⟩
-  j x ⊓[ L ] j y  ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y)  ⟩
-  j y         ■
+  j x             ⊑⟨ ≡⇒⊑ (pos L) (cong j (x⊑y⇒x=x∧y L x⊑y)) ⟩
+  j (x ⊓[ L ] y)  ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)                   ⟩
+  j x ⊓[ L ] j y  ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y)              ⟩
+  j y             ■
   where
     open PosetReasoning (pos L)
-
-    x⊑x⊓y : [ x ⊑[ pos L ] (x ⊓[ L ] y) ]
-    x⊑x⊓y = ⊓[ L ]-greatest x y x (⊑[ pos L ]-refl x) x⊑y
-
-    x≡x⊓y : x ≡ x ⊓[ L ] y
-    x≡x⊓y = ⊑[ pos L ]-antisym x (x ⊓[ L ] y) x⊑x⊓y (⊓[ L ]-lower₀ x y)
 
 -- The set of fixed points for nucleus `j` is equivalent hence equal to its image.
 -- This is essentially due to the fact that j (j ())
@@ -75,8 +67,8 @@ nuclear-image L j N@(n₀ , n₁ , n₂) = isoToPath (iso f g sec-f-g ret-f-g)
     ret-f-g (x , p) = ΣProp≡ (λ y → ∥∥-prop (Σ[ a ∈ ∣ L ∣F ] y ≡ j a)) refl
 
 -- The set of fixed points for a nucleus `j` forms a poset.
-nuclear-fixed-point-poset : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Poset ℓ₀ ℓ₁
-nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , N₀ , N₁ , N₂) =
+𝔣𝔦𝔵-pos : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Poset ℓ₀ ℓ₁
+𝔣𝔦𝔵-pos {ℓ₀ = ℓ₀} {ℓ₁} L (j , N₀ , N₁ , N₂) =
   𝔽 , _≤_ , 𝔽-set , ≤-refl , ≤-trans , ≤-antisym
   where
     P = pos L
@@ -105,51 +97,40 @@ nuclear-fixed-point-poset {ℓ₀ = ℓ₀} {ℓ₁} L (j , N₀ , N₁ , N₂) 
 -- The join of this frame is define as ⊔ᵢ Uᵢ := j (⊔′ᵢ Uᵢ) where ⊔′ denotes the join of L.
 𝔣𝔦𝔵 : (L : Frame ℓ₀ ℓ₁ ℓ₂) → (N : Nucleus L) → Frame ℓ₀ ℓ₁ ℓ₂
 𝔣𝔦𝔵 {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} L N@(j , N₀ , N₁ , N₂) =
-                          ∣ nuclear-fixed-point-poset L N ∣ₚ
-  , (strₚ (nuclear-fixed-point-poset L N) , (⊤[ L ] , nuclei-resp-⊤ L N) , _∧_ , ⋁_)
+                          ∣ 𝔣𝔦𝔵-pos L N ∣ₚ
+  , (strₚ (𝔣𝔦𝔵-pos L N) , (⊤[ L ] , nuclei-resp-⊤ L N) , _∧_ , ⋁_)
   , top
   , ( (λ x y → ⊓-lower₀ x y , ⊓-lower₁ x y)
     , λ { x y z (z⊑x , x⊑y) → ⊓-greatest x y z z⊑x x⊑y })
   , ((⊔-upper , ⊔-least) , distr)
   where
-    𝒜 = π₀ (nuclear-fixed-point-poset L N)
+    𝒜 = π₀ (𝔣𝔦𝔵-pos L N)
 
     _⊑_ : ∣ pos L ∣ₚ → ∣ pos L ∣ₚ → hProp ℓ₁
     _⊑_        = λ x y → x ⊑[ pos L ] y
 
     _⊑N_ : 𝒜 → 𝒜 → hProp ℓ₁
-    _⊑N_  = λ x y → x ⊑[ nuclear-fixed-point-poset L N ] y
+    _⊑N_  = λ x y → x ⊑[ 𝔣𝔦𝔵-pos L N ] y
 
     ⋁L_ : Fam ℓ₂ ∣ L ∣F → ∣ L ∣F
     ⋁L x = ⋁[ L ] x
 
-    ⊑N-antisym = ⊑[ nuclear-fixed-point-poset L N ]-antisym
-    A-set      = carrier-is-set (nuclear-fixed-point-poset L N)
+    ⊑N-antisym = ⊑[ 𝔣𝔦𝔵-pos L N ]-antisym
+    A-set      = carrier-is-set (𝔣𝔦𝔵-pos L N)
 
     open PosetReasoning (pos L)
 
     _∧_ : 𝒜 → 𝒜 → 𝒜
     _∧_ (x , x-f) (y , y-f) =
-      x ⊓[ L ] y , ⊑[ pos L ]-antisym _ _ φ (N₁ (x ⊓[ L ] y))
+      x ⊓[ L ] y , NTS
       where
-        ⊑jx : [ j (x ⊓[ L ] y) ⊑ j x ]
-        ⊑jx = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)      ⟩
-              j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₀ (j x) (j y) ⟩
-              j x ■
-        ⊑jy : [ j (x ⊓[ L ] y) ⊑ j y ]
-        ⊑jy = j (x ⊓[ L ] y) ⊑⟨ ≡⇒⊑ (pos L) (N₀ x y)      ⟩
-              j x ⊓[ L ] j y ⊑⟨ ⊓[ L ]-lower₁ (j x) (j y) ⟩
-              j y ■
+        NTS : j (x ⊓[ L ] y) ≡ x ⊓[ L ] y
+        NTS = j (x ⊓[ L ] y)    ≡⟨ N₀ x y                      ⟩
+              j x ⊓[ L ] j y    ≡⟨ cong (λ - → - ⊓[ L ] _) x-f ⟩
+                x ⊓[ L ] j y    ≡⟨ cong (λ - → _ ⊓[ L ] -) y-f ⟩
+                x ⊓[ L ] y      ∎
 
-        ⊑x : [ j (x ⊓[ L ] y) ⊑ x ]
-        ⊑x = subst (λ z → [ j (x ⊓[ L ] y) ⊑ z ]) x-f ⊑jx
-        ⊑y : [ j (x ⊓[ L ] y) ⊑ y ]
-        ⊑y = subst (λ z → [ j (x ⊓[ L ] y) ⊑ z ]) y-f ⊑jy
-
-        φ : [ j (x ⊓[ L ] y) ⊑ (x ⊓[ L ] y) ]
-        φ = ⊓[ L ]-greatest x y (j (x ⊓[ L ] y)) ⊑x ⊑y
-
-    ⋁_ : Fam ℓ₂ 𝒜 → 𝒜
+    ⋁_ : Fam ℓ₂ 𝒜 → 𝒜
     ⋁ (I , F) = j (⋁[ L ] 𝒢) , j⊔L-fixed
       where
         𝒢 = I , π₀ ∘ F

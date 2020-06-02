@@ -5,9 +5,8 @@ module CantorSpace where
 
 open import Basis                     hiding (A; B)
 open import Cubical.Data.Empty.Base   using (⊥; rec)
-open import Cubical.Data.Bool.Base    using (true; false; _≟_)   renaming (Bool to 𝔹)
-open import Data.List                 using (List; _∷_; [])      renaming (_++_ to _^_)
-open import Data.Sum                  using (_⊎_; inj₁; inj₂)
+open import Cubical.Data.Bool.Base    using (true; false; _≟_) renaming (Bool to 𝔹)
+open import Cubical.Data.List         using (List; _∷_; [])    renaming (_++_ to _^_)
 open import Cover
 open import Poset
 open import FormalTopology
@@ -17,11 +16,6 @@ We open the `SnocList` module with the type `𝔹` of booleans.
 
 ```
 open import SnocList 𝔹  _≟_  renaming (SnocList to ℂ; SnocList-set to ℂ-set)
-
-data 𝟘 (ℓ : Level) : Type ℓ where
-
-bot : (ℓ : Level) → hProp ℓ
-bot ℓ = 𝟘 ℓ , λ ()
 ```
 
 The empty list and the snoc operator are called `[]` and `⌢` respectively. Concatenation
@@ -138,7 +132,7 @@ cantor = ℂ-pos , ℂ-IS , ℂ-mono , ℂ-sim
 from which we get a covering relation
 
 ```
-open CoverFromFormalTopology cantor renaming (_◀_ to _<ℂ|_)
+open CoverFromFormalTopology cantor renaming (_◁_ to _<ℂ|_)
 
 _ : ℂ → (ℂ → hProp zero) → Type zero
 _ = _<ℂ|_
@@ -151,7 +145,7 @@ The statement of compactness then is as follows.
 ```
 module _ (F : FormalTopology ℓ₀ ℓ₀) where
 
-  open CoverFromFormalTopology F using (_◀_)
+  open CoverFromFormalTopology F using (_◁_)
 
   private
     A = stage   F
@@ -160,12 +154,12 @@ module _ (F : FormalTopology ℓ₀ ℓ₀) where
     d = next    F
 
   down : List A → 𝒫 A
-  down []         = λ _ → bot ℓ₀
-  down (xs ∷ xss) = λ ys → ∥ [ ys ⊑[ pos F ] xs ] ⊎ [ down xss ys ] ∥ , ∥∥-prop _
+  down []       = λ _ → bot ℓ₀
+  down (x ∷ xs) = λ y → ∥ [ y ⊑[ pos F ] x ] ⊎ [ y ∈ down xs ] ∥ , ∥∥-prop _
 
   isCompact : Type (suc ℓ₀)
   isCompact = (a : A) (U : 𝒫 A) (U-dc : [ isDownwardsClosed (pos F) U ]) →
-                a ◀ U → ∥ Σ[ as ∈ List A ] (a ◀ down as) × [ down as ⊆ U ] ∥
+                a ◁ U → ∥ Σ[ as ∈ List A ] (a ◁ down as) × [ down as ⊆ U ] ∥
 ```
 
 ## The Cantor formal topology is compact
@@ -184,14 +178,14 @@ This subset is downwards-closed.
 
 ```
 ↓-dc : (xss : List ℂ) → [ isDownwardsClosed ℂ-pos (λ - → - ↓ xss) ]
-↓-dc (xs ∷ xss) ys zs ys◀xs∷xss zs≤ys =
-  ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss))) NTS ys◀xs∷xss
+↓-dc (xs ∷ xss) ys zs ys◁xs∷xss zs≤ys =
+  ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss))) NTS ys◁xs∷xss
   where
     open PosetReasoning ℂ-pos using (_⊑⟨_⟩_; _■)
 
     NTS : [ ys ≤ xs ] ⊎ [ ys ↓ xss ] → [ zs ↓ (xs ∷ xss) ]
-    NTS (inj₁ ys≤xs)  = ∣ inj₁ (zs ⊑⟨ zs≤ys ⟩ ys ⊑⟨ ys≤xs ⟩ xs ■) ∣
-    NTS (inj₂ ys◀xss) = ∣ inj₂ (↓-dc xss ys zs ys◀xss zs≤ys)    ∣
+    NTS (inl ys≤xs)  = ∣ inl (zs ⊑⟨ zs≤ys ⟩ ys ⊑⟨ ys≤xs ⟩ xs ■) ∣
+    NTS (inr ys◁xss) = ∣ inr (↓-dc xss ys zs ys◁xss zs≤ys)    ∣
 ```
 
 We claim that the Cantor space is compact.
@@ -203,8 +197,8 @@ compact : isCompact cantor
 ### Two little lemmas
 
 ```
-U⊆V⇒◀U⊆◀V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → [ U ⊆ V ] → xs <ℂ| U → xs <ℂ| V
-U⊆V⇒◀U⊆◀V xs U V U⊆V = lem₄ U V NTS xs
+U⊆V⇒◁U⊆◁V : (xs : ℂ) (U : 𝒫 ℂ) (V : 𝒫 ℂ) → [ U ⊆ V ] → xs <ℂ| U → xs <ℂ| V
+U⊆V⇒◁U⊆◁V xs U V U⊆V = ◁-lem₄ U V NTS xs
   where
     NTS : (u : ℂ) → [ u ∈ U ] → u <ℂ| V
     NTS u u∈U = dir (U⊆V u u∈U)
@@ -215,50 +209,50 @@ U⊆V⇒◀U⊆◀V xs U V U⊆V = lem₄ U V NTS xs
   ∥∥-rec (is-true-prop (ys ↓ ((xs ∷ xss) ^ yss))) NTS ys∈down-xs-xss
   where
     NTS : [ ys ≤ xs ] ⊎ [ ys ↓ xss ] → [ ys ↓ (xs ∷ xss ^ yss) ]
-    NTS (inj₁ ys≤xs)       = ∣ inj₁ ys≤xs ∣
-    NTS (inj₂ ys∈down-xss) = ∣ inj₂ (↓-++-left xss yss ys ys∈down-xss) ∣
+    NTS (inl ys≤xs)       = ∣ inl ys≤xs ∣
+    NTS (inr ys∈down-xss) = ∣ inr (↓-++-left xss yss ys ys∈down-xss) ∣
 
 ↓-++-right : (xss yss : List ℂ) → [ (λ - → - ↓ yss) ⊆ (λ - → - ↓ (xss ^ yss)) ]
 ↓-++-right xss        []         _  ()
-↓-++-right []         (ys ∷ yss) zs zs∈◀ys∷yss = zs∈◀ys∷yss
-↓-++-right (xs ∷ xss) (ys ∷ yss) zs zs∈◀ys∷yss =
-  ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss ^ ys ∷ yss))) NTS zs∈◀ys∷yss
+↓-++-right []         (ys ∷ yss) zs zs∈◁ys∷yss = zs∈◁ys∷yss
+↓-++-right (xs ∷ xss) (ys ∷ yss) zs zs∈◁ys∷yss =
+  ∥∥-rec (is-true-prop (zs ↓ (xs ∷ xss ^ ys ∷ yss))) NTS zs∈◁ys∷yss
   where
     NTS : [ zs ≤ ys ] ⊎ [ zs ↓ yss ] → [ zs ↓ (xs ∷ xss ^ ys ∷ yss) ]
-    NTS (inj₁ zs≤ys)  = let IH = ↓-++-right xss _ _ ∣ inj₁ (⊑[ ℂ-pos ]-refl ys) ∣
-                        in ∣ inj₂ (↓-dc (xss ^ ys ∷ yss) ys zs IH zs≤ys) ∣
-    NTS (inj₂ zs◀yss) = ∣ inj₂ (↓-++-right xss _ zs ∣ inj₂ zs◀yss ∣) ∣
+    NTS (inl zs≤ys)  = let IH = ↓-++-right xss _ _ ∣ inl (⊑[ ℂ-pos ]-refl ys) ∣
+                        in ∣ inr (↓-dc (xss ^ ys ∷ yss) ys zs IH zs≤ys) ∣
+    NTS (inr zs◁yss) = ∣ inr (↓-++-right xss _ zs ∣ inr zs◁yss ∣) ∣
 
-◀^-decide : (xs : ℂ) (yss zss : List ℂ)
+◁^-decide : (xs : ℂ) (yss zss : List ℂ)
           → [ xs ↓ (yss ^ zss) ]
           → ∥ [ xs ↓ yss ] ⊎ [ xs ↓ zss ] ∥
-◀^-decide xs []         zss k = ∣ inj₂ k ∣
-◀^-decide xs (ys ∷ yss) zss k = ∥∥-rec (∥∥-prop _) NTS₀ k
+◁^-decide xs []         zss k = ∣ inr k ∣
+◁^-decide xs (ys ∷ yss) zss k = ∥∥-rec (∥∥-prop _) NTS₀ k
   where
     NTS₀ : [ xs ≤ ys ] ⊎ [ xs ↓ (yss ^ zss) ] → ∥ [ xs ↓ (ys ∷ yss) ] ⊎ [ xs ↓ zss ] ∥
-    NTS₀ (inj₁ xs≤ys) = ∣ inj₁ ∣ inj₁ xs≤ys ∣ ∣
-    NTS₀ (inj₂ xs◀yss^zss) = ∥∥-rec (∥∥-prop _) NTS₁ (◀^-decide xs yss zss xs◀yss^zss)
+    NTS₀ (inl xs≤ys) = ∣ inl ∣ inl xs≤ys ∣ ∣
+    NTS₀ (inr xs◁yss^zss) = ∥∥-rec (∥∥-prop _) NTS₁ (◁^-decide xs yss zss xs◁yss^zss)
       where
         NTS₁ : [ xs ↓ yss ] ⊎ [ xs ↓ zss ] → ∥ [ xs ↓ (ys ∷ yss) ] ⊎ [ xs ↓ zss ] ∥
-        NTS₁ (inj₁ xs◀yss) = ∣ inj₁ ∣ inj₂ xs◀yss ∣ ∣
-        NTS₁ (inj₂ xs◀zss) = ∣ inj₂ xs◀zss          ∣
+        NTS₁ (inl xs◁yss) = ∣ inl ∣ inr xs◁yss ∣ ∣
+        NTS₁ (inr xs◁zss) = ∣ inr xs◁zss          ∣
 ```
 
 ### The proof
 
-The proof is by induction on the proof of `xs ◀ U`.
+The proof is by induction on the proof of `xs ◁ U`.
 
 ```
 compact xs U U-dc (dir xs∈U) = ∣ xs ∷ [] , NTS₀ , NTS₁ ∣
   where
     NTS₀ : xs <ℂ| (λ - → - ↓ (xs ∷ []))
-    NTS₀ = dir ∣ inj₁ (⊑[ ℂ-pos ]-refl xs) ∣
+    NTS₀ = dir ∣ inl (⊑[ ℂ-pos ]-refl xs) ∣
 
     NTS₁ : [ (λ - → - ↓ (xs ∷ [])) ⊆ U ]
-    NTS₁ ys ∣ys◀[xs]∣ = ∥∥-rec (is-true-prop (ys ∈ U)) NTS₁′ ∣ys◀[xs]∣
+    NTS₁ ys ∣ys◁[xs]∣ = ∥∥-rec (is-true-prop (ys ∈ U)) NTS₁′ ∣ys◁[xs]∣
       where
         NTS₁′ : [ ys ≤ xs ] ⊎ [ ys ↓ [] ] → [ U ys ]
-        NTS₁′ (inj₁ ys≤xs) = U-dc xs ys xs∈U ys≤xs
+        NTS₁′ (inl ys≤xs) = U-dc xs ys xs∈U ys≤xs
 
 compact xs U U-dc (branch tt f) =
   let
@@ -277,17 +271,17 @@ compact xs U U-dc (branch tt f) =
     NTS (yss , φ , p) (zss , ψ , q) = yss ^ zss , branch tt g , NTS′
       where
         g : (c : 𝔹) → (xs ⌢ c) <ℂ| (λ - → ℂ-down (yss ^ zss) -)
-        g false = U⊆V⇒◀U⊆◀V _ (ℂ-down zss) (ℂ-down (yss ^ zss)) (↓-++-right yss zss) ψ
-        g true  = U⊆V⇒◀U⊆◀V _ (ℂ-down yss) (ℂ-down (yss ^ zss)) (↓-++-left  yss zss) φ
+        g false = U⊆V⇒◁U⊆◁V _ (ℂ-down zss) (ℂ-down (yss ^ zss)) (↓-++-right yss zss) ψ
+        g true  = U⊆V⇒◁U⊆◁V _ (ℂ-down yss) (ℂ-down (yss ^ zss)) (↓-++-left  yss zss) φ
 
         NTS′ : [ (λ - → - ↓ (yss ^ zss)) ⊆ U ]
-        NTS′ ys ys◀yss₀^yss₁ =
-          ∥∥-rec (is-true-prop (ys ∈ U)) NTS₂ (◀^-decide _ yss _ ys◀yss₀^yss₁)
+        NTS′ ys ys◁yss₀^yss₁ =
+          ∥∥-rec (is-true-prop (ys ∈ U)) NTS₂ (◁^-decide _ yss _ ys◁yss₀^yss₁)
           where
             NTS₂ : [ ys ↓ yss ] ⊎ [ ys ↓ zss ] → [ ys ∈ U ]
-            NTS₂ (inj₁ ys◀yss₀) = p ys ys◀yss₀
-            NTS₂ (inj₂ ys◀yss₁) = q ys ys◀yss₁
+            NTS₂ (inl ys◁yss₀) = p ys ys◁yss₀
+            NTS₂ (inr ys◁yss₁) = q ys ys◁yss₁
 
-compact xs U U-dc (squash xs◀U₀ xs◀U₁ i) =
-  squash (compact xs U U-dc xs◀U₀) (compact xs U U-dc xs◀U₁) i
+compact xs U U-dc (squash xs◁U₀ xs◁U₁ i) =
+  squash (compact xs U U-dc xs◁U₀) (compact xs U U-dc xs◁U₁) i
 ```
