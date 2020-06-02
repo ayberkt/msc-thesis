@@ -222,7 +222,7 @@ even though $X$ might not be finite, its behaviour can somehow be
 \emph{reduced to finitely many observable properties}.
 
 As we have been representing topologies directly in terms of the notion of an open cover,
-it will be not too hard for us to state this property for a formal topology. As we will
+it will not be too hard for us to state this property for a formal topology. As we will
 now proceed to do this, let us first clarify some notation. We will assume the usual list
 type and denote the type of lists containing inhabitants of some type $A$, $\listty{A}$.
 The cons operator and the empty list are denoted $\_\cons\_$ and $\emptyconslist{}$
@@ -232,13 +232,13 @@ we will denote the singleton list and the append operation of both types using t
 notations: $\singletoncons{\_}$, $\textnormal{\texttt{++}}$, respectively. Again, the type
 should be clear from the context. However, in the coloured version of this thesis, the
 $\textnormal{\texttt{++}}$ operation on $\bitlist{}$ will be coloured
-{\color{darkgreen}\emph{coloured green}} as it is a definiendum we have introduced by
+{\color{darkgreen}\emph{dark green}} as it is a definiendum we have introduced by
 means of a definitional equality (Defn.~\ref{defn:concat}).
 
 One might wonder at this point why we are using two kinds of lists. We could certainly
 modify $\bitlist{}$ to accommodate polymorphic lists, and use this instead of
-$\listtynm{}$. We believe that the presentation is clearer when snoc lists are reserved
-for the type $\bitlist{}$ to foreground its downwards-growing nature.
+$\listtynm{}$. However, we believe that the presentation is clearer when snoc lists are
+reserved for the type $\bitlist{}$ to foreground its downwards-growing nature.
 
 Let us now define an auxiliary function that we will need when stating compactness.
 \begin{defn}\label{defn:fin-cover}
