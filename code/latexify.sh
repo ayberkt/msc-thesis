@@ -1,8 +1,6 @@
 #!/bin/bash
 
 declare -a files=("Basis.lagda.md"
-                  "Truncation.agda"
-                  "Powerset.agda"
                   "FormalTopology.agda"
                   "Cover.lagda.md"
                   "CoverFormsNucleus.lagda.md"
@@ -11,7 +9,6 @@ declare -a files=("Basis.lagda.md"
                   "SnocList.agda"
                   "CantorSpace.lagda.md"
                   "Frame.agda"
-                  "ProductTopology.agda"
                   "UniversalProperty.lagda.md"
                  )
 
