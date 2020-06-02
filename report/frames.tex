@@ -402,10 +402,16 @@ and $B$, equipped with $S$-structures $s_A$ and $s_B$, preserves these structure
 type of $\iota$ looks like the following:
 \begin{equation*}
   \oftyI{\iota}{%
-    \pity{(A , \_)~(B , \_)}{\sigmaty{X}{\univ{}_m}{S(X)}}{%
-      \typequiv{A}{B} \rightarrow \univ{}_o
-    }
-  }.
+    \left(
+      \sigmaty{(A, s_A)}{\sigmaty{X}{\univ{}_m}{S(X)}}{%
+        \sigmaty{(B, s_B)}{\sigmaty{X}{\univ{}_m}{S(X)}}{%
+          \typequiv{A}{B}
+        }
+      }
+    \right)
+    \rightarrow
+    \univ{}_o
+  }
 \end{equation*}
 
 In the case of posets, for instance, we pick $S \is \posetstrnm{}_k$ which has type:
@@ -468,18 +474,18 @@ $\oftyI{B}{A \rightarrow \univ{}}$, a family of types, and let
 We can then prove that the identity type $(x , p) = (y , q)$ is equivalent to the product
 of $x = y$ and $p = q$. Of course, we need to transport $p$ or $q$ by a given proof
 $\oftyI{p}{x = y}$ of equality to even be able to write this down, but the key idea is
-that the type of identity proofs between two inhabitants of a $\Sigma$ type is equivalent to
+that the type of identity proofs between two inhabitants of a $\sum$ type is equivalent to
 the product of the identity types of the multiplicands.
 
-Let $S$ be standard notion of structure, witnessed by some $\iota$, and let
+Let $S$ be a standard notion of structure, witnessed by some $\iota$, and let
 $\oftyII{(A, s)}{(B, t)}{\sigmaty{A}{\univ{}}{S(A)}}$. Suppose that $(A, s) \simeq_\iota (B, t)$.
 We already have an equivalence between $A \simeq B$ meaning we have an inhabitant $p$ of the
 identity type $A = B$ by univalence. What is then needed is an inhabitant of the identity
-type between $s = t$ (modulo transportation by $p$). This comes from the
-$\iota$-equivalence between $s$ and $t$ which is ensured by SNS condition (2) to be strong
-enough to give us this result. At this point, it might not be clear how a notion of structure is proven
-to satisfy (2). We will explain how frames are proven to form an SNS soon which we hope
-will clarify this.
+type between $s = t$ (modulo transportation by $p$). This comes from the $\iota$-equivalence
+between $s$ and $t$ which is ensured by SNS condition (2) to be strong enough to give us
+this result. At this point, it might not be clear how a notion of structure is proven to
+satisfy (2). We will explain how frames are proven to form an SNS soon which we hope will
+clarify this.
 
 Let us now explain how we use the SIP for frames before explaining how they form an SNS.
 The situation is quite similar to the case of posets; frames form an SNS with $S \is
@@ -492,10 +498,12 @@ equivalences between frames $F$ and $G$ by $\frameequiv{F}{G}$
 \begin{defn}[Frame-homomorphic equivalence]\label{defn:frame-equiv}
   Let $\oftyI{(f , p)}{\typequiv{A}{B}}$ be an equivalence between types $A$ and $B$ that
   are equipped with frame structures $s_A$ and $s_B$. $(f, p)$ is called frame-homomorphic
-  if both $f$ and $g \is \invequiv{f}$ are frame homomorphisms. We denote this by
-  $\isframehomoeqv{f, p}$, and collect all frame-homomorphic equivalences in the type:
+  if both $f$ and $\invequiv{f}$ are frame homomorphisms. We denote this by
+  $\isframehomoeqv{(A, s_A), (B, s_B), (f, p)}$, and collect all frame-homomorphic
+  equivalences in the type:
   \begin{equation*}
-    \frameequiv{F}{G} \quad\is\quad \sigmaty{e}{\typequiv{A}{B}}{\isframehomoeqv{e}}.
+    \frameequiv{F}{G} \quad\is\quad
+      \sigmaty{e}{\typequiv{\abs{F}}{\abs{G}}}{\isframehomoeqv{F, G, e}}.
   \end{equation*}
 \end{defn}
 
@@ -570,13 +578,13 @@ gives us, for instance, directly that $\top_s = \top_t$, and that
 \end{equation*}
 from which one can conclude, by function extensionality, that $\wedge_s = \wedge_t$. In other words,
 the fact that the identity equivalence is frame-homomorphic gives us exactly that the
-structure in $s$ and $t$ can be mapped to each other without loss of information.
+structures $s$ and $t$ can be mapped to each other without loss of information.
 
-Once this map has been defined, we prove that it is a section and a retraction follows
-from various h-level theorems that we have proven in the \veragda{} formalisation but not
-here. These include the fact that $\rawframestrnm{}$ is an h-set, being a frame
+Once this map has been defined, we prove that it is a section and a retraction, which
+follows from various h-level theorems that we have proven in the \veragda{} formalisation
+but not here. These include the fact that $\rawframestrnm{}$ is an h-set, being a frame
 homomorphism is an h-prop and so on. These are not particularly interesting except for
-this result which is our justification for omitting them from the thesis.
+this result and we hence omit them.
 
 \section{Frames of downwards-closed subsets}\label{sec:down-set-frame}
 
