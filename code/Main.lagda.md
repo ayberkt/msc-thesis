@@ -13,5 +13,4 @@ open import CoverFormsNucleus
 open import BaireSpace
 open import UniversalProperty
 open import CantorSpace
-open import Sierpinski
 ```
