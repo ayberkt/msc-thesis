@@ -747,26 +747,29 @@ making the diagram commute---specifically, when showing that it respects joins.
   \end{equation*}
 \end{lemma}
 \begin{proof}
-  We proceed by antisymmetry. The ($\sqsupseteq$) direction easily follows by the LUB property.
-  For the ($\sqsubseteq$) direction, it suffices to by the LUB property to show
+  We proceed by antisymmetry. The ($\sqsupseteq$) direction easily follows by the LUB property. For
+  the ($\sqsubseteq$) direction, it suffices by the LUB property to show:
   \begin{equation*}
-    \pity{x}{A_{\McF}}{%
-      x \mempownm \bigvee^L U \rightarrow f(x) \sqsubseteq
-        \bigvee^R \setof{
-              f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
-            }
-    }
+    \pity{a}{A_{\McF}}{%
+      a \mempownm \bigvee^L U \rightarrow
+        f(a)
+        \sqsubseteq
+        \bigvee^R
+        \setof{%
+          f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF}}{a \inn U_i}}
+        }
+    }.
   \end{equation*}
-  Let $\oftyI{x}{A_{\McF}}$ such that $x \mempownm \bigvee^L U \rightarrow f(x)$. We proceed by induction
-  on the proof of $x \mempownm \bigvee^L U \rightarrow f(x)$.
+  Let $\oftyI{a}{A_{\McF}}$ such that $a \mempownm \bigvee^L U$. We proceed by induction on the
+  proof of $a \inn \bigvee^L U$.
   \begin{itemize}
-    \item Case $\ruledir{}$. Direct by the recursion principle of truncation and the
+    \item Case $\ruledir{}$. Direct using the recursion principle of truncation and the
       fact that $\bigvee^R$ is an upper bound.
-    \item Case $\rulebranch{}$. We have some experiment $\oftyI{b}{B(x)}$ such that for
-      every $\oftyI{c}{C(x, b)}$, $\covers{d(x, b, c)}{U}$.
+    \item Case $\rulebranch{}$. We have some experiment $\oftyI{b}{B(a)}$ such that for
+      every $\oftyI{c}{C(a, b)}$, $\covers{d(a, b, c)}{U}$.
       \begin{alignat*}{3}
-               & && f(x) &&                                   \\
-        \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(d(x, b, c)) ~|~ c : C(x, b) }
+               & && f(a) &&                                   \\
+        \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(d(a, b, c)) ~|~ c : C(a, b) }
                &&\quad [\text{$f$ represents}] \\
         \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(a) ~|~ (\_, (a, \_))
                             : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
@@ -785,15 +788,16 @@ making the diagram commute---specifically, when showing that it respects joins.
   $\oftyI{g}{\framehomo{L}{R}}$ such that $f = g \circ \eta$.
 
   We choose
-  \begin{align*}
-    g    \quad&:\quad \abs{L} \rightarrow \abs{R}              \\
-    g(U) \quad&\is\quad \bigvee^R \setof{ f(u) ~|~ u \mempownm U } .
-  \end{align*}
+  \begin{alignat*}{2}
+    g    \quad&:\quad   && \abs{L} \rightarrow \abs{R}                     \\
+    g(U) \quad&\is\quad && \bigvee^R \setof{ f(u) ~|~ u \mempownm U }  .
+  \end{alignat*}
   To show that the diagram commutes, it suffices by Proposition~\ref{prop:funext} to show
-  $f(x) = g(\eta(x))$ for every $\oftyI{x}{A_{\McF{}}}$. Let $\oftyI{x}{A_{\McF{}}}$; we
-  proceed by antisymmetry. The $f(x) \sqsubseteq g(\eta(x))$ direction is easy: $g(\eta(x)) = \bigvee^R f(\eta(x))$
-  and $\bigvee^R$ is an upper bound of $f(\eta(x))$ so it suffices to show
-  $f(x) \mempownm f(\eta(x))$. This is immediate since $x \mempownm \eta(x)$.
+  $f(a) = g(\eta(a))$ for every $\oftyI{a}{A_{\McF}}$ (also by
+  Proposition~\ref{prop:to-subtype} to be precise). Let $\oftyI{a}{A_{\McF{}}}$; we proceed
+  by antisymmetry. The $f(a) \sqsubseteq g(\eta(a))$ direction is easy: $g(\eta(a)) \equiv \bigvee^R f(\eta(a))$ and
+  $\bigvee^R$ is an upper bound of $f(\eta(a))$ so it suffices to show $f(a) \mempownm f(\eta(a))$.
+  This is immediate since $a \inn \eta(a)$.
 
   The other direction is the interesting one. First, we prove a lemma in preparation:
   \emph{%
@@ -881,7 +885,7 @@ making the diagram commute---specifically, when showing that it respects joins.
   \begin{align*}
     g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \mempownm \bigvee^L_i U_i }
                 && [\text{Lemma~\ref{lem:resp-join}}]\\
-    &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{x}{A_{\McF{}}}{x \mempownm U_i}}} }
+    &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{a'}{A_{\McF{}}}{a' \mempownm U_i}}} }
                 && [\text{Lemma~\ref{lem:flatten}}] \\
              &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ \oftyI{i}{I} } \\
              &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \mempownm U }.
