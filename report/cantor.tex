@@ -34,25 +34,25 @@ topology.
   \label{fig:cantor}
   \centering
   \begin{forest}
-    for tree={l sep=20pt}
+    for tree={l=1cm, l sep=20pt, text height=1.6ex, text depth=0.6ex}
     [$\emptylist{}$
-      [1, edge=dashed
+      [0, edge=dashed
         [0, edge=dashed
           [0, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
           [1, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ] ]
         [1, edge=dashed
-          [0, edge=dashed [ $\vdots$~, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [0, edge=dashed [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
           [1, edge=dashed
-            [ $\vdots$, edge=dashed ] [ $\vdots$~, edge=dashed ] ]
+            [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
         ]
       ]
-      [\textbf{0}, edge=thick,
-        [\textbf{0}, edge=thick
+      [1, edge=thick,
+        [0, edge=thick
           [0, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
-          [\textbf{1}, edge=thick, circle, draw={red, radius=0.3pt, thick}
+          [\encircle{1}, edge=thick
             [ $\vdots$, edge=dashed ]
             [ $\vdots$, edge=dashed ] ] ]
         [1, edge=dashed
