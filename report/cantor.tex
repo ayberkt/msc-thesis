@@ -29,37 +29,37 @@ topology.
     (i.e.~observed prefixes) about a sequence as there is a unique path from each node to
     the root. Dashed lines denote possible outcomes whereas plain lines denote actual
     ones. The encircled node is the stage of information at which the prefix $\emptylist{}
-    \frown 0 \frown 0 \frown 1$ has been observed.
+    \frownn \bitI \frownn \bitO \frownn \bitI$ has been observed.
   }
   \label{fig:cantor}
   \centering
   \begin{forest}
     for tree={l=1cm, l sep=20pt, text height=1.6ex, text depth=0.6ex}
     [$\emptylist{}$
-      [0, edge=dashed
-        [0, edge=dashed
-          [0, edge=dashed
+      [$\bitO$, edge=dashed
+        [$\bitO$, edge=dashed
+          [$\bitO$, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
-          [1, edge=dashed
+          [$\bitI$, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ] ]
-        [1, edge=dashed
-          [0, edge=dashed [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
-          [1, edge=dashed
+        [$\bitI$, edge=dashed
+          [$\bitO$, edge=dashed [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
+          [$\bitI$, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
         ]
       ]
-      [1, edge=thick,
-        [0, edge=thick
-          [0, edge=dashed
+      [$\bitI$, edge=thick,
+        [$\bitO$, edge=thick
+          [$\bitO$, edge=dashed
             [ $\vdots$, edge=dashed ] [ $\vdots$, edge=dashed ] ]
-          [\encircle{1}, edge=thick
+          [\encircle{$\bitI$}, edge=thick
             [ $\vdots$, edge=dashed ]
             [ $\vdots$, edge=dashed ] ] ]
-        [1, edge=dashed
-          [0, edge=dashed
+        [$\bitI$, edge=dashed
+          [$\bitO$, edge=dashed
             [ $\vdots$, edge=dashed ]
             [ $\vdots$, edge=dashed ] ]
-          [ 1, edge=dashed
+          [$\bitI$, edge=dashed
             [ $\vdots$, edge=dashed ]
             [ $\vdots$, edge=dashed ] ] ]
       ] 
