@@ -12,7 +12,6 @@ open import Cover
 open import CoverFormsNucleus
 open import BaireSpace
 open import UniversalProperty
-open import ProductTopology
 open import CantorSpace
 open import Sierpinski
 ```
