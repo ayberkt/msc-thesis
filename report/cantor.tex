@@ -87,10 +87,12 @@ Fig.~\ref{fig:cantor}.
 To write this down formally, we first need to define the inductive type of (snoc) lists.
 
 \begin{defn}[Boolean snoc lists]\label{defn:list}
-  The type $\bitlist{}$ of lists of booleans is inductively defined by two constructors:
+  The type $\bitlist{}$ of snoc lists of booleans is inductively defined by two
+  constructors:
   \[
     \begin{prooftree}
-      \infer0{\oftyI{\emptylist{}}{\bitlist{}}}
+      \hypo{\phantom{\bitlist}}
+      \infer1{\oftyI{\emptylist{}}{\bitlist{}}}
     \end{prooftree}
     \qquad
     \begin{prooftree}
