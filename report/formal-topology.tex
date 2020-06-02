@@ -598,8 +598,8 @@ point for $\covernm{}$, as we will show, so its type can be refined to $\oftyI{\
     \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}.
   \end{align*}
   The fact that $\eta$ is monotonic follows from Proposition~\ref{prop:lem1}. It remains to
-  be shown that $\eta(a)$ is a fixed point of $\covernm$ for every $\oftyI{a}{A_{\McF{}}}$.
-  Let $\oftyI{a}{A_{\McF{}}}$. We need to show $\covers{\_}{(\covers{\_}{\lifta{a}})} =
+  be shown that $\eta(a)$ is a fixed point of $\RHD$ for every $\oftyI{a}{A_{\McF{}}}$. Let
+  $\oftyI{a}{A_{\McF{}}}$. We need to show $\covers{\_}{(\covers{\_}{\lifta{a}})} =
   \covers{\_}{\lifta{a}}$. We proceed by antisymmetry. $\covers{\_}{\lifta{a}} \subseteq
   \covers{\_}{(\covers{\_}{\lifta{a}})}$ follows by $N_1$. The other direction is a direct
   application of Proposition~\ref{prop:lem4}.
@@ -694,7 +694,7 @@ Using flat monotonic maps, the universal property can now be stated.
 
 First, observe how $\iscontrnm{}$ (Defn.~\ref{defn:contr}) expresses ``there exists a
 unique'' in the statement of this theorem. Given some type $A$ and a family of
-propositions $\oftyI{B}{A \rightarrow \univ{}}$ on $A$, to assert
+propositions $\oftyI{B}{A \rightarrow \hprop{}}$ on $A$, to assert
 \begin{equation*}
   \iscontr{\sigmaty{x}{A}{B(x)}},
 \end{equation*}
@@ -723,21 +723,23 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
   direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
       $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }}$.
   Recall that the join operation of the frame of fixed points for a nucleus (Theorem
-  \ref{thm:fixed-point-frame}) of some frame $F$ is defined by applying the nucleus on the
+  \ref{thm:fixed-point-frame}) on some frame $F$ is defined by applying the nucleus on the
   join operator of $F$. This is to say that we have
   $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \mempownm U }}$. The result follows by induction on the
   proof of this fact, in the $\ruledir{}$ case of which Prop.~\ref{prop:lem4} and the
   induction principle of truncation are used.
 \end{proof}
 
+We will also need the following lemma when showing the existence of a frame homomorphism
+making the diagram commute---specifically, when showing that it respects joins.
 \begin{lemma}\label{lem:resp-join}
   Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
   $\fix{\dcframe{A_{\McF{}}}}{\RHD}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
   monotonic map that represents $\McF{}$ in $R$ (as defined in Defn.~\ref{defn:rep}).
-  Given any $\oftyI{x}{A_{\McF}}$, and $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$,
-  if $x \mempownm \bigvee_L U$ then
+  Given any $\oftyI{a}{A_{\McF}}$, and $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$,
+  if $a \mempownm \bigvee^L U$ then
   \begin{equation*}
-    f(x)
+    \bigvee^R \setof{ f(a) ~|~ a \inn \bigvee^L U }
     =
     \bigvee^R \setof{
           f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
