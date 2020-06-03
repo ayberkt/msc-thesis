@@ -49,9 +49,7 @@ def latexify(fname):
         output_file.write("\\subsection*{{{}}}\n".format(line[3:].rstrip()))
         output_file.write("\\begin{code}\n")
       elif line[0:4] == "### ":
-        output_file.write("\\end{code}\n")
-        output_file.write("\\subsubsection*{{{}}}\n".format(line[4:].rstrip()))
-        output_file.write("\\begin{code}\n")
+        output_file.write("-- " + line[4:])
       else:
         if line == "\n":
           output_file.write("\n")
