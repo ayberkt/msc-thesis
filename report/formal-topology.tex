@@ -733,11 +733,13 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
 We will also need the following lemma when showing the existence of a frame homomorphism
 making the diagram commute---specifically, when showing that it respects joins.
 \begin{lemma}\label{lem:resp-join}
-  Let $\McF{}$ be a formal topology and $R$ a frame and let $L$ denote
-  $\fix{\dcframe{A_{\McF{}}}}{\RHD}$. Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat}
-  monotonic map that represents $\McF{}$ in $R$ (as defined in Defn.~\ref{defn:rep}).
-  Given any $\oftyI{a}{A_{\McF}}$, and $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$,
-  if $a \mempownm \bigvee^L U$ then
+  Let $\McF{}$ be a formal topology, $R$, a frame and let
+  \begin{equation*}
+    L \quad\is\quad \fix{\dcframe{A_{\McF{}}}}{\RHD}.
+  \end{equation*}
+  Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat} monotonic map that represents $\McF{}$ in
+  $R$ (as defined in Defn.~\ref{defn:rep}). Given any $\oftyI{a}{A_{\McF}}$, and
+  $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$, if $a \mempownm \bigvee^L U$ then
   \begin{equation*}
     \bigvee^R \setof{ f(a) ~|~ a \inn \bigvee^L U }
     =

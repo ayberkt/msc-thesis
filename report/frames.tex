@@ -478,14 +478,16 @@ that the type of identity proofs between two inhabitants of a $\sum$ type is equ
 the product of the identity types of the multiplicands.
 
 Let $S$ be a standard notion of structure, witnessed by some $\iota$, and let
-$\oftyII{(A, s)}{(B, t)}{\sigmaty{A}{\univ{}}{S(A)}}$. Suppose that $(A, s) \simeq_\iota (B, t)$.
-We already have an equivalence between $A \simeq B$ meaning we have an inhabitant $p$ of the
-identity type $A = B$ by univalence. What is then needed is an inhabitant of the identity
-type between $s = t$ (modulo transportation by $p$). This comes from the $\iota$-equivalence
-between $s$ and $t$ which is ensured by SNS condition (2) to be strong enough to give us
-this result. At this point, it might not be clear how a notion of structure is proven to
-satisfy (2). We will explain how frames are proven to form an SNS soon which we hope will
-clarify this.
+\begin{equation*}
+  \oftyII{(A, s)}{(B, t)}{\sigmaty{A}{\univ{}}{S(A)}}.
+\end{equation*}
+Suppose that $(A, s) \simeq_\iota (B, t)$. We already have an equivalence between $A \simeq B$ meaning
+we have an inhabitant $p$ of the identity type $A = B$ by univalence. What is then needed
+is an inhabitant of the identity type between $s = t$ (modulo transportation by $p$). This
+comes from the $\iota$-equivalence between $s$ and $t$ which is ensured by SNS condition (2)
+to be strong enough to give us this result. At this point, it might not be clear how a
+notion of structure is proven to satisfy (2). We will explain how frames are proven to
+form an SNS soon which we hope will clarify this.
 
 Let us now explain how we use the SIP for frames before explaining how they form an SNS.
 The situation is quite similar to the case of posets; frames form an SNS with $S \is

@@ -295,9 +295,12 @@ lemmas for the sake of clarity.
 \end{proof}
 
 \begin{lemma}\label{lem:comp2}
-  Given two lists $\oftyII{bss_0}{bss_1}{\listty{\bitlist{}}}$,
-  $\subsetof{\fincover{bss_0}}{\fincover{bss_0 \append bss_1}}$ and
-  $\subsetof{\fincover{bss_1}}{\fincover{bss_0 \append bss_1}}$.
+  For any two lists $\oftyII{bss_0}{bss_1}{\listty{\bitlist{}}}$,
+  \begin{equation*}
+    \fincover{bss_0} \subsetofnm{} \fincover{bss_0 \append bss_1}
+    \quad\text{and}\quad
+    \fincover{bss_1} \subsetofnm{} \fincover{bss_0 \append bss_1}.
+  \end{equation*}
 \end{lemma}
 \begin{proof}[Proof sketch]
   Straightforward induction. Notice, however that the recursion principle of propositional
@@ -356,7 +359,7 @@ inhabitants of $\bool{}$ by $\bitI{}$ and $\bitO{}$.
       \quad\text{and}\quad
       \subsetof{\fincover{bss_0 \append bss_1}}{U}.
     \end{equation*}
-    The second conjunct is easy to verify. Let $bss' \in \fincover{bss_0 \append bss_1}$. By
+    The right conjunct is easy to verify. Let $bss' \in \fincover{bss_0 \append bss_1}$. By
     Lemma~\ref{lem:comp3}, we have two cases: either $bss' \in \fincover{bss_0}$ or $bss' \in
     \fincover{bss_1}$. In either case, we have that $bss' \in U$ by (\ref{eqn:comp-ass-2}).
 
