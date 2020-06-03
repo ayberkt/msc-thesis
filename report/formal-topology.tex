@@ -614,28 +614,28 @@ be a formal topology and $F$ a frame. Consider a monotonic function $f : A_{\mat
 notion of $f$ representing $\McF{}$ in $F$.
 
 \begin{defn}[Representation]\label{defn:rep}
-  Given a formal topology $\mathcal{F} \equiv (A, B, C, d)$, a frame $F$, and a function
-  $\oftyI{f}{A \rightarrow \abs{F}}$, we say that $f$ represents $\mathcal{F}$ in $F$ if the
+  Given a formal topology $\mathcal{F} \equiv (A, B, C, d)$, a frame $R$, and a function
+  $\oftyI{f}{A \rightarrow \abs{R}}$, we say that $f$ represents $\McF$ in $R$ if the
   following type is inhabited:
   \begin{equation*}
-    \represents{\mathcal{F}}{F}{f} \quad\is\quad
+    \represents{\McF}{R}{f} \quad\is\quad
       \pity{a}{A}{
-        \pity{b}{B(x)}{
-          f(a) \sqsubseteq \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c)).
+        \pity{b}{B(a)}{
+          f(a) \sqsubseteq \bigvee^R_{\oftyI{c}{C(a, b)}} f(d(a, b, c)).
         }
       }
   \end{equation*}
 \end{defn}
 
-It can be shown that the opposite direction of the inequality asserted by $\representsnm$
-always holds. To assert $\represents{\McF}{F}{f}$ is then to assert
+It can be shown that the opposite direction of the inequality expressed in the definition
+of $\representsnm$ always holds. To assert $\represents{\McF}{R}{f}$ is then to assert:
 \begin{equation*}
-  \pity{a}{A}{\pity{b}{B(x)}{f(a) = \bigvee_{\oftyI{c}{C(a, b)}} f(d(a, b, c))}}.
+  \pity{a}{A}{\pity{b}{B(a)}{f(a) = \bigvee^R_{\oftyI{c}{C(a, b)}} f(d(a, b, c))}}.
 \end{equation*}
 This property therefore expresses that $R$ behaves like a model of the covering relation
-of the formal topology $\McF$, that is, the join of $R$ reflects the covering relation
-induced by the formal-topological structure of $\McF$. This is the idea underlying the
-name ``representation''.
+of the formal topology $\McF$, that is, that the join of $R$ reflects the covering
+relation induced by the formal-topological structure of $\McF$. This is the idea
+underlying the name ``representation''.
 
 To state the universal property, we will work with \emph{flat} monotonic maps. This is the
 special case of the notion of a \emph{flat functor}~\cite{nlab-flat-functor} in the case
