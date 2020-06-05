@@ -1,7 +1,7 @@
 #!/bin/bash
 
 declare -a files=("Basis.lagda.md"
-                  "FormalTopology.agda"
+                  "FormalTopology.lagda.md"
                   "Cover.lagda.md"
                   "CoverFormsNucleus.lagda.md"
                   "Nucleus.agda"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
-files = [ "FormalTopology.agda",
+files = [ "FormalTopology.lagda.md",
           "Cover.lagda.md",
           "CoverFormsNucleus.lagda.md",
           "Nucleus.agda",

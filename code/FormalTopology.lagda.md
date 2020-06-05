@@ -1,10 +1,15 @@
+```agda
 {-# OPTIONS --cubical --safe #-}
 
 module FormalTopology where
 
 open import Basis
 open import Poset
+```
 
+## Interaction systems
+
+```agda
 InteractionStr : (A : Type ℓ) → Type (suc ℓ)
 InteractionStr {ℓ = ℓ} A =
   Σ[ B ∈ (A → Type ℓ) ] Σ[ C ∈ ({x : A} → B x → Type ℓ) ]({x : A} → {y : B x} → C y → A)
@@ -22,14 +27,22 @@ state    (A , _ , _ , _) = A
 action   (_ , B , _ , _) = B
 reaction (_ , _ , C , _) = C
 δ        (_ , _ , _ , d) = d
+```
 
+## The monotonicity property
+
+```agda
 hasMono : (P : Poset ℓ₀ ℓ₁) → InteractionStr ∣ P ∣ₚ → Type (ℓ₀ ⊔ ℓ₁)
 hasMono P i =
   (a : state IS) (b : action IS a) (c : reaction IS b) → [ δ IS c ⊑[ P ] a ]
   where
     IS : InteractionSys _
     IS = ∣ P ∣ₚ , i
+```
 
+## The simulation property
+
+```agda
 module _ (P : Poset ℓ₀ ℓ₁) (ℐ-str : InteractionStr ∣ P ∣ₚ) where
   ℐ : InteractionSys ℓ₀
   ℐ = (∣ P ∣ₚ , ℐ-str)
@@ -39,7 +52,11 @@ module _ (P : Poset ℓ₀ ℓ₁) (ℐ-str : InteractionStr ∣ P ∣ₚ) where
     (a′ a : ∣ P ∣ₚ) → [ a′ ⊑[ P ] a ] →
       (b : action ℐ a) → Σ[ b′ ∈ action ℐ a′ ]
         ((c′ : reaction ℐ b′) → Σ[ c ∈ reaction ℐ b ] [ δ ℐ c′ ⊑[ P ] δ ℐ c ])
+```
 
+## Definition of a formal topology
+
+```agda
 FormalTopology : (ℓ₀ ℓ₁ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁)
 FormalTopology ℓ₀ ℓ₁ =
   Σ[ P ∈ Poset ℓ₀ ℓ₁ ] Σ[ ℐ ∈ InteractionStr ∣ P ∣ₚ ] hasMono P ℐ × hasSimulation P ℐ
@@ -67,3 +84,4 @@ mono (_ , _ , φ , _) = φ
 
 sim : (ℱ : FormalTopology ℓ₀ ℓ₁) → hasSimulation (pos ℱ) (IS ℱ)
 sim (_ , _ , _ , φ) = φ
+```
