@@ -4,6 +4,8 @@
 /* See https://hub.darcs.net/divip/AgdaTutorial/browse/LICENSE for their     */
 /* license.                                                                  */
 
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap');
+
 /* Aspects. */
 .Comment       { color: #B22222 }
 .Keyword       { color: #CD6600 }
@@ -129,17 +131,19 @@ input, textarea { font-size: 100%; } /* monospace correction */
 
 /* font family, style, weight, text decoration */
 
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap');
+
 h1, h2, h3 {
   font-weight: bold;
 }
 
 pre code, textarea, div.string {
-  font-family: monospace;
+  font-family: 'Fira Mono', monospace;
   font-size: 130%;
 }
 
 pre.Agda {
-  font-family: monospace;
+  font-family: 'Fira Mono', monospace;
   line-height: 120%;
   font-size: 150%;
 }
