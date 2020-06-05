@@ -1,3 +1,4 @@
+```agda
 {-# OPTIONS --without-K --cubical --safe #-}
 
 module Frame where
@@ -7,15 +8,20 @@ open import Cubical.Foundations.Function using (uncurry)
 open import Cubical.Foundations.SIP                       renaming (SNS-≡ to SNS)
 open import Cubical.Foundations.Equiv    using (_≃⟨_⟩_)   renaming (_■ to _𝔔𝔈𝔇)
 open import Poset
+```
 
+```agda
 module JoinSyntax (A : Type ℓ₀) {ℓ₂ : Level} (join : Fam ℓ₂ A → A) where
 
   join-of : {I : Type ℓ₂} → (I → A) → A
   join-of {I = I} f = join (I , f)
 
   syntax join-of (λ i → e) = ⋁⟨ i ⟩ e
+```
 
+## Definition of a frame
 
+```agda
 RawFrameStr : (ℓ₁ ℓ₂ : Level) → Type ℓ₀ → Type (ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 RawFrameStr ℓ₁ ℓ₂ A = PosetStr ℓ₁ A × A × (A → A → A) × (Fam ℓ₂ A → A)
 
@@ -33,7 +39,9 @@ RawFrameStr-set ℓ₁ ℓ₂ A = isSetΣ (PosetStr-set ℓ₁ A) NTS
       where
         A-set : isSet A
         A-set = carrier-is-set (A , pos)
+```
 
+```agda
 isTop : (P : Poset ℓ₀ ℓ₁) → ∣ P ∣ₚ → hProp (ℓ₀ ⊔ ℓ₁)
 isTop P x = ((y : ∣ P ∣ₚ) → [ y ⊑[ P ] x ]) , isPropΠ λ y → is-true-prop (y ⊑[ P ] x)
 
@@ -76,7 +84,9 @@ isDist {ℓ₂ = ℓ₂} P _⊓_ ⋁_ = ∧-dist-over-⋁ , ∧-dist-over-⋁-pr
 
     ∧-dist-over-⋁-prop : isProp ∧-dist-over-⋁
     ∧-dist-over-⋁-prop p q = funExt₂ λ x U → carrier-is-set P _ _ (p x U) (q x U)
+```
 
+```agda
 FrameAx : {A : Type ℓ₀} → RawFrameStr ℓ₁ ℓ₂ A → hProp (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 FrameAx {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} {A = A} (s@(_⊑_ , _) , ⊤ , _∧_ , ⋁_) =
   isTop P ⊤ ⊓ isGLB P _∧_ ⊓ isLUB P ⋁_ ⊓ isDist P _∧_ ⋁_
@@ -89,18 +99,25 @@ FrameStr ℓ₁ ℓ₂ A  = Σ[ s ∈ RawFrameStr ℓ₁ ℓ₂ A ] [ FrameAx s 
 
 Frame : (ℓ₀ ℓ₁ ℓ₂ : Level) → Type (suc ℓ₀ ⊔ suc ℓ₁ ⊔ suc ℓ₂)
 Frame ℓ₀ ℓ₁ ℓ₂ = Σ[ A ∈ Type ℓ₀ ] FrameStr ℓ₁ ℓ₂ A
+```
 
--- Projection for the carrier set of a frame
--- i.e., the carrier set of the underlying poset.
+Projection for the carrier set of a frame i.e., the carrier set of the underlying poset.
+
+```agda
 ∣_∣F : Frame ℓ₀ ℓ₁ ℓ₂ → Type ℓ₀
 ∣ A , _ ∣F = A
+```
 
--- The underlying poset of a frame.
+The underlying poset of a frame.
+
+```agda
 pos : Frame ℓ₀ ℓ₁ ℓ₂ → Poset ℓ₀ ℓ₁
 pos (A , (P , _) , _) = A , P
+```
 
--- Projections for the top element, meet, and join of a frame.
+Projections for the top element, meet, and join of a frame.
 
+```agda
 ⊤[_] : (F : Frame ℓ₀ ℓ₁ ℓ₂) → ∣ F ∣F
 ⊤[ _ , (_ , (⊤ , _)) , _ ] = ⊤
 
@@ -111,9 +128,11 @@ syntax glb-of F x y = x ⊓[ F ] y
 
 ⋁[_]_ : (F : Frame ℓ₀ ℓ₁ ℓ₂) → Fam ℓ₂ ∣ F ∣F → ∣ F ∣F
 ⋁[ (_ , (_ , (_ , _ , ⋁_)) , _) ] U = ⋁ U
+```
 
--- Projections for frame laws.
+Projections for frame laws.
 
+```agda
 module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
   private
     P = pos F
@@ -169,7 +188,11 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
     where
       NTS : [ (⋁[ F ] U) ⊑ z ]
       NTS = ⋁[_]-least U z upper
+```
 
+Some laws that hold in any frame.
+
+```agda
   x⊑y⇒x=x∧y : {x y : ∣ F ∣F}
             → [ x ⊑ y ] → x ≡ x ⊓[ F ] y
   x⊑y⇒x=x∧y {x} {y} x⊑y = ⊑[ pos F ]-antisym _ _ down up
@@ -276,7 +299,11 @@ module _ (F : Frame ℓ₀ ℓ₁ ℓ₂) where
             subst
               (λ - → x ε (_ , -))
               (funExt (λ { (j′ , i′) → comm (U $ i′) (V $ j′) })) ((j , i) , eq)
+```
 
+## Frame homomorphisms
+
+```agda
 isRawFrameHomo : (M : Σ[ A ∈ Type ℓ₀  ] RawFrameStr ℓ₁  ℓ₂ A)
                  (N : Σ[ B ∈ Type ℓ₀′ ] RawFrameStr ℓ₁′ ℓ₂ B)
                → let M-pos = pos-of-raw-frame M ; N-pos = pos-of-raw-frame N in
@@ -349,14 +376,24 @@ isFrameIso-prop {F = F} {G} ((f , _) , _) (g₀h , sec₀ , ret₀) (g₁h , sec
     NTS₁ = ΣProp≡
              (isFrameHomomorphism-prop G F)
              (forget-mono (pos G) (pos F) (π₀ g₀h) (π₀ g₁h) (funExt g₀~g₁))
+```
 
+A frame isomorphism is a frame homomorphism with an inverse that is also a frame
+homomorphism.
+
+```agda
 _≅f_ : (F : Frame ℓ₀ ℓ₁ ℓ₂) (G : Frame ℓ₀′ ℓ₁′ ℓ₂) → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂ ⊔ ℓ₀′ ⊔ ℓ₁′)
 F ≅f G = Σ[ f ∈ F ─f→ G ] isFrameIso {F = F} {G} f
+```
 
--- An element of the poset is like a finite observation whereas an element of the
--- frame of downward closed posets is like a general observation.
+## Frame of downwards-closed subsets
 
--- The set of downward-closed subsets of a poset forms a frame.
+An element of the poset is like a finite observation whereas an element of the frame of
+downward closed posets is like a general observation.
+
+The set of downward-closed subsets of a poset forms a frame.
+
+```agda
 DCPoset : (P : Poset ℓ₀ ℓ₁) → Poset (suc ℓ₀ ⊔ ℓ₁) ℓ₀
 DCPoset {ℓ₀ = ℓ₀} P = 𝔻 , _<<_ , 𝔻-set , <<-refl , <<-trans  , <<-antisym
   where
@@ -376,8 +413,11 @@ DCPoset {ℓ₀ = ℓ₀} P = 𝔻 , _<<_ , 𝔻-set , <<-refl , <<-trans  , <<-
       <<-antisym : [ isAntisym 𝔻-set _<<_ ]
       <<-antisym X Y S⊆T T⊆S =
         ΣProp≡ (is-true-prop ∘ isDownwardsClosed P) (⊆-antisym S⊆T T⊆S)
+```
 
--- The set of downward-closed subsets of a poset forms a frame.
+The set of downward-closed subsets of a poset forms a frame.
+
+```agda
 DCFrame : (P : Poset ℓ₀ ℓ₁) → Frame (suc ℓ₀ ⊔ ℓ₁) ℓ₀ ℓ₀
 DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     𝔻
@@ -391,7 +431,7 @@ DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
     𝔻ₚ = DCPoset (X , P)
     𝔻  = ∣ 𝔻ₚ ∣ₚ
 
-    -- Function that forget the downwards-closure information.
+    -- A function that forgets the downwards-closure information.
     ∣_∣𝔻 : 𝔻 → 𝒫 X
     ∣ S , _ ∣𝔻 = S
 
@@ -459,11 +499,15 @@ DCFrame {ℓ₀ = ℓ₀} {ℓ₁ = ℓ₁} (X , P) =
           where
             φ : in-some-set-of ⁅ U ∧ (V $ i) ∣ i ∶ I ⁆ x → [ ∣ U ∣𝔻 x ] × [ ∣ ⋁ V ∣𝔻 x ]
             φ (i , x∈D , x∈Uᵢ) = x∈D , ∣ i , x∈Uᵢ ∣
+```
 
--- Frames form an SNS.
 
--- Similar to the poset case, we start by expressing what it means for an equivalence to
--- preserve the structure of a frame
+## Univalence for frames
+
+Similar to the poset case, we start by expressing what it means for an equivalence to
+preserve the structure of a frame
+
+```agda
 isARawHomoEqv : {ℓ₁ ℓ₂ : Level} (M N : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂))
               → π₀ M ≃ π₀ N
               → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
@@ -481,9 +525,11 @@ pos-of (A , ((RPS , _) , _)) = (A , RPS)
 
 top-of : (F : Σ (Type ℓ₀) (RawFrameStr ℓ₁ ℓ₂)) → π₀ F
 top-of (_ , _ , ⊤ , _) = ⊤
+```
 
--- Frame univalence
+*Raw* frames form a standard notion of structure.
 
+```agda
 RF-is-SNS : SNS {ℓ₀} (RawFrameStr ℓ₁ ℓ₂) isARawHomoEqv
 RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A}
           F@(s@(_⊑₀_ , _) , ⊤₀ , _⊓₀_ , ⋁₀)
@@ -545,13 +591,19 @@ RF-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} {X = A}
 
         NTS₁ : g (f (mono , mono′ , q , r)) .π₀ ≡ mono
         NTS₁ = isMonotonic-prop F-pos G-pos (id A) _ _
+```
 
--- A predicate expressing that an equivalence between the underlying types of two frames
--- is frame-homomorphic.
+A predicate expressing that an equivalence between the underlying types of two frames is
+frame-homomorphic.
+
+```agda
 isHomoEqv : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → π₀ F ≃ π₀ G → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 isHomoEqv {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} (A , (s , _)) (B , (t , _)) = isARawHomoEqv (A , s) (B , t)
+```
 
--- We collect all frame-homomorphic equivalences between two frames in the following type.
+We collect all frame-homomorphic equivalences between two frames in the following type.
+
+```agda
 _≃f_ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → Type (ℓ₀ ⊔ ℓ₁ ⊔ suc ℓ₂)
 F ≃f G = Σ[ e ∈ ∣ F ∣F ≃ ∣ G ∣F ] isHomoEqv F G e
 
@@ -569,8 +621,11 @@ isHomoEqv-prop F G e@(f , _) =
     G-rs : RawFrameStr _ _ ∣ G ∣F
     G-rs = π₀ (π₁ G)
     g = equivFun (invEquiv e)
+```
 
--- Notice that ≃f is equivalent to ≅f.
+Notice that ≃f is equivalent to ≅f.
+
+```agda
 ≃f≃≅f : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (F ≃f G) ≃ (F ≅f G)
 ≃f≃≅f F G = isoToEquiv (iso to from sec ret)
   where
@@ -611,25 +666,29 @@ frame-is-SNS {ℓ₁ = ℓ₁} {ℓ₂ = ℓ₂} =
 
 frame-is-SNS-PathP : SNS-PathP {ℓ₀} (FrameStr ℓ₁ ℓ₂) isHomoEqv
 frame-is-SNS-PathP = SNS-≡→SNS-PathP isHomoEqv frame-is-SNS
+```
 
--- Similar to the poset case, this is sufficient to establish that the category of frames
--- is univalent
+Similar to the poset case, this is sufficient to establish that the category of frames is
+univalent
 
+```agda
 ≃f≃≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (F ≃f G) ≃ (F ≡ G)
 ≃f≃≡ = SIP frame-is-SNS-PathP
+```
 
--- However, there are two minor issues with this.
---
---   1. We do not have to talk about equivalences as we are talking about sets;
---      isomorphisms are well-behaved in our case as we are dealing with sets.
---
---  2. We do not have to require the frame data to be preserved. We can show that any
---     poset isomorphism preserves the frame operators.
---
--- We will therefore strengthen our result to work with the notion of poset isomorphism.
+However, there are two minor issues with this.
 
--- We start by showing the equivalence between ≃f and ≅ₚ.
+  1. We do not have to talk about equivalences as we are talking about sets;
+     isomorphisms are well-behaved in our case as we are dealing with sets.
 
+ 2. We do not have to require the frame data to be preserved. We can show that any
+    poset isomorphism preserves the frame operators.
+
+We will therefore strengthen our result to work with the notion of poset isomorphism.
+
+We start by showing the equivalence between ≃f and ≅ₚ.
+
+```agda
 ≃f≃≅ₚ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (pos F ≅ₚ pos G) ≃ (F ≃f G)
 ≃f≃≅ₚ F G = isoToEquiv (iso from to ret-to-from sec-to-from)
   where
@@ -748,12 +807,19 @@ frame-is-SNS-PathP = SNS-≡→SNS-PathP isHomoEqv frame-is-SNS
     ret-to-from : retract to from
     ret-to-from (eqv , eqv-homo) =
       ΣProp≡ (isHomoEqv-prop F G ) (ΣProp≡ isPropIsEquiv refl)
+```
 
--- Now that we have this result, we can move on to show that given two frames F and G,
--- (pos F) ≅ₚ (pos G) is equivalent to F ≡ G.
+Now that we have this result, we can move on to show that given two frames F and G,
+(pos F) ≅ₚ (pos G) is equivalent to F ≡ G.
 
+```agda
 ≅ₚ≃≡ : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (pos F ≅ₚ pos G) ≃ (F ≡ G)
 ≅ₚ≃≡ F G = pos F ≅ₚ pos G ≃⟨ ≃f≃≅ₚ F G ⟩ F ≃f G ≃⟨ ≃f≃≡ F G ⟩ F ≡ G 𝔔𝔈𝔇
+```
 
+We also note that there is an equivalence between `_≅ₚ_` and `_≅f_`.
+
+```
 ≅ₚ≃≅f : (F G : Frame ℓ₀ ℓ₁ ℓ₂) → (pos F ≅ₚ pos G) ≃ (F ≅f G)
 ≅ₚ≃≅f F G = pos F ≅ₚ pos G ≃⟨ ≃f≃≅ₚ F G ⟩ F ≃f G ≃⟨ ≃f≃≅f F G ⟩ F ≅f G 𝔔𝔈𝔇
+```

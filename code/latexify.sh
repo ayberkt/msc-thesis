@@ -8,7 +8,7 @@ declare -a files=("Basis.lagda.md"
                   "Poset.lagda.md"
                   "SnocList.agda"
                   "CantorSpace.lagda.md"
-                  "Frame.agda"
+                  "Frame.lagda.md"
                   "UniversalProperty.lagda.md"
                  )
 
