@@ -6,7 +6,7 @@ files = [ "FormalTopology.lagda.md",
           "CoverFormsNucleus.lagda.md",
           "Nucleus.lagda.md",
           "Poset.lagda.md",
-          "SnocList.agda",
+          "SnocList.lagda.md",
           "CantorSpace.lagda.md",
           "Frame.lagda.md",
           "UniversalProperty.lagda.md"

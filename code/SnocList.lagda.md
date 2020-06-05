@@ -1,10 +1,15 @@
+```agda
 {-# OPTIONS --cubical --safe #-}
 
 open import Basis
 open import Cubical.Data.Empty.Base using (⊥; rec)
 open import Cubical.Relation.Nullary.DecidableEq using (Discrete→isSet)
 open import Cubical.Relation.Nullary using (Discrete; yes; no; Dec; ¬_)
+```
 
+## Definition
+
+```agda
 module SnocList (Z : Type zero) (_≟_ : Discrete Z) where
 
 data SnocList : Type zero where
@@ -12,7 +17,11 @@ data SnocList : Type zero where
   _⌢_ : SnocList → Z → SnocList
 
 infixl 5 _⌢_
+```
 
+## Properties
+
+```agda
 ⌢-eq-left : {xs ys : SnocList} {x y : Z} → xs ⌢ x ≡ ys ⌢ y → xs ≡ ys
 ⌢-eq-left {ys = ys} p = subst (λ { (zs ⌢ _) → zs ≡ ys ; [] → Z }) (sym p) refl
 
@@ -154,3 +163,4 @@ tail (xs ⌢ x₀ ⌢ x₁) p = (tail (xs ⌢ x₀) tt) ⌢ x₁
 hd-tl-lemma : (xs : SnocList) (ne : nonempty xs) → ([] ⌢ head xs ne) ++ tail xs ne ≡ xs
 hd-tl-lemma ([] ⌢ x) tt = refl
 hd-tl-lemma (xs ⌢ x₀ ⌢ x₁) tt = cong (λ - → - ⌢ x₁) (hd-tl-lemma (xs ⌢ x₀) tt)
+```
