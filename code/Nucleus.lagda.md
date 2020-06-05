@@ -2,6 +2,8 @@
 title: Nucleus
 ---
 
+## Preamble
+
 ```agda
 {-# OPTIONS --cubical --safe #-}
 

@@ -1,3 +1,9 @@
+---
+title: Snoc lists
+---
+
+## Preamble
+
 ```agda
 {-# OPTIONS --cubical --safe #-}
 

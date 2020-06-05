@@ -1,3 +1,9 @@
+---
+title: Frames
+---
+
+## Preamble
+
 ```agda
 {-# OPTIONS --without-K --cubical --safe #-}
 

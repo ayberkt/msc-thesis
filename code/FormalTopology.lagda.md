@@ -1,3 +1,9 @@
+---
+title: Formal Topology
+---
+
+## Preamble
+
 ```agda
 {-# OPTIONS --cubical --safe #-}
 

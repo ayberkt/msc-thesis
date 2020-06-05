@@ -1,3 +1,9 @@
+---
+title: Basis
+---
+
+## Preamble
+
 ```
 {-# OPTIONS --cubical --safe #-}
 

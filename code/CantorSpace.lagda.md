@@ -1,3 +1,9 @@
+---
+title: The Formal Cantor Space
+---
+
+## Preamble
+
 ```
 {-# OPTIONS --cubical --safe #-}
 
