@@ -1,4 +1,8 @@
-# Some lemmas about the cover relation
+---
+title: Cover
+---
+
+## Preamble
 
 ```agda
 {-# OPTIONS --cubical --safe #-}

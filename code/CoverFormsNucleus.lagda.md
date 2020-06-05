@@ -1,3 +1,9 @@
+---
+title: Covers form nuclei
+---
+
+## Preamble
+
 ```
 {-# OPTIONS --cubical --safe #-}
 

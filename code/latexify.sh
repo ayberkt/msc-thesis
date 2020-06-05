@@ -1,14 +1,14 @@
 #!/bin/bash
 
 declare -a files=("Basis.lagda.md"
-                  "FormalTopology.agda"
+                  "FormalTopology.lagda.md"
                   "Cover.lagda.md"
                   "CoverFormsNucleus.lagda.md"
-                  "Nucleus.agda"
+                  "Nucleus.lagda.md"
                   "Poset.lagda.md"
-                  "SnocList.agda"
+                  "SnocList.lagda.md"
                   "CantorSpace.lagda.md"
-                  "Frame.agda"
+                  "Frame.lagda.md"
                   "UniversalProperty.lagda.md"
                  )
 

@@ -1,4 +1,9 @@
-```
+---
+title: Formal Topology in Univalent Foundations — Agda formalisation accompanying MSc thesis
+author: Ayberk Tosun
+---
+
+```agda
 {-# OPTIONS --without-K --cubical --safe #-}
 
 module Main where

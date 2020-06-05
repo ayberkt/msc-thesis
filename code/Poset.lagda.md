@@ -1,3 +1,9 @@
+---
+title: Posets
+---
+
+## Preamble
+
 ```
 {-# OPTIONS --without-K --cubical --safe #-}
 

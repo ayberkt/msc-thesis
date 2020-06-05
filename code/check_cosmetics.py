@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 import sys
 
-files = [ "FormalTopology.agda",
+files = [ "FormalTopology.lagda.md",
           "Cover.lagda.md",
           "CoverFormsNucleus.lagda.md",
-          "Nucleus.agda",
+          "Nucleus.lagda.md",
           "Poset.lagda.md",
-          "SnocList.agda",
+          "SnocList.lagda.md",
           "CantorSpace.lagda.md",
-          "Frame.agda",
+          "Frame.lagda.md",
           "UniversalProperty.lagda.md"
         ]
 

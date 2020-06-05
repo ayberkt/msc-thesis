@@ -1,3 +1,9 @@
+---
+title: Universal Property for Formal Topologies
+---
+
+## Preamble
+
 ```
 {-# OPTIONS --cubical --safe #-}
 

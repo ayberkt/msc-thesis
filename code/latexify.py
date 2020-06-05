@@ -3,20 +3,6 @@ import sys
 import os
 import subprocess
 
-files = [ "Basis.lagda.md",
-          "Family.agda",
-          "FormalTopology.agda",
-          "Cover.lagda.md",
-          "CoverFormsNucleus.lagda.md",
-          "Nucleus.agda",
-          "Poset.lagda.md",
-          "SnocList.agda",
-          "CantorSpace.lagda.md",
-          "Frame.agda",
-          "ProductTopology.agda",
-          "UniversalProperty.lagda.md"
-        ]
-
 def latexify_illiterate(fname):
   print("Processing illiterate file: " + fname)
   output_file_name   = fname.split(".")[0] + ".lagda"

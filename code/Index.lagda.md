@@ -1,3 +1,7 @@
+---
+title: Index
+---
+
 ```agda
 {-# OPTIONS --cubical --safe #-}
 
