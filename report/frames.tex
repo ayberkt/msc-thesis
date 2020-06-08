@@ -601,18 +601,18 @@ has not been defined yet.
 \end{thm}
 \begin{proof}
   The top element and the meet operation are just those of the subset inclusion order:
-  $\entire{\abs{P}}$ and $\intersectnm{}$ (definitions \ref{defn:entire-subset} and
+  $\entire{\abs{P}}$ and $\capp$ (definitions \ref{defn:entire-subset} and
   \ref{defn:intersection}). The join operation is defined as follows: let $U$ be a family
   of downwards-closed subsets with index set $I$;
   \begin{align*}
     \bigvee_i U_i \quad\is\quad \lambda x.~ \trunc{\sigmaty{i}{I}{\mempow{x}{U_i}}}
       && \text{(using truncation as given in Defn.~\ref{defn:truncation})}.
   \end{align*}
-  $\entire{\abs{P}}$ and $\intersectnm{}$ are propositional by construction whereas $\bigvee$ is
-  not and is hence forced to be propositional using truncation. Downwards-closure and the
-  LUB/GLB properties are easy to verify. For the distributivity law, let $U$ be a
-  downwards-closed subset and $\setof{ V_i ~|~ \oftyI{i}{I} }$, a family of
-  downward-closed subsets. We must show
+  $\entire{\abs{P}}$ and $\capp$ are propositional by construction whereas $\bigvee$ is not and
+  is hence forced to be propositional using truncation. Downwards-closure and the LUB/GLB
+  properties are easy to verify. For the distributivity law, let $U$ be a downwards-closed
+  subset and $\setof{ V_i ~|~ \oftyI{i}{I} }$, a family of downward-closed subsets. We
+  must show
   \begin{align*}
     \intersect{U}{\bigvee_i V_i}
       \quad&\equiv\quad \intersect{U}{\left(\lambda x.~ \trunc{\sigmaty{i}{I}{x \epsilon V_i}}\right)}\\
