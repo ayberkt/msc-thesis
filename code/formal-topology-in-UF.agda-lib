@@ -1,0 +1,7 @@
+name: formal-topology-in-UF
+
+include:
+  src
+  lib/cubical
+
+depend: standard-library

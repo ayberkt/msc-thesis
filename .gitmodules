@@ -1,3 +1,6 @@
 [submodule "report/template"]
 	path = report/template
 	url = git@github.com:ayberkt/chalmers-msc-thesis-template.git
+[submodule "code/lib/cubical"]
+	path = code/lib/cubical
+	url = https://github.com/agda/cubical.git
