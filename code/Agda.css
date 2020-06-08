@@ -123,9 +123,9 @@ h1.title, h2.author, h3.date, input, textarea, hr {
 
 /* font sizes */
 
-h1              { font-size: 130%; }
-h1.title        { font-size: 200%; }
-h2              { font-size: 110%; }
+h1              { font-size: 200%; }
+h1.title        { font-size: 250%; }
+h2              { font-size: 150%; }
 input, textarea { font-size: 100%; } /* monospace correction */
 
 
