@@ -113,6 +113,7 @@ input, textarea {
 
 h1, h2, h3 {
   border-bottom: 1px dotted black;
+  line-height: 200%;
 }
 
 h1.title, h2.author, h3.date, input, textarea, hr {
