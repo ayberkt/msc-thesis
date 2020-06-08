@@ -86,7 +86,6 @@ hr {
 /* margin */
 
 div.indent, pre, table {
-  margin-left: 5%;
   width: 95%;
 }
 
