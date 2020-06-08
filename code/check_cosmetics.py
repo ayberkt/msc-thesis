@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 import sys
 
-files = [ "FormalTopology.lagda.md",
-          "Cover.lagda.md",
-          "CoverFormsNucleus.lagda.md",
-          "Nucleus.lagda.md",
-          "Poset.lagda.md",
-          "SnocList.lagda.md",
-          "CantorSpace.lagda.md",
-          "Frame.lagda.md",
-          "UniversalProperty.lagda.md"
+files = [ "src/FormalTopology.lagda.md",
+          "src/Cover.lagda.md",
+          "src/CoverFormsNucleus.lagda.md",
+          "src/Nucleus.lagda.md",
+          "src/Poset.lagda.md",
+          "src/SnocList.lagda.md",
+          "src/CantorSpace.lagda.md",
+          "src/Frame.lagda.md",
+          "src/UniversalProperty.lagda.md"
         ]
 
 def check_cosmetics_of_file(fname):
