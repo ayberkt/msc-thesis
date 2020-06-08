@@ -1,6 +1,6 @@
 # Formal Topology in Univalent Foundations
 
-[**Link to PDF**](https://gitlab.com/ayberkt/msc-thesis/-/raw/master/pdf/tosun-msc-thesis-final-updated-40ab484.pdf)
+[**Link to PDF**][3].
 
 This is the repository of my MSc thesis at Chalmers University of
 Technology. It has been supervised by [Thierry Coquand][0] and
@@ -13,3 +13,4 @@ as the opponent.
 [0]: http://www.cse.chalmers.se/~coquand/
 [1]: http://www.cse.chalmers.se/~nad/
 [2]: https://github.com/JoelSjogren
+[3]: https://gitlab.com/ayberkt/msc-thesis/-/raw/master/pdf/tosun-msc-thesis-final-updated-40ab484.pdf
