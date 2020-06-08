@@ -1,2 +1,0 @@
-* A cardinal principle of modern mathematical research may be stated as a maxim: "one must always topologize".
-** :author: Stone
