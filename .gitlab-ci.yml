@@ -8,7 +8,7 @@ before_script:
 test:
   script:
   - agda --version
-  - agda --safe Main.lagda.md
+  - agda --safe src/Main.lagda.md
 
 pages:
   only:
