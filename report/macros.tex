@@ -2,47 +2,94 @@
   {\large {\color{red} \textcircled{{\color{black} {\normalsize \hspace{0.15mm}#1}}}}}
 }
 
-\newcommand{\reals}{\mathbb{R}}
-\newcommand{\nats}{\mathbb{N}}
-\newcommand{\bool}{\mathsf{Bool}}
-\newcommand{\ball}[2]{\mathsf{B}(#1, #2)}
-\newcommand{\neighbourhood}[1]{\mathbf{N}(#1)}
+%% General
 
-\newcommand{\libcub}{\texttt{cubical}}
-
+% Unary type declaration.
 \newcommand{\oftyI}[2]{#1\hspace{0.1mm}:\hspace{0.1mm}#2}
+
+% Binary type declaration.
 \newcommand{\oftyII}[3]{#1, #2:#3}
+
+% Introduction of a definitional equality.
+\newcommand{\is}{\vcentcolon\equiv}
+
+\newcommand{\idnm}{~=~}
+
+% The `refl` constructor.
 \newcommand{\refl}{\mathsf{refl}}
+
+% The `zero` constructor.
 \newcommand{\zero}{\mathsf{zero}}
+
+% The `suc` constructor of natural numbers.
 \newcommand{\sucnm}{\mathsf{suc}}
 \newcommand{\suc}[1]{\sucnm{}\left(#1\right)}
 
-\newcommand{\fiber}[2]{\hyperref[defn:fiber]{ \mathsf{fiber} }\left(#1, #2\right)}
+% The type of natural numbers.
+\newcommand{\nats}{\mathbb{N}}
+
+% The type of booleans.
+\newcommand{\bool}{\mathsf{Bool}}
+
+% Pi type.
+\newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
+
+% Sigma type.
+\newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
+
+% Universe.
+\newcommand{\univ}{\mathcal{U}}
+
+% Unit type.
+\newcommand{\unitty}{\mathsf{Unit}}
+
+% The only constructor of the Unit type.
+\newcommand{\unittm}{\rulename{\star}}
+
+\newcommand{\setof}[1]{\left\{ #1 \right\}}
+
+\newcommand{\rulename}[1]{{\color{darkred} \mathsf{#1}}}
+
+%% Foundations
+
+\newcommand{\fiber}[2]{\hyperref[defn:fiber]{\mathsf{fiber}}\left(#1, #2\right)}
+
 \newcommand{\isequiv}[1]{\hyperref[defn:equiv]{\mathsf{isEquiv}}\left(#1\right)}
+
+\newcommand{\invequiv}[1]{\hyperref[prop:iso-equiv-equiv]{\mathsf{inv}}\left(#1\right)}
+
 \newcommand{\idtoeqvnm}{\hyperref[defn:id-to-equiv]{\mathsf{idToEquiv}}}
+
 \newcommand{\idtoeqv}[2]{\idtoeqvnm{}\left(#1, #2\right)}
+
 \newcommand{\idequivnm}{\hyperref[defn:id-equiv]{\mathsf{idEqv}}}
+
 \newcommand{\idequiv}[1]{\idequivnm{}\left(#1\right)}
+
 \newcommand{\isdec}[1]{\hyperref[defn:decidable]{\mathsf{isDecidable}}\left(#1\right)}
+
 \newcommand{\isdisc}[1]{\hyperref[defn:discrete]{\mathsf{isDiscrete}}\left(#1\right)}
 
 \DeclareMathOperator{\typequivnm}{\hyperref[defn:equiv]{\simeq}}
 \newcommand{\typequiv}[2]{#1 \typequivnm #2}
+
 \newcommand{\istypiso}[1]{\hyperref[defn:type-iso]{\mathsf{isIso}}\left(#1\right)}
+
 \newcommand{\typiso}[2]{#1 \hyperref[defn:type-iso]{\cong} #2}
+
+\newcommand{\entire}[1]{\hyperref[defn:entire-subset]{\top}_{#1}}
+
+% Logical equivalence.
 \DeclareMathOperator{\logequivnm}{\hyperref[defn:iff]{\leftrightarrow}}
 \newcommand{\logequiv}[2]{#1 \logequivnm{} #2}
+
+% Extensional equality.
 \newcommand{\exteq}[2]{#1 \hyperref[defn:exteq]{\sim} #2}
+
+% Identity function.
 \newcommand{\idfn}[1]{\mathsf{id}_{#1}}
 
-\newcommand{\fincovernm}{\hyperref[defn:fin-cover]{\mathsf{down}}}
-\newcommand{\fincover}[1]{\fincovernm{}\left(#1\right)}
-\newcommand{\iscompact}[1]{\hyperref[defn:compact]{\mathsf{isCompact}}\left(#1\right)}
-
-\newcommand{\unitty}{\mathsf{Unit}}
-\newcommand{\unittm}{\rulename{\star}}
-
-%% Homotopy levels.
+% Homotopy levels.
 \newcommand{\iscontrnm}{\hyperref[defn:contr]{\mathsf{isContr}}}
 \newcommand{\iscontr}[1]{\iscontrnm{}\left(#1\right)}
 \newcommand{\isprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
@@ -57,20 +104,147 @@
 
 \newcommand{\formssns}[1]{\mathsf{SNS}\left(#1\right)}
 
-\newcommand{\pity}[3]{\prod_{(#1~:~#2)} #3}
-\newcommand{\sigmaty}[3]{\sum_{(#1~:~#2)} #3}
-\newcommand{\univ}{\mathcal{U}}
-\newcommand{\isaprop}[1]{\hyperref[defn:hprop]{\mathsf{isProp}}\left(#1\right)}
 \newcommand{\hprop}{\hyperref[defn:omega]{Ω}}
-\newcommand{\isaset}[1]{\mathsf{IsSet}\left(#1\right)}
+
 \newcommand{\abs}[1]{\left| #1 \right|}
 \newcommand{\trunc}[1]{\left\| #1 \right\|}
+
+% Powerset.
 \newcommand{\pownm}{\hyperref[defn:pow]{\mathcal{P}}}
 \newcommand{\pow}[1]{\pownm{}\left(#1\right)}
+
+% Subset as a family.
 \newcommand{\sub}[2]{\hyperref[defn:fam]{\mathsf{Fam}}_{#1}\left(#2\right)}
-\newcommand{\indexnm}{\mathsf{index}}
-\newcommand{\indexset}[1]{\indexnm{}\left(#1\right)}
-\newcommand{\pair}[2]{\langle #1 , #2 \rangle}
+
+\newcommand{\subsetofnm}{\hyperref[defn:inclusion]{\subseteq}}
+\newcommand{\subsetof}[2]{#1 \subsetofnm{} #2}
+
+% Downwards-closure.
+\newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
+\newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
+\newcommand{\dcsubsetnm}{\hyperref[defn:dc-subset]{\mathsf{DCSubset}}}
+\newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
+\newcommand{\dcframe}[1]{#1\hyperref[thm:down-set-frame]{\downarrow}}
+
+\newcommand{\ordernm}{\hyperref[defn:poset]{\mathsf{Order}}}
+\newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
+
+\newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
+\newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
+
+% Membership in a family.
+\DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\in}}
+\newcommand{\memfam}[2]{#1 \memfamnm #2}
+
+% Membership in a powerset.
+\DeclareMathOperator{\mempownm}{\hyperref[defn:pow]{\in}}
+\DeclareMathOperator{\inn}{\hyperref[defn:pow]{\in}}
+\newcommand{\mempow}[2]{#1 \mempownm #2}
+
+% Agda module name.
+\newcommand{\modname}[1]{\texorpdfstring{{\color{AgdaModule} \texttt{#1}}}{#1}}
+
+% Agda function name.
+\newcommand{\fnname}[1]{{\color{AgdaFunction} \texttt{#1}}}
+
+%% Posets.
+
+\newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
+\newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
+
+\newcommand{\poset}{\hyperref[defn:poset]{\mathsf{Poset}}}
+
+\DeclareMathOperator{\posetisonm}{\hyperref[defn:poset-iso]{\cong_p}}
+\newcommand{\posetiso}[2]{#1 \posetisonm{} #2}
+
+\DeclareMathOperator{\posetequivnm}{\hyperref[defn:poset-equiv]{\simeq_p}}
+\newcommand{\posetequiv}[2]{#1 \posetequivnm{}  #2}
+
+
+\newcommand{\posof}[1]{\mathsf{pos}\left(#1\right)}
+
+\newcommand{\ismonotonicnm}{\hyperref[defn:mono]{\mathsf{isMonotonic}}}
+\newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
+\DeclareMathOperator{\mononm}{\hyperref[defn:mono-map]{\rightarrow_m}}
+\newcommand{\mono}[2]{#1 \mononm{} #2}
+
+%% Frames
+
+\newcommand{\isframehomonm}{\hyperref[defn:frame-homo]{\mathsf{isFrameHomo}}}
+\newcommand{\isframehomo}[1]{\isframehomonm{}\left(#1\right)}
+
+\newcommand{\isframehomoeqvnm}{\hyperref[defn:frame-equiv]{\mathsf{isFrameHomoEqv}}}
+\newcommand{\isframehomoeqv}[1]{%
+  \isframehomoeqvnm\left(#1\right)
+}
+
+\DeclareMathOperator{\framehomonm}{\hyperref[defn:frame-homo]{\rightarrow_f}}
+\newcommand{\framehomo}[2]{#1 \framehomonm{} #2}
+
+\DeclareMathOperator{\frameequivnm}{\hyperref[defn:frame-equiv]{\simeq_f}}
+\newcommand{\frameequiv}[2]{#1 \frameequivnm{} #2}
+
+\DeclareMathOperator{\frameisonm}{\hyperref[defn:frame-iso]{\cong_f}}
+\newcommand{\frameiso}[2]{#1 \frameisonm{} #2}
+
+\newcommand{\verbool}{boolean}
+
+\newcommand{\fix}[2]{\hyperref[thm:fixed-point-frame]{\mathsf{fix}}\left(#1, #2\right)}
+
+\newcommand{\framestrnm}{\hyperref[defn:frame]{\mathsf{FrameStr}}}
+\newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
+\newcommand{\frameaxnm}{\hyperref[defn:frame]{\mathsf{FrameAx}}}
+\newcommand{\frameax}[1]{\frameaxnm{}\left(#1\right)}
+\newcommand{\framenm}{\hyperref[defn:frame]{\mathsf{Frame}}}
+\newcommand{\framety}[3]{\framenm{}_{#1, #2, #3}}
+
+\newcommand{\rawframestrnm}{\hyperref[defn:frame]{\mathsf{RawFrameStr}}}
+\newcommand{\rawframestr}[3]{\rawframestrnm{}_{#1, #2}\left(#3\right)}
+
+\newcommand{\meet}[2]{#1 \wedge #2}
+\newcommand{\joinnm}{\bigvee}
+\newcommand{\join}[3]{\joinnm{}_{#1~:~#2} #3}
+
+%% Nuclei.
+
+\newcommand{\isnuclearnm}{\hyperref[defn:nucleus]{\mathsf{isNuclear}}}
+\newcommand{\isnuclear}[1]{\isnuclearnm{}\left(#1\right)}
+\newcommand{\nucleus}{\hyperref[defn:nucleus]{\mathsf{Nucleus}}}
+
+\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ \mempow{a}{#2} }}
+
+%% Formal topology.
+
+\newcommand{\treestrnm}{\hyperref[defn:intr-sys]{\mathsf{IntrStr}}}
+\newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
+\newcommand{\intrsys}{\hyperref[defn:intr-sys]{\mathsf{IntrSys}}}
+
+\newcommand{\hasmononm}{\hyperref[defn:mono]{\mathsf{hasMono}}}
+\newcommand{\hasmono}[1]{\hasmononm{}\left(#1\right)}
+\newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
+
+\newcommand{\formaltopo}{\hyperref[defn:formal-topo]{\mathsf{FT}}}
+
+\newcommand{\RHD}{\scalebox{1.2}{{\tt ▷}}}
+
+\DeclareMathOperator{\covernm}{\scalebox{1.2}{{\tt ◁}}}
+\newcommand{\covers}[2]{#1 \covernm{} #2}
+\newcommand{\representsnm}{\hyperref[defn:rep]{\mathsf{represents}}}
+\newcommand{\represents}[3]{\representsnm{}\left(#1, #2, #3\right)}
+
+\newcommand{\ruledir}{{\color{darkred} \mathsf{dir}}}
+\newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
+\newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
+
+\newcommand{\lifta}[1]{#1{\scriptstyle \downarrow}}
+
+\newcommand{\isflat}[1]{\hyperref[defn:flat]{\mathsf{isFlat}}\left(#1\right)}
+
+%% Cantor space.
+
+\newcommand{\fincovernm}{\hyperref[defn:fin-cover]{\mathsf{down}}}
+\newcommand{\fincover}[1]{\fincovernm{}\left(#1\right)}
+\newcommand{\iscompact}[1]{\hyperref[defn:compact]{\mathsf{isCompact}}\left(#1\right)}
 
 \newcommand{\listtynm}{\mathsf{List}}
 \newcommand{\listty}[1]{\listtynm{}\left(#1\right)}
@@ -92,144 +266,22 @@
 \newcommand{\snoc}[2]{#1 \snocnm{} #2}
 \newcommand{\cantoris}{\hyperref[defn:cantor-is]{\mathcal{C}}}
 
-\newcommand{\subsetofnm}{\hyperref[defn:inclusion]{\subseteq}}
-\newcommand{\subsetof}[2]{#1 \subsetofnm{} #2}
-
-\newcommand{\isdcnm}{\hyperref[defn:dc-subset]{\mathsf{isDownwardsClosed}}}
-\newcommand{\isdc}[1]{\isdcnm{}\left(#1\right)}
-\newcommand{\dcsubsetnm}{\hyperref[defn:dc-subset]{\mathsf{DCSubset}}}
-\newcommand{\dcsubset}[1]{\dcsubsetnm{}\left(#1\right)}
-\newcommand{\dcframe}[1]{#1\hyperref[thm:down-set-frame]{\downarrow}}
-
-\newcommand{\ordernm}{\hyperref[defn:poset]{\mathsf{Order}}}
-\newcommand{\order}[2]{\ordernm{}_{#1}\left(#2\right)}
-
-\newcommand{\posetstrnm}{\hyperref[defn:poset]{\mathsf{PosetStr}}}
-\newcommand{\posetstr}[2]{\posetstrnm{}_{#1}\left(#2\right)}
-
-\DeclareMathOperator{\memfamnm}{\hyperref[defn:fam-mem]{\in}}
-\newcommand{\memfam}[2]{#1 \memfamnm #2}
-
-\DeclareMathOperator{\mempownm}{\hyperref[defn:pow]{\in}}
-\DeclareMathOperator{\inn}{\hyperref[defn:pow]{\in}}
-\newcommand{\mempow}[2]{#1 \mempownm #2}
-
 \DeclareMathOperator{\concat}{\hyperref[defn:concat]{\textnormal{\texttt{++}}}}
 \DeclareMathOperator{\append}{\textnormal{\texttt{++}}}
 
-\newcommand{\posetaxnm}{\hyperref[defn:poset]{\mathsf{PosetAx}}}
-\newcommand{\posetax}[1]{\posetaxnm{}\left(#1\right)}
+%% Vernacular.
 
-\newcommand{\poset}{\hyperref[defn:poset]{\mathsf{Poset}}}
-
-\newcommand{\posof}[1]{\mathsf{pos}\left(#1\right)}
-
-\newcommand{\ismonotonicnm}{\hyperref[defn:mono]{\mathsf{isMonotonic}}}
-\newcommand{\ismonotonic}[1]{\ismonotonicnm{}\left(#1\right)}
-\DeclareMathOperator{\mononm}{\hyperref[defn:mono-map]{\rightarrow_m}}
-\newcommand{\mono}[2]{#1 \mononm{} #2}
-
-\newcommand{\isframehomonm}{\hyperref[defn:frame-homo]{\mathsf{isFrameHomo}}}
-\newcommand{\isframehomo}[1]{\isframehomonm{}\left(#1\right)}
-
-\newcommand{\isframehomoeqvnm}{\hyperref[defn:frame-equiv]{\mathsf{isFrameHomoEqv}}}
-\newcommand{\isframehomoeqv}[1]{%
-  \isframehomoeqvnm\left(#1\right)
-}
-
-\DeclareMathOperator{\framehomonm}{\hyperref[defn:frame-homo]{\rightarrow_f}}
-\newcommand{\framehomo}[2]{#1 \framehomonm{} #2}
-
-\newcommand{\hasmononm}{\hyperref[defn:mono]{\mathsf{hasMono}}}
-\newcommand{\hasmono}[1]{\hasmononm{}\left(#1\right)}
-\newcommand{\hassim}[1]{\hyperref[defn:sim]{\mathsf{hasSim}}\left(#1\right)}
-
-\DeclareMathOperator{\posetisonm}{\hyperref[defn:poset-iso]{\cong_p}}
-\newcommand{\posetiso}[2]{#1 \posetisonm{} #2}
-
-\DeclareMathOperator{\posetequivnm}{\hyperref[defn:poset-equiv]{\simeq_p}}
-\newcommand{\posetequiv}[2]{#1 \posetequivnm{}  #2}
-
-\DeclareMathOperator{\frameequivnm}{\hyperref[defn:frame-equiv]{\simeq_f}}
-
-\newcommand{\frameequiv}[2]{#1 \frameequivnm{} #2}
-
-\DeclareMathOperator{\frameisonm}{\hyperref[defn:frame-iso]{\cong_f}}
-\newcommand{\frameiso}[2]{#1 \frameisonm{} #2}
-
-\newcommand{\invequiv}[1]{\hyperref[prop:iso-equiv-equiv]{\mathsf{inv}}\left(#1\right)}
+% Shorthand for referring to the `agda/cubical` library.
+\newcommand{\libcub}{\texttt{cubical}}
 
 \newcommand{\vermono}{monotonicity}
 \newcommand{\versim}{simulation}
-\newcommand{\vernucleus}{\hyperref[defn:nucleus]{nucleus}}
-\newcommand{\verframe}{\hyperref[defn:frame]{frame}}
-\newcommand{\verposet}{\hyperref[defn:poset]{poset}}
-\newcommand{\verintrsys}{\hyperref[defn:intr-sys]{interaction system}}
+
 \newcommand{\veragda}{\textsc{Agda}}
-\newcommand{\verbool}{boolean}
 
-\newcommand{\modname}[1]{\texorpdfstring{{\color{AgdaModule} \texttt{#1}}}{#1}}
-\newcommand{\fnname}[1]{{\color{AgdaFunction} \texttt{#1}}}
-
-\newcommand{\rulename}[1]{{\color{darkred} \mathsf{#1}}}
-\newcommand{\ruledir}{{\color{darkred} \mathsf{dir}}}
-\newcommand{\rulebranch}{{\color{darkred} \mathsf{branch}}}
-\newcommand{\rulesquash}{{\color{darkred} \mathsf{squash}}}
-
-\newcommand{\fix}[2]{\hyperref[thm:fixed-point-frame]{\mathsf{fix}}\left(#1, #2\right)}
-
-\newcommand{\isflat}[1]{\hyperref[defn:flat]{\mathsf{isFlat}}\left(#1\right)}
-
-\newcommand{\framestrnm}{\hyperref[defn:frame]{\mathsf{FrameStr}}}
-\newcommand{\framestr}[1]{\framestrnm{}\left(#1\right)}
-\newcommand{\frameaxnm}{\hyperref[defn:frame]{\mathsf{FrameAx}}}
-\newcommand{\frameax}[1]{\frameaxnm{}\left(#1\right)}
-\newcommand{\framenm}{\hyperref[defn:frame]{\mathsf{Frame}}}
-\newcommand{\framety}[3]{\framenm{}_{#1, #2, #3}}
-
-\newcommand{\treestrnm}{\hyperref[defn:intr-sys]{\mathsf{IntrStr}}}
-\newcommand{\treestr}[1]{\treestrnm{}\left(#1\right)}
-\newcommand{\intrsys}{\hyperref[defn:intr-sys]{\mathsf{IntrSys}}}
-
-\newcommand{\stumpnm}{\mathsf{Stump}}
-\newcommand{\stump}[1]{\stumpnm\left(#1\right)}
-
-\newcommand{\refines}[2]{#1~\mathcal{R}~#2}
-
-\newcommand{\disciplinestrnm}{\mathsf{DisciplineStr}}
-\newcommand{\disciplinestr}[1]{\disciplinestrnm{}\left(#1\right)}
-
-\newcommand{\rawframestrnm}{\hyperref[defn:frame]{\mathsf{RawFrameStr}}}
-\newcommand{\rawframestr}[3]{\rawframestrnm{}_{#1, #2}\left(#3\right)}
-
-\newcommand{\isnuclearnm}{\hyperref[defn:nucleus]{\mathsf{isNuclear}}}
-\newcommand{\isnuclear}[1]{\isnuclearnm{}\left(#1\right)}
-\newcommand{\nucleus}{\hyperref[defn:nucleus]{\mathsf{Nucleus}}}
-
-\newcommand{\meet}[2]{#1 \wedge #2}
-\newcommand{\joinnm}{\bigvee}
-\newcommand{\join}[3]{\joinnm{}_{#1~:~#2} #3}
-
-\newcommand{\RHD}{\scalebox{1.2}{{\tt ▷}}}
-\DeclareMathOperator{\covernm}{\scalebox{1.2}{{\tt ◁}}}
-\newcommand{\covers}[2]{#1 \covernm{} #2}
-
-\newcommand{\setof}[1]{\left\{ #1 \right\}}
-\newcommand{\img}[2]{\setof{ #1\left( a \right) ~|~ \mempow{a}{#2} }}
-
-\newcommand{\formaltopo}{\hyperref[defn:formal-topo]{\mathsf{FT}}}
-
-\newcommand{\lifta}[1]{#1{\scriptstyle \downarrow}}
-
-\newcommand{\representsnm}{\hyperref[defn:rep]{\mathsf{represents}}}
-\newcommand{\represents}[3]{\representsnm{}\left(#1, #2, #3\right)}
-
-\newcommand{\entire}[1]{\hyperref[defn:entire-subset]{\top}_{#1}}
+%% Symbol abbreviations
 
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bG}{\mathbf{G}}
 \newcommand{\McF}{\mathcal{F}}
 \newcommand{\MfU}{\mathfrak{U}}
-
-\newcommand{\is}{\vcentcolon\equiv}
-\newcommand{\idnm}{~=~}
