@@ -1,6 +1,6 @@
 all: main.pdf
 
-main.pdf: main.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex cantor.tex agda.sty
+main.pdf: main.tex macros.tex introduction.tex foundations.tex frames.tex formal-topology.tex conclusion.tex agda-formalisation.tex cantor.tex agda.sty
 	latexmk -xelatex -interaction=nonstopmode main.tex
 
 .PHONY: update-refs
