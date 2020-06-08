@@ -266,7 +266,7 @@ problem through the use of HITs.
   $\covers{a}{U}$ is inductively defined with the following two constructors.
   \[
   \begin{prooftree}
-    \hypo{ a \mempownm U }
+    \hypo{ a \inn U }
     \infer1[$\ruledir{}$]{\covers{a}{U}}
   \end{prooftree}
   \qquad
@@ -280,9 +280,9 @@ problem through the use of HITs.
   names and refer to them as rules.
 \end{defn}
 
-One way of reading $\covers{a}{U}$ is as a relaxation of $a \mempownm U$ to ``it is
-eventually the case that $a \mempownm U$'' if one views the refining of $a$ as an evolution over
-time. In other words, it might not be that $a \mempownm U$ but once stage $a$ has been reached,
+One way of reading $\covers{a}{U}$ is as a relaxation of $a \inn U$ to ``it is
+eventually the case that $a \inn U$'' if one views the refining of $a$ as an evolution over
+time. In other words, it might not be that $a \inn U$ but once stage $a$ has been reached,
 all paths that do not lead to $U$ have been ruled out: regardless of what experiments are
 run, they will eventually lead to a stage in $U$.
 
@@ -363,7 +363,7 @@ the sake of self-containment.
   $\covers{a}{U}$ is inductively defined with the following two constructors:
   \[
   \begin{prooftree}
-    \hypo{ a \mempownm U }
+    \hypo{ a \inn U }
     \infer1[$\ruledir{}$]{\covers{a}{U}}
   \end{prooftree}
   \qquad
@@ -424,8 +424,8 @@ down\-wards-closure.
   $\covers{a'}{U}$. Our proof proceeds by (higher) induction on the proof of
   $\covers{a}{U}$.
   \begin{itemize}
-    \item Case $\ruledir{}$. It must be that $a \mempownm U$ and hence, by the
-      downwards-closure of $U$, $a' \mempownm U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
+    \item Case $\ruledir{}$. It must be that $a \inn U$ and hence, by the
+      downwards-closure of $U$, $a' \inn U$ meaning $\covers{a'}{U}$ by $\ruledir{}$.
     \item Case $\rulebranch{}$. We have some experiment $b$ on $a$ and a function
       $$\oftyI{f}{\pity{c}{C(a, b)}{\covers{d(a, b, c)}{U}}}.$$ Using the $\rulebranch{}$
       rule, we are done if we can exhibit some experiment $\oftyI{b'}{B(a')}$ along with a
@@ -451,7 +451,7 @@ down\-wards-closure.
   $\mempow{a}{V}$, then $\covers{a}{\intersect{U}{V}}$.
 \end{prop}
 \begin{proof}
-  Let $\oftyI{a}{A_{\McF{}}}$ such that $\covers{a}{U}$ and $a \mempownm V$. We proceed by
+  Let $\oftyI{a}{A_{\McF{}}}$ such that $\covers{a}{U}$ and $a \inn V$. We proceed by
   induction on the proof of $\covers{a}{U}$.
   \begin{itemize}
     \item Case $\ruledir{}$. We have $\mempow{a}{U}$ and $\mempow{a}{V}$ so we are done by
@@ -556,7 +556,7 @@ formal topology;
   $\oftyI{a}{A}$ such that $\covers{a}{\intersect{U}{V}}$. We proceed by induction on this
   proof.
   \begin{itemize}
-    \item Case $\ruledir{}$. $a \mempownm \intersect{U}{V}$ meaning $\mempow{a}{U}$ and
+    \item Case $\ruledir{}$. $a \inn \intersect{U}{V}$ meaning $\mempow{a}{U}$ and
       $\mempow{a}{V}$ hence we are done by two applications of $\ruledir{}$.
     \item Case $\rulebranch{}$. Follows by two uses of the $\rulebranch{}$ rule on two
       conjuncts of the inductive hypothesis.
@@ -583,7 +583,7 @@ $\eta : \abs{P} \rightarrow \fix{\dcframe{P}}{\RHD}$ as follows:
   \eta(a) \quad&\is\quad \covers{\_}{\lifta{a}}
 \end{align*}
 where $\lifta{a}$ denotes the \emph{downwards-closure} of $a$: $\{ a'~|~a' \sqsubseteq a \}$. So $a'
-\mempownm \eta(a) \equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage
+\inn \eta(a) \equiv \covers{a'}{\lifta{a}}$ is to say ``$a'$ eventually evolves into a stage
 that $a$ evolves into'' if we take the reading of stages of knowledge being refined over
 time. As we have proven in Prop.~\ref{prop:lem1}, $\eta(x)$ is downwards-closed. It is also a
 fixed point for $\RHD$, as we will show, so its type can be refined to
@@ -718,14 +718,14 @@ Before proceeding to the proof, let us first prove a lemma of key importance.
 \end{lemma}
 \begin{proof}
   Let $\oftyI{U}{L}$. We proceed by antisymmetry. The
-  $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }$
+  $U \sqsubseteq \bigvee^L \setof{ \eta(u) ~|~ u \inn U }$
   direction is immediate by an application of the $\ruledir{}$ rule. For the other
   direction, let $\oftyI{a}{A_{\McF{}}}$ and suppose that
-      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \mempownm U }}$.
+      $\mempow{a}{\bigvee^L \setof{ \eta(u) ~|~ u \inn U }}$.
   Recall that the join operation of the frame of fixed points for a nucleus (Theorem
   \ref{thm:fixed-point-frame}) on some frame $F$ is defined by applying the nucleus on the
   join operator of $F$. This is to say that we have
-  $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \mempownm U }}$. The result follows by induction on the
+  $\covers{a}{\bigcup \setof{ \eta(u) ~|~ u \inn U }}$. The result follows by induction on the
   proof of this fact, in the $\ruledir{}$ case of which Prop.~\ref{prop:lem4} and the
   induction principle of truncation are used.
 \end{proof}
@@ -739,12 +739,12 @@ making the diagram commute---specifically, when showing that it respects joins.
   \end{equation*}
   Let $\oftyI{f}{\mono{P}{R}}$ be a \emph{flat} monotonic map that represents $\McF{}$ in
   $R$ (as defined in Defn.~\ref{defn:rep}). Given any $\oftyI{a}{A_{\McF}}$, and
-  $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$, if $a \mempownm \bigvee^L U$ then
+  $\oftyI{U}{\sub{}{\abs{L}}}$ with index type $I$, if $a \inn \bigvee^L U$ then
   \begin{equation*}
     \bigvee^R \setof{ f(a) ~|~ a \inn \bigvee^L U }
     =
     \bigvee^R \setof{
-          f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+          f(a) ~|~ (\_, (a, \_)) : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \inn U_i}}
         }
   \end{equation*}
 \end{lemma}
@@ -753,7 +753,7 @@ making the diagram commute---specifically, when showing that it respects joins.
   the ($\sqsubseteq$) direction, it suffices by the LUB property to show:
   \begin{equation*}
     \pity{a}{A_{\McF}}{%
-      a \mempownm \bigvee^L U \rightarrow
+      a \inn \bigvee^L U \rightarrow
         f(a)
         \sqsubseteq
         \bigvee^R
@@ -762,7 +762,7 @@ making the diagram commute---specifically, when showing that it respects joins.
         }
     }.
   \end{equation*}
-  Let $\oftyI{a}{A_{\McF}}$ such that $a \mempownm \bigvee^L U$. We proceed by induction on the
+  Let $\oftyI{a}{A_{\McF}}$ such that $a \inn \bigvee^L U$. We proceed by induction on the
   proof of $a \inn \bigvee^L U$.
   \begin{itemize}
     \item Case $\ruledir{}$. Direct using the recursion principle of truncation and the
@@ -774,7 +774,7 @@ making the diagram commute---specifically, when showing that it respects joins.
         \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(d(a, b, c)) ~|~ c : C(a, b) }
                &&\quad [\text{$f$ represents}] \\
         \quad&\sqsubseteq\quad   && \bigvee^R \setof{ f(a) ~|~ (\_, (a, \_))
-                            : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \mempownm U_i}}
+                            : \sigmaty{i}{I}{\sigmaty{a}{A_{\McF{}}}{a \inn U_i}}
                             }
                &&\quad [\text{LUB and IH}].
       \end{alignat*}
@@ -792,13 +792,13 @@ making the diagram commute---specifically, when showing that it respects joins.
   We choose
   \begin{alignat*}{2}
     g    \quad&:\quad   && \abs{L} \rightarrow \abs{R}                     \\
-    g(U) \quad&\is\quad && \bigvee^R \setof{ f(u) ~|~ u \mempownm U }  .
+    g(U) \quad&\is\quad && \bigvee^R \setof{ f(u) ~|~ u \inn U }  .
   \end{alignat*}
   To show that the diagram commutes, it suffices by Proposition~\ref{prop:funext} to show
   $f(a) = g(\eta(a))$ for every $\oftyI{a}{A_{\McF}}$ (also by
   Proposition~\ref{prop:to-subtype} to be precise). Let $\oftyI{a}{A_{\McF{}}}$; we proceed
   by antisymmetry. The $f(a) \sqsubseteq g(\eta(a))$ direction is easy: $g(\eta(a)) \equiv \bigvee^R f(\eta(a))$ and
-  $\bigvee^R$ is an upper bound of $f(\eta(a))$ so it suffices to show $f(a) \mempownm f(\eta(a))$.
+  $\bigvee^R$ is an upper bound of $f(\eta(a))$ so it suffices to show $f(a) \inn f(\eta(a))$.
   This is immediate since $a \inn \eta(a)$.
 
   The other direction is the interesting one. First, we prove a lemma in preparation:
@@ -809,7 +809,7 @@ making the diagram commute---specifically, when showing that it respects joins.
   Let $\oftyII{a}{a'}{A_{\McF{}}}$ and assume $\covers{a'}{\lifta{a}}$. We proceed by
   induction on the proof of $\covers{a'}{\lifta{a}}$.
   \begin{itemize}
-    \item Case: $\ruledir{}$. It must be that $a' \mempownm \lifta{a}$ which is to say $a'
+    \item Case: $\ruledir{}$. It must be that $a' \inn \lifta{a}$ which is to say $a'
       \sqsubseteq a$. We are then done by the monotonicity of $f$.
     \item Case: $\rulebranch{}$. There must be some $\oftyI{b'}{B_{\McF{}}(a')}$ and a
       function $h$ such that $\oftyI{h(c)}{\covers{d(a', b', c')}{\lifta{a}}}$ for any
@@ -848,49 +848,49 @@ making the diagram commute---specifically, when showing that it respects joins.
   (Defn.~\ref{defn:flat}): $g(\top) = \bigvee^R \img{f}{A_{\McF{}}} = \top_R$. To see that $g$ also
   preserves binary meets, let $\oftyII{U}{V}{L}$. First, we show:
   \begin{equation}\label{eqn:pres-meet}
-      \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
-    = \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }.
+      \bigvee^R \{ f(a) ~|~ a \inn \intersect{U}{V} \}
+    = \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \inn U \times V }.
   \end{equation}
   This follows by antisymmetry. For the ($\sqsubseteq$) direction, it suffices by the fact that
   $\bigvee^R$ is a LUB, to show that
   \begin{equation*}
     \mathsf{RHS} \quad\is\quad
-      \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
+      \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \inn U \times V }
   \end{equation*}
   is an upper bound of $\setof{ f(a) ~|~ \mempow{a}{U \capp V} }$. Let
-  $\oftyI{a}{A_{\McF{}}}$ such that $a \mempownm U$ and $a \mempownm V$. The fact that
+  $\oftyI{a}{A_{\McF{}}}$ such that $a \inn U$ and $a \inn V$. The fact that
   $f(a) \sqsubseteq \mathsf{RHS}$ can be seen to hold by the LUB property of $\bigvee^R$. For the ($\sqsupseteq$)
   direction, it is sufficient, since $\bigvee^R$ is less than any other upper
   bound, to show that
   \begin{equation*}
-    \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+    \bigvee^R \{ f(a) ~|~ a \inn \intersect{U}{V} \}
   \end{equation*}
   is an upper bound of
   \begin{equation*}
-    \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }.
+    \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \inn U \times V }.
   \end{equation*}
   This follows straightforwardly by the LUB property combined with the downwards-closure
   of $U$ and $V$. The result that $g$ preserves binary meets then follows as:
   \begin{align*}
-    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \mempownm \intersect{U}{V} \}
+    g(\intersect{U}{V}) &\equiv \bigvee^R \{ f(a) ~|~ a \inn \intersect{U}{V} \}
                && [\text{(\ref{eqn:pres-meet})}] \\
-             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \mempownm U \times V }
+             &= \bigvee^R \setof{ \bigvee^R \{ f(w) ~|~ w \sqsubseteq u \times w \sqsubseteq v \} ~|~ (u, v) \inn U \times V }
                && [\text{flatness}]                                                 \\
-             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \mempownm U \times V }
+             &= \bigvee^R \setof{ f(u) \wedge f(v) ~|~ (u, v) \inn U \times V }
                &&\text{[Prop.~\ref{prop:distr}]}                                    \\
-             &= \left( \bigvee^R \setof{ f(u) ~|~ u \mempownm U } \right)
-              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \mempownm V } \right)                 \\
+             &= \left( \bigvee^R \setof{ f(u) ~|~ u \inn U } \right)
+              \wedge \left( \bigvee^R \setof{ f(v) ~|~ v \inn V } \right)                 \\
              &\equiv g(U) \wedge g(V)                                                         .
   \end{align*}
   Let us now show that $g$ preserves joins. Let $U$ be a family of inhabitants of
   $\abs{L}$.
   \begin{align*}
-    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \mempownm \bigvee^L_i U_i }
+    g(\bigvee^L U) &\equiv \bigvee^R \setof{ f(a) ~|~ a \inn \bigvee^L_i U_i }
                 && [\text{Lemma~\ref{lem:resp-join}}]\\
-    &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{a'}{A_{\McF{}}}{a' \mempownm U_i}}} }
+    &= \bigvee^R \setof{ f(a) ~|~ \oftyI{(\_, (a, \_))}{\sigmaty{i}{I}{\sigmaty{a'}{A_{\McF{}}}{a' \inn U_i}}} }
                 && [\text{Lemma~\ref{lem:flatten}}] \\
              &= \bigvee^R \setof{ \bigvee^R \img{f}{U_i} ~|~ \oftyI{i}{I} } \\
-             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \mempownm U }.
+             &\equiv \bigvee^R \setof{ g(U_i) ~|~ U_i \inn U }.
   \end{align*}
   To be precise about the use of Lemma~\ref{lem:flatten}, we note that it used on the
   function:
@@ -902,11 +902,11 @@ making the diagram commute---specifically, when showing that it respects joins.
   homomorphism from $L$ to $R$ that makes the diagram commute. We need to show that
   $g = g'$. Let $\oftyI{U}{\abs{L}}$. $g(U) = g'(U)$ by the following equational proof:
   \begin{align*}
-    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \mempownm U }
+    g(U) &\equiv \bigvee^R \setof{ f(u) ~|~ u \inn U }
             &&\text{[$f = g' \circ \eta$]} \\
-         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \mempownm U }
+         &= \bigvee^R \setof{ g'(\eta(u)) ~|~ u \inn U }
             &&\text{[$g'$ is a frame homomorphism]} \\
-         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \mempownm U } \right)
+         &= g'\left( \bigvee^L \setof{ \eta(u) ~|~ u \inn U } \right)
             &&\text{[Lemma~\ref{lem:main}]} \\
          &= g'(U).
   \end{align*}
