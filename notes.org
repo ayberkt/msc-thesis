@@ -1,5 +1,5 @@
 * Misc
-** Investigate the following remark by Abramsky further (from his PhD thesis).
+** Remark by Abramsky (from his PhD thesis).
 
    #+BEGIN_SRC markdown
     Scott has shown how the theory can be based on elementary, and finitary,
@@ -7,17 +7,7 @@
     deliberately suggestive of proof theory.
    #+END_SRC
 
-** Ideas
-   - The thing that is to a non-deterministic pushdown automaton what a Büchi automaton
-     is to a finite automaton.
 ** These lectures by André Joyal: https://www.youtube.com/watch?v=Ro8KoFFdtS4&t=891s
-** Disciplines themselves form a discipline
-   - For instance, for the discipline of communication theory, there was some sort of
-     problematic experiments which led to the link between thermodynamics (the outcome).
-     Applying the next function on this outcome gave us information theory. For
-     information theory, there were some other problems (i.e., the experiments, what were
-     they?), the outcome of which was the linking with computer science applying `next` on
-     which gave us algorithmic information theory.
 ** `cubical` working commit
    - 43d5fcf 2020-02-06 | Mapping cones and dunce cap contraction (#214) (HEAD) [Matthew Yacavone]
 * Submission
