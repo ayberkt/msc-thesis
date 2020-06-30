@@ -1,6 +1,6 @@
 # Formal Topology in Univalent Foundations
 
-[**Link to PDF**][3].
+[**Full text can be accessed here**][3].
 
 This is the repository of my MSc thesis at Chalmers University of
 Technology. It has been supervised by [Thierry Coquand][0] and
