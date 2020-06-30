@@ -17,5 +17,5 @@ in `code`.
 [0]: http://www.cse.chalmers.se/~coquand/
 [1]: http://www.cse.chalmers.se/~nad/
 [2]: https://github.com/JoelSjogren
-[3]: https://gitlab.com/ayberkt/msc-thesis/-/raw/master/pdf/tosun-msc-thesis-final-updated-40ab484.pdf
+[3]: https://odr.chalmers.se/handle/20.500.12380/301098
 [4]: https://ayberkt.gitlab.io/msc-thesis/Main.html
