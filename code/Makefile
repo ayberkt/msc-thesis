@@ -3,7 +3,7 @@ FILES := html/Main.html html/Poset.html html/Basis.html html/Frame.html\
          html/FormalTopology.html html/CantorSpace.html\
          html/SnocList.html html/UniversalProperty.html html/Index.html
 
-RELEASE_FILES := README.md formal-topology-in-UF.agda-lib lib html LICENSE\
+RELEASE_FILES := README.md formal-topology-in-UF.agda-lib lib html LICENCE\
                  src/Index.lagda.md             src/Main.lagda.md\
                  src/Basis.lagda.md             src/Poset.lagda.md\
                  src/Frame.lagda.md             src/Nucleus.lagda.md\
